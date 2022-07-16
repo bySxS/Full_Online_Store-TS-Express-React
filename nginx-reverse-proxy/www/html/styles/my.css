@@ -1,0 +1,379 @@
+.size3 {
+    --sizeСlock: 5em;
+    --paddClock: 50%;
+    --radiusClock: 2.5em;
+
+    --sizeHand: 5em;
+    --paddHand: 10%;
+
+    --sizeHour: 1.25em;
+    --sizeMinutes: 1.7em;
+    --sizeSeconds: 2.05em;
+
+    --radiusStroke: 0em;
+    --sizeStroke: 0.3em;
+    --sizeStrokeSmall: 0.15em;
+    --fontSize: 100px;
+
+    --sizeNumberSmall: 13px;
+    --sizeNumberBig: 25px;
+}
+
+.size2 {
+    --sizeСlock: 2em;
+    --paddClock: 40%;
+    --radiusClock: 0.5em;
+
+    --sizeHand: 1.9em;
+    --paddHand: 27%;
+
+    --sizeHour: 0.50em;
+    --sizeMinutes: 0.70em;
+    --sizeSeconds: 0.80em;
+
+    --radiusStroke: 1em;
+    --sizeStroke: 0.07em;
+    --sizeStrokeSmall: 0.03em;
+    --fontSize: 250px;
+
+    --sizeNumberSmall: 13px;
+    --sizeNumberBig: 25px;
+}
+
+.size1 {
+    --sizeСlock: 1em;
+    --paddClock: 50%;
+    --radiusClock: 0.5em;
+
+    --sizeHand: 1em;
+    --paddHand: 50%;
+
+    --sizeHour: 0.25em;
+    --sizeMinutes: 0.35em;
+    --sizeSeconds: 0.45em;
+
+    --radiusStroke: 0em;
+    --sizeStroke: 0.04em;
+    --sizeStrokeSmall: 0.015em;
+    --fontSize: 250px;
+
+    --sizeNumberSmall: 0px;
+    --sizeNumberBig: 15px;
+}
+
+.theme-UA {
+    --backgroundClock: #ffe000;
+    --shadowClock: #000;
+    --backgroundStroke: -webkit-linear-gradient(90deg,#e4ff04bf,#004effed);
+}
+
+.clock_number {
+    display: flex;
+    padding-top: 30px;
+    justify-content: center;
+    align-items: center;
+}
+.clock_number--small {
+    font-size: var(--sizeNumberSmall);
+    padding-top: 20px;
+}
+
+.clock_number--big {
+    font-size: var(--sizeNumberBig);
+    padding-top: 30px;
+}
+
+.clock {
+    box-shadow: inset 0 0 0 0.02em var(--shadowClock);
+    display: inline-block;
+    border-radius: var(--radiusClock);
+    position: relative;
+    font-size: var(--fontSize);
+    overflow: hidden;
+    background: var(--backgroundClock);
+    height: var(--sizeСlock);
+    width: var(--sizeСlock);
+}
+.clock::after {
+    content: '';
+    /*background-color: #fff;*/
+    border-radius: 0.5em;
+    margin-left: -0.5em;
+    margin-top: -0.5em;
+    position: absolute;
+    font-size: 0.01em;
+    display: block;
+    height: var(--sizeСlock);
+    width: var(--sizeСlock);
+    left: var(--paddClock);
+    top: var(--paddClock);
+}
+.clock__hand-container, .clock__hand, .clock__stroke {
+    margin-left: -0.5em;
+    margin-top: -0.5em;
+    font-size: inherit;
+    position: absolute;
+    display: block;
+    height: var(--sizeHand);
+    width: var(--sizeHand);
+    left: var(--paddHand);
+    top: var(--paddHand);
+}
+.clock__stroke::after {
+    content: "";
+    border-radius: 0 0 0.02em 0.02em;
+    background-color: #000;
+    margin-left: -0.01em;
+    position: absolute;
+    display: block;
+    height: var(--sizeStroke);
+    width: 0.02em;
+    top: 0.02em;
+    left: 50%;
+}
+.clock__stroke--small::after {
+    content: "";
+    border-radius: 0 0 0.0125em 0.0125em;
+    height: var(--sizeStrokeSmall);
+    width: 0.015em;
+}
+.clock__stroke--1 {
+    transform: rotate(6deg);
+    background: var(--backgroundStroke);
+    border-radius: var(--radiusStroke);
+}
+.clock__stroke--2 {
+    transform: rotate(12deg);
+}
+.clock__stroke--3 {
+    transform: rotate(18deg);
+}
+.clock__stroke--4 {
+    transform: rotate(24deg);
+}
+.clock__stroke--5 {
+    transform: rotate(30deg);
+}
+.clock__stroke--6 {
+    transform: rotate(36deg);
+}
+.clock__stroke--7 {
+    transform: rotate(42deg);
+}
+.clock__stroke--8 {
+    transform: rotate(48deg);
+}
+.clock__stroke--9 {
+    transform: rotate(54deg);
+}
+.clock__stroke--10 {
+    transform: rotate(60deg);
+}
+.clock__stroke--11 {
+    transform: rotate(66deg);
+}
+.clock__stroke--12 {
+    transform: rotate(72deg);
+}
+.clock__stroke--13 {
+    transform: rotate(78deg);
+}
+.clock__stroke--14 {
+    transform: rotate(84deg);
+}
+.clock__stroke--15 {
+    transform: rotate(90deg);
+}
+.clock__stroke--16 {
+    transform: rotate(96deg);
+}
+.clock__stroke--17 {
+    transform: rotate(102deg);
+}
+.clock__stroke--18 {
+    transform: rotate(108deg);
+}
+.clock__stroke--19 {
+    transform: rotate(114deg);
+}
+.clock__stroke--20 {
+    transform: rotate(120deg);
+}
+.clock__stroke--21 {
+    transform: rotate(126deg);
+}
+.clock__stroke--22 {
+    transform: rotate(132deg);
+}
+.clock__stroke--23 {
+    transform: rotate(138deg);
+}
+.clock__stroke--24 {
+    transform: rotate(144deg);
+}
+.clock__stroke--25 {
+    transform: rotate(150deg);
+}
+.clock__stroke--26 {
+    transform: rotate(156deg);
+}
+.clock__stroke--27 {
+    transform: rotate(162deg);
+}
+.clock__stroke--28 {
+    transform: rotate(168deg);
+}
+.clock__stroke--29 {
+    transform: rotate(174deg);
+}
+.clock__stroke--30 {
+    transform: rotate(180deg);
+}
+.clock__stroke--31 {
+    transform: rotate(186deg);
+}
+.clock__stroke--32 {
+    transform: rotate(192deg);
+}
+.clock__stroke--33 {
+    transform: rotate(198deg);
+}
+.clock__stroke--34 {
+    transform: rotate(204deg);
+}
+.clock__stroke--35 {
+    transform: rotate(210deg);
+}
+.clock__stroke--36 {
+    transform: rotate(216deg);
+}
+.clock__stroke--37 {
+    transform: rotate(222deg);
+}
+.clock__stroke--38 {
+    transform: rotate(228deg);
+}
+.clock__stroke--39 {
+    transform: rotate(234deg);
+}
+.clock__stroke--40 {
+    transform: rotate(240deg);
+}
+.clock__stroke--41 {
+    transform: rotate(246deg);
+}
+.clock__stroke--42 {
+    transform: rotate(252deg);
+}
+.clock__stroke--43 {
+    transform: rotate(258deg);
+}
+.clock__stroke--44 {
+    transform: rotate(264deg);
+}
+.clock__stroke--45 {
+    transform: rotate(270deg);
+}
+.clock__stroke--46 {
+    transform: rotate(276deg);
+}
+.clock__stroke--47 {
+    transform: rotate(282deg);
+}
+.clock__stroke--48 {
+    transform: rotate(288deg);
+}
+.clock__stroke--49 {
+    transform: rotate(294deg);
+}
+.clock__stroke--50 {
+    transform: rotate(300deg);
+}
+.clock__stroke--51 {
+    transform: rotate(306deg);
+}
+.clock__stroke--52 {
+    transform: rotate(312deg);
+}
+.clock__stroke--53 {
+    transform: rotate(318deg);
+}
+.clock__stroke--54 {
+    transform: rotate(324deg);
+}
+.clock__stroke--55 {
+    transform: rotate(330deg);
+}
+.clock__stroke--56 {
+    transform: rotate(336deg);
+}
+.clock__stroke--57 {
+    transform: rotate(342deg);
+}
+.clock__stroke--58 {
+    transform: rotate(348deg);
+}
+.clock__stroke--59 {
+    transform: rotate(354deg);
+}
+.clock__hand--hour::after {
+    content: "";
+    border-radius: 0.015em 0.015em 0.01em 0.01em;
+    background-color: #000;
+    margin-bottom: -0.02em;
+    margin-left: -0.025em;
+    font-size: inherit;
+    position: absolute;
+    display: block;
+    height: var(--sizeHour);
+    width: 0.05em;
+    bottom: 50%;
+    left: 50%;
+}
+.clock__hand--minute::after {
+    content: "";
+    border-radius: 0.012em 0.012em 0.01em 0.01em;
+    background-color: #000;
+    margin-bottom: -0.02em;
+    margin-left: -0.015em;
+    font-size: inherit;
+    position: absolute;
+    display: block;
+    height: var(--sizeMinutes);
+    width: 0.03em;
+    bottom: 50%;
+    left: 50%;
+}
+.clock__hand--second::after {
+    content: "";
+    border-radius: 0.01em 0.01em 0.005em 0.005em;
+    background-color: #f00;
+    margin-bottom: -0.02em;
+    margin-left: -0.005em;
+    font-size: inherit;
+    position: absolute;
+    display: block;
+    height: var(--sizeSeconds);
+    width: 0.01em;
+    bottom: 50%;
+    left: 50%;
+}
+
+/*-----------------вращение стрелки-----------------*/
+/*.clock__hand--hour {*/
+/*    animation: clock-hand-rotate 43200s linear infinite;*/
+/*}*/
+/*.clock__hand--minute {*/
+/*    animation: clock-hand-rotate 3600s linear infinite;*/
+/*}*/
+/*.clock__hand--second {*/
+/*    animation: clock-hand-rotate 60s linear infinite;*/
+/*}*/
+/*@keyframes clock-hand-rotate {*/
+/*    from {*/
+/*        transform: rotate(0deg)*/
+/*    }*/
+/*    to {*/
+/*        transform: rotate(360deg)*/
+/*    }*/
+/*}*/
