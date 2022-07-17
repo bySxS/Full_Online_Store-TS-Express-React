@@ -29,7 +29,19 @@ class ProductsController implements IProductController {
 
   async updateById (req: Request, res: Response, next: NextFunction) {
     try {
-
+      if (!req.params.id) {
+        return next(ApiError.forbidden(
+          'Не указан id продукта',
+          'ProductsController updateById'))
+      }
+      const id = +req.params.id
+      if (isNaN(id)) {
+        return next(ApiError.forbidden(
+          'ID должен быть с цифр',
+          'ProductsController updateById'))
+      }
+      const result = await ProductsService.updateById(id, req.body, req.files as IProductFilesArray)
+      return res.status(201).json(result)
     } catch (err) {
       next(err)
     }
@@ -37,7 +49,19 @@ class ProductsController implements IProductController {
 
   async deleteById (req: Request, res: Response, next: NextFunction) {
     try {
-
+      if (!req.params.id) {
+        return next(ApiError.forbidden(
+          'Не указан id продукта',
+          'ProductsController deleteById'))
+      }
+      const id = +req.params.id
+      if (isNaN(id)) {
+        return next(ApiError.forbidden(
+          'ID должен быть с цифр',
+          'ProductsController deleteById'))
+      }
+      const result = await ProductsService.deleteById(id)
+      return res.status(201).json(result)
     } catch (err) {
       next(err)
     }
@@ -45,7 +69,19 @@ class ProductsController implements IProductController {
 
   async getById (req: Request, res: Response, next: NextFunction) {
     try {
-
+      if (!req.params.id) {
+        return next(ApiError.forbidden(
+          'Не указан id продукта',
+          'ProductsController getById'))
+      }
+      const id = +req.params.id
+      if (isNaN(id)) {
+        return next(ApiError.forbidden(
+          'ID должен быть с цифр',
+          'ProductsController getById'))
+      }
+      const result = await ProductsService.getById(id)
+      return res.status(201).json(result)
     } catch (err) {
       next(err)
     }
