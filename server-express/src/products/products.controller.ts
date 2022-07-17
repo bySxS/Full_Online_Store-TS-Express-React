@@ -2,6 +2,8 @@ import { IProductController, IProductFilesArray } from './products.interface'
 import { Request, Response, NextFunction } from 'express'
 import ProductsService from './products.service'
 import ApiError from '../apiError'
+import UsersService from '../users/users.service'
+import { IJwt } from '../users/token/token.interface'
 
 class ProductsController implements IProductController {
   private static instance = new ProductsController()
@@ -38,6 +40,18 @@ class ProductsController implements IProductController {
       if (isNaN(id)) {
         return next(ApiError.forbidden(
           'ID должен быть с цифр',
+          'ProductsController updateById'))
+      }
+      const authUser = req.user as IJwt
+      const product = await ProductsService.getById(id)
+      if (!product) {
+        return next(ApiError.forbidden(
+          `Продукта с id ${id} не существует`,
+          'ProductsController updateById'))
+      }
+      if (authUser.rolesId !== 1 && product.result.user_id !== authUser.id) {
+        return next(ApiError.forbidden(
+          'У вас нет доступа для изменения этого продукта',
           'ProductsController updateById'))
       }
       const result = await ProductsService.updateById(id, req.body, req.files as IProductFilesArray)
@@ -89,7 +103,16 @@ class ProductsController implements IProductController {
 
   async search (req: Request, res: Response, next: NextFunction) {
     try {
-
+      const title: string = String(req.query.title || '')
+      const limit = +(req.query.limit || 10)
+      const page = +(req.query.page || 1)
+      if (isNaN(limit) || isNaN(page)) {
+        return next(ApiError.forbidden(
+          'limit и page должны быть с цифр',
+          'ProductsController search'))
+      }
+      const searchProducts = await ProductsService.search(title, limit, page)
+      return res.status(200).send(searchProducts)
     } catch (err) {
       next(err)
     }
@@ -97,7 +120,15 @@ class ProductsController implements IProductController {
 
   async getAll (req: Request, res: Response, next: NextFunction) {
     try {
-
+      const limit = +(req.query.limit || 10)
+      const page = +(req.query.page || 1)
+      if (isNaN(limit) || isNaN(page)) {
+        return next(ApiError.forbidden(
+          'limit и page должны быть с цифр',
+          'ProductsController getAll'))
+      }
+      const products = await ProductsService.getAll(limit, page)
+      return res.status(200).json(products)
     } catch (err) {
       next(err)
     }
