@@ -58,7 +58,7 @@ export interface IProductController {
 export interface IProductService {
   updatePictures: (id: number, DtoFile: IProductFilesArray) => Promise<string>
   add: (Dto: IProduct, DtoFile: IProductFilesArray) => Promise<IMessage>
-  updateById: (Dto: IProduct) => Promise<IMessage>
+  updateById: (id: number, Dto: IProduct, DtoFile: IProductFilesArray) => Promise<IMessage>
   deleteById: (id: number) => Promise<IMessage>
   getById: (id: number) => Promise<IMessage>
   getAll: (limit: number, page: number) => Promise<IMessage>
