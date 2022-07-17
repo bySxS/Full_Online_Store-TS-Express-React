@@ -98,8 +98,7 @@ class UsersController implements IUserController {
       const result = await UsersService.activate(activateLink)
       const urlClient = process.env.CLIENT_URL || ''
       return res.header('Location', urlClient)
-        .status(200)
-        .json(result)
+        .status(200).json(result)
     } catch (err) {
       next(err)
     }
@@ -113,9 +112,14 @@ class UsersController implements IUserController {
           'UsersController updateUserById'))
       }
       const id = +req.params.id
+      if (isNaN(id)) {
+        return next(ApiError.forbidden(
+          'ID должен быть с цифр',
+          'UsersController updateUserById'))
+      }
       const authUser = req.user as IJwt
       const result = await UsersService.updateUserById(id, req.body, authUser.rolesId)
-      return res.status(201).json(result.message)
+      return res.status(201).json(result)
     } catch (err) {
       next(err)
     }
