@@ -118,6 +118,11 @@ class UsersController implements IUserController {
           'UsersController updateUserById'))
       }
       const authUser = req.user as IJwt
+      if (authUser.rolesId !== 1 && id !== authUser.id) {
+        return next(ApiError.forbidden(
+          'У вас нет доступа для изменения этого пользователя',
+          'UsersController updateUserById'))
+      }
       const result = await UsersService.updateUserById(id, req.body, authUser.rolesId)
       return res.status(201).json(result)
     } catch (err) {
@@ -163,13 +168,13 @@ class UsersController implements IUserController {
   async getUsers (req: Request, res: Response, next: NextFunction) {
     try {
       const limit = +(req.query.limit || 10)
-      const offset = +(req.query.offset || 1)
-      if (isNaN(limit) || isNaN(offset)) {
+      const page = +(req.query.page || 1)
+      if (isNaN(limit) || isNaN(page)) {
         return next(ApiError.forbidden(
-          'limit и offset должны быть с цифр',
+          'limit и page должны быть с цифр',
           'UsersController getUsers'))
       }
-      const listUsers = await UsersService.getUsers(limit, offset)
+      const listUsers = await UsersService.getUsers(limit, page)
       return res.status(200).json(listUsers)
     } catch (err) {
       next(err)
@@ -181,13 +186,13 @@ class UsersController implements IUserController {
       // const start = new Date().getTime();
       const nickname: string = String(req.query.nickname || '')
       const limit = +(req.query.limit || 10)
-      const offset = +(req.query.offset || 1)
-      if (isNaN(limit) || isNaN(offset)) {
+      const page = +(req.query.page || 1)
+      if (isNaN(limit) || isNaN(page)) {
         return next(ApiError.forbidden(
-          'limit и offset должны быть с цифр',
+          'limit и page должны быть с цифр',
           'UsersController searchUsers'))
       }
-      const listUsers = await UsersService.searchUsers(nickname, limit, offset)
+      const listUsers = await UsersService.searchUsers(nickname, limit, page)
       // const end = new Date().getTime();
       // logger.info(`время выполнения - ${end - start}ms`, {controller_users: 'searchUsers'})
       return res.status(200).send(listUsers)
