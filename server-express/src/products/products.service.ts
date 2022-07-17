@@ -129,7 +129,7 @@ class ProductsService implements IProductService {
     }
     if (parentId && parentId > 0) {
       const parentProduct = await ProductsModel.query()
-        .findOne({ parentId })
+        .findOne({ id: parentId })
         .select('title')
       if (parentProduct) {
         throw ApiError.badRequest(
@@ -149,6 +149,7 @@ class ProductsService implements IProductService {
         video_youtube_url: videoYoutubeUrl,
         url
       })
+      .select('*')
 
     if (!product) {
       throw ApiError.badRequest(
@@ -156,31 +157,144 @@ class ProductsService implements IProductService {
         'ProductsService add')
     }
 
+    const imgResult = await this.updatePictures(product.id, DtoFile)
+
     return {
       success: true,
       result: product,
-      message: 'Продукт успешно добавлен!'
+      message: `Продукт с id ${product.id} успешно добавлен и ${imgResult}`
     }
   }
 
-  deleteById (id: number): Promise<IMessage> {
-    return Promise.resolve(undefined)
+  async updateById (id: number, Dto: IProduct, DtoFile: IProductFilesArray): Promise<IMessage> {
+    if (id && !isNaN(id)) {
+      throw ApiError.badRequest(
+        'ID продукта не верный, для обновления изображений',
+        'ProductsService updatePictures')
+    }
+    const {
+      title, categoryId, userId,
+      description, count, availability,
+      parentId, videoYoutubeUrl, url
+    } = Dto
+    const findProduct = await ProductsModel.query()
+      .findOne({ id })
+      .select('title')
+    if (!findProduct) {
+      throw ApiError.badRequest(
+        `Продукта с id ${id} не существует`,
+        'ProductsService updateById')
+    }
+    if (parentId && parentId > 0) {
+      const parentProduct = await ProductsModel.query()
+        .findOne({ id: parentId })
+        .select('title')
+      if (parentProduct) {
+        throw ApiError.badRequest(
+          `Родительского продукта с id ${parentId} не существует`,
+          'ProductsService add')
+      }
+    }
+    const product = await ProductsModel.query()
+      .where({ id })
+      .update({
+        title,
+        category_id: categoryId,
+        user_id: userId,
+        description,
+        count,
+        availability,
+        parent_id: parentId,
+        video_youtube_url: videoYoutubeUrl,
+        url
+      })
+
+    if (!product) {
+      throw ApiError.badRequest(
+        'Продукт не обновлён',
+        'ProductsService updateById')
+    }
+
+    const imgResult = await this.updatePictures(id, DtoFile)
+
+    return {
+      success: true,
+      result: product,
+      message: `Продукт с id ${id} успешно обновлён и ${imgResult}`
+    }
   }
 
-  getAll (limit: number, page: number): Promise<IMessage> {
-    return Promise.resolve(undefined)
+  async deleteById (id: number): Promise<IMessage> {
+    if (id && !isNaN(id)) {
+      throw ApiError.badRequest(
+        'ID продукта не верный, для удаления',
+        'ProductsService deleteById')
+    }
+    const product = await ProductsModel.query()
+      .deleteById(id)
+    if (!product) {
+      throw ApiError.badRequest(
+        'Продукт не удалён',
+        'ProductsService deleteById')
+    }
+    return {
+      success: true,
+      message: `Продукт с id ${id} успешно удалён`
+    }
   }
 
-  getById (id: number): Promise<IMessage> {
-    return Promise.resolve(undefined)
+  async getById (id: number): Promise<IMessage> {
+    if (id && !isNaN(id)) {
+      throw ApiError.badRequest(
+        'ID продукта не верный, для получения',
+        'ProductsService getById')
+    }
+    const product = await ProductsModel.query()
+      .findOne({ id })
+      .select('*')
+    if (!product) {
+      throw ApiError.badRequest(
+        'Продукт не получен',
+        'ProductsService getById')
+    }
+    return {
+      success: true,
+      result: product,
+      message: `Продукт с id ${id} успешно получен`
+    }
   }
 
-  search (title: string, limit: number, page: number): Promise<IMessage> {
-    return Promise.resolve(undefined)
+  async getAll (limit: number, page: number): Promise<IMessage> {
+    const result = await ProductsModel.query()
+      .page(page - 1, limit)
+    if (!result) {
+      return {
+        success: false,
+        message: `Продуктов на странице ${page} не найдено`
+      }
+    }
+    return {
+      success: true,
+      result,
+      message: `Страница ${page} продуктов успешно загружена`
+    }
   }
 
-  updateById (Dto: IProduct): Promise<IMessage> {
-    return Promise.resolve(undefined)
+  async search (title: string, limit: number, page: number): Promise<IMessage> {
+    const result = await ProductsModel.query()
+      .page(page - 1, limit)
+      .where('title', 'like', `%${title}%`)
+    if (!result) {
+      return {
+        success: false,
+        message: `Поиск ничего не нашёл по запросу ${title}`
+      }
+    }
+    return {
+      success: true,
+      result,
+      message: 'Поиск прошёл успешно'
+    }
   }
 }
 
