@@ -207,21 +207,6 @@ class UsersService implements IUserService {
     }
   }
 
-  async getUsers (limit: number = 10, offset: number = 1): Promise<IMessage> {
-    const result = await UsersModel.query()
-      .page(offset - 1, limit)
-    if (!result) {
-      throw ApiError.badRequest(
-        `Пользователей на странице ${offset} не найдено`,
-        'UsersService getUsers')
-    }
-    return {
-      success: true,
-      result,
-      message: `Страница ${offset} пользователей успешно загружена`
-    }
-  }
-
   async deleteUserById (id: number): Promise<IMessage> {
     // const PayLoad = { id }
     // await userQueueDB.add('deleteUser', PayLoad, {
@@ -305,9 +290,24 @@ class UsersService implements IUserService {
     }
   }
 
-  async searchUsers (nickname: string = '', limit: number = 10, offset: number = 1): Promise<IMessage> {
+  async getUsers (limit: number = 10, page: number = 1): Promise<IMessage> {
+    const result = await UsersModel.query()
+      .page(page - 1, limit)
+    if (!result) {
+      throw ApiError.badRequest(
+        `Пользователей на странице ${page} не найдено`,
+        'UsersService getUsers')
+    }
+    return {
+      success: true,
+      result,
+      message: `Страница ${page} пользователей успешно загружена`
+    }
+  }
+  
+  async searchUsers (nickname: string = '', limit: number = 10, page: number = 1): Promise<IMessage> {
     const users = await UsersModel.query()
-      .page(offset - 1, limit)
+      .page(page - 1, limit)
       .where('nickname', 'like', `%${nickname}%`)
     if (!users) {
       return {
