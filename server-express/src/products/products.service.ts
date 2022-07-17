@@ -264,7 +264,7 @@ class ProductsService implements IProductService {
     }
   }
 
-  async getAll (limit: number, page: number): Promise<IMessage> {
+  async getAll (limit: number = 10, page: number = 1): Promise<IMessage> {
     const result = await ProductsModel.query()
       .page(page - 1, limit)
     if (!result) {
@@ -280,7 +280,7 @@ class ProductsService implements IProductService {
     }
   }
 
-  async search (title: string, limit: number, page: number): Promise<IMessage> {
+  async search (title: string = '', limit: number = 10, page: number = 1): Promise<IMessage> {
     const result = await ProductsModel.query()
       .page(page - 1, limit)
       .where('title', 'like', `%${title}%`)
