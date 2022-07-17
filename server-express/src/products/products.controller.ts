@@ -22,6 +22,8 @@ class ProductsController implements IProductController {
           'Нету скриншотов для добавления',
           'ProductsController add'))
       }
+      const authUser = req.user as IJwt
+      req.body.userId = authUser.id
       const result = await ProductsService.add(req.body, req.files as IProductFilesArray)
       return res.status(201).json(result)
     } catch (err) {
@@ -43,6 +45,7 @@ class ProductsController implements IProductController {
           'ProductsController updateById'))
       }
       const authUser = req.user as IJwt
+      req.body.userId = authUser.id
       const product = await ProductsService.getById(id)
       if (!product) {
         return next(ApiError.forbidden(
