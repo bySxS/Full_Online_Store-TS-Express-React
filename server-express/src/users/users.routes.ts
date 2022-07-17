@@ -14,7 +14,7 @@ try {
   router.get('/activate/:link', UsersController.activate)
   router.get('/refresh', UsersController.refresh)
   router.get('/all', UsersController.getUsers)
-  router.delete('/del_users/:id', RoleMiddleware(['admin']), UsersController.deleteUserById)
+  router.delete('/delete/:id', RoleMiddleware(['admin']), UsersController.deleteUserById)
   router.put('/update/:id', AuthMiddleware, UsersController.updateUserById)
   router.get('/search', UsersController.searchUsers)
   router.get('/:id', validateId(), UsersController.getUserById)
