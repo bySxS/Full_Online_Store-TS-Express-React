@@ -48,10 +48,10 @@ export interface IUserService {
     activate: (activateLink: string) => Promise<IMessage>
     getUserByNickname: (nickname: string) => Promise<IMessage>
     getUserById: (id: number) => Promise<IMessage>
-    getUsers: (limit: number, page: number) => Promise<IMessage>
     updateUserById: (id: number, bodyDto: IUsers,
                      rolesIdAuthUser: number) => Promise<IMessage>
     deleteUserById: (id: number) => Promise<IMessage>
+    getUsers: (limit: number, page: number) => Promise<IMessage>
     searchUsers: (nickname: string, limit: number,
                   page: number) => Promise<IMessage>
 }
