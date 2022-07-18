@@ -4,6 +4,9 @@ import path from 'path'
 import ProductsModel from './products.model'
 import ApiError from '../apiError'
 import fs from 'fs-extra'
+import { UploadedFile } from 'express-fileupload'
+import logger from '../logger'
+import ProductsViewsService from './views/productsViews.service'
 
 function div (val: number, by: number): number {
   return (val - val % by) / by
@@ -19,20 +22,50 @@ class ProductsService implements IProductService {
     return ProductsService.instance
   }
 
-  async updatePictures (id: number, DtoFile: IProductFilesArray): Promise<string> {
+  async delPicture (delPic: boolean, fileName: string, pathDir: string): Promise<string> {
+    let name = fileName || ''
+    if (delPic) {
+      if (name && name.length > 2) {
+        logger.info('удаляем ' + name)
+        await fs.remove(pathDir + '/' + name)
+        name = ''
+      }
+    }
+    return name
+  }
+
+  async savePicture (id: number, pathDir: string, file: UploadedFile, fileName: string, fileName2: string): Promise<string> {
+    let name = ''
+    if (file && file.name.length > 2) {
+      const splitName = file.name.split('.') || ['']
+      const extension = splitName[splitName.length - 1] || 'jpg'
+      name = `${id}_${fileName2}.${extension}`
+      logger.info('сохраняем ' + name)
+      await file.mv(pathDir + '/' + name)
+    } else if (fileName.split('.').length > 1) {
+      name = fileName
+    }
+    return name
+  }
+
+  async updatePictures (id: number, DtoFile: IProductFilesArray, Dto: IProduct, findProduct: ProductsModel | null): Promise<string> {
     if (!id || isNaN(id)) {
       throw ApiError.badRequest(
         'ID продукта не верный, для обновления изображений',
         'ProductsService updatePictures')
     }
     const {
-      screen, image1, image2, image3,
-      image4, image5, image6, image7,
-      image8, image9, image10
-    } = DtoFile
+      delScreen, delImage1, delImage2, delImage3,
+      delImage4, delImage5, delImage6, delImage7,
+      delImage8, delImage9, delImage10
+    } = Dto
 
     const numberDir = div(id, 100)
-    const pathDir = path.resolve(__dirname, '../..', 'static/products_pic', String(numberDir))
+    const pathDir = path.resolve(
+      __dirname, '../..', 'static/products_pic', String(numberDir)
+    )
+    fs.mkdirsSync(pathDir)
+
     let fileNameScreen = ''
     let fileNameImage1 = ''
     let fileNameImage2 = ''
@@ -44,74 +77,37 @@ class ProductsService implements IProductService {
     let fileNameImage8 = ''
     let fileNameImage9 = ''
     let fileNameImage10 = ''
-    let splitName = ['']
-    let extension = ''
-    fs.mkdirsSync(pathDir)
-    if (screen) {
-      splitName = screen.name.split('.')
-      extension = splitName[splitName.length - 1] || 'jpg'
-      fileNameScreen = `${id}_screen.${extension}`
-      await screen.mv(pathDir + '/' + fileNameScreen)
+
+    if (findProduct) {
+      fileNameScreen = await this.delPicture(Boolean(delScreen), findProduct.screen, pathDir)
+      fileNameImage1 = await this.delPicture(Boolean(delImage1), findProduct.image1, pathDir)
+      fileNameImage2 = await this.delPicture(Boolean(delImage2), findProduct.image2, pathDir)
+      fileNameImage3 = await this.delPicture(Boolean(delImage3), findProduct.image3, pathDir)
+      fileNameImage4 = await this.delPicture(Boolean(delImage4), findProduct.image4, pathDir)
+      fileNameImage5 = await this.delPicture(Boolean(delImage5), findProduct.image5, pathDir)
+      fileNameImage6 = await this.delPicture(Boolean(delImage6), findProduct.image6, pathDir)
+      fileNameImage7 = await this.delPicture(Boolean(delImage7), findProduct.image7, pathDir)
+      fileNameImage8 = await this.delPicture(Boolean(delImage8), findProduct.image8, pathDir)
+      fileNameImage9 = await this.delPicture(Boolean(delImage9), findProduct.image9, pathDir)
+      fileNameImage10 = await this.delPicture(Boolean(delImage10), findProduct.image10, pathDir)
     }
-    if (image1) {
-      splitName = image1.name.split('.')
-      extension = splitName[splitName.length - 1] || 'jpg'
-      fileNameImage1 = `${id}_image1.${extension}`
-      await image1.mv(pathDir + '/' + fileNameImage1)
-    }
-    if (image2) {
-      splitName = image2.name.split('.')
-      extension = splitName[splitName.length - 1] || 'jpg'
-      fileNameImage2 = `${id}_image2.${extension}`
-      await image2.mv(pathDir + '/' + fileNameImage2)
-    }
-    if (image3) {
-      splitName = image3.name.split('.')
-      extension = splitName[splitName.length - 1] || 'jpg'
-      fileNameImage3 = `${id}_image3.${extension}`
-      await image3.mv(pathDir + '/' + fileNameImage3)
-    }
-    if (image4) {
-      splitName = image4.name.split('.')
-      extension = splitName[splitName.length - 1] || 'jpg'
-      fileNameImage4 = `${id}_image4.${extension}`
-      await image4.mv(pathDir + '/' + fileNameImage4)
-    }
-    if (image5) {
-      splitName = image5.name.split('.')
-      extension = splitName[splitName.length - 1] || 'jpg'
-      fileNameImage5 = `${id}_image5.${extension}`
-      await image5.mv(pathDir + '/' + fileNameImage5)
-    }
-    if (image6) {
-      splitName = image6.name.split('.')
-      extension = splitName[splitName.length - 1] || 'jpg'
-      fileNameImage6 = `${id}_image6.${extension}`
-      await image6.mv(pathDir + '/' + fileNameImage6)
-    }
-    if (image7) {
-      splitName = image7.name.split('.')
-      extension = splitName[splitName.length - 1] || 'jpg'
-      fileNameImage7 = `${id}_image7.${extension}`
-      await image7.mv(pathDir + '/' + fileNameImage7)
-    }
-    if (image8) {
-      splitName = image8.name.split('.')
-      extension = splitName[splitName.length - 1] || 'jpg'
-      fileNameImage8 = `${id}_image8.${extension}`
-      await image8.mv(pathDir + '/' + fileNameImage8)
-    }
-    if (image9) {
-      splitName = image9.name.split('.')
-      extension = splitName[splitName.length - 1] || 'jpg'
-      fileNameImage9 = `${id}_image9.${extension}`
-      await image9.mv(pathDir + '/' + fileNameImage9)
-    }
-    if (image10) {
-      splitName = image10.name.split('.')
-      extension = splitName[splitName.length - 1] || 'jpg'
-      fileNameImage10 = `${id}_image10.${extension}`
-      await image10.mv(pathDir + '/' + fileNameImage10)
+    if (DtoFile) {
+      const {
+        screen, image1, image2, image3,
+        image4, image5, image6, image7,
+        image8, image9, image10
+      } = DtoFile
+      fileNameScreen = await this.savePicture(id, pathDir, screen, fileNameScreen, 'screen')
+      fileNameImage1 = await this.savePicture(id, pathDir, image1, fileNameImage1, 'image1')
+      fileNameImage2 = await this.savePicture(id, pathDir, image2, fileNameImage2, 'image2')
+      fileNameImage3 = await this.savePicture(id, pathDir, image3, fileNameImage3, 'image3')
+      fileNameImage4 = await this.savePicture(id, pathDir, image4, fileNameImage4, 'image4')
+      fileNameImage5 = await this.savePicture(id, pathDir, image5, fileNameImage5, 'image5')
+      fileNameImage6 = await this.savePicture(id, pathDir, image6, fileNameImage6, 'image6')
+      fileNameImage7 = await this.savePicture(id, pathDir, image7, fileNameImage7, 'image7')
+      fileNameImage8 = await this.savePicture(id, pathDir, image8, fileNameImage8, 'image8')
+      fileNameImage9 = await this.savePicture(id, pathDir, image9, fileNameImage9, 'image9')
+      fileNameImage10 = await this.savePicture(id, pathDir, image10, fileNameImage10, 'image10')
     }
     const result = await ProductsModel.query()
       .where({ id })
@@ -180,13 +176,14 @@ class ProductsService implements IProductService {
         'Продукт не добавлен',
         'ProductsService add')
     }
-    console.log(product)
-    const imgResult = await this.updatePictures(product.id, DtoFile)
+
+    const imgResult = await this.updatePictures(product.id, DtoFile, Dto, null)
+    const views = await ProductsViewsService.createViewsProduct(product.id)
 
     return {
       success: true,
       result: product,
-      message: `Продукт с id ${product.id} успешно добавлен и ${imgResult}`
+      message: `Продукт с id ${product.id} успешно добавлен; ${imgResult}; ${views.message}`
     }
   }
 
@@ -198,7 +195,9 @@ class ProductsService implements IProductService {
     } = Dto
     const findProduct = await ProductsModel.query()
       .findOne({ id })
-      .select('title')
+      .select(['title', 'screen', 'image1', 'image2',
+        'image3', 'image4', 'image5', 'image6', 'image7',
+        'image8', 'image9', 'image10'])
     if (!findProduct) {
       throw ApiError.badRequest(
         `Продукта с id ${id} не существует`,
@@ -234,7 +233,7 @@ class ProductsService implements IProductService {
         'ProductsService updateById')
     }
 
-    const imgResult = await this.updatePictures(id, DtoFile)
+    const imgResult = await this.updatePictures(id, DtoFile, Dto, findProduct)
 
     return {
       success: true,
@@ -259,17 +258,19 @@ class ProductsService implements IProductService {
 
   async getById (id: number): Promise<IMessage> {
     const product = await ProductsModel.query()
-      .findOne({ id })
-      .select('*')
+      .findOne('products.id', '=', id)
+      .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
+      .select('products.*', 'products_views.views as view')
     if (!product) {
       throw ApiError.badRequest(
         'Продукт не получен',
         'ProductsService getById')
     }
+    const viewsInc = await ProductsViewsService.incrementViewById(id)
     return {
       success: true,
       result: product,
-      message: `Продукт с id ${id} успешно получен`
+      message: `Продукт с id ${id} успешно получен; ${viewsInc.message}`
     }
   }
 
