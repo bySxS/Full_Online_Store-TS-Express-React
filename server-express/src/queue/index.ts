@@ -1,6 +1,6 @@
 import logger from '../logger'
 import Queue from 'bull'
-import { UsersModel } from '../users/users.model'
+import UsersModel from '../users/users.model'
 import { IError } from '../interface'
 
 const REDIS_HOST: string = process.env.REDIS_QUEUE_HOST || 'localhost'
@@ -21,7 +21,7 @@ userQueueDB.process('deleteUser', async (job, done) => {
     logger.info(`Пользователь ${job.data.id} успешно удалён`)
   } catch (e) {
     const err = e as IError
-    logger.error(err.message, { userQueueDB: job.name })
+    logger.error(err.toString(), { userQueueDB: job.name })
   }
 
   // job.progress(100)
