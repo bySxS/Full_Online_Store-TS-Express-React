@@ -54,7 +54,7 @@ export default class ProductsModel extends Model {
         description: { type: 'string', minLength: 10, maxLength: 3000 },
         count: { type: 'integer' },
         availability: { type: 'boolean' },
-        screen: { type: 'string', minLength: 5, maxLength: 255 },
+        screen: { type: 'string', maxLength: 255 },
         image1: { type: 'string', maxLength: 255 },
         image2: { type: 'string', maxLength: 255 },
         image3: { type: 'string', maxLength: 255 },
