@@ -31,7 +31,7 @@ export default class ProductsViewsModel extends Model {
   static get relationMappings () {
     return {
       product: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: Products,
         join: {
           from: this.tableName + '.product_id',
