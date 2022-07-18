@@ -20,7 +20,7 @@ class ProductsService implements IProductService {
   }
 
   async updatePictures (id: number, DtoFile: IProductFilesArray): Promise<string> {
-    if (id && !isNaN(id)) {
+    if (!id || isNaN(id)) {
       throw ApiError.badRequest(
         'ID продукта не верный, для обновления изображений',
         'ProductsService updatePictures')
@@ -44,50 +44,73 @@ class ProductsService implements IProductService {
     let fileNameImage8 = ''
     let fileNameImage9 = ''
     let fileNameImage10 = ''
-
+    let splitName = ['']
+    let extension = ''
     fs.mkdirsSync(pathDir)
     if (screen) {
-      fileNameScreen = `${id}_screen.${screen.mimetype}`
+      splitName = screen.name.split('.')
+      extension = splitName[splitName.length - 1] || 'jpg'
+      fileNameScreen = `${id}_screen.${extension}`
       await screen.mv(pathDir + '/' + fileNameScreen)
     }
     if (image1) {
-      fileNameImage1 = `${id}_image1.${screen.mimetype}`
+      splitName = image1.name.split('.')
+      extension = splitName[splitName.length - 1] || 'jpg'
+      fileNameImage1 = `${id}_image1.${extension}`
       await image1.mv(pathDir + '/' + fileNameImage1)
     }
     if (image2) {
-      fileNameImage2 = `${id}_image2.${screen.mimetype}`
+      splitName = image2.name.split('.')
+      extension = splitName[splitName.length - 1] || 'jpg'
+      fileNameImage2 = `${id}_image2.${extension}`
       await image2.mv(pathDir + '/' + fileNameImage2)
     }
     if (image3) {
-      fileNameImage3 = `${id}_image3.${screen.mimetype}`
+      splitName = image3.name.split('.')
+      extension = splitName[splitName.length - 1] || 'jpg'
+      fileNameImage3 = `${id}_image3.${extension}`
       await image3.mv(pathDir + '/' + fileNameImage3)
     }
     if (image4) {
-      fileNameImage4 = `${id}_image4.${screen.mimetype}`
+      splitName = image4.name.split('.')
+      extension = splitName[splitName.length - 1] || 'jpg'
+      fileNameImage4 = `${id}_image4.${extension}`
       await image4.mv(pathDir + '/' + fileNameImage4)
     }
     if (image5) {
-      fileNameImage5 = `${id}_image5.${screen.mimetype}`
+      splitName = image5.name.split('.')
+      extension = splitName[splitName.length - 1] || 'jpg'
+      fileNameImage5 = `${id}_image5.${extension}`
       await image5.mv(pathDir + '/' + fileNameImage5)
     }
     if (image6) {
-      fileNameImage6 = `${id}_image6.${screen.mimetype}`
+      splitName = image6.name.split('.')
+      extension = splitName[splitName.length - 1] || 'jpg'
+      fileNameImage6 = `${id}_image6.${extension}`
       await image6.mv(pathDir + '/' + fileNameImage6)
     }
     if (image7) {
-      fileNameImage7 = `${id}_image7.${screen.mimetype}`
+      splitName = image7.name.split('.')
+      extension = splitName[splitName.length - 1] || 'jpg'
+      fileNameImage7 = `${id}_image7.${extension}`
       await image7.mv(pathDir + '/' + fileNameImage7)
     }
     if (image8) {
-      fileNameImage8 = `${id}_image8.${screen.mimetype}`
+      splitName = image8.name.split('.')
+      extension = splitName[splitName.length - 1] || 'jpg'
+      fileNameImage8 = `${id}_image8.${extension}`
       await image8.mv(pathDir + '/' + fileNameImage8)
     }
     if (image9) {
-      fileNameImage9 = `${id}_image9.${screen.mimetype}`
+      splitName = image9.name.split('.')
+      extension = splitName[splitName.length - 1] || 'jpg'
+      fileNameImage9 = `${id}_image9.${extension}`
       await image9.mv(pathDir + '/' + fileNameImage9)
     }
     if (image10) {
-      fileNameImage10 = `${id}_image10.${screen.mimetype}`
+      splitName = image10.name.split('.')
+      extension = splitName[splitName.length - 1] || 'jpg'
+      fileNameImage10 = `${id}_image10.${extension}`
       await image10.mv(pathDir + '/' + fileNameImage10)
     }
     const result = await ProductsModel.query()
@@ -140,14 +163,15 @@ class ProductsService implements IProductService {
     const product = await ProductsModel.query()
       .insert({
         title,
-        category_id: categoryId,
-        user_id: userId,
+        category_id: +categoryId,
+        user_id: +userId,
         description,
-        count,
-        availability,
+        count: +count,
+        availability: Boolean(availability),
         parent_id: parentId,
         video_youtube_url: videoYoutubeUrl,
-        url
+        url,
+        screen: ''
       })
       .select('*')
 
@@ -156,7 +180,7 @@ class ProductsService implements IProductService {
         'Продукт не добавлен',
         'ProductsService add')
     }
-
+    console.log(product)
     const imgResult = await this.updatePictures(product.id, DtoFile)
 
     return {
@@ -167,11 +191,6 @@ class ProductsService implements IProductService {
   }
 
   async updateById (id: number, Dto: IProduct, DtoFile: IProductFilesArray): Promise<IMessage> {
-    if (id && !isNaN(id)) {
-      throw ApiError.badRequest(
-        'ID продукта не верный, для обновления изображений',
-        'ProductsService updatePictures')
-    }
     const {
       title, categoryId, userId,
       description, count, availability,
@@ -199,11 +218,11 @@ class ProductsService implements IProductService {
       .where({ id })
       .update({
         title,
-        category_id: categoryId,
-        user_id: userId,
+        category_id: +categoryId,
+        user_id: +userId,
         description,
-        count,
-        availability,
+        count: +count,
+        availability: Boolean(availability),
         parent_id: parentId,
         video_youtube_url: videoYoutubeUrl,
         url
@@ -225,11 +244,6 @@ class ProductsService implements IProductService {
   }
 
   async deleteById (id: number): Promise<IMessage> {
-    if (id && !isNaN(id)) {
-      throw ApiError.badRequest(
-        'ID продукта не верный, для удаления',
-        'ProductsService deleteById')
-    }
     const product = await ProductsModel.query()
       .deleteById(id)
     if (!product) {
@@ -244,11 +258,6 @@ class ProductsService implements IProductService {
   }
 
   async getById (id: number): Promise<IMessage> {
-    if (id && !isNaN(id)) {
-      throw ApiError.badRequest(
-        'ID продукта не верный, для получения',
-        'ProductsService getById')
-    }
     const product = await ProductsModel.query()
       .findOne({ id })
       .select('*')
