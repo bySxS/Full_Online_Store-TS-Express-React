@@ -192,9 +192,9 @@ class UsersService implements IUserService {
 
   async getUserByNickname (nickname: string): Promise<IMessage> {
     const result = await UsersModel.query()
-      .findOne({ nickname })
+      .findOne('users.nickname', '=', nickname)
       .innerJoin('roles', 'users.roles_id', '=', 'roles.id')
-      .select('roles.name_eng as roles_name', 'users.*')
+      .select('users.*', 'roles.name_eng as roles_name')
     if (!result) {
       throw ApiError.badRequest(
         `Пользователь с ником ${nickname} не найден`,
@@ -274,7 +274,7 @@ class UsersService implements IUserService {
     const user = await UsersModel.query()
       .findOne('users.id', '=', id)
       .innerJoin('roles', 'users.roles_id', '=', 'roles.id')
-      .select('roles.name_eng as roles_name', 'users.*')
+      .select('users.*', 'roles.name_eng as roles_name')
     if (!user) {
       throw ApiError.badRequest(
         `Пользователя с ID ${id} не найдено!`,
@@ -304,7 +304,7 @@ class UsersService implements IUserService {
       message: `Страница ${page} пользователей успешно загружена`
     }
   }
-  
+
   async searchUsers (nickname: string = '', limit: number = 10, page: number = 1): Promise<IMessage> {
     const users = await UsersModel.query()
       .page(page - 1, limit)
