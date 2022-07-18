@@ -5,6 +5,7 @@ import Users from '../users/users.model'
 import Category from './category/category.model'
 import Review from '../review/review.model'
 import ProductsPrice from './prices/productsPrice.model'
+import ProductsViews from './views/productsViews.model'
 Model.knex(dbKnex)
 
 // NewsModel
@@ -37,6 +38,7 @@ export default class ProductsModel extends Model {
   category?: Category
   review?: Review
   products_price?: ProductsPrice
+  products_views?: ProductsViews
 
   static get tableName () {
     return 'products'
@@ -101,19 +103,27 @@ export default class ProductsModel extends Model {
         }
       },
       parent: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: this,
         join: {
           from: this.tableName + '.parent_id',
           to: this.tableName + '.id'
         }
       },
-      product_price: {
+      price: {
         relation: Model.HasManyRelation,
         modelClass: ProductsPrice,
         join: {
           from: this.tableName + '.id',
           to: ProductsPrice.tableName + '.product_id'
+        }
+      },
+      view: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: ProductsViews,
+        join: {
+          from: this.tableName + '.id',
+          to: ProductsViews.tableName + '.product_id'
         }
       }
     }
