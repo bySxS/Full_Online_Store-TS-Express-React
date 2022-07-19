@@ -272,6 +272,7 @@ class ProductsService implements IProductService {
       .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
       .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
       .innerJoin('prices_types', 'products_price.price_type_id', '=', 'prices_types.id')
+      .innerJoin('products', 'products.parent_id', '=', 'products.id')
       .select('products.*',
         'products_views.views as view',
         'products_price.price as price',
