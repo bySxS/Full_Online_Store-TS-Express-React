@@ -13,7 +13,7 @@ try {
   router.put('/update/:id', RoleMiddleware(['admin']), ProductsController.updateById)
   router.get('/search', ProductsController.search)
   router.get('/all', ProductsController.getAll)
-  router.get('/:id', validateId(), ProductsController.getById)
+  router.get('/:id', validateId, ProductsController.getById)
 } catch (e) {
   throw ApiError.internalRequest('Ошибка в Products routers', 'ProductsRouter')
 }

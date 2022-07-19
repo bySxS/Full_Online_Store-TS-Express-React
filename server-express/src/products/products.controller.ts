@@ -47,11 +47,6 @@ class ProductsController implements IProductController {
       const authUser = req.user as IJwt
       req.body.userId = authUser.id
       const product = await ProductsService.getById(id)
-      if (!product) {
-        return next(ApiError.forbidden(
-          `Продукта с id ${id} не существует`,
-          'ProductsController updateById'))
-      }
       if (authUser.rolesId !== 1 && product.result.user_id !== authUser.id) {
         return next(ApiError.forbidden(
           'У вас нет доступа для изменения этого продукта',

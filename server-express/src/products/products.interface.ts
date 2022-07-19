@@ -10,6 +10,8 @@ export interface IProduct {
   userId: number,
   description: string
   count: number
+  price: number
+  priceTypeId: number
   availability: boolean
   screen: string
   image1?: string
@@ -74,7 +76,7 @@ export interface IProductService {
   add: (Dto: IProduct, DtoFile: IProductFilesArray) => Promise<IMessage>
   updateById: (id: number, Dto: IProduct, DtoFile: IProductFilesArray) => Promise<IMessage>
   deleteById: (id: number) => Promise<IMessage>
-  getById: (id: number) => Promise<IMessage>
+  getById: (id: number, incView: boolean) => Promise<IMessage>
   getAll: (limit: number, page: number) => Promise<IMessage>
   search: (title: string, limit: number,
                 page: number) => Promise<IMessage>

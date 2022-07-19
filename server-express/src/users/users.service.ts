@@ -227,10 +227,8 @@ class UsersService implements IUserService {
 
   async updateUserById (id: number, bodyDto: IUsers, rolesIdAuthUser: number): Promise<IMessage> {
     const {
-      nickname, fullName,
-      email, password,
-      city, address,
-      deliveryAddress, phoneNumber
+      nickname, fullName, email, password, city, address, deliveryAddress,
+      phoneNumber
     } = bodyDto
     let rolesId
     if (rolesIdAuthUser === 1) { // если авторизированный админ то можно позволить сменить группу

@@ -17,7 +17,7 @@ try {
   router.delete('/delete/:id', RoleMiddleware(['admin']), UsersController.deleteUserById)
   router.put('/update/:id', AuthMiddleware, UsersController.updateUserById)
   router.get('/search', UsersController.searchUsers)
-  router.get('/:id', validateId(), UsersController.getUserById)
+  router.get('/:id', validateId, UsersController.getUserById)
 } catch (e) {
   throw ApiError.internalRequest('Ошибка в Users routers', 'UsersRouter')
 }

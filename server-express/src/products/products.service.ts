@@ -7,6 +7,7 @@ import fs from 'fs-extra'
 import { UploadedFile } from 'express-fileupload'
 import logger from '../logger'
 import ProductsViewsService from './views/productsViews.service'
+import ProductsPriceService from './prices/productsPrice.service'
 
 function div (val: number, by: number): number {
   return (val - val % by) / by
@@ -134,7 +135,7 @@ class ProductsService implements IProductService {
 
   async add (Dto: IProduct, DtoFile: IProductFilesArray): Promise<IMessage> {
     const {
-      title, categoryId, userId,
+      title, price, categoryId, userId,
       description, count, availability,
       parentId, videoYoutubeUrl, url
     } = Dto
@@ -179,25 +180,25 @@ class ProductsService implements IProductService {
 
     const imgResult = await this.updatePictures(product.id, DtoFile, Dto, null)
     const views = await ProductsViewsService.createViewsProduct(product.id)
-
+    const priceCommon = await ProductsPriceService.createProductPrice({
+      priceTypeId: 1,
+      productId: product.id,
+      price
+    })
     return {
       success: true,
       result: product,
-      message: `Продукт с id ${product.id} успешно добавлен; ${imgResult}; ${views.message}`
+      message: `Продукт с id ${product.id} успешно добавлен; ${imgResult}; ${views.message}; ${priceCommon.message}`
     }
   }
 
   async updateById (id: number, Dto: IProduct, DtoFile: IProductFilesArray): Promise<IMessage> {
     const {
-      title, categoryId, userId,
+      title, price, priceTypeId, categoryId, userId,
       description, count, availability,
       parentId, videoYoutubeUrl, url
     } = Dto
-    const findProduct = await ProductsModel.query()
-      .findOne({ id })
-      .select(['title', 'screen', 'image1', 'image2',
-        'image3', 'image4', 'image5', 'image6', 'image7',
-        'image8', 'image9', 'image10'])
+    const findProduct = await this.getById(id)
     if (!findProduct) {
       throw ApiError.badRequest(
         `Продукта с id ${id} не существует`,
@@ -233,12 +234,18 @@ class ProductsService implements IProductService {
         'ProductsService updateById')
     }
 
-    const imgResult = await this.updatePictures(id, DtoFile, Dto, findProduct)
+    const imgResult = await this.updatePictures(id, DtoFile, Dto, findProduct.result)
+    const prices = await ProductsPriceService.updateProductPrice({
+      id: findProduct.result.priceId,
+      productId: id,
+      priceTypeId,
+      price
+    })
 
     return {
       success: true,
       result: product,
-      message: `Продукт с id ${id} успешно обновлён и ${imgResult}`
+      message: `Продукт с id ${id} успешно обновлён; ${imgResult}; ${prices.message}`
     }
   }
 
@@ -256,21 +263,30 @@ class ProductsService implements IProductService {
     }
   }
 
-  async getById (id: number): Promise<IMessage> {
+  async getById (id: number, incView: boolean = true): Promise<IMessage> {
+    if (incView) {
+      await ProductsViewsService.incrementViewById(id)
+    }
     const product = await ProductsModel.query()
       .findOne('products.id', '=', id)
       .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
-      .select('products.*', 'products_views.views as view')
+      .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
+      .innerJoin('prices_types', 'products_price.price_type_id', '=', 'prices_types.id')
+      .select('products.*',
+        'products_views.views as view',
+        'products_price.price as price',
+        'products_price.currency as priceCurrency',
+        'products_price.id as priceId',
+        'prices_types.name as priceType')
     if (!product) {
       throw ApiError.badRequest(
-        'Продукт не получен',
+        `Продукта с id ${id} не существует`,
         'ProductsService getById')
     }
-    const viewsInc = await ProductsViewsService.incrementViewById(id)
     return {
       success: true,
       result: product,
-      message: `Продукт с id ${id} успешно получен; ${viewsInc.message}`
+      message: `Продукт с id ${id} успешно получен`
     }
   }
 

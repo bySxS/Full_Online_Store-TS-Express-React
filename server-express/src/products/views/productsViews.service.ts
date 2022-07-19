@@ -1,7 +1,7 @@
 import { IProductViewService } from './productsViews.interface'
-import { IMessage } from '../../interface'
+import { IMessage } from 'interface'
 import ProductsViewsModel from './productsViews.model'
-import ApiError from '../../apiError'
+import ApiError from 'apiError'
 
 class ProductsViewService implements IProductViewService {
   private static instance = new ProductsViewService()
@@ -30,6 +30,23 @@ class ProductsViewService implements IProductViewService {
     }
   }
 
+  async decrementViewById (id: number, count: number = 1): Promise<IMessage> {
+    const result = await ProductsViewsModel.query()
+      .where('product_id', '=', id)
+      .decrement('views', count)
+      .select('views')
+    if (!result) {
+      throw ApiError.badRequest(
+        `Ошибка уменьшения просмотров для продукта с id ${id}`,
+        'ProductsViewService incrementViewById')
+    }
+    return {
+      success: true,
+      result,
+      message: `Просмотры для продукта с id ${id} уменьшены`
+    }
+  }
+
   async createViewsProduct (id: number): Promise<IMessage> {
     const result = await ProductsViewsModel.query()
       .insert({
@@ -38,13 +55,13 @@ class ProductsViewService implements IProductViewService {
       .select('views')
     if (!result) {
       throw ApiError.badRequest(
-        `Таблица просмотров для продукта с id ${id} не создана`,
+        `Поле просмотров для продукта с id ${id} не создана`,
         'ProductsViewService createViewsProduct')
     }
     return {
       success: true,
       result,
-      message: `Таблица просмотров для продукта с id ${id} инициализирована`
+      message: `Поле просмотров для продукта с id ${id} инициализировано`
     }
   }
 }
