@@ -10,5 +10,4 @@ router.use('/user', UsersRoutes)
 router.use('/product/prices', ProductsPriceRoutes)
 router.use('/product', ProductsRoutes)
 
-
 export default router

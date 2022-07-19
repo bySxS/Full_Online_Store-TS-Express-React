@@ -1,5 +1,5 @@
 import { Model } from 'objection'
-import { dbKnex } from '../../db'
+import { dbKnex } from '@/db'
 
 import ProductsPrice from './productsPrice.model'
 Model.knex(dbKnex)

@@ -2,7 +2,6 @@ import { IProductController, IProductFilesArray } from './products.interface'
 import { Request, Response, NextFunction } from 'express'
 import ProductsService from './products.service'
 import ApiError from '../apiError'
-import UsersService from '../users/users.service'
 import { IJwt } from '../users/token/token.interface'
 
 class ProductsController implements IProductController {

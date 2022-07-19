@@ -1,7 +1,7 @@
 import { IProductViewService } from './productsViews.interface'
-import { IMessage } from 'interface'
+import { IMessage } from '@/interface'
 import ProductsViewsModel from './productsViews.model'
-import ApiError from 'apiError'
+import ApiError from '@/apiError'
 
 class ProductsViewService implements IProductViewService {
   private static instance = new ProductsViewService()

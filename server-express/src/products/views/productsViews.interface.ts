@@ -1,4 +1,4 @@
-import { IMessage } from 'interface'
+import { IMessage } from '@/interface'
 
 export interface IProductViewService {
   createViewsProduct: (id: number) => Promise<IMessage>

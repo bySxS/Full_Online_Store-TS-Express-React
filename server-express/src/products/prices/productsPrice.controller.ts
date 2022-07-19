@@ -1,5 +1,5 @@
 import { IProductPriceController } from './productsPrice.interface'
-import ApiError from 'apiError'
+import ApiError from '@/apiError'
 import { NextFunction, Request, Response } from 'express'
 import ProductsPriceService from './productsPrice.service'
 

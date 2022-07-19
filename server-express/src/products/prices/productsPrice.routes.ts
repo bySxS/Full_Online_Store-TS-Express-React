@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { RoleMiddleware } from 'middleware/role'
+import { RoleMiddleware } from '@/middleware/role'
 // import { AuthMiddleware } from 'middleware/auth'
-import ApiError from 'apiError'
-import { validateId } from 'users/users.validator'
+import ApiError from '@/apiError'
+import { validateId } from '@/users/users.validator'
 import ProductsPriceController from '../prices/productsPrice.controller'
 
 const router = Router()

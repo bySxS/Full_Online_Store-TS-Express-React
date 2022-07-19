@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { RoleMiddleware } from '../../middleware/role'
+import { RoleMiddleware } from '@/middleware/role'
 import RolesController from './roles.controller'
-import ApiError from '../../apiError'
+import ApiError from '@/apiError'
 
 const router = Router()
 

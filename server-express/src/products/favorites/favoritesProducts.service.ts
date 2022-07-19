@@ -1,17 +1,16 @@
 import { IMessage } from '@/interface'
-import ProductsPriceModel from './productsPrice.model'
-import PricesTypesModel from './pricesTypes.model'
+import FavoritesProductsModel from './favoritesProducts.model'
 import ApiError from '@/apiError'
-import { IProductPrice, IProductPriceService } from './productsPrice.interface'
+import { IFavoritesProduct, IFavoritesProductService } from '@/products/favorites/favoritesProducts.interface'
 
-class ProductsPriceService implements IProductPriceService {
-  private static instance = new ProductsPriceService()
+class FavoritesProductsService implements IFavoritesProductService {
+  private static instance = new FavoritesProductsService()
 
-  static getInstance (): ProductsPriceService {
-    if (!ProductsPriceService.instance) {
-      ProductsPriceService.instance = new ProductsPriceService()
+  static getInstance (): FavoritesProductsService {
+    if (!FavoritesProductsService.instance) {
+      FavoritesProductsService.instance = new FavoritesProductsService()
     }
-    return ProductsPriceService.instance
+    return FavoritesProductsService.instance
   }
 
   async addTypePrice (name: string): Promise<IMessage> {
@@ -31,18 +30,7 @@ class ProductsPriceService implements IProductPriceService {
   }
 
   async delTypePrice (id: number): Promise<IMessage> {
-    const result = await PricesTypesModel.query()
-      .deleteById(id)
-    if (!result) {
-      throw ApiError.badRequest(
-        'Тип цены не удалось удалить',
-        'ProductsPriceService delTypePrice')
-    }
-    return {
-      success: true,
-      result,
-      message: `Тип цены с id ${result} успешно добавлен`
-    }
+  
   }
 
   async updateTypePrice (id: number, name: string): Promise<IMessage> {
@@ -114,27 +102,47 @@ class ProductsPriceService implements IProductPriceService {
     }
   }
 
-  async createProductPrice (Dto: IProductPrice): Promise<IMessage> {
-    const { priceTypeId, productId, price, currency } = Dto
-    const result = await ProductsPriceModel.query()
+  async add (Dto: IFavoritesProduct): Promise<IMessage> {
+    const { productId, userId } = Dto
+    const result = await FavoritesProductsModel.query()
       .insert({
-        price_type_id: priceTypeId,
-        product_id: productId,
-        price,
-        currency
+        user_id: userId,
+        product_id: productId
       })
-      .select('price', 'currency', 'price_type_id')
     if (!result) {
       throw ApiError.badRequest(
-        `Поле цены для продукта с id ${productId} не создана`,
-        'ProductsPriceService createProductPrice')
+        `Произошла ошибка добавления в избранное продукта с id${productId}`,
+        'FavoritesProductsService add')
     }
     return {
       success: true,
       result,
-      message: `Поле цены для продукта с id ${productId} инициализировано`
+      message: `Продукт с id${productId} успешно добавлен в избранное`
     }
+  }
+
+  async del (id: number): Promise<IMessage> {
+    const result = await FavoritesProductsModel.query()
+      .deleteById(id)
+    if (!result) {
+      throw ApiError.badRequest(
+        'Тип цены не удалось удалить',
+        'ProductsPriceService delTypePrice')
+    }
+    return {
+      success: true,
+      result,
+      message: `Тип цены с id ${result} успешно добавлен`
+    }
+  }
+
+  async getAll (limit: number, page: number): Promise<IMessage> {
+
+  }
+
+  async getById (id: number): Promise<IMessage> {
+
   }
 }
 
-export default ProductsPriceService.getInstance()
+export default FavoritesProductsService.getInstance()
