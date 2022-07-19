@@ -13,97 +13,14 @@ class FavoritesProductsService implements IFavoritesProductService {
     return FavoritesProductsService.instance
   }
 
-  async addTypePrice (name: string): Promise<IMessage> {
-    const result = await PricesTypesModel.query()
-      .insert({ name })
-      .select('name')
-    if (!result) {
-      throw ApiError.badRequest(
-        `Тип цены ${name} не добавлен, возможно уже существует`,
-        'ProductsPriceService createProductPrice')
-    }
-    return {
-      success: true,
-      result,
-      message: `Тип цены ${name} успешно добавлен`
-    }
-  }
-
-  async delTypePrice (id: number): Promise<IMessage> {
-  
-  }
-
-  async updateTypePrice (id: number, name: string): Promise<IMessage> {
-    const result = await PricesTypesModel.query()
-      .where({ id })
-      .update({ name })
-    if (!result) {
-      throw ApiError.badRequest(
-        'Тип цены не удалось изменить',
-        'ProductsPriceService changeTypePrice')
-    }
-    return {
-      success: true,
-      result,
-      message: `Тип цены с id ${result} успешно изменен`
-    }
-  }
-
-  async getTypePriceById (id: number): Promise<IMessage> {
-    const result = await PricesTypesModel.query()
-      .findById(id)
-      .select('*')
-    if (!result) {
-      throw ApiError.badRequest(
-        `Типа цены с id ${id} не существует`,
-        'ProductsPriceService getTypePriceById')
-    }
-    return {
-      success: true,
-      result,
-      message: `Тип цены с id ${id} получен`
-    }
-  }
-
-  async getTypesPrices (limit: number = 20, page: number = 1): Promise<IMessage> {
-    const result = await PricesTypesModel.query()
-      .page(page - 1, limit)
-    if (!result) {
-      throw ApiError.badRequest(
-        `Тип цен на странице ${page} не найдено`,
-        'ProductsPriceService getTypesPrices')
-    }
-    return {
-      success: true,
-      result,
-      message: `Страница ${page} тип цен успешно загружена`
-    }
-  }
-
-  async updateProductPrice (Dto: IProductPrice): Promise<IMessage> {
-    const { id, priceTypeId, productId, price, currency } = Dto
-    const result = await ProductsPriceModel.query()
-      .where({ id })
-      .update({
-        price_type_id: priceTypeId,
-        product_id: productId,
-        price,
-        currency
-      })
-    if (!result) {
-      throw ApiError.badRequest(
-        `Ошибка изменения цены для продукта с id ${productId}`,
-        'ProductsPriceService changeProductPrice')
-    }
-    return {
-      success: true,
-      result,
-      message: `Цена для продукта с id ${productId} изменена`
-    }
-  }
-
   async add (Dto: IFavoritesProduct): Promise<IMessage> {
     const { productId, userId } = Dto
+    if (!productId || !userId) {
+      throw ApiError.badRequest(
+        'Произошла ошибка добавления в избранное продукта,' +
+        'не указан productId или userId',
+        'FavoritesProductsService add')
+    }
     const result = await FavoritesProductsModel.query()
       .insert({
         user_id: userId,
@@ -117,7 +34,7 @@ class FavoritesProductsService implements IFavoritesProductService {
     return {
       success: true,
       result,
-      message: `Продукт с id${productId} успешно добавлен в избранное`
+      message: `Продукт с id${productId} добавлен в избранное`
     }
   }
 
@@ -126,22 +43,58 @@ class FavoritesProductsService implements IFavoritesProductService {
       .deleteById(id)
     if (!result) {
       throw ApiError.badRequest(
-        'Тип цены не удалось удалить',
-        'ProductsPriceService delTypePrice')
+        `Произошла ошибка при удаления из избранного продукта с id${id}`,
+        'FavoritesProductsService del')
     }
     return {
       success: true,
       result,
-      message: `Тип цены с id ${result} успешно добавлен`
+      message: `Продукт с id${id} уделен из избранного`
     }
   }
 
-  async getAll (limit: number, page: number): Promise<IMessage> {
-
+  async getAll (limit: number = 20, page: number = 1): Promise<IMessage> {
+    const result = await FavoritesProductsModel.query()
+      .page(page - 1, limit)
+      .innerJoin('products', 'favorites_products.product_id', 'products.id')
+      .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
+      .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
+      .select('products.*',
+        'products_views.views as view',
+        'products_price.price as price',
+        'products_price.currency as priceCurrency')
+    if (!result) {
+      throw ApiError.badRequest(
+        `Избранных продуктов на странице ${page} не найдено`,
+        'FavoritesProductsService getAll')
+    }
+    return {
+      success: true,
+      result,
+      message: `Страница ${page} с избранными продуктами успешно загружена`
+    }
   }
 
   async getById (id: number): Promise<IMessage> {
-
+    const result = await FavoritesProductsModel.query()
+      .findOne('id', '=', id)
+      .innerJoin('products', 'favorites_products.product_id', 'products.id')
+      .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
+      .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
+      .select('products.*',
+        'products_views.views as view',
+        'products_price.price as price',
+        'products_price.currency as priceCurrency')
+    if (!result) {
+      throw ApiError.badRequest(
+        `Избранного продукта с id${id} не существует`,
+        'FavoritesProductsService getById')
+    }
+    return {
+      success: true,
+      result,
+      message: `Избранный продукт с id${id} получен`
+    }
   }
 }
 

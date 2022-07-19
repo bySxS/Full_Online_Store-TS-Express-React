@@ -198,7 +198,7 @@ class ProductsService implements IProductService {
       description, count, availability,
       parentId, videoYoutubeUrl, url
     } = Dto
-    const findProduct = await this.getById(id)
+    const findProduct = await this.getById(id, false)
     if (!findProduct) {
       throw ApiError.badRequest(
         `Продукта с id ${id} не существует`,
@@ -290,7 +290,7 @@ class ProductsService implements IProductService {
     }
   }
 
-  async getAll (limit: number = 10, page: number = 1): Promise<IMessage> {
+  async getAll (limit: number = 20, page: number = 1): Promise<IMessage> {
     const result = await ProductsModel.query()
       .page(page - 1, limit)
     if (!result) {
@@ -306,7 +306,7 @@ class ProductsService implements IProductService {
     }
   }
 
-  async search (title: string = '', limit: number = 10, page: number = 1): Promise<IMessage> {
+  async search (title: string = '', limit: number = 20, page: number = 1): Promise<IMessage> {
     const result = await ProductsModel.query()
       .page(page - 1, limit)
       .where('title', 'like', `%${title}%`)
