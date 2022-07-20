@@ -36,7 +36,7 @@ class FavoritesProductController implements IFavoritesProductController {
           'FavoritesProductController del'))
       }
       const result = await FavoritesProductsService.del(id)
-      return res.status(201).json(result)
+      return res.status(200).json(result)
     } catch (err) {
       next(err)
     }
@@ -72,7 +72,7 @@ class FavoritesProductController implements IFavoritesProductController {
           'FavoritesProductController getById'))
       }
       const result = await FavoritesProductsService.getById(id)
-      return res.status(201).json(result)
+      return res.status(200).json(result)
     } catch (err) {
       next(err)
     }

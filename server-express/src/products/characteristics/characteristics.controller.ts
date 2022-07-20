@@ -65,7 +65,7 @@ class CharacteristicsController implements ICharacteristicController {
       }
       const result =
         await CharacteristicsService.getCharacteristicProductById(id)
-      return res.status(201).json(result)
+      return res.status(200).json(result)
     } catch (err) {
       next(err)
     }
@@ -100,7 +100,7 @@ class CharacteristicsController implements ICharacteristicController {
       }
       const result =
         await CharacteristicsService.delCharacteristicValue(id)
-      return res.status(201).json(result)
+      return res.status(200).json(result)
     } catch (err) {
       next(err)
     }
@@ -146,7 +146,7 @@ class CharacteristicsController implements ICharacteristicController {
       }
       const result =
         await CharacteristicsService.delCharacteristicProduct(id)
-      return res.status(201).json(result)
+      return res.status(200).json(result)
     } catch (err) {
       next(err)
     }

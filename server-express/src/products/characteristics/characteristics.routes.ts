@@ -16,7 +16,7 @@ try {
   router.delete('/product/:id', RoleMiddleware(['admin']), CharacteristicsController.delCharacteristicProductById)
   router.get('/product/:id', CharacteristicsController.getCharacteristicProductById)
 } catch (e) {
-  throw ApiError.internalRequest('Ошибка в ProductsPrice routers', 'ProductsRouter')
+  throw ApiError.internalRequest('Ошибка в Characteristics routers', 'CharacteristicsRouter')
 }
 
 export default router

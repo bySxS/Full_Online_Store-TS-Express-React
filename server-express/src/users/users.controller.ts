@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { validationResult } from 'express-validator'
 import UsersService from './users.service'
 import { IUserController } from './users.interface'
-import ApiError from '../apiError'
+import ApiError from '@/apiError'
 import os from 'os'
 import { IJwt } from './token/token.interface'
 
@@ -98,7 +98,7 @@ class UsersController implements IUserController {
       const result = await UsersService.activate(activateLink)
       const urlClient = process.env.CLIENT_URL || ''
       return res.header('Location', urlClient)
-        .status(200).json(result)
+        .status(301).json(result)
     } catch (err) {
       next(err)
     }

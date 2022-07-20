@@ -13,7 +13,7 @@ try {
   router.put('/types/:id', validateId, RoleMiddleware(['admin']), ProductsPriceController.updateTypePriceById)
   router.delete('/types/:id', RoleMiddleware(['admin']), ProductsPriceController.delTypePriceById)
 } catch (e) {
-  throw ApiError.internalRequest('Ошибка в ProductsPrice routers', 'ProductsRouter')
+  throw ApiError.internalRequest('Ошибка в ProductsPrice routers', 'ProductsPriceRouter')
 }
 
 export default router

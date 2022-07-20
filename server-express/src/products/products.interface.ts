@@ -54,6 +54,19 @@ export interface IProductFilesArray extends FileArray {
   image10: UploadedFile
 }
 
+export interface IProductService {
+  delPicture: (delPic: boolean, fileName: string, pathDir: string) => Promise<string>
+  savePicture: (id: number, pathDir: string, file: UploadedFile, fileName: string, fileName2: string) => Promise<string>
+  updatePictures: (id: number, DtoFile: IProductFilesArray, Dto: IProduct, findProduct: ProductsModel | null) => Promise<string>
+  add: (Dto: IProduct, DtoFile: IProductFilesArray) => Promise<IMessage>
+  updateById: (id: number, Dto: IProduct, DtoFile: IProductFilesArray) => Promise<IMessage>
+  deleteById: (id: number) => Promise<IMessage>
+  getById: (id: number, incView: boolean) => Promise<IMessage>
+  getAll: (limit: number, page: number) => Promise<IMessage>
+  search: (title: string, limit: number,
+           page: number) => Promise<IMessage>
+}
+
 export interface IProductController {
   add: (req: Request, res: Response,
         next: NextFunction) => void
@@ -67,17 +80,4 @@ export interface IProductController {
         next: NextFunction) => void
   search: (req: Request, res: Response,
         next: NextFunction) => void
-}
-
-export interface IProductService {
-  delPicture: (delPic: boolean, fileName: string, pathDir: string) => Promise<string>
-  savePicture: (id: number, pathDir: string, file: UploadedFile, fileName: string, fileName2: string) => Promise<string>
-  updatePictures: (id: number, DtoFile: IProductFilesArray, Dto: IProduct, findProduct: ProductsModel | null) => Promise<string>
-  add: (Dto: IProduct, DtoFile: IProductFilesArray) => Promise<IMessage>
-  updateById: (id: number, Dto: IProduct, DtoFile: IProductFilesArray) => Promise<IMessage>
-  deleteById: (id: number) => Promise<IMessage>
-  getById: (id: number, incView: boolean) => Promise<IMessage>
-  getAll: (limit: number, page: number) => Promise<IMessage>
-  search: (title: string, limit: number,
-                page: number) => Promise<IMessage>
 }

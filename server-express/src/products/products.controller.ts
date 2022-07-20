@@ -1,8 +1,8 @@
 import { IProductController, IProductFilesArray } from './products.interface'
 import { Request, Response, NextFunction } from 'express'
 import ProductsService from './products.service'
-import ApiError from '../apiError'
-import { IJwt } from '../users/token/token.interface'
+import ApiError from '@/apiError'
+import { IJwt } from '@/users/token/token.interface'
 
 class ProductsController implements IProductController {
   private static instance = new ProductsController()
@@ -72,7 +72,7 @@ class ProductsController implements IProductController {
           'ProductsController deleteById'))
       }
       const result = await ProductsService.deleteById(id)
-      return res.status(201).json(result)
+      return res.status(200).json(result)
     } catch (err) {
       next(err)
     }
@@ -86,13 +86,8 @@ class ProductsController implements IProductController {
           'ProductsController getById'))
       }
       const id = +req.params.id
-      if (isNaN(id)) {
-        return next(ApiError.forbidden(
-          'ID должен быть с цифр',
-          'ProductsController getById'))
-      }
       const result = await ProductsService.getById(id)
-      return res.status(201).json(result)
+      return res.status(200).json(result)
     } catch (err) {
       next(err)
     }

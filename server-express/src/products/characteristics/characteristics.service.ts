@@ -96,7 +96,7 @@ class CharacteristicsService implements ICharacteristicService {
 
     if (!result) {
       throw ApiError.badRequest(
-        `Характеристик не найдено`,
+        'Характеристик не найдено',
         'CharacteristicsService getCharacteristicProductById')
     }
     return {
@@ -181,7 +181,7 @@ class CharacteristicsService implements ICharacteristicService {
     return {
       success: true,
       result,
-      message: `Характеристика с id${result} успешно удалена`
+      message: `Характеристика с id${id} успешно удалена`
     }
   }
 }

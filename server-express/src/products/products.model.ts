@@ -1,9 +1,9 @@
 import { Model } from 'objection'
-import { dbKnex } from '../db'
+import { dbKnex } from '@/db'
 
-import Users from '../users/users.model'
+import Users from '@/users/users.model'
 import Category from './category/category.model'
-import Review from '../review/review.model'
+import Review from '@/review/review.model'
 import ProductsPrice from './prices/productsPrice.model'
 import ProductsViews from './views/productsViews.model'
 Model.knex(dbKnex)
@@ -16,6 +16,7 @@ export default class ProductsModel extends Model {
   public user_id!: number
   public description!: string
   public count!: number
+  public price_type_id!: number
   public availability!: boolean
   public screen!: string
   public image1!: string
@@ -55,6 +56,7 @@ export default class ProductsModel extends Model {
         user_id: { type: 'integer' },
         description: { type: 'string', minLength: 10, maxLength: 3000 },
         count: { type: 'integer' },
+        price_type_id: { type: 'integer' },
         availability: { type: 'boolean' },
         screen: { type: 'string', maxLength: 255 },
         image1: { type: 'string', maxLength: 255 },

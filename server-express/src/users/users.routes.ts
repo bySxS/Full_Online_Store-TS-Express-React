@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import UsersController from './users.controller'
-import { RoleMiddleware } from '../middleware/role'
-import { AuthMiddleware } from '../middleware/auth'
-import { validateId, validateRegistration } from './users.validator'
-import ApiError from '../apiError'
+import { RoleMiddleware } from '@/middleware/role'
+import { AuthMiddleware } from '@/middleware/auth'
+import { validateRegistration } from './users.validator'
+import ApiError from '@/apiError'
 
 const router = Router()
 
@@ -17,7 +17,7 @@ try {
   router.delete('/delete/:id', RoleMiddleware(['admin']), UsersController.deleteUserById)
   router.put('/update/:id', AuthMiddleware, UsersController.updateUserById)
   router.get('/search', UsersController.searchUsers)
-  router.get('/:id', validateId, UsersController.getUserById)
+  router.get('/:id', UsersController.getUserById)
 } catch (e) {
   throw ApiError.internalRequest('Ошибка в Users routers', 'UsersRouter')
 }

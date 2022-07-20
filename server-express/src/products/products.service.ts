@@ -1,5 +1,5 @@
 import { IProduct, IProductFilesArray, IProductService } from './products.interface'
-import { IMessage } from '../interface'
+import { IMessage } from '@/interface'
 import path from 'path'
 import ProductsModel from './products.model'
 import ApiError from '../apiError'
@@ -8,6 +8,8 @@ import { UploadedFile } from 'express-fileupload'
 import logger from '../logger'
 import ProductsViewsService from './views/productsViews.service'
 import ProductsPriceService from './prices/productsPrice.service'
+import { raw } from 'objection'
+import { cacheRedisDB } from '@/cache'
 
 function div (val: number, by: number): number {
   return (val - val % by) / by
@@ -135,7 +137,7 @@ class ProductsService implements IProductService {
 
   async add (Dto: IProduct, DtoFile: IProductFilesArray): Promise<IMessage> {
     const {
-      title, price, categoryId, userId,
+      title, price, priceTypeId, categoryId, userId,
       description, count, availability,
       parentId, videoYoutubeUrl, url
     } = Dto
@@ -168,7 +170,8 @@ class ProductsService implements IProductService {
         parent_id: parentId,
         video_youtube_url: videoYoutubeUrl,
         url,
-        screen: ''
+        screen: '',
+        price_type_id: priceTypeId
       })
       .select('*')
 
@@ -181,7 +184,7 @@ class ProductsService implements IProductService {
     const imgResult = await this.updatePictures(product.id, DtoFile, Dto, null)
     const views = await ProductsViewsService.createViewsProduct(product.id)
     const priceCommon = await ProductsPriceService.createProductPrice({
-      priceTypeId: 1,
+      priceTypeId,
       productId: product.id,
       price
     })
@@ -264,29 +267,69 @@ class ProductsService implements IProductService {
   }
 
   async getById (id: number, incView: boolean = true): Promise<IMessage> {
+    if (isNaN(id)) {
+      throw ApiError.forbidden(
+        'ID должен быть с цифр',
+        'ProductsController getById')
+    }
     if (incView) {
       await ProductsViewsService.incrementViewById(id)
     }
+    const cacheProduct = await cacheRedisDB.get('product:' + id)
+    if (cacheProduct) {
+      await cacheRedisDB.expire('product:' + id, 3600) // удалять через час
+      return {
+        success: true,
+        result: JSON.parse(cacheProduct),
+        message: `Продукт с id ${id} успешно получен с кеша`
+      }
+    }
     const product = await ProductsModel.query()
-      .findOne('products.id', '=', id)
+      .where('products.id', '=', id)
+      .andWhere('products_price.price_type_id', '=', raw('products.price_type_id'))
+      .first()
       .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
+      .innerJoin('prices_types', 'products.price_type_id', '=', 'prices_types.id')
       .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
-      .innerJoin('prices_types', 'products_price.price_type_id', '=', 'prices_types.id')
-      .innerJoin('products', 'products.parent_id', '=', 'products.id')
+      .innerJoin('category', 'products.category_id', '=', 'category.id')
+      .innerJoin('category as section', 'section.id', '=', raw('category.parent_id'))
       .select('products.*',
         'products_views.views as view',
         'products_price.price as price',
         'products_price.currency as priceCurrency',
-        'products_price.id as priceId',
-        'prices_types.name as priceType')
+        'prices_types.name as priceType',
+        'category.name as categoryName',
+        'section.name as sectionName')
     if (!product) {
       throw ApiError.badRequest(
         `Продукта с id ${id} не существует`,
         'ProductsService getById')
     }
+    let parentProduct = null
+    if (product.parent_id !== null && !isNaN(product.parent_id)) {
+      parentProduct = await ProductsModel.query()
+        .where('products.id', '=', product.parent_id)
+        .andWhere('products_price.price_type_id', '=', raw('products.price_type_id'))
+        .first()
+        .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
+        .innerJoin('prices_types', 'products.price_type_id', '=', 'prices_types.id')
+        .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
+        .innerJoin('category', 'products.category_id', '=', 'category.id')
+        .innerJoin('category as section', 'section.id', '=', raw('category.parent_id'))
+        .select('products.*',
+          'products_views.views as view',
+          'products_price.price as price',
+          'products_price.currency as priceCurrency',
+          'prices_types.name as priceType',
+          'category.name as categoryName',
+          'section.name as sectionName')
+    }
+    const result = { ...product, parentProduct }
+    await cacheRedisDB.set('product:' + id, JSON.stringify(result))
+    await cacheRedisDB.expire('product:' + id, 3600) // удалять через час
     return {
       success: true,
-      result: product,
+      result,
       message: `Продукт с id ${id} успешно получен`
     }
   }
@@ -310,7 +353,19 @@ class ProductsService implements IProductService {
   async search (title: string = '', limit: number = 20, page: number = 1): Promise<IMessage> {
     const result = await ProductsModel.query()
       .page(page - 1, limit)
-      .where('title', 'like', `%${title}%`)
+      .where('products.title', 'like', `%${title}%`)
+      .andWhere('products_price.price_type_id', '=', raw('products.price_type_id'))
+      .first()
+      .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
+      .innerJoin('prices_types', 'products.price_type_id', '=', 'prices_types.id')
+      .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
+      .innerJoin('category', 'products.category_id', '=', 'category.id')
+      .select('products.*',
+        'products_views.views as view',
+        'products_price.price as price',
+        'products_price.currency as priceCurrency',
+        'prices_types.name as priceType',
+        'category.name as categoryName')
     if (!result) {
       return {
         success: false,

@@ -1,4 +1,4 @@
-import { Model } from 'objection'
+import Objection, { Model } from 'objection'
 import { dbKnex } from '@/db'
 
 import Products from '../products.model'

@@ -1,10 +1,10 @@
 import { Model } from 'objection'
-import { dbKnex } from '../db'
+import { dbKnex } from '@/db'
 
 import Roles from './roles/roles.model'
 import Token from './token/token.model'
-import Products from '../products/products.model'
-import FavoritesProducts from '../products/favorites/favoritesProducts.model'
+import Products from '@/products/products.model'
+import FavoritesProducts from '@/products/favorites/favoritesProducts.model'
 Model.knex(dbKnex)
 
 export default class UsersModel extends Model {
