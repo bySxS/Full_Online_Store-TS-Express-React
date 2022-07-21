@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { Auth } from './auth'
-import ApiError from '../apiError'
-import { IJwt } from '../users/token/token.interface'
+import ApiError from '@/apiError'
+import { IJwt } from '@/users/token/token.interface'
 
 export const RoleMiddleware = (roles: string[] | string) => {
   return function (req: Request, res: Response, next: NextFunction) {

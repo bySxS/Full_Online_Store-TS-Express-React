@@ -1,4 +1,4 @@
-import { IMessage } from '../interface'
+import { IMessage } from '@/interface'
 import { NextFunction, Request, Response } from 'express'
 import { FileArray, UploadedFile } from 'express-fileupload'
 import ProductsModel from './products.model'
@@ -57,7 +57,7 @@ export interface IProductFilesArray extends FileArray {
 export interface IProductService {
   delPicture: (delPic: boolean, fileName: string, pathDir: string) => Promise<string>
   savePicture: (id: number, pathDir: string, file: UploadedFile, fileName: string, fileName2: string) => Promise<string>
-  updatePictures: (id: number, DtoFile: IProductFilesArray, Dto: IProduct, findProduct: ProductsModel | null) => Promise<string>
+  updatePictures: (id: number, DtoFile: IProductFilesArray | null, Dto: IProduct, findProduct: ProductsModel | undefined) => Promise<string>
   add: (Dto: IProduct, DtoFile: IProductFilesArray) => Promise<IMessage>
   updateById: (id: number, Dto: IProduct, DtoFile: IProductFilesArray) => Promise<IMessage>
   deleteById: (id: number) => Promise<IMessage>

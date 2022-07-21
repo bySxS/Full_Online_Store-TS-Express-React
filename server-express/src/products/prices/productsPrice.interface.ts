@@ -17,6 +17,7 @@ export interface IProductPriceService {
   getTypesPrices: (limit: number, page: number) => Promise<IMessage>
   createProductPrice: (Dto: IProductPrice) => Promise<IMessage>
   updateProductPrice: (Dto: IProductPrice) => Promise<IMessage>
+  getProductPriceByTypesPricesId: (typePriceId: number, productId: number) => Promise<IMessage>
 }
 
 export interface IProductPriceController {

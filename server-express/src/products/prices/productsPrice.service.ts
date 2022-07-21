@@ -92,6 +92,22 @@ class ProductsPriceService implements IProductPriceService {
     }
   }
 
+  async getProductPriceByTypesPricesId (typePriceId: number, productId: number): Promise<IMessage> {
+    const result = await ProductsPriceModel.query()
+      .findOne({ price_type_id: typePriceId, product_id: productId })
+      .select('*')
+    if (!result) {
+      throw ApiError.badRequest(
+        `Нет цены для продукта с id${productId}`,
+        'ProductsPriceService getProductPriceByTypesPricesId')
+    }
+    return {
+      success: true,
+      result,
+      message: `Цена для продукта с id${productId} успешно получена`
+    }
+  }
+
   async updateProductPrice (Dto: IProductPrice): Promise<IMessage> {
     const { id, priceTypeId, productId, price, currency } = Dto
     const result = await ProductsPriceModel.query()
@@ -102,6 +118,7 @@ class ProductsPriceService implements IProductPriceService {
         price,
         currency
       })
+    console.log(result)
     if (!result) {
       throw ApiError.badRequest(
         `Ошибка изменения цены для продукта с id ${productId}`,

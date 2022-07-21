@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import BasketService from './basket.service'
 import { IBasketController } from '@/basket/basket.interface'
 import { IJwt } from '@/users/token/token.interface'
+import { validationResult } from 'express-validator'
 
 class BasketController implements IBasketController {
   private static instance = new BasketController()
@@ -31,10 +32,12 @@ class BasketController implements IBasketController {
     req: Request, res: Response, next: NextFunction
   ) {
     try {
-      if (!req.params.id) {
-        return next(ApiError.forbidden(
-          'Не указан id характеристики',
-          'BasketController del'))
+      const errorsValid = validationResult(req).array()
+      if (errorsValid.length > 0) {
+        return next(ApiError.badRequest(
+          'Ошибка: ' +
+          errorsValid.map((value) => value.msg).join(', '),
+          'BasketController delProductFromBasket'))
       }
       const id = +req.params.id
       const result =
@@ -49,14 +52,16 @@ class BasketController implements IBasketController {
     req: Request, res: Response, next: NextFunction
   ) {
     try {
+      const errorsValid = validationResult(req).array()
+      if (errorsValid.length > 0) {
+        return next(ApiError.badRequest(
+          'Ошибка: ' +
+          errorsValid.map((value) => value.msg).join(', '),
+          'BasketController getAllOrdersByUserId'))
+      }
       const limit = +(req.query.limit || 20)
       const page = +(req.query.page || 1)
       const authUser = req.user as IJwt
-      if (isNaN(limit) || isNaN(page)) {
-        return next(ApiError.forbidden(
-          'limit и page должны быть с цифр',
-          'BasketController getAllOrdersByUserId'))
-      }
       const result = await BasketService.getAllOrdersByUserId(authUser.id, limit, page)
       return res.status(200).json(result)
     } catch (err) {
@@ -64,7 +69,7 @@ class BasketController implements IBasketController {
     }
   }
 
-  async getCurrentBasketByUserId (
+  async getCurrentBasketByAuthUser (
     req: Request, res: Response, next: NextFunction
   ) {
     try {
@@ -80,13 +85,15 @@ class BasketController implements IBasketController {
     req: Request, res: Response, next: NextFunction
   ) {
     try {
-      const limit = +(req.query.limit || 20)
-      const page = +(req.query.page || 1)
-      if (isNaN(limit) || isNaN(page)) {
-        return next(ApiError.forbidden(
-          'limit и page должны быть с цифр',
+      const errorsValid = validationResult(req).array()
+      if (errorsValid.length > 0) {
+        return next(ApiError.badRequest(
+          'Ошибка: ' +
+          errorsValid.map((value) => value.msg).join(', '),
           'BasketController getAllOrdersInProgressAllUsers'))
       }
+      const limit = +(req.query.limit || 20)
+      const page = +(req.query.page || 1)
       const result = await BasketService.getAllOrdersInProgressAllUsers(limit, page)
       return res.status(200).json(result)
     } catch (err) {

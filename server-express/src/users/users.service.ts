@@ -71,6 +71,11 @@ class UsersService implements IUserService {
         registration_Ip: ip,
         activateLink
       })
+    if (!user) {
+      throw ApiError.badRequest(
+        'Ошибка при регистрации',
+        'UsersService registration')
+    }
     await MailService.sendActivationMail(email, activateLink)
     const roles = await RolesService.getRoleById(user.roles_id)
     const token = TokenService.generateTokens(

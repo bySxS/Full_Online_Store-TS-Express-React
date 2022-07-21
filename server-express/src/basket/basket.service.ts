@@ -3,6 +3,7 @@ import { IMessage } from '@/interface'
 import ApiError from '@/apiError'
 import BasketModel from '@/basket/basket.model'
 import BasketProductsModel from '@/basket/basketProducts.model'
+import { raw } from 'objection'
 
 class BasketService implements IBasketService {
   private static instance = new BasketService()
@@ -138,11 +139,11 @@ class BasketService implements IBasketService {
   async isUserBoughtProduct (userId: number, productId: number): Promise<boolean> {
     const result = await BasketProductsModel.query()
       .first()
-      .where('basket_products.product_id', productId)
-      .andWhere('basket_products.id', '=', 'basket.id')
+      .where('basket_products.product_id', '=', productId)
+      .innerJoin('basket', raw('basket_products.basket_id'), 'basket.id')
       .andWhere('basket.status', '=', 'completed')
       .andWhere('basket.user_id', '=', userId)
-      .select('basket.*', 'basket_products.* as BasketProducts')
+      .select('basket_products.product_id as product', 'basket.user_id as user')
     return Boolean(result)
   }
 }

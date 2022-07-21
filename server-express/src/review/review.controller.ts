@@ -1,4 +1,3 @@
-import ApiError from '@/apiError'
 import { NextFunction, Request, Response } from 'express'
 import { IJwt } from '@/users/token/token.interface'
 import { IReviewController } from '@/review/review.interface'
@@ -27,11 +26,6 @@ class ReviewController implements IReviewController {
 
   async delReview (req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        return next(ApiError.forbidden(
-          'Не указан id отзыва',
-          'ReviewController delReview'))
-      }
       const id = +req.params.id
       const result =
         await ReviewService.delReview(id)
@@ -43,19 +37,9 @@ class ReviewController implements IReviewController {
 
   async getAllReviewByProductId (req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        return next(ApiError.forbidden(
-          'Не указан id продукта',
-          'ReviewController getAllReviewByProductId'))
-      }
       const id = +req.params.id
       const limit = +(req.query.limit || 20)
       const page = +(req.query.page || 1)
-      if (isNaN(limit) || isNaN(page)) {
-        return next(ApiError.forbidden(
-          'limit и page должны быть с цифр',
-          'ReviewController getAllReviewByProductId'))
-      }
       const result =
         await ReviewService.getAllReviewByProductId(id, limit, page)
       return res.status(200).json(result)
@@ -66,19 +50,9 @@ class ReviewController implements IReviewController {
 
   async getAllReviewByUserId (req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        return next(ApiError.forbidden(
-          'Не указан id продукта',
-          'ReviewController getAllReviewByProductId'))
-      }
       const id = +req.params.id
       const limit = +(req.query.limit || 20)
       const page = +(req.query.page || 1)
-      if (isNaN(limit) || isNaN(page)) {
-        return next(ApiError.forbidden(
-          'limit и page должны быть с цифр',
-          'ReviewController getAllReviewByUserId'))
-      }
       const result =
         await ReviewService.getAllReviewByUserId(id, limit, page)
       return res.status(200).json(result)
@@ -94,11 +68,6 @@ class ReviewController implements IReviewController {
       const limit = +(req.query.limit || 20)
       const page = +(req.query.page || 1)
       const authUser = req.user as IJwt
-      if (isNaN(limit) || isNaN(page)) {
-        return next(ApiError.forbidden(
-          'limit и page должны быть с цифр',
-          'ReviewController getAllReviewByUserId'))
-      }
       const result =
         await ReviewService.getAllReviewByUserId(authUser.id, limit, page)
       return res.status(200).json(result)

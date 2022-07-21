@@ -2,8 +2,8 @@ import { Router } from 'express'
 import { RoleMiddleware } from '@/middleware/role'
 // import { AuthMiddleware } from 'middleware/auth'
 import ApiError from '@/apiError'
-import { validateId } from '@/users/users.validator'
 import CharacteristicsController from './characteristics.controller'
+import { validateId } from '@/validator'
 
 const router = Router()
 

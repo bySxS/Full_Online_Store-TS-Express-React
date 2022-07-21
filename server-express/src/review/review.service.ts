@@ -1,9 +1,9 @@
 import { IReview, IReviewService } from '@/review/review.interface'
 import { IMessage } from '@/interface'
 import ApiError from '@/apiError'
-import BasketModel from '@/basket/basket.model'
 import BasketService from '@/basket/basket.service'
 import ReviewModel from '@/review/review.model'
+import { raw } from 'objection'
 
 class ReviewService implements IReviewService {
   private static instance = new ReviewService()
@@ -39,7 +39,7 @@ class ReviewService implements IReviewService {
     return {
       success: true,
       result,
-      message: ''
+      message: 'Отзыв / комменетарий успешно отправлен'
     }
   }
 
@@ -64,12 +64,7 @@ class ReviewService implements IReviewService {
   }
 
   async getAllReviewByProductId (productId: number, limit: number, page: number): Promise<IMessage> {
-    if (isNaN(productId)) {
-      throw ApiError.forbidden(
-        'ID должен быть с цифр',
-        'ReviewService getAllReviewByProductId')
-    }
-    const result = await BasketModel.query()
+    const result = await ReviewModel.query()
       .page(page - 1, limit)
       .where({ product_id: productId })
     if (!result) {
@@ -91,7 +86,7 @@ class ReviewService implements IReviewService {
         'ID должен быть с цифр',
         'ReviewService getAllReviewByUserId')
     }
-    const result = await BasketModel.query()
+    const result = await ReviewModel.query()
       .page(page - 1, limit)
       .where({ user_id: userId })
     if (!result) {

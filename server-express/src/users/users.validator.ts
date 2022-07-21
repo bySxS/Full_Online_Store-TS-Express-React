@@ -1,4 +1,4 @@
-import { check, body, param } from 'express-validator'
+import { body } from 'express-validator'
 
 export const validateRegistration = () => {
   return [
@@ -17,10 +17,14 @@ export const validateRegistration = () => {
       .matches('^[a-zA-Z0-9]+$')
   ]
 }
-export const validateId = () => {
+
+export const validateLogin = () => {
   return [
-    check('id',
-      'Id не цифры')
-      .matches('^[0-9]+$')
+    body('nickname',
+      'Имя пользователя не может быть пустым')
+      .notEmpty(),
+    body('password',
+      'Пароль не может быть пустым')
+      .notEmpty()
   ]
 }

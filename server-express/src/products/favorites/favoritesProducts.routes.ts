@@ -1,18 +1,31 @@
 import { Router } from 'express'
-// import { RoleMiddleware } from '@/middleware/role'
+import { RoleMiddleware } from '@/middleware/role'
 import { AuthMiddleware } from '@/middleware/auth'
 import ApiError from '@/apiError'
-import { validateId } from '@/users/users.validator'
-import ProductsPriceController from '../prices/productsPrice.controller'
 import FavoritesProductsController from '@/products/favorites/favoritesProducts.controller'
+import { validateId, validateLimitPage } from '@/validator'
+import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
+import { validateFavoriteProduct } from '@/products/favorites/favoritesProducts.validator'
 
 const router = Router()
 
 try {
-  router.get('/all', AuthMiddleware, ProductsPriceController.getTypesPrices)
-  router.post('/add', AuthMiddleware, ProductsPriceController.addTypePrice)
-  router.get('/:id', validateId, AuthMiddleware, ProductsPriceController.getTypesPrices)
-  router.delete('/:id', validateId, AuthMiddleware, FavoritesProductsController.del)
+  router.get('/',
+    validateLimitPage(), ValidatorResultMiddleware,
+    AuthMiddleware,
+    FavoritesProductsController.getAllByAuthUser)
+  router.post('/add',
+    validateFavoriteProduct, ValidatorResultMiddleware,
+    AuthMiddleware,
+    FavoritesProductsController.add)
+  router.get('/count_product/:id',
+    validateId(), ValidatorResultMiddleware,
+    RoleMiddleware('admin'),
+    FavoritesProductsController.getCountFavoritesByProductId)
+  router.delete('/:id',
+    validateId(), ValidatorResultMiddleware,
+    AuthMiddleware,
+    FavoritesProductsController.del)
 } catch (e) {
   throw ApiError.internalRequest('Ошибка в FavoritesProducts routers', 'FavoritesProductsRouter')
 }

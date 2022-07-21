@@ -32,18 +32,12 @@ class UsersController implements IUserController {
       const errorsValid = validationResult(req).array()
       if (errorsValid.length > 0) {
         return next(ApiError.badRequest(
-          'Ошибка при регистрации: ' +
+          'Ошибка: ' +
           errorsValid.map((value) => value.msg).join(', '),
           'UsersController registration'))
       }
       const finger = fingerprint(req)
       const result = await UsersService.registration(req.body, req.ip, finger)
-      if (!result.success) {
-        return next(ApiError.badRequest(
-          'Ошибка при регистрации: ' +
-          result.message,
-          'UsersController registration'))
-      }
       res.cookie('refreshToken',
         result.result.refreshToken,
         { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
@@ -55,6 +49,13 @@ class UsersController implements IUserController {
 
   async login (req: Request, res: Response, next: NextFunction) {
     try {
+      const errorsValid = validationResult(req).array()
+      if (errorsValid.length > 0) {
+        return next(ApiError.badRequest(
+          'Ошибка: ' +
+          errorsValid.map((value) => value.msg).join(', '),
+          'UsersController login'))
+      }
       const finger = fingerprint(req)
       const result = await UsersService.login(req.body, req.ip, finger)
       res.cookie('refreshToken',
@@ -106,17 +107,14 @@ class UsersController implements IUserController {
 
   async updateUserById (req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        return next(ApiError.forbidden(
-          'Не указан Id пользователя',
+      const errorsValid = validationResult(req).array()
+      if (errorsValid.length > 0) {
+        return next(ApiError.badRequest(
+          'Ошибка: ' +
+          errorsValid.map((value) => value.msg).join(', '),
           'UsersController updateUserById'))
       }
       const id = +req.params.id
-      if (isNaN(id)) {
-        return next(ApiError.forbidden(
-          'ID должен быть с цифр',
-          'UsersController updateUserById'))
-      }
       const authUser = req.user as IJwt
       if (authUser.rolesId !== 1 && id !== authUser.id) {
         return next(ApiError.forbidden(
@@ -132,17 +130,14 @@ class UsersController implements IUserController {
 
   async getUserById (req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        return next(ApiError.forbidden(
-          'Не указан Id пользователя',
-          'UsersController getUserById'))
+      const errorsValid = validationResult(req).array()
+      if (errorsValid.length > 0) {
+        return next(ApiError.badRequest(
+          'Ошибка: ' +
+          errorsValid.map((value) => value.msg).join(', '),
+          'UsersController deleteUserById'))
       }
       const id = +req.params.id
-      if (isNaN(id)) {
-        return next(ApiError.forbidden(
-          'ID должен быть с цифр',
-          'UsersController getUserById'))
-      }
       const User = await UsersService.getUserById(id)
       return res.status(200).send(User)
     } catch (err) {
@@ -152,12 +147,14 @@ class UsersController implements IUserController {
 
   async deleteUserById (req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.params.id) {
-        return next(ApiError.forbidden(
-          'Не указан Id пользователя',
+      const errorsValid = validationResult(req).array()
+      if (errorsValid.length > 0) {
+        return next(ApiError.badRequest(
+          'Ошибка: ' +
+          errorsValid.map((value) => value.msg).join(', '),
           'UsersController deleteUserById'))
       }
-      const id = Number(req.params.id)
+      const id = +req.params.id
       const User = await UsersService.deleteUserById(id)
       return res.status(200).send(User)
     } catch (err) {
@@ -167,13 +164,15 @@ class UsersController implements IUserController {
 
   async getUsers (req: Request, res: Response, next: NextFunction) {
     try {
-      const limit = +(req.query.limit || 10)
-      const page = +(req.query.page || 1)
-      if (isNaN(limit) || isNaN(page)) {
-        return next(ApiError.forbidden(
-          'limit и page должны быть с цифр',
+      const errorsValid = validationResult(req).array()
+      if (errorsValid.length > 0) {
+        return next(ApiError.badRequest(
+          'Ошибка: ' +
+          errorsValid.map((value) => value.msg).join(', '),
           'UsersController getUsers'))
       }
+      const limit = +(req.query.limit || 10)
+      const page = +(req.query.page || 1)
       const listUsers = await UsersService.getUsers(limit, page)
       return res.status(200).json(listUsers)
     } catch (err) {
@@ -184,14 +183,16 @@ class UsersController implements IUserController {
   async searchUsers (req: Request, res: Response, next: NextFunction) {
     try {
       // const start = new Date().getTime();
+      const errorsValid = validationResult(req).array()
+      if (errorsValid.length > 0) {
+        return next(ApiError.badRequest(
+          'Ошибка: ' +
+          errorsValid.map((value) => value.msg).join(', '),
+          'UsersController searchUsers'))
+      }
       const nickname: string = String(req.query.nickname || '')
       const limit = +(req.query.limit || 10)
       const page = +(req.query.page || 1)
-      if (isNaN(limit) || isNaN(page)) {
-        return next(ApiError.forbidden(
-          'limit и page должны быть с цифр',
-          'UsersController searchUsers'))
-      }
       const listUsers = await UsersService.searchUsers(nickname, limit, page)
       // const end = new Date().getTime();
       // logger.info(`время выполнения - ${end - start}ms`, {controller_users: 'searchUsers'})

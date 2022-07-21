@@ -34,6 +34,6 @@ export interface IBasketController {
   addProductToBasket: (req: Request, res: Response, next: NextFunction) => void
   delProductFromBasket: (req: Request, res: Response, next: NextFunction) => void
   getAllOrdersByUserId: (req: Request, res: Response, next: NextFunction) => void
-  getCurrentBasketByUserId: (req: Request, res: Response, next: NextFunction) => void
+  getCurrentBasketByAuthUser: (req: Request, res: Response, next: NextFunction) => void
   getAllOrdersInProgressAllUsers: (req: Request, res: Response, next: NextFunction) => void
 }

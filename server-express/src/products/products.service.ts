@@ -8,8 +8,9 @@ import { UploadedFile } from 'express-fileupload'
 import logger from '../logger'
 import ProductsViewsService from './views/productsViews.service'
 import ProductsPriceService from './prices/productsPrice.service'
-import { raw } from 'objection'
 import { cacheRedisDB } from '@/cache'
+import { raw } from 'objection'
+import FavoritesProductsService from '@/products/favorites/favoritesProducts.service'
 
 function div (val: number, by: number): number {
   return (val - val % by) / by
@@ -40,6 +41,7 @@ class ProductsService implements IProductService {
   async savePicture (id: number, pathDir: string, file: UploadedFile, fileName: string, fileName2: string): Promise<string> {
     let name = ''
     if (file && file.name.length > 2) {
+      await this.delPicture(true, fileName, pathDir) // вдруг тип другой был
       const splitName = file.name.split('.') || ['']
       const extension = splitName[splitName.length - 1] || 'jpg'
       name = `${id}_${fileName2}.${extension}`
@@ -51,7 +53,7 @@ class ProductsService implements IProductService {
     return name
   }
 
-  async updatePictures (id: number, DtoFile: IProductFilesArray, Dto: IProduct, findProduct: ProductsModel | null): Promise<string> {
+  async updatePictures (id: number, DtoFile: IProductFilesArray | null, Dto: IProduct, findProduct: ProductsModel | undefined): Promise<string> {
     if (!id || isNaN(id)) {
       throw ApiError.badRequest(
         'ID продукта не верный, для обновления изображений',
@@ -137,10 +139,11 @@ class ProductsService implements IProductService {
 
   async add (Dto: IProduct, DtoFile: IProductFilesArray): Promise<IMessage> {
     const {
-      title, price, priceTypeId, categoryId, userId,
+      title, price, categoryId, userId,
       description, count, availability,
       parentId, videoYoutubeUrl, url
     } = Dto
+    const priceTypeId = 1
     const findProduct = await ProductsModel.query()
       .findOne({ title })
       .select('title')
@@ -181,12 +184,12 @@ class ProductsService implements IProductService {
         'ProductsService add')
     }
 
-    const imgResult = await this.updatePictures(product.id, DtoFile, Dto, null)
+    const imgResult = await this.updatePictures(product.id, DtoFile, Dto, undefined)
     const views = await ProductsViewsService.createViewsProduct(product.id)
     const priceCommon = await ProductsPriceService.createProductPrice({
       priceTypeId,
       productId: product.id,
-      price
+      price: +price
     })
     return {
       success: true,
@@ -201,7 +204,8 @@ class ProductsService implements IProductService {
       description, count, availability,
       parentId, videoYoutubeUrl, url
     } = Dto
-    const findProduct = await this.getById(id, false)
+    console.log(id)
+    const findProduct = await this.getProductById(id)
     if (!findProduct) {
       throw ApiError.badRequest(
         `Продукта с id ${id} не существует`,
@@ -228,7 +232,8 @@ class ProductsService implements IProductService {
         availability: Boolean(availability),
         parent_id: parentId,
         video_youtube_url: videoYoutubeUrl,
-        url
+        url,
+        price_type_id: priceTypeId
       })
 
     if (!product) {
@@ -237,9 +242,10 @@ class ProductsService implements IProductService {
         'ProductsService updateById')
     }
 
-    const imgResult = await this.updatePictures(id, DtoFile, Dto, findProduct.result)
+    const imgResult = await this.updatePictures(id, DtoFile, Dto, findProduct)
+    const getPrice = await ProductsPriceService.getProductPriceByTypesPricesId(priceTypeId, id)
     const prices = await ProductsPriceService.updateProductPrice({
-      id: findProduct.result.priceId,
+      id: getPrice.result.id,
       productId: id,
       priceTypeId,
       price
@@ -253,25 +259,80 @@ class ProductsService implements IProductService {
   }
 
   async deleteById (id: number): Promise<IMessage> {
+    const findProduct = await ProductsModel.query()
+      .findById(id)
+      .select('*')
+    const Dto = {
+      delScreen: true,
+      delImage1: true,
+      delImage2: true,
+      delImage3: true,
+      delImage4: true,
+      delImage5: true,
+      delImage6: true,
+      delImage7: true,
+      delImage8: true,
+      delImage9: true,
+      delImage10: true
+    } as IProduct
+    const imgResult =
+      await this.updatePictures(id, null, Dto, findProduct)
     const product = await ProductsModel.query()
       .deleteById(id)
     if (!product) {
       throw ApiError.badRequest(
-        'Продукт не удалён',
+        `Продукт не удалён, потому что нет продукта с id${id}`,
         'ProductsService deleteById')
     }
     return {
       success: true,
-      message: `Продукт с id ${id} успешно удалён`
+      message: `Продукт с id ${id} успешно удалён; ${imgResult}`
     }
   }
 
+  getProductById (id: number) {
+    return ProductsModel.query()
+      .where('products.id', '=', id)
+      .andWhere('products_price.price_type_id', '=', raw('products.price_type_id'))
+      .first()
+      .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
+      .innerJoin('prices_types', 'products.price_type_id', '=', 'prices_types.id')
+      .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
+      .innerJoin('category', 'products.category_id', '=', 'category.id')
+      .innerJoin('category as section', 'section.id', '=', 'category.parent_id')
+      // .innerJoin('favorites_products', 'favorites_products.product_id', '=', 'products.id')
+      .select('products.*',
+        'products_views.views as view',
+        'products_price.price as price',
+        'products_price.currency as priceCurrency',
+        'prices_types.name as priceType',
+        'category.name as categoryName',
+        'section.name as sectionName')
+      .groupBy('products_price.price', 'products_price.currency')
+      // .count('*', { as: 'countInFavorites' })
+  }
+
+  getAllProducts (title: string = '', limit: number = 20, page: number = 1) {
+    return ProductsModel.query()
+      .page(page - 1, limit)
+      .where('products.title', 'like', `%${title}%`)
+      .andWhere('products_price.price_type_id', '=', raw('products.price_type_id'))
+      .first()
+      .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
+      .innerJoin('prices_types', 'products.price_type_id', '=', 'prices_types.id')
+      .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
+      .innerJoin('category', 'products.category_id', '=', 'category.id')
+      .innerJoin('category as section', 'section.id', '=', 'category.parent_id')
+      .select('products.*',
+        'products_views.views as view',
+        'products_price.price as price',
+        'products_price.currency as priceCurrency',
+        'prices_types.name as priceType',
+        'category.name as categoryName',
+        'section.name as sectionName')
+  }
+
   async getById (id: number, incView: boolean = true): Promise<IMessage> {
-    if (isNaN(id)) {
-      throw ApiError.forbidden(
-        'ID должен быть с цифр',
-        'ProductsController getById')
-    }
     if (incView) {
       await ProductsViewsService.incrementViewById(id)
     }
@@ -284,47 +345,18 @@ class ProductsService implements IProductService {
         message: `Продукт с id ${id} успешно получен с кеша`
       }
     }
-    const product = await ProductsModel.query()
-      .where('products.id', '=', id)
-      .andWhere('products_price.price_type_id', '=', raw('products.price_type_id'))
-      .first()
-      .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
-      .innerJoin('prices_types', 'products.price_type_id', '=', 'prices_types.id')
-      .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
-      .innerJoin('category', 'products.category_id', '=', 'category.id')
-      .innerJoin('category as section', 'section.id', '=', raw('category.parent_id'))
-      .select('products.*',
-        'products_views.views as view',
-        'products_price.price as price',
-        'products_price.currency as priceCurrency',
-        'prices_types.name as priceType',
-        'category.name as categoryName',
-        'section.name as sectionName')
+    const product = await this.getProductById(id)
     if (!product) {
       throw ApiError.badRequest(
         `Продукта с id ${id} не существует`,
         'ProductsService getById')
     }
+    const countFavorites = await FavoritesProductsService.getCountFavoritesByProductId(id)
     let parentProduct = null
     if (product.parent_id !== null && !isNaN(product.parent_id)) {
-      parentProduct = await ProductsModel.query()
-        .where('products.id', '=', product.parent_id)
-        .andWhere('products_price.price_type_id', '=', raw('products.price_type_id'))
-        .first()
-        .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
-        .innerJoin('prices_types', 'products.price_type_id', '=', 'prices_types.id')
-        .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
-        .innerJoin('category', 'products.category_id', '=', 'category.id')
-        .innerJoin('category as section', 'section.id', '=', raw('category.parent_id'))
-        .select('products.*',
-          'products_views.views as view',
-          'products_price.price as price',
-          'products_price.currency as priceCurrency',
-          'prices_types.name as priceType',
-          'category.name as categoryName',
-          'section.name as sectionName')
+      parentProduct = await this.getProductById(product.parent_id)
     }
-    const result = { ...product, parentProduct }
+    const result = { ...product, ...countFavorites.result, parentProduct }
     await cacheRedisDB.set('product:' + id, JSON.stringify(result))
     await cacheRedisDB.expire('product:' + id, 3600) // удалять через час
     return {
@@ -335,8 +367,7 @@ class ProductsService implements IProductService {
   }
 
   async getAll (limit: number = 20, page: number = 1): Promise<IMessage> {
-    const result = await ProductsModel.query()
-      .page(page - 1, limit)
+    const result = await this.getAllProducts('', limit, page)
     if (!result) {
       return {
         success: false,
@@ -351,21 +382,7 @@ class ProductsService implements IProductService {
   }
 
   async search (title: string = '', limit: number = 20, page: number = 1): Promise<IMessage> {
-    const result = await ProductsModel.query()
-      .page(page - 1, limit)
-      .where('products.title', 'like', `%${title}%`)
-      .andWhere('products_price.price_type_id', '=', raw('products.price_type_id'))
-      .first()
-      .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
-      .innerJoin('prices_types', 'products.price_type_id', '=', 'prices_types.id')
-      .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
-      .innerJoin('category', 'products.category_id', '=', 'category.id')
-      .select('products.*',
-        'products_views.views as view',
-        'products_price.price as price',
-        'products_price.currency as priceCurrency',
-        'prices_types.name as priceType',
-        'category.name as categoryName')
+    const result = await this.getAllProducts(title, limit, page)
     if (!result) {
       return {
         success: false,

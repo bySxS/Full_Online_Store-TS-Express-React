@@ -2,6 +2,7 @@ import { IMessage } from '@/interface'
 import FavoritesProductsModel from './favoritesProducts.model'
 import ApiError from '@/apiError'
 import { IFavoritesProduct, IFavoritesProductService } from '@/products/favorites/favoritesProducts.interface'
+import { raw } from 'objection'
 
 class FavoritesProductsService implements IFavoritesProductService {
   private static instance = new FavoritesProductsService()
@@ -53,11 +54,12 @@ class FavoritesProductsService implements IFavoritesProductService {
     }
   }
 
-  async getAll (limit: number = 20, page: number = 1): Promise<IMessage> {
+  async getAllByUserId (userId: number, limit: number = 20, page: number = 1): Promise<IMessage> {
     const result = await FavoritesProductsModel.query()
       .page(page - 1, limit)
+      .where('favorites_products.user_id', '=', userId)
       .innerJoin('products', 'favorites_products.product_id', 'products.id')
-      .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
+      .innerJoin('products_views', raw('products.id'), '=', 'products_views.product_id')
       .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
       .select('products.*',
         'products_views.views as view',
@@ -75,25 +77,18 @@ class FavoritesProductsService implements IFavoritesProductService {
     }
   }
 
-  async getById (id: number): Promise<IMessage> {
+  async getCountFavoritesByProductId (id: number): Promise<IMessage> {
     const result = await FavoritesProductsModel.query()
-      .findOne('id', '=', id)
-      .innerJoin('products', 'favorites_products.product_id', 'products.id')
-      .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
-      .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
-      .select('products.*',
-        'products_views.views as view',
-        'products_price.price as price',
-        'products_price.currency as priceCurrency')
-    if (!result) {
-      throw ApiError.badRequest(
-        `Избранного продукта с id${id} не существует`,
-        'FavoritesProductsService getById')
-    }
+      .where('product_id', '=', id)
+      .count('*', { as: 'countInFavorites' })
+      .first()
+    // if (!result) {
+    //   result.
+    // }
     return {
       success: true,
-      result,
-      message: `Избранный продукт с id${id} получен`
+      result: result,
+      message: `Количество добавлений продукта в избранное с id${id} получено`
     }
   }
 }
