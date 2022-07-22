@@ -14,6 +14,8 @@ exports.up = function (knex: Knex) {
         .references('id')
         .inTable('users')
         .unsigned()
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE')
         .notNullable()
       tbl.string('status', 40)
         .notNullable()

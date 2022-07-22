@@ -1,8 +1,9 @@
-import { IBasketProduct, IBasketService } from '@/basket/basket.interface'
+import { IBasket, IBasketProduct, IBasketService } from '@/basket/basket.interface'
 import { IMessage } from '@/interface'
 import ApiError from '@/apiError'
 import BasketModel from '@/basket/basket.model'
 import BasketProductsModel from '@/basket/basketProducts.model'
+import ProductsService from '@/products/products.service'
 import { raw } from 'objection'
 
 class BasketService implements IBasketService {
@@ -15,81 +16,84 @@ class BasketService implements IBasketService {
     return BasketService.instance
   }
 
-  async getCurrentBasketByUserId (id: number): Promise<IMessage> {
-    if (isNaN(id)) {
-      throw ApiError.forbidden(
-        'ID должен быть с цифр',
-        'BasketService getCurrentBasketByUserId')
-    }
-    let result = await BasketModel.query()
-      .groupBy('basket.id')
-      .findOne({ 'basket.user_id': id, 'basket.status': 'Selects the product' })
-      .innerJoin('basket_products', 'basket.id', '=', 'basket_products.basket_id')
-      .select('basket.*', 'basket_products.* as BasketProducts')
-    if (!result) { // нету корзины свободной придётся создать
-      result = await BasketModel.query()
+  async getCurrentBasketByUserId (userId: number): Promise<IMessage> {
+    let basket = await BasketModel.query()
+      .where('basket.user_id', '=', userId)
+      .andWhere('basket.status', '=', 'Selects the product')
+      .first()
+      // .innerJoin('basket_products', 'basket.id', '=', 'basket_products.basket_id')
+      // .innerJoin('products', 'basket_products.product_id', '=', 'products.id')
+      .select('basket.*')
+    // 'basket_products.product_id as productId',
+    // 'products.title as productTitle')
+    if (!basket) { // нету корзины свободной придётся создать
+      basket = await BasketModel.query()
         .insert({
-          user_id: id,
+          user_id: +userId,
           status: 'Selects the product'
         })
         .select('*')
     }
+    const productsInBasket = await BasketProductsModel.query()
+      .where('basket_products.basket_id', '=', basket.id)
+      .andWhere('products_price_type.id', '=', raw('products.price_type_id'))
+      .innerJoin('products',
+        'basket_products.product_id', '=',
+        'products.id')
+      .innerJoin('category',
+        'category.id', '=',
+        'products.category_id')
+      .innerJoin('products_price_type',
+        'products_price_type.id', '=',
+        'products.price_type_id')
+      .select('basket_products.*',
+        'products.title as productTitle',
+        'category.name as productCategory',
+        'products.screen as productScreen',
+        'products_price_type.name as productPriceType',
+        'products.availability as productAvailability')
     return {
       success: true,
-      result,
-      message: `Текущая корзина для пользователя с id${id} получена`
-    }
-  }
-
-  async getAllOrdersByUserId (id: number, limit: number = 20, page: number = 1): Promise<IMessage> {
-    if (isNaN(id)) {
-      throw ApiError.forbidden(
-        'ID должен быть с цифр',
-        'BasketService getAllOrdersByUserId')
-    }
-    const result = await BasketModel.query()
-      .page(page - 1, limit)
-      .where({ 'basket.user_id': id })
-      .andWhere({ 'basket.status': 'In processing' })
-      .andWhere({ 'basket.status': 'completed' })
-      .innerJoin('basket_products', 'basket.id', '=', 'basket_products.basket_id')
-      .select('basket.*', 'basket_products.* as BasketProducts')
-    if (!result) {
-      throw ApiError.badRequest(
-        `У пользователя с id${id} нет заказов`,
-        'BasketService getAllOrdersByUserId')
-    }
-    return {
-      success: true,
-      result,
-      message: `Текущая корзина для пользователя с id${id} получена`
+      result: { ...basket, BasketProducts: productsInBasket },
+      message: `Текущая корзина для пользователя с id${userId} получена`
     }
   }
 
   async addProductToBasket (userId: number, Dto: IBasketProduct): Promise<IMessage> {
     const {
-      basketId, productId, productCount,
-      productPriceId, currentPrice
+      productId, productCount
     } = Dto
     const findCurrentBasket = await this.getCurrentBasketByUserId(userId)
-    console.log('addBasketProduct', findCurrentBasket)
-    if (findCurrentBasket.result.BasketProducts.product_id === productId) {
+    findCurrentBasket.result.BasketProducts.forEach((product: { product_id: number }) => {
+      if (product.product_id === +productId) {
+        throw ApiError.badRequest(
+          `Продукт с id${productId} уже в корзине, вы можете изменить количество`,
+          'BasketService addProductToBasket')
+      }
+    })
+    const product = await ProductsService.getById(productId)
+    if (product.result.availability === false) {
       throw ApiError.badRequest(
-        `Продукт с id${productId} уже в корзине`,
-        'BasketService addBasketProduct')
+        `Продукт ${product.result.title} к сожалению закончился(`,
+        'BasketService addProductToBasket')
+    }
+    if (product.result.count < +productCount) {
+      throw ApiError.badRequest(
+        `Продукта в количестве ${productCount} у нас нет, максимум можете купить ${product.result.count}`,
+        'BasketService addProductToBasket')
     }
     const result = await BasketProductsModel.query()
       .insert({
-        basket_id: basketId,
-        product_id: productId,
-        product_price_id: productPriceId,
-        current_price: currentPrice,
-        product_count: productCount
+        basket_id: findCurrentBasket.result.id,
+        product_id: +productId,
+        product_price_id: product.result.priceId,
+        current_price: (product.result.price * +productCount),
+        product_count: +productCount
       })
     if (!result) {
       throw ApiError.badRequest(
         `Ошибка при добавлении продукта с id${productId} в корзину`,
-        'BasketService addBasketProduct')
+        'BasketService addProductToBasket')
     }
     return {
       success: true,
@@ -98,23 +102,58 @@ class BasketService implements IBasketService {
     }
   }
 
-  async delProductFromBasket (id: number): Promise<IMessage> {
-    if (isNaN(id)) {
-      throw ApiError.forbidden(
-        'ID должен быть с цифр',
-        'BasketService delBasketProduct')
+  async delProductFromBasket (userId: number, productId: number): Promise<IMessage> {
+    const findCurrentBasket = await this.getCurrentBasketByUserId(userId)
+    let id
+    findCurrentBasket.result.BasketProducts.forEach((product: { id: number, product_id: number }) => {
+      if (product.product_id === +productId) {
+        id = product.id
+      }
+    })
+    if (!id) {
+      throw ApiError.badRequest(
+        `Ошибка удаления из корзины, продукта с id${productId} в корзине нет`,
+        'BasketService delProductFromBasket')
     }
     const result = await BasketProductsModel.query()
       .deleteById(id)
     if (!result) {
       throw ApiError.badRequest(
-        `Ошибка удаления продукта с id${id} в корзину`,
-        'BasketService delBasketProduct')
+        `Ошибка удаления продукта с id${productId} из корзины`,
+        'BasketService delProductFromBasket')
     }
     return {
       success: true,
       result,
-      message: `Продукт с id${id} успешно удалён из корзины`
+      message: `Продукт с id${productId} успешно удалён из корзины`
+    }
+  }
+
+  async getAllOrdersByUserId (userId: number, limit: number = 20, page: number = 1): Promise<IMessage> {
+    const result = await BasketModel.query()
+      .page(page - 1, limit)
+      .where('basket.status', '=', 'In processing')
+      .orWhere('basket.status', '=', 'completed')
+      .andWhere('basket.user_id', '=', userId)
+      .innerJoin('basket_products',
+        'basket.id', '=',
+        'basket_products.basket_id')
+      .innerJoin('products',
+        'products.id', '=',
+        'basket_products.product_id')
+      .select('basket.*',
+        'basket_products.current_price',
+        'basket_products.product_count',
+        'products.title')
+    if (!result) {
+      throw ApiError.badRequest(
+        `У пользователя с id${userId} нет заказов`,
+        'BasketService getAllOrdersByUserId')
+    }
+    return {
+      success: true,
+      result,
+      message: `Все заказы для пользователя с id${userId} получены`
     }
   }
 
@@ -122,8 +161,16 @@ class BasketService implements IBasketService {
     const result = await BasketModel.query()
       .page(page - 1, limit)
       .where({ 'basket.status': 'In processing' })
-      .innerJoin('basket_products', 'basket.id', '=', 'basket_products.basket_id')
-      .select('basket.*', 'basket_products.* as BasketProducts')
+      .innerJoin('basket_products',
+        'basket.id', '=',
+        'basket_products.basket_id')
+      .innerJoin('products',
+        'products.id', '=',
+        'basket_products.product_id')
+      .select('basket.*',
+        'basket_products.current_price',
+        'basket_products.product_count',
+        'products.title')
     if (!result) {
       throw ApiError.badRequest(
         'Нет заказов для обработки',
@@ -140,7 +187,7 @@ class BasketService implements IBasketService {
     const result = await BasketProductsModel.query()
       .first()
       .where('basket_products.product_id', '=', productId)
-      .innerJoin('basket', raw('basket_products.basket_id'), 'basket.id')
+      .innerJoin('basket', 'basket_products.basket_id', 'basket.id')
       .andWhere('basket.status', '=', 'completed')
       .andWhere('basket.user_id', '=', userId)
       .select('basket_products.product_id as product', 'basket.user_id as user')

@@ -28,6 +28,12 @@ export default class ApiError extends Error {
     return new ApiError(message, 403, moduleLog)
   }
 
+  static notFound (
+    message: string,
+    moduleLog: string) {
+    return new ApiError(message, 404, moduleLog)
+  }
+
   static UnauthorizedError (
     moduleLog: string) {
     return new ApiError(

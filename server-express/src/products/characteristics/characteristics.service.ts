@@ -92,7 +92,9 @@ class CharacteristicsService implements ICharacteristicService {
       .innerJoin('characteristics_name as parent',
         'characteristics_name.parent_id', '=',
         'parent.id')
-      .select('characteristics_name.name as propertyName',
+      .select('characteristics_name.id',
+        'characteristics_name.parent_id',
+        'characteristics_name.name as propertyName',
         'characteristics_set_value.value as propertyValue',
         'parent.name as sectionName')
 

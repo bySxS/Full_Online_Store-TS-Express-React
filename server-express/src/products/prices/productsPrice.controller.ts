@@ -1,5 +1,4 @@
 import { IProductPriceController } from './productsPrice.interface'
-import ApiError from '@/apiError'
 import { NextFunction, Request, Response } from 'express'
 import ProductsPriceService from './productsPrice.service'
 
@@ -49,6 +48,57 @@ class ProductsPriceController implements IProductPriceController {
       const id = +req.params.id
       const result = await ProductsPriceService.delTypePrice(id)
       return res.status(200).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async addPriceForProduct (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const result =
+        await ProductsPriceService.addPriceForProduct(req.body)
+      return res.status(201).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async getAllPriceByProductId (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const userId = +req.params.id
+      const result =
+        await ProductsPriceService.getAllPriceByProductId(userId)
+      return res.status(201).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async updProductPrice (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const id = +req.params.id
+      const result =
+        await ProductsPriceService.updProductPrice(id, req.body)
+      return res.status(201).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async delProductPrice (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const id = +req.params.id
+      const result =
+        await ProductsPriceService.delProductPrice(id)
+      return res.status(201).json(result)
     } catch (err) {
       next(err)
     }

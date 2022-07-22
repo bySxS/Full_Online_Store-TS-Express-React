@@ -6,8 +6,8 @@ import os from 'os'
 const writeLogger = (message: string, status: number, module: string, req: Request) => {
   return logger.error(
     message +
-    ' статус: ' + status +
-    ' в модуле: ' + module +
+    '; статус: ' + status +
+    '; в модуле: ' + module +
     '; путь: ' + req.hostname + req.path +
     '; ip: ' + req.ip +
     '; OS: ' + os.hostname() +

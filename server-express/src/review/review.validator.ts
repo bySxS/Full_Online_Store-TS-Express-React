@@ -1,4 +1,4 @@
-import { body, param, query } from 'express-validator'
+import { body } from 'express-validator'
 
 export const validateReview = () => {
   return [

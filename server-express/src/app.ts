@@ -42,7 +42,9 @@ router.get('/', (req: Request, res: Response) => {
 })
 
 router.all('*', (req: Request, res: Response, next: NextFunction) => {
-  throw ApiError.badRequest(`Request URL ${req.path} not found!`, 'app')
+  next(
+    ApiError.badRequest(`Request ${req.method} URL ${req.hostname}:${PORT}${req.originalUrl} not found!`, 'app')
+  )
 })
 
 app.use(errorApiMiddleware)

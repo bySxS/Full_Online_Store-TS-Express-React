@@ -41,6 +41,9 @@ export default class ProductsModel extends Model {
   products_price?: ProductsPrice
   products_views?: ProductsViews
 
+  // innerJoin as
+  public priceId!: number
+
   static get tableName () {
     return 'products'
   }

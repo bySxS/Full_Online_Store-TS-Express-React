@@ -14,9 +14,12 @@ export default class ProductsPriceModel extends Model {
   public currency!: string
   public created_at!: Date | string
   public updated_at!: Date | string
-  
+
   products_price_type?: PricesTypes
   products?: Products
+
+  // innerJoin as
+  public priceType!: string
 
   static get tableName () {
     return 'products_price'

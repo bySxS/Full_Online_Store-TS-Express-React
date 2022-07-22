@@ -186,7 +186,7 @@ class ProductsService implements IProductService {
 
     const imgResult = await this.updatePictures(product.id, DtoFile, Dto, undefined)
     const views = await ProductsViewsService.createViewsProduct(product.id)
-    const priceCommon = await ProductsPriceService.createProductPrice({
+    const priceCommon = await ProductsPriceService.addPriceForProduct({
       priceTypeId,
       productId: product.id,
       price: +price
@@ -245,8 +245,7 @@ class ProductsService implements IProductService {
     const getPrice =
       await ProductsPriceService.getProductPriceByTypesPricesId(+priceTypeId, id)
     const prices =
-      await ProductsPriceService.updateProductPrice({
-        id: getPrice.result.id,
+      await ProductsPriceService.updProductPrice(getPrice.result.id, {
         productId: id,
         priceTypeId: +priceTypeId,
         price: +price
@@ -295,6 +294,7 @@ class ProductsService implements IProductService {
     return ProductsModel.query()
       .where('products.id', '=', id)
       .andWhere('products_price.price_type_id', '=', raw('products.price_type_id'))
+      .andWhere('products_price_type.id', '=', raw('products.price_type_id'))
       .first()
       .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
       .innerJoin('products_price_type', 'products.price_type_id', '=', 'products_price_type.id')
@@ -303,12 +303,15 @@ class ProductsService implements IProductService {
       .innerJoin('category as section', 'section.id', '=', 'category.parent_id')
       .select('products.*',
         'products_views.views as view',
+        'products_price.id as priceId',
         'products_price.price as price',
         'products_price.currency as priceCurrency',
         'products_price_type.name as priceType',
         'category.name as categoryName',
         'section.name as sectionName')
-      .groupBy('products_price.price', 'products_price.currency')
+      .groupBy('products_price.id',
+        'products_price.price',
+        'products_price.currency')
   }
 
   getAllProducts (title: string = '', limit: number = 20, page: number = 1) {
@@ -324,6 +327,7 @@ class ProductsService implements IProductService {
       .innerJoin('category as section', 'section.id', '=', 'category.parent_id')
       .select('products.*',
         'products_views.views as view',
+        'products_price.id as priceId',
         'products_price.price as price',
         'products_price.currency as priceCurrency',
         'products_price_type.name as priceType',
@@ -332,11 +336,11 @@ class ProductsService implements IProductService {
   }
 
   async getById (id: number, incView: boolean = true): Promise<IMessage> {
-    if (incView) {
-      await ProductsViewsService.incrementViewById(id)
-    }
     const cacheProduct = await cacheRedisDB.get('product:' + id)
     if (cacheProduct) {
+      if (incView) {
+        await ProductsViewsService.incrementViewById(id)
+      }
       await cacheRedisDB.expire('product:' + id, 3600) // удалять через час
       return {
         success: true,
@@ -346,9 +350,12 @@ class ProductsService implements IProductService {
     }
     const product = await this.getProductById(id)
     if (!product) {
-      throw ApiError.badRequest(
+      throw ApiError.notFound(
         `Продукта с id ${id} не существует`,
         'ProductsService getById')
+    }
+    if (incView) {
+      await ProductsViewsService.incrementViewById(id)
     }
     const countFavorites = await FavoritesProductsService.getCountFavoritesByProductId(id)
     let parentProduct = null

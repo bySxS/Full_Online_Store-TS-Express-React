@@ -3,13 +3,13 @@ import { NextFunction, Request, Response } from 'express'
 
 export interface IBasket {
   id?: number
-  user_id: number
+  userId: number
   status: string
   comment: string
-  delivery_address: string
-  phone_number: string
-  date_processing?: Date | string
-  delivery_date?: Date | string
+  deliveryAddress: string
+  phoneNumber: string
+  dateProcessing?: Date | string
+  deliveryDate?: Date | string
 }
 
 export interface IBasketProduct {
@@ -23,9 +23,9 @@ export interface IBasketProduct {
 
 export interface IBasketService {
   addProductToBasket: (userId: number, Dto: IBasketProduct) => Promise<IMessage>
-  delProductFromBasket: (id: number) => Promise<IMessage>
-  getAllOrdersByUserId: (id: number, limit: number, page: number) => Promise<IMessage>
-  getCurrentBasketByUserId: (id: number) => Promise<IMessage>
+  delProductFromBasket: (userId: number, productId: number) => Promise<IMessage>
+  getAllOrdersByUserId: (userId: number, limit: number, page: number) => Promise<IMessage>
+  getCurrentBasketByUserId: (userId: number) => Promise<IMessage>
   getAllOrdersInProgressAllUsers: (limit: number, page: number) => Promise<IMessage>
   isUserBoughtProduct: (userId: number, productId: number) => Promise<boolean>
 }
