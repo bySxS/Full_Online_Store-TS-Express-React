@@ -37,7 +37,7 @@ class ProductsPriceController implements IProductPriceController {
     try {
       const id = +req.params.id
       await ProductsPriceService.getTypePriceById(id) // проверка на наличие
-      const result = await ProductsPriceService.updateTypePrice(id, req.body)
+      const result = await ProductsPriceService.updateTypePrice(id, req.body.name)
       return res.status(201).json(result)
     } catch (err) {
       next(err)

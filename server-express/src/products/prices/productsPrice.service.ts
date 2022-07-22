@@ -1,6 +1,6 @@
 import { IMessage } from '@/interface'
 import ProductsPriceModel from './productsPrice.model'
-import PricesTypesModel from './pricesTypes.model'
+import ProductsPriceTypeModel from './productsPriceType.model'
 import ApiError from '@/apiError'
 import { IProductPrice, IProductPriceService } from './productsPrice.interface'
 
@@ -15,7 +15,15 @@ class ProductsPriceService implements IProductPriceService {
   }
 
   async addTypePrice (name: string): Promise<IMessage> {
-    const result = await PricesTypesModel.query()
+    const findType = await ProductsPriceTypeModel.query()
+      .findOne({ name })
+      .select('name')
+    if (findType) {
+      throw ApiError.badRequest(
+        `Тип цены '${name}' уже существует`,
+        'ProductsPriceService addTypePrice')
+    }
+    const result = await ProductsPriceTypeModel.query()
       .insert({ name })
       .select('name')
     if (!result) {
@@ -31,38 +39,38 @@ class ProductsPriceService implements IProductPriceService {
   }
 
   async delTypePrice (id: number): Promise<IMessage> {
-    const result = await PricesTypesModel.query()
+    const result = await ProductsPriceTypeModel.query()
       .deleteById(id)
     if (!result) {
       throw ApiError.badRequest(
-        'Тип цены не удалось удалить',
+        `Тип цены с id${id} не удалось удалить`,
         'ProductsPriceService delTypePrice')
     }
     return {
       success: true,
       result,
-      message: `Тип цены с id ${result} успешно добавлен`
+      message: `Тип цены с id${id} успешно удалён`
     }
   }
 
   async updateTypePrice (id: number, name: string): Promise<IMessage> {
-    const result = await PricesTypesModel.query()
+    const result = await ProductsPriceTypeModel.query()
       .where({ id })
       .update({ name })
     if (!result) {
       throw ApiError.badRequest(
-        'Тип цены не удалось изменить',
-        'ProductsPriceService changeTypePrice')
+        `Тип цены с id${id} не удалось изменить`,
+        'ProductsPriceService updateTypePrice')
     }
     return {
       success: true,
-      result,
-      message: `Тип цены с id ${result} успешно изменен`
+      result: { name },
+      message: `Тип цены с id${id} успешно изменен`
     }
   }
 
   async getTypePriceById (id: number): Promise<IMessage> {
-    const result = await PricesTypesModel.query()
+    const result = await ProductsPriceTypeModel.query()
       .findById(id)
       .select('*')
     if (!result) {
@@ -78,7 +86,7 @@ class ProductsPriceService implements IProductPriceService {
   }
 
   async getTypesPrices (limit: number = 20, page: number = 1): Promise<IMessage> {
-    const result = await PricesTypesModel.query()
+    const result = await ProductsPriceTypeModel.query()
       .page(page - 1, limit)
     if (!result) {
       throw ApiError.badRequest(
@@ -118,7 +126,6 @@ class ProductsPriceService implements IProductPriceService {
         price,
         currency
       })
-    console.log(result)
     if (!result) {
       throw ApiError.badRequest(
         `Ошибка изменения цены для продукта с id ${productId}`,

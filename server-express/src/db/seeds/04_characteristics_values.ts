@@ -3,7 +3,7 @@ import { Knex } from 'knex'
 exports.seed = async function (knex: Knex) {
   // Deletes ALL existing entries
   // await knex('category_movies').del()
-  await knex('characteristics_values').insert([
+  await knex('characteristics_name').insert([
     { id: 1, category_id: 2, name: 'Общие характеристики', field_type: '' },
 
     { id: 2, category_id: 8, name: 'Стандарт связи/интернет', field_type: '' },

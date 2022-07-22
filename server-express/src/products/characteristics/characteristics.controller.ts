@@ -13,139 +13,89 @@ class CharacteristicsController implements ICharacteristicController {
     return CharacteristicsController.instance
   }
 
-  async addCharacteristicProduct (
+  async addCharacteristicValueProduct (
     req: Request, res: Response, next: NextFunction
   ) {
     try {
       const result =
-        await CharacteristicsService.addCharacteristicProduct(req.body)
+        await CharacteristicsService.addCharacteristicValueProduct(req.body)
       return res.status(201).json(result)
     } catch (err) {
       next(err)
     }
   }
 
-  async updCharacteristicProductById (
+  async updCharacteristicValueProductById (
     req: Request, res: Response, next: NextFunction
   ) {
     try {
-      if (!req.params.id) {
-        return next(ApiError.forbidden(
-          'Не указан id характеристики',
-          'CharacteristicsController updCharacteristicProductById'))
-      }
       const id = +req.params.id
-      if (isNaN(id)) {
-        return next(ApiError.forbidden(
-          'ID должен быть с цифр',
-          'CharacteristicsController updCharacteristicProductById'))
-      }
       const result =
-        await CharacteristicsService.updCharacteristicProduct(id, req.body)
+        await CharacteristicsService.updCharacteristicValueProduct(id, req.body)
       return res.status(201).json(result)
     } catch (err) {
       next(err)
     }
   }
 
-  async getCharacteristicProductById (
+  async delCharacteristicValueProductById (
     req: Request, res: Response, next: NextFunction
   ) {
     try {
-      if (!req.params.id) {
-        return next(ApiError.forbidden(
-          'Не указан id характеристики',
-          'CharacteristicsController delCharacteristicValue'))
-      }
       const id = +req.params.id
-      if (isNaN(id)) {
-        return next(ApiError.forbidden(
-          'ID должен быть с цифр',
-          'CharacteristicsController delCharacteristicValue'))
-      }
       const result =
-        await CharacteristicsService.getCharacteristicProductById(id)
+        await CharacteristicsService.delCharacteristicValueProduct(id)
       return res.status(200).json(result)
     } catch (err) {
       next(err)
     }
   }
 
-  async addCharacteristicValue (
+  async getCharacteristicValueProductById (
     req: Request, res: Response, next: NextFunction
   ) {
     try {
-      const result =
-        await CharacteristicsService.addCharacteristicValue(req.body)
-      return res.status(201).json(result)
-    } catch (err) {
-      next(err)
-    }
-  }
-
-  async delCharacteristicValueById (
-    req: Request, res: Response, next: NextFunction
-  ) {
-    try {
-      if (!req.params.id) {
-        return next(ApiError.forbidden(
-          'Не указан id характеристики',
-          'CharacteristicsController delCharacteristicValue'))
-      }
       const id = +req.params.id
-      if (isNaN(id)) {
-        return next(ApiError.forbidden(
-          'ID должен быть с цифр',
-          'CharacteristicsController delCharacteristicValue'))
-      }
       const result =
-        await CharacteristicsService.delCharacteristicValue(id)
+        await CharacteristicsService.getCharacteristicValueProductById(id)
       return res.status(200).json(result)
     } catch (err) {
       next(err)
     }
   }
 
-  async updCharacteristicValueById (
+  async addCharacteristicName (
     req: Request, res: Response, next: NextFunction
   ) {
     try {
-      if (!req.params.id) {
-        return next(ApiError.forbidden(
-          'Не указан id характеристики',
-          'CharacteristicsController updCharacteristicValueById'))
-      }
-      const id = +req.params.id
-      if (isNaN(id)) {
-        return next(ApiError.forbidden(
-          'ID должен быть с цифр',
-          'CharacteristicsController updCharacteristicValueById'))
-      }
       const result =
-        await CharacteristicsService.updCharacteristicValue(id, req.body)
+        await CharacteristicsService.addCharacteristicName(req.body)
       return res.status(201).json(result)
     } catch (err) {
       next(err)
     }
   }
 
-  async delCharacteristicProductById (
+  async updCharacteristicNameById (
     req: Request, res: Response, next: NextFunction
   ) {
     try {
-      if (!req.params.id) {
-        return next(ApiError.forbidden(
-          'Не указан id характеристики',
-          'CharacteristicsController delCharacteristicProduct'))
-      }
       const id = +req.params.id
-      if (isNaN(id)) {
-        return next(ApiError.forbidden(
-          'ID должен быть с цифр',
-          'CharacteristicsController delCharacteristicProduct'))
-      }
       const result =
-        await CharacteristicsService.delCharacteristicProduct(id)
+        await CharacteristicsService.updCharacteristicName(id, req.body)
+      return res.status(201).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async delCharacteristicNameById (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const id = +req.params.id
+      const result =
+        await CharacteristicsService.delCharacteristicName(id)
       return res.status(200).json(result)
     } catch (err) {
       next(err)

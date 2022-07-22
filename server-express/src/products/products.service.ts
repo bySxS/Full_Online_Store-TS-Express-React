@@ -204,7 +204,6 @@ class ProductsService implements IProductService {
       description, count, availability,
       parentId, videoYoutubeUrl, url
     } = Dto
-    console.log(id)
     const findProduct = await this.getProductById(id)
     if (!findProduct) {
       throw ApiError.badRequest(
@@ -233,7 +232,7 @@ class ProductsService implements IProductService {
         parent_id: parentId,
         video_youtube_url: videoYoutubeUrl,
         url,
-        price_type_id: priceTypeId
+        price_type_id: +priceTypeId
       })
 
     if (!product) {
@@ -241,15 +240,17 @@ class ProductsService implements IProductService {
         'Продукт не обновлён',
         'ProductsService updateById')
     }
-
-    const imgResult = await this.updatePictures(id, DtoFile, Dto, findProduct)
-    const getPrice = await ProductsPriceService.getProductPriceByTypesPricesId(priceTypeId, id)
-    const prices = await ProductsPriceService.updateProductPrice({
-      id: getPrice.result.id,
-      productId: id,
-      priceTypeId,
-      price
-    })
+    const imgResult =
+      await this.updatePictures(id, DtoFile, Dto, findProduct)
+    const getPrice =
+      await ProductsPriceService.getProductPriceByTypesPricesId(+priceTypeId, id)
+    const prices =
+      await ProductsPriceService.updateProductPrice({
+        id: getPrice.result.id,
+        productId: id,
+        priceTypeId: +priceTypeId,
+        price: +price
+      })
 
     return {
       success: true,
@@ -296,20 +297,18 @@ class ProductsService implements IProductService {
       .andWhere('products_price.price_type_id', '=', raw('products.price_type_id'))
       .first()
       .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
-      .innerJoin('prices_types', 'products.price_type_id', '=', 'prices_types.id')
+      .innerJoin('products_price_type', 'products.price_type_id', '=', 'products_price_type.id')
       .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
       .innerJoin('category', 'products.category_id', '=', 'category.id')
       .innerJoin('category as section', 'section.id', '=', 'category.parent_id')
-      // .innerJoin('favorites_products', 'favorites_products.product_id', '=', 'products.id')
       .select('products.*',
         'products_views.views as view',
         'products_price.price as price',
         'products_price.currency as priceCurrency',
-        'prices_types.name as priceType',
+        'products_price_type.name as priceType',
         'category.name as categoryName',
         'section.name as sectionName')
       .groupBy('products_price.price', 'products_price.currency')
-      // .count('*', { as: 'countInFavorites' })
   }
 
   getAllProducts (title: string = '', limit: number = 20, page: number = 1) {
@@ -319,7 +318,7 @@ class ProductsService implements IProductService {
       .andWhere('products_price.price_type_id', '=', raw('products.price_type_id'))
       .first()
       .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
-      .innerJoin('prices_types', 'products.price_type_id', '=', 'prices_types.id')
+      .innerJoin('products_price_type', 'products.price_type_id', '=', 'products_price_type.id')
       .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
       .innerJoin('category', 'products.category_id', '=', 'category.id')
       .innerJoin('category as section', 'section.id', '=', 'category.parent_id')
@@ -327,7 +326,7 @@ class ProductsService implements IProductService {
         'products_views.views as view',
         'products_price.price as price',
         'products_price.currency as priceCurrency',
-        'prices_types.name as priceType',
+        'products_price_type.name as priceType',
         'category.name as categoryName',
         'section.name as sectionName')
   }

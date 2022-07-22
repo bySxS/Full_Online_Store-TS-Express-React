@@ -4,17 +4,49 @@ import { RoleMiddleware } from '@/middleware/role'
 import ApiError from '@/apiError'
 import CharacteristicsController from './characteristics.controller'
 import { validateId } from '@/validator'
+import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
+import {
+  validateCharacteristicAddName,
+  validateCharacteristicSetValue
+} from '@/products/characteristics/characteristics.validator'
 
 const router = Router()
 
 try {
-  router.post('/value/add', RoleMiddleware(['admin']), CharacteristicsController.addCharacteristicValue)
-  router.put('/value/:id', RoleMiddleware(['admin']), CharacteristicsController.updCharacteristicValueById)
-  router.delete('/value/:id', validateId, RoleMiddleware(['admin']), CharacteristicsController.delCharacteristicValueById)
-  router.post('/product/add', RoleMiddleware(['admin']), CharacteristicsController.addCharacteristicProduct)
-  router.put('/product/:id', RoleMiddleware(['admin']), CharacteristicsController.updCharacteristicProductById)
-  router.delete('/product/:id', RoleMiddleware(['admin']), CharacteristicsController.delCharacteristicProductById)
-  router.get('/product/:id', CharacteristicsController.getCharacteristicProductById)
+  // success
+  router.post('/name/add',
+    validateCharacteristicAddName(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    CharacteristicsController.addCharacteristicName)
+  // success
+  router.put('/name/:id',
+    validateId(), validateCharacteristicAddName(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    CharacteristicsController.updCharacteristicNameById)
+  // success
+  router.delete('/name/:id',
+    validateId(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    CharacteristicsController.delCharacteristicNameById)
+  // success
+  router.post('/value/add',
+    validateCharacteristicSetValue(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    CharacteristicsController.addCharacteristicValueProduct)
+  // success
+  router.put('/value/:id',
+    validateId(), validateCharacteristicSetValue(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    CharacteristicsController.updCharacteristicValueProductById)
+  // success
+  router.delete('/value/:id',
+    validateId(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    CharacteristicsController.delCharacteristicValueProductById)
+  // success
+  router.get('/product/:id',
+    validateId(), ValidatorResultMiddleware,
+    CharacteristicsController.getCharacteristicValueProductById)
 } catch (e) {
   throw ApiError.internalRequest('Ошибка в Characteristics routers', 'CharacteristicsRouter')
 }

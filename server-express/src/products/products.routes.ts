@@ -4,30 +4,36 @@ import { AuthMiddleware } from '@/middleware/auth'
 import ApiError from '@/apiError'
 import ProductsController from './products.controller'
 import { validateId, validateLimitPage } from '@/validator'
-import { validateProduct } from '@/products/products.validator'
+import { validateProduct, validateProductUpd } from '@/products/products.validator'
 import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
 
 const router = Router()
 
 try {
+  // success
   router.post('/add',
     validateProduct(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     ProductsController.add)
+  // success
   router.delete('/delete/:id',
     validateId(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     ProductsController.deleteById)
+  // success
   router.put('/update/:id',
-    validateId(), validateProduct(), ValidatorResultMiddleware,
+    validateId(), validateProduct(), validateProductUpd(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     ProductsController.updateById)
+  // success
   router.get('/search',
     validateLimitPage(), ValidatorResultMiddleware,
     ProductsController.search)
+  // success
   router.get('/:id',
     validateId(), ValidatorResultMiddleware,
     ProductsController.getById)
+  // success
   router.get('/',
     validateLimitPage(), ValidatorResultMiddleware,
     ProductsController.getAll)

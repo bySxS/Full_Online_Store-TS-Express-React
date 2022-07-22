@@ -15,6 +15,8 @@ class FavoritesProductController implements IFavoritesProductController {
 
   async add (req: Request, res: Response, next: NextFunction) {
     try {
+      const authUser = req.user as IJwt
+      req.body.userId = authUser.id
       const result = await FavoritesProductsService.add(req.body)
       return res.status(201).json(result)
     } catch (err) {
@@ -48,7 +50,8 @@ class FavoritesProductController implements IFavoritesProductController {
   async getCountFavoritesByProductId (req: Request, res: Response, next: NextFunction) {
     try {
       const id = +req.params.id
-      const result = await FavoritesProductsService.getCountFavoritesByProductId(id)
+      const result =
+        await FavoritesProductsService.getCountFavoritesByProductId(id)
       return res.status(200).json(result)
     } catch (err) {
       next(err)

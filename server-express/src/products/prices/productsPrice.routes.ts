@@ -10,22 +10,26 @@ import { validateTypePrice } from '@/products/prices/productsPrice.validator'
 const router = Router()
 
 try {
-  router.get('/types/all',
-    validateLimitPage(), ValidatorResultMiddleware,
-    RoleMiddleware(['admin']),
-    ProductsPriceController.getTypesPrices)
+  // success
   router.post('/types/add',
     validateTypePrice(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     ProductsPriceController.addTypePrice)
+  // success
   router.put('/types/:id',
     validateId(), validateTypePrice(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     ProductsPriceController.updateTypePriceById)
+  // success
   router.delete('/types/:id',
     validateId(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     ProductsPriceController.delTypePriceById)
+  // success
+  router.get('/types',
+    validateLimitPage(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    ProductsPriceController.getTypesPrices)
 } catch (e) {
   throw ApiError.internalRequest('Ошибка в ProductsPrice routers', 'ProductsPriceRouter')
 }

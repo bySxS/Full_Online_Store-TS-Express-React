@@ -2,21 +2,21 @@ import { Model } from 'objection'
 import { dbKnex } from '@/db'
 
 import Products from '../products.model'
-import CharacteristicsValues from './characteristicsValues.model'
+import CharacteristicsName from './characteristicsName.model'
 
 Model.knex(dbKnex)
 
-export default class CharacteristicsSetsModel extends Model {
+export default class CharacteristicsSetValueModel extends Model {
   public id!: number
   public product_id!: number
-  public characteristics_values_id!: number
+  public characteristics_name_id!: number
   public value!: string
 
   products?: Products
-  characteristics_values?: CharacteristicsValues
+  characteristics_name?: CharacteristicsName
 
   static get tableName () {
-    return 'characteristics_sets'
+    return 'characteristics_set_value'
   }
 
   static get jsonSchema () {
@@ -26,7 +26,7 @@ export default class CharacteristicsSetsModel extends Model {
       properties: {
         id: { type: 'integer' },
         product_id: { type: 'integer' },
-        characteristics_values_id: { type: 'integer' },
+        characteristics_name_id: { type: 'integer' },
         value: { type: 'string', maxLength: 100 }
       }
     }
@@ -44,10 +44,10 @@ export default class CharacteristicsSetsModel extends Model {
       },
       valueCharacteristics: {
         relation: Model.BelongsToOneRelation,
-        modelClass: CharacteristicsValues,
+        modelClass: CharacteristicsName,
         join: {
-          from: this.tableName + '.characteristics_values_id',
-          to: CharacteristicsValues.tableName + '.id'
+          from: this.tableName + '.characteristics_name_id',
+          to: CharacteristicsName.tableName + '.id'
         }
       },
     }

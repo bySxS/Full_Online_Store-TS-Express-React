@@ -5,7 +5,7 @@ import Category from '../category/category.model'
 
 Model.knex(dbKnex)
 
-export default class CharacteristicsValuesModel extends Model {
+export default class CharacteristicsNameModel extends Model {
   public id!: number
   public category_id!: number
   public name!: string
@@ -15,7 +15,7 @@ export default class CharacteristicsValuesModel extends Model {
   category?: Category
 
   static get tableName () {
-    return 'characteristics_values'
+    return 'characteristics_name'
   }
 
   static get jsonSchema () {

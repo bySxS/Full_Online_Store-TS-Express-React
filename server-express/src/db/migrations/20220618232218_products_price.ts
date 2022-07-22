@@ -12,7 +12,7 @@ exports.up = function (knex: Knex) {
         .unsigned()
       tbl.integer('price_type_id')
         .references('id')
-        .inTable('prices_types')
+        .inTable('products_price_type')
         .unsigned()
         .onDelete('CASCADE')
         .onUpdate('CASCADE')

@@ -1,9 +1,10 @@
 import { IMessage } from '@/interface'
-import CharacteristicsSetsModel from './characteristicsSets.model'
-import CharacteristicsValuesModel from './characteristicsValues.model'
+import CharacteristicsSetValueModel from './characteristicsSetValue.model'
+import CharacteristicsNameModel from './characteristicsName.model'
 import ApiError from '@/apiError'
 import {
-  ICharacteristicService, ICharacteristicSet, ICharacteristicValue
+  ICharacteristicName,
+  ICharacteristicService, ICharacteristicSetValue
 } from '@/products/characteristics/characteristics.interface'
 
 class CharacteristicsService implements ICharacteristicService {
@@ -16,17 +17,17 @@ class CharacteristicsService implements ICharacteristicService {
     return CharacteristicsService.instance
   }
 
-  async addCharacteristicProduct (Dto: ICharacteristicSet): Promise<IMessage> {
-    const { productId, characteristicsValuesId, value } = Dto
+  async addCharacteristicValueProduct (Dto: ICharacteristicSetValue): Promise<IMessage> {
+    const { productId, characteristicsNameId, value } = Dto
     if (!productId) {
       throw ApiError.badRequest(
         'Не выбран id продукта',
         'CharacteristicsService addCharacteristicProduct')
     }
-    const result = await CharacteristicsSetsModel.query()
+    const result = await CharacteristicsSetValueModel.query()
       .insert({
-        product_id: productId,
-        characteristics_values_id: characteristicsValuesId,
+        product_id: +productId,
+        characteristics_name_id: +characteristicsNameId,
         value
       })
     if (!result) {
@@ -41,18 +42,18 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
-  async updCharacteristicProduct (id: number, Dto: ICharacteristicSet): Promise<IMessage> {
-    const { productId, characteristicsValuesId, value } = Dto
+  async updCharacteristicValueProduct (id: number, Dto: ICharacteristicSetValue): Promise<IMessage> {
+    const { productId, characteristicsNameId, value } = Dto
     if (!id || !productId) {
       throw ApiError.badRequest(
         'Не выбран id характеристики или продукта',
         'CharacteristicsService updCharacteristicProduct')
     }
-    const result = await CharacteristicsSetsModel.query()
+    const result = await CharacteristicsSetValueModel.query()
       .where({ id })
       .update({
-        product_id: productId,
-        characteristics_values_id: characteristicsValuesId,
+        product_id: +productId,
+        characteristics_name_id: +characteristicsNameId,
         value
       })
     if (!result) {
@@ -67,8 +68,8 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
-  async delCharacteristicProduct (id: number): Promise<IMessage> {
-    const result = await CharacteristicsSetsModel.query()
+  async delCharacteristicValueProduct (id: number): Promise<IMessage> {
+    const result = await CharacteristicsSetValueModel.query()
       .deleteById(id)
     if (!result) {
       throw ApiError.badRequest(
@@ -82,17 +83,18 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
-  async getCharacteristicProductById (id: number): Promise<IMessage> {
-    const result = await CharacteristicsSetsModel.query()
-      .where('characteristics_sets.product_id', '=', id)
-      .innerJoin('characteristics_values',
-        'characteristics_sets.characteristics_values_id', '=',
-        'characteristics_values.id')
-      .innerJoin('characteristics_values',
-        'characteristics_values.parent_id', '=',
-        'characteristics_values.id')
-      .select('characteristics_values.name as property_name',
-        'characteristics_sets.value as property_value')
+  async getCharacteristicValueProductById (id: number): Promise<IMessage> {
+    const result = await CharacteristicsSetValueModel.query()
+      .where('characteristics_set_value.product_id', '=', id)
+      .innerJoin('characteristics_name',
+        'characteristics_set_value.characteristics_name_id', '=',
+        'characteristics_name.id')
+      .innerJoin('characteristics_name as parent',
+        'characteristics_name.parent_id', '=',
+        'parent.id')
+      .select('characteristics_name.name as propertyName',
+        'characteristics_set_value.value as propertyValue',
+        'parent.name as sectionName')
 
     if (!result) {
       throw ApiError.badRequest(
@@ -106,10 +108,10 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
-  async addCharacteristicValue (Dto: ICharacteristicValue): Promise<IMessage> {
+  async addCharacteristicName (Dto: ICharacteristicName): Promise<IMessage> {
     const { name, categoryId, fieldType, parentId } = Dto
     if (parentId && parentId > 0) {
-      const parent = await CharacteristicsValuesModel.query()
+      const parent = await CharacteristicsNameModel.query()
         .findOne({ id: parentId })
         .select('name')
       if (parent) {
@@ -118,10 +120,10 @@ class CharacteristicsService implements ICharacteristicService {
           'CharacteristicsService addCharacteristicValue')
       }
     }
-    const result = await CharacteristicsValuesModel.query()
+    const result = await CharacteristicsNameModel.query()
       .insert({
         name,
-        category_id: categoryId,
+        category_id: +categoryId,
         field_type: fieldType,
         parent_id: parentId
       })
@@ -138,10 +140,10 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
-  async updCharacteristicValue (id: number, Dto: ICharacteristicValue): Promise<IMessage> {
+  async updCharacteristicName (id: number, Dto: ICharacteristicName): Promise<IMessage> {
     const { name, fieldType, categoryId, parentId } = Dto
     if (parentId && parentId > 0) {
-      const parent = await CharacteristicsValuesModel.query()
+      const parent = await CharacteristicsNameModel.query()
         .findOne({ id: parentId })
         .select('name')
       if (parent) {
@@ -150,11 +152,11 @@ class CharacteristicsService implements ICharacteristicService {
           'CharacteristicsService updCharacteristicValue')
       }
     }
-    const result = await CharacteristicsValuesModel.query()
+    const result = await CharacteristicsNameModel.query()
       .where({ id })
       .update({
         name,
-        category_id: categoryId,
+        category_id: +categoryId,
         field_type: fieldType,
         parent_id: parentId
       })
@@ -170,8 +172,8 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
-  async delCharacteristicValue (id: number): Promise<IMessage> {
-    const result = await CharacteristicsValuesModel.query()
+  async delCharacteristicName (id: number): Promise<IMessage> {
+    const result = await CharacteristicsNameModel.query()
       .deleteById(id)
     if (!result) {
       throw ApiError.badRequest(

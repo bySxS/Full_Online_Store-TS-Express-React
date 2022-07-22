@@ -2,7 +2,7 @@ import { Model } from 'objection'
 import { dbKnex } from '@/db'
 
 import Products from '../products.model'
-import PricesTypes from './pricesTypes.model'
+import PricesTypes from './productsPriceType.model'
 
 Model.knex(dbKnex)
 
@@ -14,8 +14,8 @@ export default class ProductsPriceModel extends Model {
   public currency!: string
   public created_at!: Date | string
   public updated_at!: Date | string
-
-  prices_types?: PricesTypes
+  
+  products_price_type?: PricesTypes
   products?: Products
 
   static get tableName () {

@@ -4,7 +4,7 @@ import { dbKnex } from '@/db'
 import ProductsPrice from './productsPrice.model'
 Model.knex(dbKnex)
 
-export default class PricesTypesModel extends Model {
+export default class ProductsPriceTypeModel extends Model {
   public id!: number
   public name!: string
   public created_at!: Date | string
@@ -13,7 +13,7 @@ export default class PricesTypesModel extends Model {
   products_price?: ProductsPrice
 
   static get tableName () {
-    return 'prices_types'
+    return 'products_price_type'
   }
 
   static get jsonSchema () {

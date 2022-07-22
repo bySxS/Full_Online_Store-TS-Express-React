@@ -5,27 +5,31 @@ import ApiError from '@/apiError'
 import FavoritesProductsController from '@/products/favorites/favoritesProducts.controller'
 import { validateId, validateLimitPage } from '@/validator'
 import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
-import { validateFavoriteProduct } from '@/products/favorites/favoritesProducts.validator'
+import { validateFavoriteProduct } from './favoritesProducts.validator'
 
 const router = Router()
 
 try {
-  router.get('/',
-    validateLimitPage(), ValidatorResultMiddleware,
-    AuthMiddleware,
-    FavoritesProductsController.getAllByAuthUser)
+  // success
   router.post('/add',
-    validateFavoriteProduct, ValidatorResultMiddleware,
+    validateFavoriteProduct(), ValidatorResultMiddleware,
     AuthMiddleware,
     FavoritesProductsController.add)
+  // success
   router.get('/count_product/:id',
     validateId(), ValidatorResultMiddleware,
     RoleMiddleware('admin'),
     FavoritesProductsController.getCountFavoritesByProductId)
+  // success
   router.delete('/:id',
     validateId(), ValidatorResultMiddleware,
     AuthMiddleware,
     FavoritesProductsController.del)
+  // success
+  router.get('/',
+    validateLimitPage(), ValidatorResultMiddleware,
+    AuthMiddleware,
+    FavoritesProductsController.getAllByAuthUser)
 } catch (e) {
   throw ApiError.internalRequest('Ошибка в FavoritesProducts routers', 'FavoritesProductsRouter')
 }

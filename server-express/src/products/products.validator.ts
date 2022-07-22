@@ -31,3 +31,11 @@ export const validateProduct = () => {
       .notEmpty()
   ]
 }
+
+export const validateProductUpd = () => {
+  return [
+    body('priceTypeId',
+      'Id тип цены (priceTypeId) не указано, основной тип 1')
+      .notEmpty()
+  ]
+}

@@ -6,26 +6,22 @@ import { Knex } from 'knex'
 
 exports.up = function (knex: Knex) {
   return knex.schema
-    .createTable('characteristics_sets', tbl => {
+    .createTable('characteristics_name', tbl => {
       tbl.increments('id')
         .primary()
         .unsigned()
-      tbl.integer('product_id')
+      tbl.integer('category_id')
+        // .defaultTo(null)
         .references('id')
-        .inTable('products')
+        .inTable('category')
         .unsigned()
-        .onDelete('CASCADE')
+        .onDelete('SET NULL')
         .onUpdate('CASCADE')
+      tbl.string('name', 150)
         .notNullable()
-      tbl.integer('characteristics_values_id')
-        .references('id')
-        .inTable('characteristics_values')
-        .unsigned()
-        .onDelete('CASCADE')
-        .onUpdate('CASCADE')
-        .notNullable()
-      tbl.string('value', 100)
-        .notNullable()
+      tbl.string('field_type', 100)
+      tbl.integer('parent_id')
+        .defaultTo(null)
     })
 }
 
@@ -35,5 +31,5 @@ exports.up = function (knex: Knex) {
  */
 exports.down = function (knex: Knex) {
   return knex.schema
-    .dropTable('characteristics_sets')
+    .dropTable('characteristics_name')
 }

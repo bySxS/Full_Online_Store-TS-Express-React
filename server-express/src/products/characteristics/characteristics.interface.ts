@@ -1,39 +1,39 @@
 import { IMessage } from '@/interface'
 import { NextFunction, Request, Response } from 'express'
 
-export interface ICharacteristicValue {
+export interface ICharacteristicName {
   id?: number
-  categoryId?: number
+  categoryId: number
   name: string
   fieldType?: string
   parentId?: number
 }
 
-export interface ICharacteristicSet {
+export interface ICharacteristicSetValue {
   id?: number
   productId: number
   value: string
-  characteristicsValuesId: number
+  characteristicsNameId: number
 }
 
 export interface ICharacteristicService {
-  addCharacteristicValue: (Dto: ICharacteristicValue) => Promise<IMessage>
-  updCharacteristicValue: (id: number, Dto: ICharacteristicValue) => Promise<IMessage>
-  delCharacteristicValue: (id: number) => Promise<IMessage>
+  addCharacteristicName: (Dto: ICharacteristicName) => Promise<IMessage>
+  updCharacteristicName: (id: number, Dto: ICharacteristicName) => Promise<IMessage>
+  delCharacteristicName: (id: number) => Promise<IMessage>
 
-  addCharacteristicProduct: (Dto: ICharacteristicSet) => Promise<IMessage>
-  updCharacteristicProduct: (id: number, Dto: ICharacteristicSet) => Promise<IMessage>
-  delCharacteristicProduct: (id: number) => Promise<IMessage>
-  getCharacteristicProductById: (id: number) => Promise<IMessage>
+  addCharacteristicValueProduct: (Dto: ICharacteristicSetValue) => Promise<IMessage>
+  updCharacteristicValueProduct: (id: number, Dto: ICharacteristicSetValue) => Promise<IMessage>
+  delCharacteristicValueProduct: (id: number) => Promise<IMessage>
+  getCharacteristicValueProductById: (id: number) => Promise<IMessage>
 }
 
 export interface ICharacteristicController {
-  addCharacteristicValue: (req: Request, res: Response, next: NextFunction) => void
-  updCharacteristicValueById: (req: Request, res: Response, next: NextFunction) => void
-  delCharacteristicValueById: (req: Request, res: Response, next: NextFunction) => void
+  addCharacteristicName: (req: Request, res: Response, next: NextFunction) => void
+  updCharacteristicNameById: (req: Request, res: Response, next: NextFunction) => void
+  delCharacteristicNameById: (req: Request, res: Response, next: NextFunction) => void
 
-  addCharacteristicProduct: (req: Request, res: Response, next: NextFunction) => void
-  updCharacteristicProductById: (req: Request, res: Response, next: NextFunction) => void
-  delCharacteristicProductById: (req: Request, res: Response, next: NextFunction) => void
-  getCharacteristicProductById: (req: Request, res: Response, next: NextFunction) => void
+  addCharacteristicValueProduct: (req: Request, res: Response, next: NextFunction) => void
+  updCharacteristicValueProductById: (req: Request, res: Response, next: NextFunction) => void
+  delCharacteristicValueProductById: (req: Request, res: Response, next: NextFunction) => void
+  getCharacteristicValueProductById: (req: Request, res: Response, next: NextFunction) => void
 }

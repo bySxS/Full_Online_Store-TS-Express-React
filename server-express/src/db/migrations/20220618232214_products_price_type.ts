@@ -6,7 +6,7 @@ import { Knex } from 'knex'
 
 exports.up = function (knex: Knex) {
   return knex.schema
-    .createTable('prices_types', tbl => {
+    .createTable('products_price_type', tbl => {
       tbl.increments('id')
         .primary()
         .unsigned()
@@ -23,5 +23,5 @@ exports.up = function (knex: Knex) {
  */
 exports.down = function (knex: Knex) {
   return knex.schema
-    .dropTable('prices_types')
+    .dropTable('products_price_type')
 }
