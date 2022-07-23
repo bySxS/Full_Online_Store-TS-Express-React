@@ -1,9 +1,7 @@
-import { check, param, query } from 'express-validator'
+import { check, query } from 'express-validator'
 
 export const validateId = () => {
   return [
-    param('id', 'параметр Id должны быть только цифры')
-      .matches('^[0-9]+$'),
     check('id', 'Id должны быть только цифры')
       .matches('^[0-9]+$')
   ]

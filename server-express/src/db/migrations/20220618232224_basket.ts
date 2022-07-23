@@ -19,7 +19,13 @@ exports.up = function (knex: Knex) {
         .notNullable()
       tbl.string('status', 40)
         .notNullable()
+        .checkIn([
+          'In processing',
+          'Selects the product',
+          'Completed',
+          'Cancelled'])
         .defaultTo('Selects the product')
+      tbl.string('full_name', 100)
       tbl.string('comment', 1000)
       tbl.string('delivery_address', 500)
       tbl.string('phone_number', 25)

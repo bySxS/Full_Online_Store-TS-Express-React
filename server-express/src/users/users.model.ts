@@ -40,7 +40,7 @@ export default class UsersModel extends Model {
       properties: {
         id: { type: 'integer' },
         nickname: { type: 'string', minLength: 1, maxLength: 40 },
-        full_name: { type: 'string', minLength: 1, maxLength: 80 },
+        full_name: { type: 'string', minLength: 1, maxLength: 100 },
         city: { type: 'string', minLength: 1, maxLength: 100 },
         address: { type: 'string', minLength: 1, maxLength: 1000 },
         delivery_address: { type: 'string', minLength: 1, maxLength: 255 },

@@ -5,7 +5,7 @@ import ApiError from '@/apiError'
 import BasketController from './basket.controller'
 import { validateId, validateLimitPage } from '@/validator'
 import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
-import { validateBasketProduct } from '@/basket/basket.validator'
+import { validateBasket, validateBasketProduct, validateUpdBasket } from '@/basket/basket.validator'
 
 const router = Router()
 
@@ -29,11 +29,21 @@ try {
   router.get('/current',
     AuthMiddleware,
     BasketController.getCurrentBasketByAuthUser)
-  
+  // success
   router.get('/need_process',
     validateLimitPage(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     BasketController.getAllOrdersInProgressAllUsers)
+  // success
+  router.post('/to_processing',
+    validateBasket(), ValidatorResultMiddleware,
+    AuthMiddleware,
+    BasketController.currentBasketToProcessing)
+  // success
+  router.put('/:id',
+    validateId(), validateUpdBasket(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    BasketController.updBasketById)
 } catch (e) {
   throw ApiError.internalRequest('Ошибка в Basket routers', 'BasketRouter')
 }

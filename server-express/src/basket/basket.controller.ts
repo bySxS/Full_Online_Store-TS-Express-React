@@ -81,6 +81,33 @@ class BasketController implements IBasketController {
       next(err)
     }
   }
+
+  async currentBasketToProcessing (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const authUser = req.user as IJwt
+      req.body.userId = authUser.id
+      const result =
+        await BasketService.currentBasketToProcessing(req.body)
+      return res.status(200).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async updBasketById (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const id = +req.params.id
+      const result =
+        await BasketService.updBasketById(id, req.body)
+      return res.status(200).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
 }
 
 export default BasketController.getInstance()

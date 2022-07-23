@@ -16,16 +16,51 @@ class BasketService implements IBasketService {
     return BasketService.instance
   }
 
+  async currentBasketToProcessing (Dto: IBasket): Promise<IMessage> {
+    const {
+      userId, comment,
+      deliveryAddress,
+      phoneNumber, fullName
+    } = Dto
+    const currentBasket = await this.getCurrentBasketByUserId(userId)
+    if (currentBasket.result.BasketProducts.length === 0) {
+      throw ApiError.badRequest(
+        'Ваша корзина пуста',
+        'BasketService currentBasketToProcessing')
+    }
+    const basket = await BasketModel.query()
+      .where({ id: currentBasket.result.id })
+      .update({
+        status: 'In processing',
+        comment: comment || '',
+        full_name: fullName,
+        phone_number: phoneNumber,
+        delivery_address: deliveryAddress
+      })
+    if (!basket) {
+      throw ApiError.badRequest(
+        `Заказ с id${currentBasket.result.id} не удалось отправить на обработку`,
+        'BasketService currentBasketToProcessing')
+    }
+    return {
+      success: true,
+      result: {
+        BasketProducts: currentBasket.result.BasketProducts,
+        fullName,
+        phoneNumber,
+        deliveryAddress,
+        comment: (comment || '')
+      },
+      message: `Заказ с id${currentBasket.result.id} успешно отправлен в обработку, оператор свяжется с вами в ближайшее время`
+    }
+  }
+
   async getCurrentBasketByUserId (userId: number): Promise<IMessage> {
     let basket = await BasketModel.query()
       .where('basket.user_id', '=', userId)
       .andWhere('basket.status', '=', 'Selects the product')
       .first()
-      // .innerJoin('basket_products', 'basket.id', '=', 'basket_products.basket_id')
-      // .innerJoin('products', 'basket_products.product_id', '=', 'products.id')
       .select('basket.*')
-    // 'basket_products.product_id as productId',
-    // 'products.title as productTitle')
     if (!basket) { // нету корзины свободной придётся создать
       basket = await BasketModel.query()
         .insert({
@@ -87,7 +122,7 @@ class BasketService implements IBasketService {
         basket_id: findCurrentBasket.result.id,
         product_id: +productId,
         product_price_id: product.result.priceId,
-        current_price: (product.result.price * +productCount),
+        current_price: product.result.price,
         product_count: +productCount
       })
     if (!result) {
@@ -132,8 +167,7 @@ class BasketService implements IBasketService {
   async getAllOrdersByUserId (userId: number, limit: number = 20, page: number = 1): Promise<IMessage> {
     const result = await BasketModel.query()
       .page(page - 1, limit)
-      .where('basket.status', '=', 'In processing')
-      .orWhere('basket.status', '=', 'completed')
+      .where('basket.status', '<>', 'Selects the product')
       .andWhere('basket.user_id', '=', userId)
       .innerJoin('basket_products',
         'basket.id', '=',
@@ -192,6 +226,44 @@ class BasketService implements IBasketService {
       .andWhere('basket.user_id', '=', userId)
       .select('basket_products.product_id as product', 'basket.user_id as user')
     return Boolean(result)
+  }
+
+  async updBasketById (id: number, Dto: IBasket): Promise<IMessage> {
+    const {
+      deliveryDate, comment, status,
+      dateProcessing, forciblyUpd
+    } = Dto
+    const basket = await BasketModel.query()
+      .findById(id)
+      .select('*')
+    if (!basket) {
+      throw ApiError.badRequest(
+        `Заказа с id${id} не существует`,
+        'BasketService updBasketById')
+    }
+    if (!forciblyUpd && basket.status !== 'In processing') {
+      throw ApiError.badRequest(
+        `Заказ с id${id} не нуждается в обработке`,
+        'BasketService updBasketById')
+    }
+    const result = await BasketModel.query()
+      .where({ id })
+      .update({
+        status,
+        comment: comment || '',
+        date_processing: dateProcessing,
+        delivery_date: deliveryDate
+      })
+    if (!result) {
+      throw ApiError.badRequest(
+        `Не удалось обработать заказ с id${id}`,
+        'BasketService updBasketById')
+    }
+    return {
+      success: true,
+      result,
+      message: `Заказ с id${id} успешно обработан`
+    }
   }
 }
 

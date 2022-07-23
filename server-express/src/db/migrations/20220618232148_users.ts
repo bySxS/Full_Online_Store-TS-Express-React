@@ -14,7 +14,7 @@ exports.up = function (knex: Knex) {
         .notNullable()
         .unique()
       tbl.index('nickname', 'idx_users_nickname')
-      tbl.string('full_name', 80)
+      tbl.string('full_name', 100)
       tbl.string('city', 100)
       tbl.string('address', 1000)
       tbl.string('delivery_address')

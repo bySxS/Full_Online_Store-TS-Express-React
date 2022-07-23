@@ -2,23 +2,55 @@ import { Router } from 'express'
 import UsersController from './users.controller'
 import { RoleMiddleware } from '@/middleware/role'
 import { AuthMiddleware } from '@/middleware/auth'
-import { validateLogin, validateRegistration } from './users.validator'
+import { validateLink, validateLogin, validateRegistration } from './users.validator'
 import ApiError from '@/apiError'
-import { validateId, validateLimitPage } from '@/validator'
+import { validateId, validateLimitPage, validateSearch } from '@/validator'
+import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
 
 const router = Router()
 
 try {
-  router.post('/registration', validateRegistration(), UsersController.registration)
-  router.post('/login', validateLogin(), UsersController.login)
-  router.post('/logout', AuthMiddleware, UsersController.logout)
-  router.get('/activate/:link', UsersController.activate)
-  router.get('/refresh', UsersController.refresh)
-  router.get('/all', validateLimitPage(), UsersController.getUsers)
-  router.delete('/delete/:id', validateId(), RoleMiddleware(['admin']), UsersController.deleteUserById)
-  router.put('/update/:id', validateId(), AuthMiddleware, UsersController.updateUserById)
-  router.get('/search', validateLimitPage(), UsersController.searchUsers)
-  router.get('/:id', validateId(), UsersController.getUserById)
+  // success
+  router.post('/registration',
+    validateRegistration(), ValidatorResultMiddleware,
+    UsersController.registration)
+  // success
+  router.post('/login',
+    validateLogin(), ValidatorResultMiddleware,
+    UsersController.login)
+  // success
+  router.post('/logout',
+    AuthMiddleware,
+    UsersController.logout)
+  // success
+  router.get('/activate/:link',
+    validateLink(), ValidatorResultMiddleware,
+    UsersController.activate)
+  // success
+  router.get('/refresh',
+    UsersController.refresh)
+  // success
+  router.delete('/delete/:id',
+    validateId(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    UsersController.deleteUserById)
+  // success
+  router.put('/update/:id',
+    validateId(), validateRegistration(), ValidatorResultMiddleware,
+    AuthMiddleware,
+    UsersController.updateUserById)
+  // success
+  router.get('/search',
+    validateLimitPage(), validateSearch(), ValidatorResultMiddleware,
+    UsersController.searchUsers)
+  // success
+  router.get('/:id',
+    validateId(), ValidatorResultMiddleware,
+    UsersController.getUserById)
+  // success
+  router.get('/',
+    validateLimitPage(), ValidatorResultMiddleware,
+    UsersController.getUsers)
 } catch (e) {
   throw ApiError.internalRequest('Ошибка в Users routers', 'UsersRouter')
 }

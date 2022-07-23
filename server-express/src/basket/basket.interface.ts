@@ -5,9 +5,11 @@ export interface IBasket {
   id?: number
   userId: number
   status: string
+  fullName: string
   comment: string
   deliveryAddress: string
   phoneNumber: string
+  forciblyUpd: boolean
   dateProcessing?: Date | string
   deliveryDate?: Date | string
 }
@@ -28,12 +30,16 @@ export interface IBasketService {
   getCurrentBasketByUserId: (userId: number) => Promise<IMessage>
   getAllOrdersInProgressAllUsers: (limit: number, page: number) => Promise<IMessage>
   isUserBoughtProduct: (userId: number, productId: number) => Promise<boolean>
+  currentBasketToProcessing: (Dto: IBasket) => Promise<IMessage>
+  updBasketById: (id: number, Dto: IBasket) => Promise<IMessage>
 }
 
 export interface IBasketController {
   addProductToBasket: (req: Request, res: Response, next: NextFunction) => void
   delProductFromBasket: (req: Request, res: Response, next: NextFunction) => void
   getAllOrdersByUserId: (req: Request, res: Response, next: NextFunction) => void
+  currentBasketToProcessing: (req: Request, res: Response, next: NextFunction) => void
   getCurrentBasketByAuthUser: (req: Request, res: Response, next: NextFunction) => void
   getAllOrdersInProgressAllUsers: (req: Request, res: Response, next: NextFunction) => void
+  updBasketById: (req: Request, res: Response, next: NextFunction) => void
 }

@@ -29,15 +29,9 @@ class UsersController implements IUserController {
   /// ////////////
   async registration (req: Request, res: Response, next: NextFunction) {
     try {
-      const errorsValid = validationResult(req).array()
-      if (errorsValid.length > 0) {
-        return next(ApiError.badRequest(
-          'Ошибка: ' +
-          errorsValid.map((value) => value.msg).join(', '),
-          'UsersController registration'))
-      }
       const finger = fingerprint(req)
-      const result = await UsersService.registration(req.body, req.ip, finger)
+      const result =
+        await UsersService.registration(req.body, req.ip, finger)
       res.cookie('refreshToken',
         result.result.refreshToken,
         { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
@@ -49,15 +43,9 @@ class UsersController implements IUserController {
 
   async login (req: Request, res: Response, next: NextFunction) {
     try {
-      const errorsValid = validationResult(req).array()
-      if (errorsValid.length > 0) {
-        return next(ApiError.badRequest(
-          'Ошибка: ' +
-          errorsValid.map((value) => value.msg).join(', '),
-          'UsersController login'))
-      }
       const finger = fingerprint(req)
-      const result = await UsersService.login(req.body, req.ip, finger)
+      const result =
+        await UsersService.login(req.body, req.ip, finger)
       res.cookie('refreshToken',
         result.result.refreshToken,
         { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
@@ -70,7 +58,8 @@ class UsersController implements IUserController {
   async logout (req: Request, res: Response, next: NextFunction) {
     try {
       const { refreshToken } = req.cookies
-      const result = await UsersService.logout(refreshToken)
+      const result =
+        await UsersService.logout(refreshToken)
       res.clearCookie('refreshToken')
       return res.status(200).json(result)
     } catch (e) {
@@ -96,7 +85,8 @@ class UsersController implements IUserController {
   async activate (req: Request, res: Response, next: NextFunction) {
     try {
       const activateLink = req.params.link
-      const result = await UsersService.activate(activateLink)
+      const result =
+        await UsersService.activate(activateLink)
       const urlClient = process.env.CLIENT_URL || ''
       return res.header('Location', urlClient)
         .status(301).json(result)
@@ -107,13 +97,6 @@ class UsersController implements IUserController {
 
   async updateUserById (req: Request, res: Response, next: NextFunction) {
     try {
-      const errorsValid = validationResult(req).array()
-      if (errorsValid.length > 0) {
-        return next(ApiError.badRequest(
-          'Ошибка: ' +
-          errorsValid.map((value) => value.msg).join(', '),
-          'UsersController updateUserById'))
-      }
       const id = +req.params.id
       const authUser = req.user as IJwt
       if (authUser.rolesId !== 1 && id !== authUser.id) {
@@ -121,7 +104,8 @@ class UsersController implements IUserController {
           'У вас нет доступа для изменения этого пользователя',
           'UsersController updateUserById'))
       }
-      const result = await UsersService.updateUserById(id, req.body, authUser.rolesId)
+      const result =
+        await UsersService.updateUserById(id, req.body, authUser.rolesId)
       return res.status(201).json(result)
     } catch (err) {
       next(err)
@@ -130,13 +114,6 @@ class UsersController implements IUserController {
 
   async getUserById (req: Request, res: Response, next: NextFunction) {
     try {
-      const errorsValid = validationResult(req).array()
-      if (errorsValid.length > 0) {
-        return next(ApiError.badRequest(
-          'Ошибка: ' +
-          errorsValid.map((value) => value.msg).join(', '),
-          'UsersController deleteUserById'))
-      }
       const id = +req.params.id
       const User = await UsersService.getUserById(id)
       return res.status(200).send(User)
@@ -147,15 +124,9 @@ class UsersController implements IUserController {
 
   async deleteUserById (req: Request, res: Response, next: NextFunction) {
     try {
-      const errorsValid = validationResult(req).array()
-      if (errorsValid.length > 0) {
-        return next(ApiError.badRequest(
-          'Ошибка: ' +
-          errorsValid.map((value) => value.msg).join(', '),
-          'UsersController deleteUserById'))
-      }
       const id = +req.params.id
-      const User = await UsersService.deleteUserById(id)
+      const User =
+        await UsersService.deleteUserById(id)
       return res.status(200).send(User)
     } catch (err) {
       next(err)
@@ -164,16 +135,10 @@ class UsersController implements IUserController {
 
   async getUsers (req: Request, res: Response, next: NextFunction) {
     try {
-      const errorsValid = validationResult(req).array()
-      if (errorsValid.length > 0) {
-        return next(ApiError.badRequest(
-          'Ошибка: ' +
-          errorsValid.map((value) => value.msg).join(', '),
-          'UsersController getUsers'))
-      }
       const limit = +(req.query.limit || 10)
       const page = +(req.query.page || 1)
-      const listUsers = await UsersService.getUsers(limit, page)
+      const listUsers =
+        await UsersService.getUsers(limit, page)
       return res.status(200).json(listUsers)
     } catch (err) {
       next(err)
@@ -183,17 +148,11 @@ class UsersController implements IUserController {
   async searchUsers (req: Request, res: Response, next: NextFunction) {
     try {
       // const start = new Date().getTime();
-      const errorsValid = validationResult(req).array()
-      if (errorsValid.length > 0) {
-        return next(ApiError.badRequest(
-          'Ошибка: ' +
-          errorsValid.map((value) => value.msg).join(', '),
-          'UsersController searchUsers'))
-      }
-      const nickname: string = String(req.query.nickname || '')
+      const value: string = '' + req.query.value || ''
       const limit = +(req.query.limit || 10)
       const page = +(req.query.page || 1)
-      const listUsers = await UsersService.searchUsers(nickname, limit, page)
+      const listUsers =
+        await UsersService.searchUsers(value, limit, page)
       // const end = new Date().getTime();
       // logger.info(`время выполнения - ${end - start}ms`, {controller_users: 'searchUsers'})
       return res.status(200).send(listUsers)

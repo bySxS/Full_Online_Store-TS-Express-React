@@ -10,6 +10,7 @@ export default class BasketModel extends Model {
   public id!: number
   public user_id!: number
   public status!: string
+  public full_name!: string
   public comment!: string
   public delivery_address!: string
   public phone_number!: string
@@ -32,6 +33,7 @@ export default class BasketModel extends Model {
       properties: {
         id: { type: 'integer' },
         user_id: { type: 'integer' },
+        full_name: { type: 'string', maxLength: 100 },
         status: { type: 'string', maxLength: 40 },
         comment: { type: 'string', maxLength: 1000 },
         delivery_address: { type: 'string', maxLength: 500 },

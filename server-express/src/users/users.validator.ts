@@ -1,12 +1,19 @@
-import { body } from 'express-validator'
+import { body, param } from 'express-validator'
 
 export const validateRegistration = () => {
   return [
     body('nickname',
-      'Имя пользователя не может быть пустым')
+      'Имя пользователя (nickname) не может быть пустым')
       .notEmpty(),
-    body('email', 'Некорректный адрес email')
+    body('email',
+      'E-mail (email) не указан')
+      .notEmpty(),
+    body('email',
+      'Некорректный адрес e-mail (email)')
       .isEmail({}),
+    body('password',
+      'password (password) не указан')
+      .notEmpty(),
     body('password',
       'Длина пароля должена быть от 5 до 20 символов')
       .isLength({
@@ -25,6 +32,14 @@ export const validateLogin = () => {
       .notEmpty(),
     body('password',
       'Пароль не может быть пустым')
+      .notEmpty()
+  ]
+}
+
+export const validateLink = () => {
+  return [
+    param('link',
+      'Параметр "link" не может быть пустым')
       .notEmpty()
   ]
 }
