@@ -39,6 +39,7 @@ exports.up = function (knex: Knex) {
         .notNullable()
       tbl.string('screen')
         .notNullable()
+        .defaultTo('')
       tbl.string('image1')
         .defaultTo(null)
       tbl.string('image2')

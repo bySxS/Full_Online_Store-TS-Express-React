@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import { validationResult } from 'express-validator'
 import UsersService from './users.service'
-import { IUserController } from './users.interface'
+import { IUserController, IUsersFilesArray } from './users.interface'
 import ApiError from '@/apiError'
 import os from 'os'
 import { IJwt } from './token/token.interface'
@@ -31,7 +30,7 @@ class UsersController implements IUserController {
     try {
       const finger = fingerprint(req)
       const result =
-        await UsersService.registration(req.body, req.ip, finger)
+        await UsersService.registration(req.body, req.ip, finger, req.files as IUsersFilesArray)
       res.cookie('refreshToken',
         result.result.refreshToken,
         { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
@@ -105,7 +104,7 @@ class UsersController implements IUserController {
           'UsersController updateUserById'))
       }
       const result =
-        await UsersService.updateUserById(id, req.body, authUser.rolesId)
+        await UsersService.updateUserById(id, req.body, authUser.rolesId, req.files as IUsersFilesArray)
       return res.status(201).json(result)
     } catch (err) {
       next(err)

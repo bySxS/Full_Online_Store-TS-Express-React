@@ -4,17 +4,13 @@ import path from 'path'
 import ProductsModel from './products.model'
 import ApiError from '../apiError'
 import fs from 'fs-extra'
-import { UploadedFile } from 'express-fileupload'
-import logger from '../logger'
 import ProductsViewsService from './views/productsViews.service'
 import ProductsPriceService from './prices/productsPrice.service'
 import { cacheRedisDB } from '@/cache'
 import { raw } from 'objection'
 import FavoritesProductsService from '@/products/favorites/favoritesProducts.service'
-
-function div (val: number, by: number): number {
-  return (val - val % by) / by
-}
+import { div } from '@/service/math.service'
+import { delFile, saveFile } from '@/service/file.service'
 
 class ProductsService implements IProductService {
   private static instance = new ProductsService()
@@ -26,44 +22,12 @@ class ProductsService implements IProductService {
     return ProductsService.instance
   }
 
-  async delPicture (delPic: boolean, fileName: string, pathDir: string): Promise<string> {
-    let name = fileName || ''
-    if (delPic) {
-      if (name && name.length > 2) {
-        logger.info('удаляем ' + name)
-        await fs.remove(pathDir + '/' + name)
-        name = ''
-      }
-    }
-    return name
-  }
-
-  async savePicture (id: number, pathDir: string, file: UploadedFile, fileName: string, fileName2: string): Promise<string> {
-    let name = ''
-    if (file && file.name.length > 2) {
-      await this.delPicture(true, fileName, pathDir) // вдруг тип другой был
-      const splitName = file.name.split('.') || ['']
-      const extension = splitName[splitName.length - 1] || 'jpg'
-      name = `${id}_${fileName2}.${extension}`
-      logger.info('сохраняем ' + name)
-      await file.mv(pathDir + '/' + name)
-    } else if (fileName.split('.').length > 1) {
-      name = fileName
-    }
-    return name
-  }
-
-  async updatePictures (id: number, DtoFile: IProductFilesArray | null, Dto: IProduct, findProduct: ProductsModel | undefined): Promise<string> {
+  async updatePictures (id: number, DtoFile: IProductFilesArray | null, Dto: IProduct | null = null, findProduct: ProductsModel | undefined = undefined): Promise<string> {
     if (!id || isNaN(id)) {
       throw ApiError.badRequest(
         'ID продукта не верный, для обновления изображений',
         'ProductsService updatePictures')
     }
-    const {
-      delScreen, delImage1, delImage2, delImage3,
-      delImage4, delImage5, delImage6, delImage7,
-      delImage8, delImage9, delImage10
-    } = Dto
 
     const numberDir = div(id, 100)
     const pathDir = path.resolve(
@@ -83,18 +47,25 @@ class ProductsService implements IProductService {
     let fileNameImage9 = ''
     let fileNameImage10 = ''
 
-    if (findProduct) {
-      fileNameScreen = await this.delPicture(Boolean(delScreen), findProduct.screen, pathDir)
-      fileNameImage1 = await this.delPicture(Boolean(delImage1), findProduct.image1, pathDir)
-      fileNameImage2 = await this.delPicture(Boolean(delImage2), findProduct.image2, pathDir)
-      fileNameImage3 = await this.delPicture(Boolean(delImage3), findProduct.image3, pathDir)
-      fileNameImage4 = await this.delPicture(Boolean(delImage4), findProduct.image4, pathDir)
-      fileNameImage5 = await this.delPicture(Boolean(delImage5), findProduct.image5, pathDir)
-      fileNameImage6 = await this.delPicture(Boolean(delImage6), findProduct.image6, pathDir)
-      fileNameImage7 = await this.delPicture(Boolean(delImage7), findProduct.image7, pathDir)
-      fileNameImage8 = await this.delPicture(Boolean(delImage8), findProduct.image8, pathDir)
-      fileNameImage9 = await this.delPicture(Boolean(delImage9), findProduct.image9, pathDir)
-      fileNameImage10 = await this.delPicture(Boolean(delImage10), findProduct.image10, pathDir)
+    if (Dto) {
+      const {
+        delScreen, delImage1, delImage2, delImage3,
+        delImage4, delImage5, delImage6, delImage7,
+        delImage8, delImage9, delImage10
+      } = Dto
+      if (findProduct) {
+        fileNameScreen = await delFile(Boolean(delScreen), findProduct.screen, pathDir)
+        fileNameImage1 = await delFile(Boolean(delImage1), findProduct.image1, pathDir)
+        fileNameImage2 = await delFile(Boolean(delImage2), findProduct.image2, pathDir)
+        fileNameImage3 = await delFile(Boolean(delImage3), findProduct.image3, pathDir)
+        fileNameImage4 = await delFile(Boolean(delImage4), findProduct.image4, pathDir)
+        fileNameImage5 = await delFile(Boolean(delImage5), findProduct.image5, pathDir)
+        fileNameImage6 = await delFile(Boolean(delImage6), findProduct.image6, pathDir)
+        fileNameImage7 = await delFile(Boolean(delImage7), findProduct.image7, pathDir)
+        fileNameImage8 = await delFile(Boolean(delImage8), findProduct.image8, pathDir)
+        fileNameImage9 = await delFile(Boolean(delImage9), findProduct.image9, pathDir)
+        fileNameImage10 = await delFile(Boolean(delImage10), findProduct.image10, pathDir)
+      }
     }
     if (DtoFile) {
       const {
@@ -102,17 +73,17 @@ class ProductsService implements IProductService {
         image4, image5, image6, image7,
         image8, image9, image10
       } = DtoFile
-      fileNameScreen = await this.savePicture(id, pathDir, screen, fileNameScreen, 'screen')
-      fileNameImage1 = await this.savePicture(id, pathDir, image1, fileNameImage1, 'image1')
-      fileNameImage2 = await this.savePicture(id, pathDir, image2, fileNameImage2, 'image2')
-      fileNameImage3 = await this.savePicture(id, pathDir, image3, fileNameImage3, 'image3')
-      fileNameImage4 = await this.savePicture(id, pathDir, image4, fileNameImage4, 'image4')
-      fileNameImage5 = await this.savePicture(id, pathDir, image5, fileNameImage5, 'image5')
-      fileNameImage6 = await this.savePicture(id, pathDir, image6, fileNameImage6, 'image6')
-      fileNameImage7 = await this.savePicture(id, pathDir, image7, fileNameImage7, 'image7')
-      fileNameImage8 = await this.savePicture(id, pathDir, image8, fileNameImage8, 'image8')
-      fileNameImage9 = await this.savePicture(id, pathDir, image9, fileNameImage9, 'image9')
-      fileNameImage10 = await this.savePicture(id, pathDir, image10, fileNameImage10, 'image10')
+      fileNameScreen = await saveFile(id, pathDir, screen, fileNameScreen, 'screen')
+      fileNameImage1 = await saveFile(id, pathDir, image1, fileNameImage1, 'image1')
+      fileNameImage2 = await saveFile(id, pathDir, image2, fileNameImage2, 'image2')
+      fileNameImage3 = await saveFile(id, pathDir, image3, fileNameImage3, 'image3')
+      fileNameImage4 = await saveFile(id, pathDir, image4, fileNameImage4, 'image4')
+      fileNameImage5 = await saveFile(id, pathDir, image5, fileNameImage5, 'image5')
+      fileNameImage6 = await saveFile(id, pathDir, image6, fileNameImage6, 'image6')
+      fileNameImage7 = await saveFile(id, pathDir, image7, fileNameImage7, 'image7')
+      fileNameImage8 = await saveFile(id, pathDir, image8, fileNameImage8, 'image8')
+      fileNameImage9 = await saveFile(id, pathDir, image9, fileNameImage9, 'image9')
+      fileNameImage10 = await saveFile(id, pathDir, image10, fileNameImage10, 'image10')
     }
     const result = await ProductsModel.query()
       .where({ id })
@@ -131,10 +102,10 @@ class ProductsService implements IProductService {
       })
     if (!result) {
       throw ApiError.badRequest(
-        'Изображения не обновлены',
+        `Изображения для продукта с id${id} не обновлены`,
         'ProductsService updatePictures')
     }
-    return `Изображения для продукта с id ${id} успешно обновлены`
+    return `Изображения для продукта с id${id} успешно обновлены`
   }
 
   async add (Dto: IProduct, DtoFile: IProductFilesArray): Promise<IMessage> {
@@ -184,7 +155,7 @@ class ProductsService implements IProductService {
         'ProductsService add')
     }
 
-    const imgResult = await this.updatePictures(product.id, DtoFile, Dto, undefined)
+    const imgResult = await this.updatePictures(product.id, DtoFile)
     const views = await ProductsViewsService.createViewsProduct(product.id)
     const priceCommon = await ProductsPriceService.addPriceForProduct({
       priceTypeId,

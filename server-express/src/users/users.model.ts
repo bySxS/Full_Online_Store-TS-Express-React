@@ -19,6 +19,8 @@ export default class UsersModel extends Model {
   public email!: string
   public password!: string
   public isActivated!: boolean
+  public isSubscribeToNews!: boolean
+  public avatar!: string
   public activateLink!: string
   public registration_Ip!: string
   public created_at!: Date | string
@@ -49,6 +51,8 @@ export default class UsersModel extends Model {
         email: { type: 'string', minLength: 1, maxLength: 100 },
         password: { type: 'string', minLength: 1, maxLength: 200 },
         isActivated: { type: 'boolean' },
+        isSubscribeToNews: { type: 'boolean' },
+        avatar: { type: 'string' },
         activateLink: { type: 'string', minLength: 0, maxLength: 100 },
         registration_Ip: { type: 'string', minLength: 1, maxLength: 100 },
         created_at: { type: 'string' },

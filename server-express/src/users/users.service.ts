@@ -1,4 +1,4 @@
-import { IUsers, IUserService } from './users.interface'
+import { IUsers, IUserService, IUsersFilesArray } from './users.interface'
 import { IMessage } from '@/interface'
 import UsersModel from './users.model'
 import ApiError from '@/apiError'
@@ -10,6 +10,10 @@ import MailService from '@/service/mail.service'
 import RolesService from './roles/roles.service'
 import TokenService from './token/token.service'
 import { IDtoToken } from './token/token.interface'
+import path from 'path'
+import fs from 'fs-extra'
+import { div } from '@/service/math.service'
+import { delFile, saveFile } from '@/service/file.service'
 
 class UsersService implements IUserService {
   private static instance = new UsersService()
@@ -23,9 +27,41 @@ class UsersService implements IUserService {
 
   // registration ///////////////////////////////////////////////
 
-  async registration (Dto: IUsers, ip: string, fingerprint: string): Promise<IMessage> {
+  async updAvatar (id: number, DtoFile: IUsersFilesArray | null, delAvatar: boolean = false, userFind: UsersModel | undefined = undefined): Promise<string> {
+    if (!id || isNaN(id)) {
+      throw ApiError.badRequest(
+        'ID пользователя не верный, для обновления аватарки',
+        'UsersService updAvatar')
+    }
+    const numberDir = div(id, 100)
+    const pathDir = path.resolve(
+      __dirname, '../..', 'static/user_avatar', String(numberDir)
+    )
+    fs.mkdirsSync(pathDir)
+    let fileNameAvatar = ''
+    if (userFind) {
+      fileNameAvatar = await delFile(Boolean(delAvatar), userFind.avatar, pathDir)
+    }
+    if (DtoFile) {
+      const { avatar } = DtoFile
+      fileNameAvatar = await saveFile(id, pathDir, avatar, fileNameAvatar, 'avatar')
+    }
+    const result = await UsersModel.query()
+      .where({ id })
+      .update({
+        avatar: fileNameAvatar
+      })
+    if (!result) {
+      throw ApiError.badRequest(
+        `Аватарка для пользователя с id${id} не обновлена`,
+        'UsersService updAvatar')
+    }
+    return `Аватарка для пользователя с id${id} успешно обновлена`
+  }
+
+  async registration (Dto: IUsers, ip: string, fingerprint: string, DtoFile: IUsersFilesArray): Promise<IMessage> {
     const {
-      nickname,
+      nickname, isSubscribeToNews,
       fullName, email,
       password, city,
       address, deliveryAddress, phoneNumber
@@ -69,13 +105,16 @@ class UsersService implements IUserService {
         phone_number: phoneNumber,
         isActivated: false,
         registration_Ip: ip,
-        activateLink
+        activateLink,
+        isSubscribeToNews
       })
+      .select('*')
     if (!user) {
       throw ApiError.badRequest(
         'Ошибка при регистрации',
         'UsersService registration')
     }
+    const avatarInfo = await this.updAvatar(user.id, DtoFile)
     await MailService.sendActivationMail(email, activateLink)
     const roles = await RolesService.getRoleById(user.roles_id)
     const token = TokenService.generateTokens(
@@ -95,7 +134,7 @@ class UsersService implements IUserService {
     return {
       success: true,
       result,
-      message: `Пользователь ${nickname} успешно зарегистрирован и ` + tokenData.message
+      message: `Пользователь ${nickname} успешно зарегистрирован; ${avatarInfo}; ${tokenData.message}`
     }
   }
 
@@ -230,10 +269,10 @@ class UsersService implements IUserService {
     }
   }
 
-  async updateUserById (id: number, bodyDto: IUsers, rolesIdAuthUser: number): Promise<IMessage> {
+  async updateUserById (id: number, bodyDto: IUsers, rolesIdAuthUser: number, DtoFile: IUsersFilesArray): Promise<IMessage> {
     const {
       nickname, fullName, email, password, city, address, deliveryAddress,
-      phoneNumber
+      phoneNumber, delAvatar, isSubscribeToNews
     } = bodyDto
     let rolesId
     if (rolesIdAuthUser === 1) { // если авторизированный админ то можно позволить сменить группу
@@ -243,6 +282,7 @@ class UsersService implements IUserService {
     }
     const user = await UsersModel.query()
       .findOne({ id })
+      .select('id', 'avatar')
     if (!user) {
       throw ApiError.badRequest(
         `Пользователя с ID ${id} не найдено!`,
@@ -259,12 +299,14 @@ class UsersService implements IUserService {
         address,
         delivery_address: deliveryAddress,
         phone_number: phoneNumber,
-        roles_id: rolesId
+        roles_id: rolesId,
+        isSubscribeToNews
       })
+    const avatarInfo = await this.updAvatar(user.id, DtoFile, delAvatar, user)
     return {
       success: true,
       result: changeUser,
-      message: `Данные пользователя с ID ${id} изменены`
+      message: `Данные пользователя с ID${id} изменены; ${avatarInfo}`
     }
   }
 
