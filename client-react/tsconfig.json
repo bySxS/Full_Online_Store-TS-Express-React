@@ -19,9 +19,16 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "baseUrl": "src"
+//    "rootDir": ".",
+    "baseUrl": "src",
+//    "paths": {
+//      "@/*": ["./*"]
+//    },
+//    "plugins": [
+//      {
+//        "transform": "typescript-transform-paths"
+//      }
+//    ]
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }
