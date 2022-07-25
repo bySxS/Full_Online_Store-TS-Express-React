@@ -5,10 +5,6 @@ import UserItem from 'components/userItem/userItem'
 
 const Users = () => {
   const { isLoading, isSuccess, isError, data } = useFetchAllUsersQuery({ limit: 10, page: 1 })
-  console.log(data)
-  if (isSuccess) {
-    console.log(data.message)
-  }
 
   return (
     <div>
@@ -20,6 +16,7 @@ const Users = () => {
       )}</div>}
       {isLoading && <Loader/>}
       {isError && <div>Произошла ошибка загрузки</div>}
+      {isSuccess && <div>{data.message}</div>}
     </div>
   )
 }
