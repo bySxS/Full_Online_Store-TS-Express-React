@@ -1,10 +1,11 @@
 import React from 'react'
 import { useFetchAllUsersQuery } from 'api/myStoreApi'
-import Loader from 'components/UI/Loader/loader'
-import UserItem from 'components/userItem/userItem'
+import Loader from '../UI/Loader/loader'
+import UserItem from '../UserItem/UserItem'
 
 const Users = () => {
-  const { isLoading, isSuccess, isError, data } = useFetchAllUsersQuery({ limit: 10, page: 1 })
+  const { isLoading, isSuccess, isError, data } =
+    useFetchAllUsersQuery({ limit: 10, page: 1 })
 
   return (
     <div>

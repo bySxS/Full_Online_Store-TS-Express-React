@@ -3,11 +3,11 @@ import {
   BrowserRouter, Routes, Route, Navigate
 } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import { setupStore } from './store'
-import Header from './components/header/header'
-import { ModuleName } from './constants/page'
-// import Loader from './components/UI/Loader/loader'
-import AdminPanel from './pages/adminPanel/adminPanel'
+import { setupStore } from 'store'
+import Header from 'components/header/header'
+import { ModuleName } from 'constants/page'
+import AdminPanel from 'pages/AdminPanelPage/AdminPanelPage'
+import Loader from 'components/UI/Loader/loader'
 
 const store = setupStore()
 
@@ -16,9 +16,6 @@ function App () {
     <Provider store={ store }>
     <BrowserRouter>
       <div className="App">
-        <div className="main__bg"></div>
-        <div className="main__bg layer1"></div>
-        <div className="main__bg layer2"></div>
         <Header/>
         <Routes>
           <Route path={'/'}
@@ -31,8 +28,8 @@ function App () {
           {/*       element={<FavouriteMovies/>}/> */}
           {/* <Route path={`/${ModuleName.FAVOURITE_MOVIES}/:id`} */}
           {/*       element={<MovieDetails modulePage={ModuleName.FAVOURITE_MOVIES}/>}/> */}
-          {/* <Route path={'/loader'} */}
-          {/*       element={<Loader/>}/> */}
+           <Route path={'/loader'}
+                 element={<Loader/>}/>
         </Routes>
       </div>
     </BrowserRouter>

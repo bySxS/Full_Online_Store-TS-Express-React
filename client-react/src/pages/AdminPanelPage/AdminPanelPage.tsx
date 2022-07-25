@@ -1,13 +1,13 @@
 import React from 'react'
 import Users from 'components/users/users'
 
-const AdminPanel = () => {
+const AdminPanelPage = () => {
   return (
     <div className={'body'}>
-      adminPanel
+      <div className="font-bold">adminPanel</div>
       <Users />
     </div>
   )
 }
 
-export default AdminPanel
+export default AdminPanelPage

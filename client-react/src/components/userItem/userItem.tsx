@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { UserItemProps } from 'types/props'
+import { UserItemProps } from './UserItem.interface'
 
 const UserItem: FC<UserItemProps> = ({ user }) => {
   return (

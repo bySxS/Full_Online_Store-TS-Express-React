@@ -8,7 +8,7 @@ const root = ReactDOM.createRoot(
 )
 // двойной рендер из за StrictMode
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <App />
-  </React.StrictMode>
+  // </React.StrictMode>
 )
