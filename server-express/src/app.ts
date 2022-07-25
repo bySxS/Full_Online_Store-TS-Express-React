@@ -20,6 +20,7 @@ import path from 'path'
 const app = express()
 const PORT = process.env.PORT
 
+const staticPath = path.resolve(__dirname, '..', 'static')
 const corsOptions = { origin: '*', optionsSuccessStatus: 200 }
 const corsSetting = function (req: Request, res: Response, next: NextFunction) {
   res.header('Access-Control-Allow-Origin', '*')
@@ -33,9 +34,8 @@ app.use(cors(corsOptions))
 app.use(corsSetting)
 app.use(express.urlencoded({ extended: true }))
 app.use(fileUpload({}))
-app.use(express.static(path.resolve(__dirname, '..', 'static')))
+app.use(express.static(staticPath))
 app.use('/api', router)
-
 app.get('/', (req: Request, res: Response) => {
   return res.status(200).json({
     message: 'Hello World this GET , host: ' + os.hostname(),
