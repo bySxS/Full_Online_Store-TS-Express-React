@@ -111,6 +111,16 @@ class UsersController implements IUserController {
     }
   }
 
+  async getAuthUser (req: Request, res: Response, next: NextFunction) {
+    try {
+      const authUser = req.user as IJwt
+      const User = await UsersService.getUserById(authUser.id)
+      return res.status(200).send(User)
+    } catch (err) {
+      next(err)
+    }
+  }
+
   async getUserById (req: Request, res: Response, next: NextFunction) {
     try {
       const id = +req.params.id

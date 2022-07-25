@@ -59,6 +59,8 @@ export interface IUserController {
                next: NextFunction) => void
     getUserById: (req: Request, res: Response,
                   next: NextFunction) => void
+    getAuthUser: (req: Request, res: Response,
+                  next: NextFunction) => void
     deleteUserById: (req: Request, res: Response,
                      next: NextFunction) => void
     searchUsers: (req: Request, res: Response,

@@ -44,12 +44,18 @@ try {
     validateLimitPage(), validateSearch(), ValidatorResultMiddleware,
     UsersController.searchUsers)
   // success
+  router.get('/my',
+    AuthMiddleware,
+    UsersController.getAuthUser)
+  // success
   router.get('/:id',
     validateId(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
     UsersController.getUserById)
   // success
   router.get('/',
     validateLimitPage(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
     UsersController.getUsers)
 } catch (e) {
   throw ApiError.internalRequest(

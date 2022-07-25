@@ -35,7 +35,7 @@ export const RoleMiddleware = (roles: string[] | string) => {
     })
 
     if (!hasRole) {
-      throw ApiError.forbidden('У вас нет доступа',
+      throw ApiError.forbidden(`У вас нет доступа к ${req.originalUrl}, вы '${jwtPayload.nickname}' в группе '${userRoles}', а нужна '${needRoles.join(', ')}'`,
         'RoleMiddleware')
     }
     next()

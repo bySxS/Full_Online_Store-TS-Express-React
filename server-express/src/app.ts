@@ -15,6 +15,7 @@ import os from 'os'
 import { errorApiMiddleware } from './middleware/error'
 import router from './routes'
 import ApiError from './apiError'
+import path from 'path'
 
 const app = express()
 const PORT = process.env.PORT
@@ -32,16 +33,17 @@ app.use(cors(corsOptions))
 app.use(corsSetting)
 app.use(express.urlencoded({ extended: true }))
 app.use(fileUpload({}))
+app.use(express.static(path.resolve(__dirname, '..', 'static')))
 app.use('/api', router)
 
-router.get('/', (req: Request, res: Response) => {
+app.get('/', (req: Request, res: Response) => {
   return res.status(200).json({
     message: 'Hello World this GET , host: ' + os.hostname(),
     success: true
   })
 })
 
-router.all('*', (req: Request, res: Response, next: NextFunction) => {
+app.all('*', (req: Request, res: Response, next: NextFunction) => {
   next(
     ApiError.badRequest(
       `Request ${req.method} URL ${req.hostname}:${PORT}${req.originalUrl} not found!`,
