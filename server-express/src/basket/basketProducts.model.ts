@@ -1,5 +1,5 @@
 import { Model } from 'objection'
-import { dbKnex } from '../db'
+import { dbKnex } from '@/db'
 
 import Products from '../products/products.model'
 import Basket from './basket.model'
@@ -9,19 +9,19 @@ Model.knex(dbKnex)
 
 export default class BasketProductsModel extends Model {
   public id!: number
-  public basket_id!: number
-  public product_id!: number
-  public product_price_id!: number
-  public current_price!: number
-  public product_count!: number
-  public created_at!: Date | string
-  public updated_at!: Date | string
+  public basketId!: number
+  public productId!: number
+  public productPriceId!: number
+  public currentPrice!: number
+  public productCount!: number
+  public createdAt!: Date | string
+  public updatedAt!: Date | string
 
   basket?: Basket
   products?: Products
 
   static get tableName () {
-    return 'basket_products'
+    return 'basketProducts'
   }
 
   static get jsonSchema () {
@@ -30,13 +30,13 @@ export default class BasketProductsModel extends Model {
 
       properties: {
         id: { type: 'integer' },
-        basket_id: { type: 'integer' },
-        product_id: { type: 'integer' },
-        product_price_id: { type: 'integer' },
-        current_price: { type: 'number' },
-        product_count: { type: 'integer' },
-        created_at: { type: 'string' },
-        updated_at: { type: 'string' }
+        basketId: { type: 'integer' },
+        productId: { type: 'integer' },
+        productPriceId: { type: 'integer' },
+        currentPrice: { type: 'number' },
+        productCount: { type: 'integer' },
+        createdAt: { type: 'string' },
+        updatedAt: { type: 'string' }
       }
     }
   }
@@ -47,7 +47,7 @@ export default class BasketProductsModel extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Basket,
         join: {
-          from: this.tableName + '.basket_id',
+          from: this.tableName + '.basketId',
           to: Basket.tableName + '.id'
         }
       },
@@ -55,15 +55,15 @@ export default class BasketProductsModel extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Products,
         join: {
-          from: this.tableName + '.product_id',
+          from: this.tableName + '.productId',
           to: Products.tableName + '.id'
         }
       },
-      product_price: {
+      productPrice: {
         relation: Model.BelongsToOneRelation,
         modelClass: ProductsPrice,
         join: {
-          from: this.tableName + '.product_price_id',
+          from: this.tableName + '.productPriceId',
           to: ProductsPrice.tableName + '.id'
         }
       }
@@ -71,10 +71,10 @@ export default class BasketProductsModel extends Model {
   }
 
   $beforeInsert () {
-    this.created_at = new Date(Date.now())
+    this.createdAt = new Date(Date.now())
   }
 
   $beforeUpdate () {
-    this.updated_at = new Date(Date.now())
+    this.updatedAt = new Date(Date.now())
   }
 }

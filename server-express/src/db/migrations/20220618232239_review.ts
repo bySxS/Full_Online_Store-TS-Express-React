@@ -10,14 +10,14 @@ exports.up = function (knex: Knex) {
       tbl.increments('id')
         .primary()
         .unsigned()
-      tbl.integer('product_id')
+      tbl.integer('productId')
         .references('id')
         .inTable('products')
         .unsigned()
         .onDelete('CASCADE')
         .onUpdate('CASCADE')
         .notNullable()
-      tbl.integer('user_id')
+      tbl.integer('userId')
         .references('id')
         .inTable('users')
         .unsigned() // нужен для integer и increment
@@ -34,9 +34,9 @@ exports.up = function (knex: Knex) {
       tbl.integer('rating')
         .checkIn(['1', '2', '3', '4', '5'])
         .defaultTo(null)
-      tbl.integer('parent_id')
+      tbl.integer('parentId')
         .defaultTo(null)
-      tbl.timestamps(true, true)
+      tbl.timestamps(true, true, true)
     })
 }
 

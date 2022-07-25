@@ -15,10 +15,13 @@ export const validateUpdBasket = () => {
   return [
     body('status', 'Статус (status) не указан')
       .notEmpty(),
-    body('status', 'Указанный статус (status) не соответствет \'Completed\', \'Cancelled\', \'In processing\'')
-      .isIn(['Completed', 'Cancelled', 'In processing']),
+    body('status', 'Указанный статус (status) не соответствет \'Completed\', \'InDelivery\', \'Cancelled\', \'InProcessing\'')
+      .isIn(['InProcessing', 'InDelivery', 'Completed', 'Cancelled']),
     body('comment', 'При отмене заказа нужно написать причину (comment)')
       .if(body('status').isIn(['Cancelled']))
+      .notEmpty(),
+    body('deliveryDate', 'Укажите примерную дату доставки (deliveryDate) в формате \'2022-05-24T15:00\'')
+      .if(body('status').isIn(['InDelivery']))
       .notEmpty()
   ]
 }

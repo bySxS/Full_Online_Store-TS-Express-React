@@ -8,7 +8,7 @@ import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
 import {
   validateCharacteristicAddName,
   validateCharacteristicSetValue
-} from '@/products/characteristics/characteristics.validator'
+} from './characteristics.validator'
 
 const router = Router()
 
@@ -48,7 +48,9 @@ try {
     validateId(), ValidatorResultMiddleware,
     CharacteristicsController.getCharacteristicValueProductById)
 } catch (e) {
-  throw ApiError.internalRequest('Ошибка в Characteristics routers', 'CharacteristicsRouter')
+  throw ApiError.internalRequest(
+    'Ошибка в Characteristics routers',
+    'CharacteristicsRouter')
 }
 
 export default router

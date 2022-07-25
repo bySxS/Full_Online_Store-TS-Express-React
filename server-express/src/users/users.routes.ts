@@ -52,7 +52,9 @@ try {
     validateLimitPage(), ValidatorResultMiddleware,
     UsersController.getUsers)
 } catch (e) {
-  throw ApiError.internalRequest('Ошибка в Users routers', 'UsersRouter')
+  throw ApiError.internalRequest(
+    'Ошибка в Users routers', 'UsersRouter'
+  )
 }
 
 export default router

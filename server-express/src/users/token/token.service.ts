@@ -1,7 +1,9 @@
 import { Secret, sign, verify } from 'jsonwebtoken'
-import { IMessage } from '../../interface'
+import { IMessage } from '@/interface'
 import TokenModel from './token.model'
-import { IDtoToken, IJwt, IToken, ITokenService } from './token.interface'
+import {
+  IDtoToken, IJwt, IToken, ITokenService
+} from './token.interface'
 import ApiError from '../../apiError'
 
 class TokenService implements ITokenService {
@@ -57,11 +59,11 @@ class TokenService implements ITokenService {
     }
 
     const tokenData = await TokenModel.query()
-      .findOne('user_id', userId)
+      .findOne({ userId })
     if (!tokenData) {
       const result = await TokenModel.query()
         .insert({
-          user_id: userId,
+          userId,
           refreshToken,
           fingerprint,
           ip
@@ -73,7 +75,7 @@ class TokenService implements ITokenService {
       }
     }
     const result = await TokenModel.query()
-      .where('user_id', userId)
+      .where({ userId })
       .update({ refreshToken })
     return {
       success: true,

@@ -43,12 +43,17 @@ router.get('/', (req: Request, res: Response) => {
 
 router.all('*', (req: Request, res: Response, next: NextFunction) => {
   next(
-    ApiError.badRequest(`Request ${req.method} URL ${req.hostname}:${PORT}${req.originalUrl} not found!`, 'app')
+    ApiError.badRequest(
+      `Request ${req.method} URL ${req.hostname}:${PORT}${req.originalUrl} not found!`,
+      'app'
+    )
   )
 })
 
 app.use(errorApiMiddleware)
 
 app.listen(PORT, () => {
-  logger.info('Server started at PORT ' + PORT + ' , host: ' + os.hostname())
+  logger.info(
+    'Server started at PORT ' + PORT + ' , host: ' + os.hostname()
+  )
 })

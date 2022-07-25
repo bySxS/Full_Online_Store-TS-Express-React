@@ -37,8 +37,14 @@ class MailService {
       html:
         `
         <div>
-            <h1>Для активации аккаунта перейдите по ссылке</h1>
-            <div style="text-align: center;"><h2><a href="${this.urlSite}/api/user/activate/${link}" target="_blank">ТЫК</a></h2></div>
+        <h1>Для активации аккаунта перейдите по ссылке</h1>
+            <div style="text-align: center;">
+               <h2>
+                <a href="${this.urlSite}/api/user/activate/${link}" target="_blank">
+                     ТЫК
+                </a>
+               </h2>
+            </div>
         </div>
         `
     })

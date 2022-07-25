@@ -7,13 +7,13 @@ Model.knex(dbKnex)
 export default class ProductsPriceTypeModel extends Model {
   public id!: number
   public name!: string
-  public created_at!: Date | string
-  public updated_at!: Date | string
+  public createdAt!: Date | string
+  public updatedAt!: Date | string
 
-  products_price?: ProductsPrice
+  productsPrice?: ProductsPrice
 
   static get tableName () {
-    return 'products_price_type'
+    return 'productsPriceType'
   }
 
   static get jsonSchema () {
@@ -23,8 +23,8 @@ export default class ProductsPriceTypeModel extends Model {
       properties: {
         id: { type: 'integer' },
         name: { type: 'string', maxLength: 100 },
-        created_at: { type: 'string' },
-        updated_at: { type: 'string' }
+        createdAt: { type: 'string' },
+        updatedAt: { type: 'string' }
       }
     }
   }
@@ -36,17 +36,17 @@ export default class ProductsPriceTypeModel extends Model {
         modelClass: ProductsPrice,
         join: {
           from: this.tableName + '.id',
-          to: ProductsPrice.tableName + '.price_type_id'
+          to: ProductsPrice.tableName + '.priceTypeId'
         }
       }
     }
   }
 
   $beforeInsert () {
-    this.created_at = new Date(Date.now())
+    this.createdAt = new Date(Date.now())
   }
 
   $beforeUpdate () {
-    this.updated_at = new Date(Date.now())
+    this.updatedAt = new Date(Date.now())
   }
 }

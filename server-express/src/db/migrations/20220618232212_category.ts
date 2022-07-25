@@ -13,10 +13,10 @@ exports.up = function (knex: Knex) {
       tbl.string('name', 50)
         .notNullable()
         .unique()
-      tbl.string('name_eng', 50)
+      tbl.string('nameEng', 50)
         .notNullable()
         .unique()
-      tbl.integer('parent_id')
+      tbl.integer('parentId')
         .defaultTo(null)
     })
 }

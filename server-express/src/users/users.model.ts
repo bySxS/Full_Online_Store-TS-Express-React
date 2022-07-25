@@ -4,32 +4,32 @@ import { dbKnex } from '@/db'
 import Roles from './roles/roles.model'
 import Token from './token/token.model'
 import Products from '@/products/products.model'
-import FavoritesProducts from '@/products/favorites/favoritesProducts.model'
+import FavoritesProducts from '@/favoritesProducts/favoritesProducts.model'
 Model.knex(dbKnex)
 
 export default class UsersModel extends Model {
   public id!: number
   public nickname!: string
-  public full_name!: string
+  public fullName!: string
   public city!: string
   public address!: string
-  public delivery_address!: string
-  public phone_number!: string
-  public roles_id!: number
+  public deliveryAddress!: string
+  public phoneNumber!: string
+  public rolesId!: number
   public email!: string
   public password!: string
   public isActivated!: boolean
   public isSubscribeToNews!: boolean
   public avatar!: string
   public activateLink!: string
-  public registration_Ip!: string
-  public created_at!: Date | string
-  public updated_at!: Date | string
+  public registrationIp!: string
+  public createdAt!: Date | string
+  public updatedAt!: Date | string
 
   roles?: Roles[]
   token?: Token
   products?: Products
-  favorites_products?: FavoritesProducts
+  favoritesProducts?: FavoritesProducts
 
   static get tableName () {
     return 'users'
@@ -42,21 +42,21 @@ export default class UsersModel extends Model {
       properties: {
         id: { type: 'integer' },
         nickname: { type: 'string', minLength: 1, maxLength: 40 },
-        full_name: { type: 'string', minLength: 1, maxLength: 100 },
+        fullName: { type: 'string', minLength: 1, maxLength: 100 },
         city: { type: 'string', minLength: 1, maxLength: 100 },
         address: { type: 'string', minLength: 1, maxLength: 1000 },
-        delivery_address: { type: 'string', minLength: 1, maxLength: 255 },
-        phone_number: { type: 'string', minLength: 1, maxLength: 20 },
-        roles_id: { type: 'integer' },
+        deliveryAddress: { type: 'string', minLength: 1, maxLength: 255 },
+        phoneNumber: { type: 'string', minLength: 1, maxLength: 20 },
+        rolesId: { type: 'integer' },
         email: { type: 'string', minLength: 1, maxLength: 100 },
         password: { type: 'string', minLength: 1, maxLength: 200 },
         isActivated: { type: 'boolean' },
         isSubscribeToNews: { type: 'boolean' },
         avatar: { type: 'string' },
         activateLink: { type: 'string', minLength: 0, maxLength: 100 },
-        registration_Ip: { type: 'string', minLength: 1, maxLength: 100 },
-        created_at: { type: 'string' },
-        updated_at: { type: 'string' }
+        registrationIp: { type: 'string', minLength: 1, maxLength: 100 },
+        createdAt: { type: 'string' },
+        updatedAt: { type: 'string' }
       }
     }
   }
@@ -68,14 +68,14 @@ export default class UsersModel extends Model {
         modelClass: Token,
         join: {
           from: this.tableName + '.id',
-          to: Token.tableName + '.user_id'
+          to: Token.tableName + '.userId'
         }
       },
       roles: {
         relation: Model.BelongsToOneRelation,
         modelClass: Roles,
         join: {
-          from: this.tableName + '.roles_id',
+          from: this.tableName + '.rolesId',
           to: Roles.tableName + '.id'
         }
       },
@@ -84,7 +84,7 @@ export default class UsersModel extends Model {
         modelClass: Products,
         join: {
           from: this.tableName + '.id',
-          to: Products.tableName + '.user_id'
+          to: Products.tableName + '.userId'
         }
       },
       favoritesProducts: {
@@ -92,17 +92,17 @@ export default class UsersModel extends Model {
         modelClass: FavoritesProducts,
         join: {
           from: this.tableName + '.id',
-          to: Products.tableName + '.user_id'
+          to: Products.tableName + '.userId'
         }
       }
     }
   }
 
   $beforeInsert () {
-    this.created_at = new Date(Date.now())
+    this.createdAt = new Date(Date.now())
   }
 
   $beforeUpdate () {
-    this.updated_at = new Date(Date.now())
+    this.updatedAt = new Date(Date.now())
   }
 }

@@ -6,35 +6,35 @@ import { Knex } from 'knex'
 
 exports.up = function (knex: Knex) {
   return knex.schema
-    .createTable('basket_products', tbl => {
+    .createTable('basketProducts', tbl => {
       tbl.increments('id')
         .primary()
         .unsigned()
-      tbl.integer('basket_id')
+      tbl.integer('basketId')
         .references('id')
         .inTable('basket')
         .notNullable()
         .unsigned()
-      tbl.integer('product_id')
+      tbl.integer('productId')
         .references('id')
         .inTable('products')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .notNullable()
         .unsigned()
-      tbl.integer('product_price_id')
+      tbl.integer('productPriceId')
         .references('id')
-        .inTable('products_price')
+        .inTable('productsPrice')
         .notNullable()
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .unsigned()
-      tbl.double('current_price')
+      tbl.double('currentPrice')
         .notNullable()
-      tbl.integer('product_count')
+      tbl.integer('productCount')
         .defaultTo(1)
         .notNullable()
-      tbl.timestamps(true, true)
+      tbl.timestamps(true, true, true)
     })
 }
 
@@ -44,5 +44,5 @@ exports.up = function (knex: Knex) {
  */
 exports.down = function (knex: Knex) {
   return knex.schema
-    .dropTable('basket_products')
+    .dropTable('basketProducts')
 }

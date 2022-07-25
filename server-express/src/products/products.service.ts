@@ -8,7 +8,7 @@ import ProductsViewsService from './views/productsViews.service'
 import ProductsPriceService from './prices/productsPrice.service'
 import { cacheRedisDB } from '@/cache'
 import { raw } from 'objection'
-import FavoritesProductsService from '@/products/favorites/favoritesProducts.service'
+import FavoritesProductsService from '@/favoritesProducts/favoritesProducts.service'
 import { div } from '@/service/math.service'
 import { delFile, saveFile } from '@/service/file.service'
 
@@ -22,7 +22,12 @@ class ProductsService implements IProductService {
     return ProductsService.instance
   }
 
-  async updatePictures (id: number, DtoFile: IProductFilesArray | null, Dto: IProduct | null = null, findProduct: ProductsModel | undefined = undefined): Promise<string> {
+  async updatePictures (
+    id: number,
+    DtoFile: IProductFilesArray | null,
+    Dto: IProduct | null = null,
+    findProduct: ProductsModel | undefined = undefined
+  ): Promise<string> {
     if (!id || isNaN(id)) {
       throw ApiError.badRequest(
         'ID продукта не верный, для обновления изображений',
@@ -54,17 +59,28 @@ class ProductsService implements IProductService {
         delImage8, delImage9, delImage10
       } = Dto
       if (findProduct) {
-        fileNameScreen = await delFile(Boolean(delScreen), findProduct.screen, pathDir)
-        fileNameImage1 = await delFile(Boolean(delImage1), findProduct.image1, pathDir)
-        fileNameImage2 = await delFile(Boolean(delImage2), findProduct.image2, pathDir)
-        fileNameImage3 = await delFile(Boolean(delImage3), findProduct.image3, pathDir)
-        fileNameImage4 = await delFile(Boolean(delImage4), findProduct.image4, pathDir)
-        fileNameImage5 = await delFile(Boolean(delImage5), findProduct.image5, pathDir)
-        fileNameImage6 = await delFile(Boolean(delImage6), findProduct.image6, pathDir)
-        fileNameImage7 = await delFile(Boolean(delImage7), findProduct.image7, pathDir)
-        fileNameImage8 = await delFile(Boolean(delImage8), findProduct.image8, pathDir)
-        fileNameImage9 = await delFile(Boolean(delImage9), findProduct.image9, pathDir)
-        fileNameImage10 = await delFile(Boolean(delImage10), findProduct.image10, pathDir)
+        fileNameScreen =
+          await delFile(Boolean(delScreen), findProduct.screen, pathDir)
+        fileNameImage1 =
+          await delFile(Boolean(delImage1), findProduct.image1, pathDir)
+        fileNameImage2 =
+          await delFile(Boolean(delImage2), findProduct.image2, pathDir)
+        fileNameImage3 =
+          await delFile(Boolean(delImage3), findProduct.image3, pathDir)
+        fileNameImage4 =
+          await delFile(Boolean(delImage4), findProduct.image4, pathDir)
+        fileNameImage5 =
+          await delFile(Boolean(delImage5), findProduct.image5, pathDir)
+        fileNameImage6 =
+          await delFile(Boolean(delImage6), findProduct.image6, pathDir)
+        fileNameImage7 =
+          await delFile(Boolean(delImage7), findProduct.image7, pathDir)
+        fileNameImage8 =
+          await delFile(Boolean(delImage8), findProduct.image8, pathDir)
+        fileNameImage9 =
+          await delFile(Boolean(delImage9), findProduct.image9, pathDir)
+        fileNameImage10 =
+          await delFile(Boolean(delImage10), findProduct.image10, pathDir)
       }
     }
     if (DtoFile) {
@@ -73,17 +89,28 @@ class ProductsService implements IProductService {
         image4, image5, image6, image7,
         image8, image9, image10
       } = DtoFile
-      fileNameScreen = await saveFile(id, pathDir, screen, fileNameScreen, 'screen')
-      fileNameImage1 = await saveFile(id, pathDir, image1, fileNameImage1, 'image1')
-      fileNameImage2 = await saveFile(id, pathDir, image2, fileNameImage2, 'image2')
-      fileNameImage3 = await saveFile(id, pathDir, image3, fileNameImage3, 'image3')
-      fileNameImage4 = await saveFile(id, pathDir, image4, fileNameImage4, 'image4')
-      fileNameImage5 = await saveFile(id, pathDir, image5, fileNameImage5, 'image5')
-      fileNameImage6 = await saveFile(id, pathDir, image6, fileNameImage6, 'image6')
-      fileNameImage7 = await saveFile(id, pathDir, image7, fileNameImage7, 'image7')
-      fileNameImage8 = await saveFile(id, pathDir, image8, fileNameImage8, 'image8')
-      fileNameImage9 = await saveFile(id, pathDir, image9, fileNameImage9, 'image9')
-      fileNameImage10 = await saveFile(id, pathDir, image10, fileNameImage10, 'image10')
+      fileNameScreen =
+        await saveFile(id, pathDir, screen, fileNameScreen, 'screen')
+      fileNameImage1 =
+        await saveFile(id, pathDir, image1, fileNameImage1, 'image1')
+      fileNameImage2 =
+        await saveFile(id, pathDir, image2, fileNameImage2, 'image2')
+      fileNameImage3 =
+        await saveFile(id, pathDir, image3, fileNameImage3, 'image3')
+      fileNameImage4 =
+        await saveFile(id, pathDir, image4, fileNameImage4, 'image4')
+      fileNameImage5 =
+        await saveFile(id, pathDir, image5, fileNameImage5, 'image5')
+      fileNameImage6 =
+        await saveFile(id, pathDir, image6, fileNameImage6, 'image6')
+      fileNameImage7 =
+        await saveFile(id, pathDir, image7, fileNameImage7, 'image7')
+      fileNameImage8 =
+        await saveFile(id, pathDir, image8, fileNameImage8, 'image8')
+      fileNameImage9 =
+        await saveFile(id, pathDir, image9, fileNameImage9, 'image9')
+      fileNameImage10 =
+        await saveFile(id, pathDir, image10, fileNameImage10, 'image10')
     }
     const result = await ProductsModel.query()
       .where({ id })
@@ -108,7 +135,9 @@ class ProductsService implements IProductService {
     return `Изображения для продукта с id${id} успешно обновлены`
   }
 
-  async add (Dto: IProduct, DtoFile: IProductFilesArray): Promise<IMessage> {
+  async add (
+    Dto: IProduct, DtoFile: IProductFilesArray
+  ): Promise<IMessage> {
     const {
       title, price, categoryId, userId,
       description, count, availability,
@@ -136,16 +165,16 @@ class ProductsService implements IProductService {
     const product = await ProductsModel.query()
       .insert({
         title,
-        category_id: +categoryId,
-        user_id: +userId,
+        categoryId: +categoryId,
+        userId: +userId,
         description,
         count: +count,
         availability: Boolean(availability),
-        parent_id: parentId,
-        video_youtube_url: videoYoutubeUrl,
+        parentId,
+        videoYoutubeUrl,
         url,
         screen: '',
-        price_type_id: priceTypeId
+        priceTypeId
       })
       .select('*')
 
@@ -155,13 +184,16 @@ class ProductsService implements IProductService {
         'ProductsService add')
     }
 
-    const imgResult = await this.updatePictures(product.id, DtoFile)
-    const views = await ProductsViewsService.createViewsProduct(product.id)
-    const priceCommon = await ProductsPriceService.addPriceForProduct({
-      priceTypeId,
-      productId: product.id,
-      price: +price
-    })
+    const imgResult =
+      await this.updatePictures(product.id, DtoFile)
+    const views =
+      await ProductsViewsService.createViewsProduct(product.id)
+    const priceCommon =
+      await ProductsPriceService.addPriceForProduct({
+        priceTypeId,
+        productId: product.id,
+        price: +price
+      })
     return {
       success: true,
       result: product,
@@ -169,7 +201,9 @@ class ProductsService implements IProductService {
     }
   }
 
-  async updateById (id: number, Dto: IProduct, DtoFile: IProductFilesArray): Promise<IMessage> {
+  async updateById (
+    id: number, Dto: IProduct, DtoFile: IProductFilesArray
+  ): Promise<IMessage> {
     const {
       title, price, priceTypeId, categoryId, userId,
       description, count, availability,
@@ -195,15 +229,15 @@ class ProductsService implements IProductService {
       .where({ id })
       .update({
         title,
-        category_id: +categoryId,
-        user_id: +userId,
+        categoryId: +categoryId,
+        userId: +userId,
         description,
         count: +count,
         availability: Boolean(availability),
-        parent_id: parentId,
-        video_youtube_url: videoYoutubeUrl,
+        parentId,
+        videoYoutubeUrl,
         url,
-        price_type_id: +priceTypeId
+        priceTypeId: +priceTypeId
       })
 
     if (!product) {
@@ -264,44 +298,70 @@ class ProductsService implements IProductService {
   getProductById (id: number) {
     return ProductsModel.query()
       .where('products.id', '=', id)
-      .andWhere('products_price.price_type_id', '=', raw('products.price_type_id'))
-      .andWhere('products_price_type.id', '=', raw('products.price_type_id'))
+      .andWhere('productsPrice.priceTypeId', '=',
+        raw('products.priceTypeId'))
+      .andWhere('productsPriceType.id', '=',
+        raw('products.priceTypeId'))
       .first()
-      .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
-      .innerJoin('products_price_type', 'products.price_type_id', '=', 'products_price_type.id')
-      .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
-      .innerJoin('category', 'products.category_id', '=', 'category.id')
-      .innerJoin('category as section', 'section.id', '=', 'category.parent_id')
+      .innerJoin('productsViews',
+        'products.id', '=',
+        'productsViews.productId')
+      .innerJoin('productsPriceType',
+        'products.priceTypeId', '=',
+        'productsPriceType.id')
+      .innerJoin('productsPrice',
+        'products.id', '=',
+        'productsPrice.productId')
+      .innerJoin('category',
+        'products.categoryId', '=',
+        'category.id')
+      .innerJoin('category as section',
+        'section.id', '=',
+        'category.parentId')
       .select('products.*',
-        'products_views.views as view',
-        'products_price.id as priceId',
-        'products_price.price as price',
-        'products_price.currency as priceCurrency',
-        'products_price_type.name as priceType',
+        'productsViews.views as view',
+        'productsPrice.id as priceId',
+        'productsPrice.price as price',
+        'productsPrice.currency as priceCurrency',
+        'productsPriceType.name as priceType',
         'category.name as categoryName',
         'section.name as sectionName')
-      .groupBy('products_price.id',
-        'products_price.price',
-        'products_price.currency')
+      .groupBy('productsPrice.id',
+        'productsPrice.price',
+        'productsPrice.currency')
   }
 
-  getAllProducts (title: string = '', limit: number = 20, page: number = 1) {
+  getAllProducts (
+    title: string = '', limit: number = 20, page: number = 1
+  ) {
     return ProductsModel.query()
       .page(page - 1, limit)
       .where('products.title', 'like', `%${title}%`)
-      .andWhere('products_price.price_type_id', '=', raw('products.price_type_id'))
-      .first()
-      .innerJoin('products_views', 'products.id', '=', 'products_views.product_id')
-      .innerJoin('products_price_type', 'products.price_type_id', '=', 'products_price_type.id')
-      .innerJoin('products_price', 'products.id', '=', 'products_price.product_id')
-      .innerJoin('category', 'products.category_id', '=', 'category.id')
-      .innerJoin('category as section', 'section.id', '=', 'category.parent_id')
+      .andWhere('productsPrice.priceTypeId', '=',
+        raw('products.priceTypeId'))
+      .andWhere('productsPriceType.id', '=',
+        raw('products.priceTypeId'))
+      .innerJoin('productsViews',
+        'products.id', '=',
+        'productsViews.productId')
+      .innerJoin('productsPriceType',
+        'products.priceTypeId', '=',
+        'productsPriceType.id')
+      .innerJoin('productsPrice',
+        'products.id', '=',
+        'productsPrice.productId')
+      .innerJoin('category',
+        'products.categoryId', '=',
+        'category.id')
+      .innerJoin('category as section',
+        'section.id', '=',
+        'category.parentId')
       .select('products.*',
-        'products_views.views as view',
-        'products_price.id as priceId',
-        'products_price.price as price',
-        'products_price.currency as priceCurrency',
-        'products_price_type.name as priceType',
+        'productsViews.views as view',
+        'productsPrice.id as priceId',
+        'productsPrice.price as price',
+        'productsPrice.currency as priceCurrency',
+        'productsPriceType.name as priceType',
         'category.name as categoryName',
         'section.name as sectionName')
   }
@@ -328,12 +388,17 @@ class ProductsService implements IProductService {
     if (incView) {
       await ProductsViewsService.incrementViewById(id)
     }
-    const countFavorites = await FavoritesProductsService.getCountFavoritesByProductId(id)
+    const countFavorites =
+      await FavoritesProductsService.getCountFavoritesByProductId(id)
     let parentProduct = null
-    if (product.parent_id !== null && !isNaN(product.parent_id)) {
-      parentProduct = await this.getProductById(product.parent_id)
+    if (product.parentId !== null && !isNaN(product.parentId)) {
+      parentProduct = await this.getProductById(product.parentId)
     }
-    const result = { ...product, ...countFavorites.result, parentProduct }
+    const result = {
+      ...product,
+      ...countFavorites.result,
+      parentProduct
+    }
     await cacheRedisDB.set('product:' + id, JSON.stringify(result))
     await cacheRedisDB.expire('product:' + id, 3600) // удалять через час
     return {
@@ -343,7 +408,9 @@ class ProductsService implements IProductService {
     }
   }
 
-  async getAll (limit: number = 20, page: number = 1): Promise<IMessage> {
+  async getAll (
+    limit: number = 20, page: number = 1
+  ): Promise<IMessage> {
     const result = await this.getAllProducts('', limit, page)
     if (!result) {
       return {
@@ -358,7 +425,9 @@ class ProductsService implements IProductService {
     }
   }
 
-  async search (title: string = '', limit: number = 20, page: number = 1): Promise<IMessage> {
+  async search (
+    title: string = '', limit: number = 20, page: number = 1
+  ): Promise<IMessage> {
     const result = await this.getAllProducts(title, limit, page)
     if (!result) {
       return {

@@ -5,7 +5,7 @@ import ApiError from '@/apiError'
 import {
   ICharacteristicName,
   ICharacteristicService, ICharacteristicSetValue
-} from '@/products/characteristics/characteristics.interface'
+} from './characteristics.interface'
 
 class CharacteristicsService implements ICharacteristicService {
   private static instance = new CharacteristicsService()
@@ -26,8 +26,8 @@ class CharacteristicsService implements ICharacteristicService {
     }
     const result = await CharacteristicsSetValueModel.query()
       .insert({
-        product_id: +productId,
-        characteristics_name_id: +characteristicsNameId,
+        productId: +productId,
+        characteristicsNameId: +characteristicsNameId,
         value
       })
     if (!result) {
@@ -52,8 +52,8 @@ class CharacteristicsService implements ICharacteristicService {
     const result = await CharacteristicsSetValueModel.query()
       .where({ id })
       .update({
-        product_id: +productId,
-        characteristics_name_id: +characteristicsNameId,
+        productId: +productId,
+        characteristicsNameId: +characteristicsNameId,
         value
       })
     if (!result) {
@@ -85,23 +85,23 @@ class CharacteristicsService implements ICharacteristicService {
 
   async getCharacteristicValueProductById (id: number): Promise<IMessage> {
     const result = await CharacteristicsSetValueModel.query()
-      .where('characteristics_set_value.product_id', '=', id)
-      .innerJoin('characteristics_name',
-        'characteristics_set_value.characteristics_name_id', '=',
-        'characteristics_name.id')
-      .innerJoin('characteristics_name as parent',
-        'characteristics_name.parent_id', '=',
+      .where('characteristicsSetValue.productId', '=', id)
+      .innerJoin('characteristicsName',
+        'characteristicsSetValue.characteristicsNameId', '=',
+        'characteristicsName.id')
+      .innerJoin('characteristicsName as parent',
+        'characteristicsName.parentId', '=',
         'parent.id')
-      .select('characteristics_name.id',
-        'characteristics_name.parent_id',
-        'characteristics_name.name as propertyName',
-        'characteristics_set_value.value as propertyValue',
+      .select('characteristicsName.id',
+        'characteristicsName.parentId',
+        'characteristicsName.name as propertyName',
+        'characteristicsSetValue.value as propertyValue',
         'parent.name as sectionName')
 
     if (!result) {
       throw ApiError.badRequest(
         'Характеристик не найдено',
-        'CharacteristicsService getCharacteristicProductById')
+        'CharacteristicsService getCharacteristicValueProductById')
     }
     return {
       success: true,
@@ -119,21 +119,21 @@ class CharacteristicsService implements ICharacteristicService {
       if (parent) {
         throw ApiError.badRequest(
           `Родительской характеристики с id${parentId} не существует`,
-          'CharacteristicsService addCharacteristicValue')
+          'CharacteristicsService addCharacteristicName')
       }
     }
     const result = await CharacteristicsNameModel.query()
       .insert({
         name,
-        category_id: +categoryId,
-        field_type: fieldType,
-        parent_id: parentId
+        categoryId: +categoryId,
+        fieldType,
+        parentId
       })
       .select('*')
     if (!result) {
       throw ApiError.badRequest(
         `Характеристика ${name} не добавлена`,
-        'ProductsPriceService createProductPrice')
+        'ProductsPriceService addCharacteristicName')
     }
     return {
       success: true,
@@ -151,21 +151,21 @@ class CharacteristicsService implements ICharacteristicService {
       if (parent) {
         throw ApiError.badRequest(
           `Родительской характеристики с id${parentId} не существует`,
-          'CharacteristicsService updCharacteristicValue')
+          'CharacteristicsService updCharacteristicName')
       }
     }
     const result = await CharacteristicsNameModel.query()
       .where({ id })
       .update({
         name,
-        category_id: +categoryId,
-        field_type: fieldType,
-        parent_id: parentId
+        categoryId: +categoryId,
+        fieldType,
+        parentId
       })
     if (!result) {
       throw ApiError.badRequest(
         `Характеристика ${name} не изменена`,
-        'CharacteristicsService updCharacteristicValue')
+        'CharacteristicsService updCharacteristicName')
     }
     return {
       success: true,
@@ -180,7 +180,7 @@ class CharacteristicsService implements ICharacteristicService {
     if (!result) {
       throw ApiError.badRequest(
         'Характеристику не удалось удалить',
-        'CharacteristicsService delCharacteristicValue')
+        'CharacteristicsService delCharacteristicName')
     }
     return {
       success: true,

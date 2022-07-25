@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { ICategoryController } from '@/products/category/category.interface'
+import { ICategoryController } from './category.interface'
 import CategoryService from './category.service'
 
 class CategoryController implements ICategoryController {

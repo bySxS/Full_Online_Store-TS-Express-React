@@ -1,7 +1,7 @@
-import logger from '../logger'
+import logger from '@/logger'
 import Queue from 'bull'
-import UsersModel from '../users/users.model'
-import { IError } from '../interface'
+import UsersModel from '@/users/users.model'
+import { IError } from '@/interface'
 
 const REDIS_HOST: string = process.env.REDIS_QUEUE_HOST || 'localhost'
 const REDIS_PORT: number = Number(process.env.REDIS_QUEUE_PORT) || 6379

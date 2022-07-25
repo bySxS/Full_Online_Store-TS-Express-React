@@ -6,11 +6,11 @@ import { Knex } from 'knex'
 
 exports.up = function (knex: Knex) {
   return knex.schema
-    .createTable('characteristics_name', tbl => {
+    .createTable('characteristicsName', tbl => {
       tbl.increments('id')
         .primary()
         .unsigned()
-      tbl.integer('category_id')
+      tbl.integer('categoryId')
         // .defaultTo(null)
         .references('id')
         .inTable('category')
@@ -19,8 +19,8 @@ exports.up = function (knex: Knex) {
         .onUpdate('CASCADE')
       tbl.string('name', 150)
         .notNullable()
-      tbl.string('field_type', 100)
-      tbl.integer('parent_id')
+      tbl.string('fieldType', 100)
+      tbl.integer('parentId')
         .defaultTo(null)
     })
 }
@@ -31,5 +31,5 @@ exports.up = function (knex: Knex) {
  */
 exports.down = function (knex: Knex) {
   return knex.schema
-    .dropTable('characteristics_name')
+    .dropTable('characteristicsName')
 }

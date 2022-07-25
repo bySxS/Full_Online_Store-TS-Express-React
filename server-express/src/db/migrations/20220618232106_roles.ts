@@ -13,7 +13,7 @@ exports.up = function (knex: Knex) {
       tbl.string('name', 40)
         .notNullable()
         .unique()
-      tbl.string('name_eng', 40)
+      tbl.string('nameEng', 40)
         .notNullable()
         .unique()
     })

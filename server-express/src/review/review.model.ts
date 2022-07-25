@@ -8,16 +8,16 @@ Model.knex(dbKnex)
 
 export default class ReviewModel extends Model {
   public id!: number
-  public product_id!: number
-  public user_id!: number
+  public productId!: number
+  public userId!: number
   public comment!: string
   public advantages!: string
   public flaws!: string
   public bought!: boolean
   public rating!: number
-  public parent_id!: number
-  public created_at!: Date | string
-  public updated_at!: Date | string
+  public parentId!: number
+  public createdAt!: Date | string
+  public updatedAt!: Date | string
 
   users?: Users
   products?: Products
@@ -32,16 +32,16 @@ export default class ReviewModel extends Model {
 
       properties: {
         id: { type: 'integer' },
-        product_id: { type: 'integer' },
-        user_id: { type: 'integer' },
+        productId: { type: 'integer' },
+        userId: { type: 'integer' },
         comment: { type: 'string', minLength: 10, maxLength: 1000 },
         advantages: { type: 'string', maxLength: 1000 },
         flaws: { type: 'string', maxLength: 1000 },
         bought: { type: 'boolean' },
         rating: { type: 'integer' },
-        parent_id: { type: 'integer' },
-        created_at: { type: 'string' },
-        updated_at: { type: 'string' }
+        parentId: { type: 'integer' },
+        createdAt: { type: 'string' },
+        updatedAt: { type: 'string' }
       }
     }
   }
@@ -52,7 +52,7 @@ export default class ReviewModel extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Users,
         join: {
-          from: this.tableName + '.user_id',
+          from: this.tableName + '.userId',
           to: Users.tableName + '.id'
         }
       },
@@ -60,7 +60,7 @@ export default class ReviewModel extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Products,
         join: {
-          from: this.tableName + '.product_id',
+          from: this.tableName + '.productId',
           to: Products.tableName + '.id'
         }
       },
@@ -68,7 +68,7 @@ export default class ReviewModel extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: this,
         join: {
-          from: this.tableName + '.parent_id',
+          from: this.tableName + '.parentId',
           to: this.tableName + '.id'
         }
       }
@@ -76,10 +76,10 @@ export default class ReviewModel extends Model {
   }
 
   $beforeInsert () {
-    this.created_at = new Date(Date.now())
+    this.createdAt = new Date(Date.now())
   }
 
   $beforeUpdate () {
-    this.updated_at = new Date(Date.now())
+    this.updatedAt = new Date(Date.now())
   }
 }

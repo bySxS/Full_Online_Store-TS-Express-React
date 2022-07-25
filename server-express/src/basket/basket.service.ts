@@ -31,11 +31,12 @@ class BasketService implements IBasketService {
     const basket = await BasketModel.query()
       .where({ id: currentBasket.result.id })
       .update({
-        status: 'In processing',
+        status: 'InProcessing',
+        dateProcessing: new Date(Date.now()),
         comment: comment || '',
-        full_name: fullName,
-        phone_number: phoneNumber,
-        delivery_address: deliveryAddress
+        fullName,
+        phoneNumber,
+        deliveryAddress
       })
     if (!basket) {
       throw ApiError.badRequest(
@@ -57,35 +58,38 @@ class BasketService implements IBasketService {
 
   async getCurrentBasketByUserId (userId: number): Promise<IMessage> {
     let basket = await BasketModel.query()
-      .where('basket.user_id', '=', userId)
-      .andWhere('basket.status', '=', 'Selects the product')
+      .where('basket.userId', '=', userId)
+      .andWhere(
+        'basket.status', '=',
+        'SelectsTheProduct')
       .first()
       .select('basket.*')
     if (!basket) { // нету корзины свободной придётся создать
       basket = await BasketModel.query()
         .insert({
-          user_id: +userId,
-          status: 'Selects the product'
+          userId: +userId,
+          status: 'SelectsTheProduct'
         })
         .select('*')
     }
     const productsInBasket = await BasketProductsModel.query()
-      .where('basket_products.basket_id', '=', basket.id)
-      .andWhere('products_price_type.id', '=', raw('products.price_type_id'))
+      .where('basketProducts.basketId', '=', basket.id)
+      .andWhere('productsPriceType.id', '=',
+        raw('products.priceTypeId'))
       .innerJoin('products',
-        'basket_products.product_id', '=',
+        'basketProducts.productId', '=',
         'products.id')
       .innerJoin('category',
         'category.id', '=',
-        'products.category_id')
-      .innerJoin('products_price_type',
-        'products_price_type.id', '=',
-        'products.price_type_id')
-      .select('basket_products.*',
+        'products.categoryId')
+      .innerJoin('productsPriceType',
+        'productsPriceType.id', '=',
+        'products.priceTypeId')
+      .select('basketProducts.*',
         'products.title as productTitle',
         'category.name as productCategory',
         'products.screen as productScreen',
-        'products_price_type.name as productPriceType',
+        'productsPriceType.name as productPriceType',
         'products.availability as productAvailability')
     return {
       success: true,
@@ -94,13 +98,15 @@ class BasketService implements IBasketService {
     }
   }
 
-  async addProductToBasket (userId: number, Dto: IBasketProduct): Promise<IMessage> {
+  async addProductToBasket (
+    userId: number, Dto: IBasketProduct
+  ): Promise<IMessage> {
     const {
       productId, productCount
     } = Dto
     const findCurrentBasket = await this.getCurrentBasketByUserId(userId)
-    findCurrentBasket.result.BasketProducts.forEach((product: { product_id: number }) => {
-      if (product.product_id === +productId) {
+    findCurrentBasket.result.BasketProducts.forEach((product: { productId: number }) => {
+      if (product.productId === +productId) {
         throw ApiError.badRequest(
           `Продукт с id${productId} уже в корзине, вы можете изменить количество`,
           'BasketService addProductToBasket')
@@ -119,11 +125,11 @@ class BasketService implements IBasketService {
     }
     const result = await BasketProductsModel.query()
       .insert({
-        basket_id: findCurrentBasket.result.id,
-        product_id: +productId,
-        product_price_id: product.result.priceId,
-        current_price: product.result.price,
-        product_count: +productCount
+        basketId: findCurrentBasket.result.id,
+        productId: +productId,
+        productPriceId: product.result.priceId,
+        currentPrice: product.result.price,
+        productCount: +productCount
       })
     if (!result) {
       throw ApiError.badRequest(
@@ -137,11 +143,13 @@ class BasketService implements IBasketService {
     }
   }
 
-  async delProductFromBasket (userId: number, productId: number): Promise<IMessage> {
+  async delProductFromBasket (
+    userId: number, productId: number
+  ): Promise<IMessage> {
     const findCurrentBasket = await this.getCurrentBasketByUserId(userId)
     let id
-    findCurrentBasket.result.BasketProducts.forEach((product: { id: number, product_id: number }) => {
-      if (product.product_id === +productId) {
+    findCurrentBasket.result.BasketProducts.forEach((product: { id: number, productId: number }) => {
+      if (product.productId === +productId) {
         id = product.id
       }
     })
@@ -164,20 +172,22 @@ class BasketService implements IBasketService {
     }
   }
 
-  async getAllOrdersByUserId (userId: number, limit: number = 20, page: number = 1): Promise<IMessage> {
+  async getAllOrdersByUserId (
+    userId: number, limit: number = 20, page: number = 1
+  ): Promise<IMessage> {
     const result = await BasketModel.query()
       .page(page - 1, limit)
-      .where('basket.status', '<>', 'Selects the product')
-      .andWhere('basket.user_id', '=', userId)
-      .innerJoin('basket_products',
+      .where('basket.status', '<>', 'SelectsTheProduct')
+      .andWhere('basket.userId', '=', userId)
+      .innerJoin('basketProducts',
         'basket.id', '=',
-        'basket_products.basket_id')
+        'basketProducts.basketId')
       .innerJoin('products',
         'products.id', '=',
-        'basket_products.product_id')
+        'basketProducts.productId')
       .select('basket.*',
-        'basket_products.current_price',
-        'basket_products.product_count',
+        'basketProducts.currentPrice',
+        'basketProducts.productCount',
         'products.title')
     if (!result) {
       throw ApiError.badRequest(
@@ -194,16 +204,16 @@ class BasketService implements IBasketService {
   async getAllOrdersInProgressAllUsers (limit: number, page: number): Promise<IMessage> {
     const result = await BasketModel.query()
       .page(page - 1, limit)
-      .where({ 'basket.status': 'In processing' })
-      .innerJoin('basket_products',
+      .where({ 'basket.status': 'InProcessing' })
+      .innerJoin('basketProducts',
         'basket.id', '=',
-        'basket_products.basket_id')
+        'basketProducts.basketId')
       .innerJoin('products',
         'products.id', '=',
-        'basket_products.product_id')
+        'basketProducts.productId')
       .select('basket.*',
-        'basket_products.current_price',
-        'basket_products.product_count',
+        'basketProducts.currentPrice',
+        'basketProducts.productCount',
         'products.title')
     if (!result) {
       throw ApiError.badRequest(
@@ -220,11 +230,15 @@ class BasketService implements IBasketService {
   async isUserBoughtProduct (userId: number, productId: number): Promise<boolean> {
     const result = await BasketProductsModel.query()
       .first()
-      .where('basket_products.product_id', '=', productId)
-      .innerJoin('basket', 'basket_products.basket_id', 'basket.id')
-      .andWhere('basket.status', '=', 'completed')
-      .andWhere('basket.user_id', '=', userId)
-      .select('basket_products.product_id as product', 'basket.user_id as user')
+      .where('basketProducts.productId', '=', productId)
+      .innerJoin('basket',
+        'basketProducts.basketId',
+        'basket.id')
+      .andWhere('basket.status', '=', 'Completed')
+      .andWhere('basket.userId', '=', userId)
+      .select(
+        'basketProducts.productId as product',
+        'basket.userId as user')
     return Boolean(result)
   }
 
@@ -241,7 +255,7 @@ class BasketService implements IBasketService {
         `Заказа с id${id} не существует`,
         'BasketService updBasketById')
     }
-    if (!forciblyUpd && basket.status !== 'In processing') {
+    if (!forciblyUpd && basket.status !== 'InProcessing') {
       throw ApiError.badRequest(
         `Заказ с id${id} не нуждается в обработке`,
         'BasketService updBasketById')
@@ -251,8 +265,8 @@ class BasketService implements IBasketService {
       .update({
         status,
         comment: comment || '',
-        date_processing: dateProcessing,
-        delivery_date: deliveryDate
+        dateProcessing,
+        deliveryDate
       })
     if (!result) {
       throw ApiError.badRequest(

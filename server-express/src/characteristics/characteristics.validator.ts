@@ -12,7 +12,7 @@ export const validateCharacteristicSetValue = () => {
     body('characteristicsNameId', 'ID названия характеристики (characteristicsNameId) не указано')
       .notEmpty(),
     body('characteristicsNameId', 'ID названия характеристики (characteristicsNameId) должны быть только цифры')
-      .matches('^[a-zA-Z0-9]+$'),
+      .matches('^[a-zA-Z0-9]+$')
   ]
 }
 

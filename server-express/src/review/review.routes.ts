@@ -35,7 +35,9 @@ try {
     AuthMiddleware,
     ReviewController.getAllReviewByAuthUser)
 } catch (e) {
-  throw ApiError.internalRequest('Ошибка в Review routers', 'ReviewRouter')
+  throw ApiError.internalRequest(
+    'Ошибка в Review routers', 'ReviewRouter'
+  )
 }
 
 export default router

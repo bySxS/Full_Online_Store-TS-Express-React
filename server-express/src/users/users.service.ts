@@ -27,7 +27,12 @@ class UsersService implements IUserService {
 
   // registration ///////////////////////////////////////////////
 
-  async updAvatar (id: number, DtoFile: IUsersFilesArray | null, delAvatar: boolean = false, userFind: UsersModel | undefined = undefined): Promise<string> {
+  async updAvatar (
+    id: number,
+    DtoFile: IUsersFilesArray | null,
+    delAvatar: boolean = false,
+    userFind: UsersModel | undefined = undefined
+  ): Promise<string> {
     if (!id || isNaN(id)) {
       throw ApiError.badRequest(
         'ID пользователя не верный, для обновления аватарки',
@@ -59,7 +64,12 @@ class UsersService implements IUserService {
     return `Аватарка для пользователя с id${id} успешно обновлена`
   }
 
-  async registration (Dto: IUsers, ip: string, fingerprint: string, DtoFile: IUsersFilesArray): Promise<IMessage> {
+  async registration (
+    Dto: IUsers,
+    ip: string,
+    fingerprint: string,
+    DtoFile: IUsersFilesArray
+  ): Promise<IMessage> {
     const {
       nickname, isSubscribeToNews,
       fullName, email,
@@ -96,15 +106,15 @@ class UsersService implements IUserService {
       .insert({
         nickname,
         email,
-        full_name: fullName,
-        roles_id: rolesId,
+        fullName,
+        rolesId,
         password: hashPassword,
         city,
         address,
-        delivery_address: deliveryAddress,
-        phone_number: phoneNumber,
+        deliveryAddress,
+        phoneNumber,
         isActivated: false,
-        registration_Ip: ip,
+        registrationIp: ip,
         activateLink,
         isSubscribeToNews
       })
@@ -116,12 +126,12 @@ class UsersService implements IUserService {
     }
     const avatarInfo = await this.updAvatar(user.id, DtoFile)
     await MailService.sendActivationMail(email, activateLink)
-    const roles = await RolesService.getRoleById(user.roles_id)
+    const roles = await RolesService.getRoleById(user.rolesId)
     const token = TokenService.generateTokens(
       user.id,
       user.nickname,
-      user.roles_id,
-      roles.result.name_eng
+      user.rolesId,
+      roles.result.nameEng
     )
     const dtoToken: IDtoToken = {
       userId: user.id,
@@ -140,7 +150,9 @@ class UsersService implements IUserService {
 
   // login ///////////////////////////////////////////////
 
-  async login (Dto: IUsers, ip: string, fingerprint: string): Promise<IMessage> {
+  async login (
+    Dto: IUsers, ip: string, fingerprint: string
+  ): Promise<IMessage> {
     const { nickname, password } = Dto
     const user = await this.getUserByNickname(nickname)
     if (!user.result) {
@@ -157,8 +169,8 @@ class UsersService implements IUserService {
     const token = TokenService.generateTokens(
       user.result.id,
       user.result.nickname,
-      user.result.roles_id,
-      user.result.roles_name
+      user.result.rolesId,
+      user.result.rolesName
     )
     const dtoToken: IDtoToken = {
       userId: user.result.id,
@@ -200,7 +212,9 @@ class UsersService implements IUserService {
     }
   }
 
-  async refresh (refreshToken: string, ip: string, fingerprint: string): Promise<IMessage> {
+  async refresh (
+    refreshToken: string, ip: string, fingerprint: string
+  ): Promise<IMessage> {
     if (!refreshToken || refreshToken.length < 10) {
       throw ApiError.UnauthorizedError(
         'UsersService refresh')
@@ -216,8 +230,8 @@ class UsersService implements IUserService {
     const token = TokenService.generateTokens(
       user.result.id,
       user.result.nickname,
-      user.result.roles_id,
-      user.result.roles_name
+      user.result.rolesId,
+      user.result.rolesName
     )
     const dtoToken: IDtoToken = {
       userId: user.result.id,
@@ -237,8 +251,11 @@ class UsersService implements IUserService {
   async getUserByNickname (nickname: string): Promise<IMessage> {
     const result = await UsersModel.query()
       .findOne('users.nickname', '=', nickname)
-      .innerJoin('roles', 'users.roles_id', '=', 'roles.id')
-      .select('users.*', 'roles.name_eng as roles_name')
+      .innerJoin('roles',
+        'users.rolesId', '=',
+        'roles.id')
+      .select('users.*',
+        'roles.nameEng as rolesName')
     if (!result) {
       throw ApiError.badRequest(
         `Пользователь с ником ${nickname} не найден`,
@@ -269,13 +286,20 @@ class UsersService implements IUserService {
     }
   }
 
-  async updateUserById (id: number, bodyDto: IUsers, rolesIdAuthUser: number, DtoFile: IUsersFilesArray): Promise<IMessage> {
+  async updateUserById (
+    id: number,
+    bodyDto: IUsers,
+    rolesIdAuthUser: number,
+    DtoFile: IUsersFilesArray
+  ): Promise<IMessage> {
     const {
-      nickname, fullName, email, password, city, address, deliveryAddress,
+      nickname, fullName, email,
+      password, city, address, deliveryAddress,
       phoneNumber, delAvatar, isSubscribeToNews
     } = bodyDto
     let rolesId
-    if (rolesIdAuthUser === 1) { // если авторизированный админ то можно позволить сменить группу
+    if (rolesIdAuthUser === 1) {
+      // если авторизированный админ то можно сменить группу
       ({ rolesId } = bodyDto)
     } else {
       rolesId = 3
@@ -293,16 +317,17 @@ class UsersService implements IUserService {
       .update({
         nickname,
         email,
-        full_name: fullName,
+        fullName,
         password,
         city,
         address,
-        delivery_address: deliveryAddress,
-        phone_number: phoneNumber,
-        roles_id: rolesId,
+        deliveryAddress,
+        phoneNumber,
+        rolesId,
         isSubscribeToNews
       })
-    const avatarInfo = await this.updAvatar(user.id, DtoFile, delAvatar, user)
+    const avatarInfo =
+      await this.updAvatar(user.id, DtoFile, delAvatar, user)
     return {
       success: true,
       result: changeUser,
@@ -318,8 +343,10 @@ class UsersService implements IUserService {
     // } else {
     const user = await UsersModel.query()
       .findOne('users.id', '=', id)
-      .innerJoin('roles', 'users.roles_id', '=', 'roles.id')
-      .select('users.*', 'roles.name_eng as roles_name')
+      .innerJoin('roles',
+        'users.rolesId', '=',
+        'roles.id')
+      .select('users.*', 'roles.nameEng as rolesName')
     if (!user) {
       throw ApiError.badRequest(
         `Пользователя с ID ${id} не найдено!`,
@@ -335,7 +362,9 @@ class UsersService implements IUserService {
     }
   }
 
-  async getUsers (limit: number = 10, page: number = 1): Promise<IMessage> {
+  async getUsers (
+    limit: number = 10, page: number = 1
+  ): Promise<IMessage> {
     const result = await UsersModel.query()
       .page(page - 1, limit)
     if (!result) {
@@ -350,7 +379,9 @@ class UsersService implements IUserService {
     }
   }
 
-  async searchUsers (nickname: string = '', limit: number = 10, page: number = 1): Promise<IMessage> {
+  async searchUsers (
+    nickname: string = '', limit: number = 10, page: number = 1
+  ): Promise<IMessage> {
     const users = await UsersModel.query()
       .page(page - 1, limit)
       .where('nickname', 'like', `%${nickname}%`)

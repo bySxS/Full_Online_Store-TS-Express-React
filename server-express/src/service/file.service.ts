@@ -2,7 +2,11 @@ import logger from '@/logger'
 import fs from 'fs-extra'
 import { UploadedFile } from 'express-fileupload'
 
-export const delFile = async (delPic: boolean, fileName: string, pathDir: string): Promise<string> => {
+export const delFile = async (
+  delPic: boolean,
+  fileName: string,
+  pathDir: string
+): Promise<string> => {
   let name = fileName || ''
   if (delPic) {
     if (name && name.length > 2) {
@@ -14,7 +18,13 @@ export const delFile = async (delPic: boolean, fileName: string, pathDir: string
   return name
 }
 
-export const saveFile = async (id: number, pathDir: string, file: UploadedFile, fileName: string, fileName2: string): Promise<string> => {
+export const saveFile = async (
+  id: number,
+  pathDir: string,
+  file: UploadedFile,
+  fileName: string,
+  fileName2: string
+): Promise<string> => {
   let name = ''
   if (file && file.name.length > 2) {
     await delFile(true, fileName, pathDir) // вдруг тип другой был

@@ -3,7 +3,6 @@ import { IMessage } from '@/interface'
 import ApiError from '@/apiError'
 import BasketService from '@/basket/basket.service'
 import ReviewModel from '@/review/review.model'
-import { raw } from 'objection'
 
 class ReviewService implements IReviewService {
   private static instance = new ReviewService()
@@ -17,18 +16,20 @@ class ReviewService implements IReviewService {
 
   async addReview (Dto: IReview): Promise<IMessage> {
     const {
-      productId, userId, comment, flaws, rating, parentId, advantages
+      productId, userId, comment,
+      flaws, rating, parentId, advantages
     } = Dto
-    const bought = await BasketService.isUserBoughtProduct(userId, productId)
+    const bought =
+      await BasketService.isUserBoughtProduct(userId, productId)
     const result = await ReviewModel.query()
       .insert({
-        product_id: productId,
-        user_id: userId,
+        productId,
+        userId,
         comment,
         flaws,
         rating,
         bought,
-        parent_id: parentId,
+        parentId,
         advantages
       })
     if (!result) {
@@ -44,11 +45,6 @@ class ReviewService implements IReviewService {
   }
 
   async delReview (id: number): Promise<IMessage> {
-    if (isNaN(id)) {
-      throw ApiError.forbidden(
-        'ID должен быть с цифр',
-        'ReviewService delReview')
-    }
     const result = await ReviewModel.query()
       .deleteById(id)
     if (!result) {
@@ -63,10 +59,12 @@ class ReviewService implements IReviewService {
     }
   }
 
-  async getAllReviewByProductId (productId: number, limit: number, page: number): Promise<IMessage> {
+  async getAllReviewByProductId (
+    productId: number, limit: number, page: number
+  ): Promise<IMessage> {
     const result = await ReviewModel.query()
       .page(page - 1, limit)
-      .where({ product_id: productId })
+      .where({ productId })
     if (!result) {
       return {
         success: true,
@@ -80,15 +78,12 @@ class ReviewService implements IReviewService {
     }
   }
 
-  async getAllReviewByUserId (userId: number, limit: number, page: number): Promise<IMessage> {
-    if (isNaN(userId)) {
-      throw ApiError.forbidden(
-        'ID должен быть с цифр',
-        'ReviewService getAllReviewByUserId')
-    }
+  async getAllReviewByUserId (
+    userId: number, limit: number, page: number
+  ): Promise<IMessage> {
     const result = await ReviewModel.query()
       .page(page - 1, limit)
-      .where({ user_id: userId })
+      .where({ userId })
     if (!result) {
       return {
         success: true,

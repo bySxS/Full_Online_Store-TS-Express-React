@@ -1,6 +1,6 @@
 import { IFavoritesProductController } from './favoritesProducts.interface'
 import { NextFunction, Request, Response } from 'express'
-import FavoritesProductsService from '@/products/favorites/favoritesProducts.service'
+import FavoritesProductsService from './favoritesProducts.service'
 import { IJwt } from '@/users/token/token.interface'
 
 class FavoritesProductController implements IFavoritesProductController {

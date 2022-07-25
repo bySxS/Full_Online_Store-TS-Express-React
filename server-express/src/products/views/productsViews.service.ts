@@ -13,55 +13,57 @@ class ProductsViewService implements IProductViewService {
     return ProductsViewService.instance
   }
 
-  async incrementViewById (id: number, count: number = 1): Promise<IMessage> {
+  async incrementViewById (
+    productId: number, count: number = 1
+  ): Promise<IMessage> {
     const result = await ProductsViewsModel.query()
-      .where('product_id', '=', id)
+      .where({ productId })
       .increment('views', count)
       .select('views')
     if (!result) {
       throw ApiError.badRequest(
-        `Ошибка добавления просмотров для продукта с id ${id}`,
+        `Ошибка добавления просмотров для продукта с id${productId}`,
         'ProductsViewService incrementViewById')
     }
     return {
       success: true,
       result,
-      message: `Просмотры для продукта с id ${id} добавлены`
+      message: `Просмотры для продукта с id${productId} добавлены`
     }
   }
 
-  async decrementViewById (id: number, count: number = 1): Promise<IMessage> {
+  async decrementViewById (
+    productId: number, count: number = 1
+  ): Promise<IMessage> {
     const result = await ProductsViewsModel.query()
-      .where('product_id', '=', id)
+      .where({ productId })
       .decrement('views', count)
       .select('views')
     if (!result) {
       throw ApiError.badRequest(
-        `Ошибка уменьшения просмотров для продукта с id ${id}`,
-        'ProductsViewService incrementViewById')
+        `Ошибка уменьшения просмотров для продукта с id${productId}`,
+        'ProductsViewService decrementViewById')
     }
     return {
       success: true,
       result,
-      message: `Просмотры для продукта с id ${id} уменьшены`
+      message: `Просмотры для продукта с id${productId} уменьшены`
     }
   }
 
-  async createViewsProduct (id: number): Promise<IMessage> {
+  async createViewsProduct (productId: number): Promise<IMessage> {
     const result = await ProductsViewsModel.query()
-      .insert({
-        product_id: id
-      })
+      .insert({ productId })
       .select('views')
     if (!result) {
       throw ApiError.badRequest(
-        `Поле просмотров для продукта с id ${id} не создана`,
+        `Поле просмотров для продукта с id${productId} не создана`,
         'ProductsViewService createViewsProduct')
     }
     return {
       success: true,
       result,
-      message: `Поле просмотров для продукта с id ${id} инициализировано`
+      message: `Поле просмотров для продукта с id${productId} инициализировано`
     }
   }
 }

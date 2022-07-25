@@ -1,4 +1,4 @@
-import { IMessage } from '../../interface'
+import { IMessage } from '@/interface'
 import { NextFunction, Request, Response } from 'express'
 
 export interface IRoles {

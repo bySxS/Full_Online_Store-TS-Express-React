@@ -55,9 +55,14 @@ export interface IProductFilesArray extends FileArray {
 }
 
 export interface IProductService {
-  updatePictures: (id: number, DtoFile: IProductFilesArray | null, Dto: IProduct, findProduct: ProductsModel | undefined) => Promise<string>
+  updatePictures: (
+    id: number, DtoFile: IProductFilesArray | null,
+    Dto: IProduct, findProduct: ProductsModel | undefined
+  ) => Promise<string>
   add: (Dto: IProduct, DtoFile: IProductFilesArray) => Promise<IMessage>
-  updateById: (id: number, Dto: IProduct, DtoFile: IProductFilesArray) => Promise<IMessage>
+  updateById: (
+    id: number, Dto: IProduct, DtoFile: IProductFilesArray
+  ) => Promise<IMessage>
   deleteById: (id: number) => Promise<IMessage>
   getById: (id: number, incView: boolean) => Promise<IMessage>
   getAll: (limit: number, page: number) => Promise<IMessage>

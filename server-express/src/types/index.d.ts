@@ -1,5 +1,5 @@
 // import * as express from 'express'
-import { IJwt } from '../users/token/token.interface'
+import { IJwt } from '@/users/token/token.interface'
 
 declare global {
     namespace Express {

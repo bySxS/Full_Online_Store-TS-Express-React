@@ -6,11 +6,11 @@ import { Knex } from 'knex'
 
 exports.up = function (knex: Knex) {
   return knex.schema
-    .createTable('products_views', tbl => {
+    .createTable('productsViews', tbl => {
       tbl.increments('id')
         .primary()
         .unsigned()
-      tbl.integer('product_id')
+      tbl.integer('productId')
         .references('id')
         .inTable('products')
         .unsigned()
@@ -30,5 +30,5 @@ exports.up = function (knex: Knex) {
  */
 exports.down = function (knex: Knex) {
   return knex.schema
-    .dropTable('products_views')
+    .dropTable('productsViews')
 }

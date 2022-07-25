@@ -26,8 +26,8 @@ class CategoryService implements ICategoryService {
       }
     }
     const alreadyHave = await CategoryModel.query()
-      .where('name', '=', name)
-      .orWhere('name_eng', '=', nameEng)
+      .where({ name })
+      .orWhere({ nameEng })
     if (alreadyHave) {
       throw ApiError.badRequest(
         'Категория с таким названием уже существует',
@@ -36,8 +36,8 @@ class CategoryService implements ICategoryService {
     const result = await CategoryModel.query()
       .insert({
         name,
-        name_eng: nameEng,
-        parent_id: parentId
+        nameEng,
+        parentId
       })
       .select('*')
     if (!result) {
@@ -66,7 +66,7 @@ class CategoryService implements ICategoryService {
     }
     const findCategory = await CategoryModel.query()
       .findById(id)
-      .select('name', 'name_eng')
+      .select('name', 'nameEng')
     if (!findCategory) {
       throw ApiError.badRequest(
         `Категории с id${id} не существует`,
@@ -76,8 +76,8 @@ class CategoryService implements ICategoryService {
       .where({ id })
       .update({
         name,
-        name_eng: nameEng,
-        parent_id: parentId
+        nameEng,
+        parentId
       })
     if (!result) {
       throw ApiError.badRequest(
@@ -87,7 +87,7 @@ class CategoryService implements ICategoryService {
     return {
       success: true,
       result,
-      message: `Категория ${findCategory.name} (${findCategory.name_eng}) изменена на ${name} (${nameEng})`
+      message: `Категория ${findCategory.name} (${findCategory.nameEng}) изменена на ${name} (${nameEng})`
     }
   }
 
@@ -108,12 +108,15 @@ class CategoryService implements ICategoryService {
 
   async getAll (): Promise<IMessage> {
     const result = await CategoryModel.query()
-      .innerJoin('category as parent', 'parent.id', '=', 'category.parent_id')
-      .select('category.id', 'category.parent_id',
+      .innerJoin('category as parent',
+        'parent.id', '=',
+        'category.parentId')
+      .select('category.id',
+        'category.parentId',
         'category.name as categoryName',
-        'category.name_eng as categoryNameEng',
+        'category.nameEng as categoryNameEng',
         'parent.name as sectionName',
-        'parent.name_eng as sectionNameEng')
+        'parent.nameEng as sectionNameEng')
     if (!result) {
       throw ApiError.badRequest(
         'Категорий не найдено',
@@ -130,13 +133,16 @@ class CategoryService implements ICategoryService {
     const result = await CategoryModel.query()
       .page(page - 1, limit)
       .where('category.name', 'like', `%${name}%`)
-      .orWhere('category.name_eng', 'like', `%${name}%`)
-      .innerJoin('category as parent', 'parent.id', '=', 'category.parent_id')
-      .select('category.id', 'category.parent_id',
+      .orWhere('category.nameEng', 'like', `%${name}%`)
+      .innerJoin('category as parent',
+        'parent.id', '=',
+        'category.parentId')
+      .select('category.id',
+        'category.parentId',
         'category.name as categoryName',
-        'category.name_eng as categoryNameEng',
+        'category.nameEng as categoryNameEng',
         'parent.name as sectionName',
-        'parent.name_eng as sectionNameEng')
+        'parent.nameEng as sectionNameEng')
     if (!result) {
       return {
         success: false,

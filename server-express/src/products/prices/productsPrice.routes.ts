@@ -51,7 +51,9 @@ try {
     RoleMiddleware(['admin']),
     ProductsPriceController.delProductPrice)
 } catch (e) {
-  throw ApiError.internalRequest('Ошибка в ProductsPrice routers', 'ProductsPriceRouter')
+  throw ApiError.internalRequest(
+    'Ошибка в ProductsPrice routers',
+    'ProductsPriceRouter')
 }
 
 export default router

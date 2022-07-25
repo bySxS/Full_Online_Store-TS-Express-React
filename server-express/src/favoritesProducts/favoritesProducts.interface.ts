@@ -10,7 +10,7 @@ export interface IFavoritesProduct {
 export interface IFavoritesProductService {
   add: (Dto: IFavoritesProduct) => Promise<IMessage>
   del: (id: number) => Promise<IMessage>
-  getCountFavoritesByProductId: (id: number) => Promise<IMessage>
+  getCountFavoritesByProductId: (productId: number) => Promise<IMessage>
   getAllByUserId: (userId: number, limit: number, page: number) => Promise<IMessage>
 }
 

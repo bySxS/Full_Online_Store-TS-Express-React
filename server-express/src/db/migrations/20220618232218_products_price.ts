@@ -6,18 +6,18 @@ import { Knex } from 'knex'
 
 exports.up = function (knex: Knex) {
   return knex.schema
-    .createTable('products_price', tbl => {
+    .createTable('productsPrice', tbl => {
       tbl.increments('id')
         .primary()
         .unsigned()
-      tbl.integer('price_type_id')
+      tbl.integer('priceTypeId')
         .references('id')
-        .inTable('products_price_type')
+        .inTable('productsPriceType')
         .unsigned()
         .onDelete('CASCADE')
         .onUpdate('CASCADE')
         .notNullable()
-      tbl.integer('product_id')
+      tbl.integer('productId')
         .references('id')
         .inTable('products')
         .unsigned()
@@ -29,7 +29,7 @@ exports.up = function (knex: Knex) {
       tbl.string('currency', 40)
         .defaultTo('₴')
         .notNullable()
-      tbl.timestamps(true, true)
+      tbl.timestamps(true, true, true)
     })
 }
 
@@ -39,5 +39,5 @@ exports.up = function (knex: Knex) {
  */
 exports.down = function (knex: Knex) {
   return knex.schema
-    .dropTable('products_price')
+    .dropTable('productsPrice')
 }

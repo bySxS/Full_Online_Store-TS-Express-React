@@ -14,7 +14,9 @@ try {
     RoleMiddleware('admin'),
     RolesController.AddRole)
 } catch (e) {
-  throw ApiError.internalRequest('Ошибка в Roles routers', 'UsersRouter')
+  throw ApiError.internalRequest(
+    'Ошибка в Roles routers', 'RolesRouter'
+  )
 }
 
 export default router

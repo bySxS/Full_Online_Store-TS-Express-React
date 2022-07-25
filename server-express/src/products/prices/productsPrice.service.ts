@@ -30,7 +30,7 @@ class ProductsPriceService implements IProductPriceService {
     if (!result) {
       throw ApiError.badRequest(
         `Тип цены ${name} не добавлен, возможно уже существует`,
-        'ProductsPriceService createProductPrice')
+        'ProductsPriceService addTypePrice')
     }
     return {
       success: true,
@@ -76,17 +76,19 @@ class ProductsPriceService implements IProductPriceService {
       .select('*')
     if (!result) {
       throw ApiError.badRequest(
-        `Типа цены с id ${id} не существует`,
+        `Типа цены с id${id} не существует`,
         'ProductsPriceService getTypePriceById')
     }
     return {
       success: true,
       result,
-      message: `Тип цены с id ${id} получен`
+      message: `Тип цены с id${id} получен`
     }
   }
 
-  async getTypesPrices (limit: number = 20, page: number = 1): Promise<IMessage> {
+  async getTypesPrices (
+    limit: number = 20, page: number = 1
+  ): Promise<IMessage> {
     const result = await ProductsPriceTypeModel.query()
       .page(page - 1, limit)
     if (!result) {
@@ -101,9 +103,11 @@ class ProductsPriceService implements IProductPriceService {
     }
   }
 
-  async getProductPriceByTypesPricesId (typePriceId: number, productId: number): Promise<IMessage> {
+  async getProductPriceByTypesPricesId (
+    typePriceId: number, productId: number
+  ): Promise<IMessage> {
     const result = await ProductsPriceModel.query()
-      .findOne({ price_type_id: typePriceId, product_id: productId })
+      .findOne({ priceTypeId: typePriceId, productId })
       .select('*')
     if (!result) {
       throw ApiError.badRequest(
@@ -119,12 +123,12 @@ class ProductsPriceService implements IProductPriceService {
 
   async getAllPriceByProductId (productId: number): Promise<IMessage> {
     const result = await ProductsPriceModel.query()
-      .where({ product_id: productId })
-      .innerJoin('products_price_type',
-        'products_price.price_type_id', '=',
-        'products_price_type.id')
-      .select('products_price.*',
-        'products_price_type.name as typeName')
+      .where({ productId })
+      .innerJoin('productsPriceType',
+        'productsPrice.priceTypeId', '=',
+        'productsPriceType.id')
+      .select('productsPrice.*',
+        'productsPriceType.name as typeName')
     if (!result) {
       throw ApiError.badRequest(
         `Нет цен для продукта с id${productId}`,
@@ -141,17 +145,18 @@ class ProductsPriceService implements IProductPriceService {
     const { priceTypeId, productId, price, currency } = Dto
     const alreadyHave = await ProductsPriceModel.query()
       .where({
-        'products_price.price_type_id': +priceTypeId,
-        'products_price.product_id': +productId
+        'productsPrice.priceTypeId': +priceTypeId,
+        'productsPrice.productId': +productId
       })
       .first()
-      .innerJoin('products_price_type', 'products_price_type.id', '=',
-        'products_price.price_type_id')
-      .select('products_price.price',
-        'products_price.currency',
-        'products_price.price_type_id',
-        'products_price.id',
-        'products_price_type.name as priceType')
+      .innerJoin('productsPriceType',
+        'productsPriceType.id', '=',
+        'productsPrice.priceTypeId')
+      .select('productsPrice.price',
+        'productsPrice.currency',
+        'productsPrice.priceTypeId',
+        'productsPrice.id',
+        'productsPriceType.name as priceType')
     if (alreadyHave) {
       throw ApiError.badRequest(
         `Цена для продукта с id${productId} типа '${alreadyHave.priceType}' уже есть, вы можете изменить цену по id${alreadyHave.id}`,
@@ -159,12 +164,12 @@ class ProductsPriceService implements IProductPriceService {
     }
     const result = await ProductsPriceModel.query()
       .insert({
-        price_type_id: +priceTypeId,
-        product_id: +productId,
+        priceTypeId: +priceTypeId,
+        productId: +productId,
         price,
         currency: currency || '₴'
       })
-      .select('price', 'currency', 'price_type_id')
+      .select('price', 'currency', 'priceTypeId')
     if (!result) {
       throw ApiError.badRequest(
         `Новая цена для продукта с id${productId} не добавлена`,
@@ -180,12 +185,13 @@ class ProductsPriceService implements IProductPriceService {
   async updProductPrice (id: number, Dto: IProductPrice): Promise<IMessage> {
     const { priceTypeId, productId, price, currency } = Dto
     const typePrice = await this.getTypePriceById(priceTypeId)
-    const product = await ProductsService.getById(productId, false)
+    const product =
+      await ProductsService.getById(productId, false)
     const result = await ProductsPriceModel.query()
       .where({ id })
       .update({
-        price_type_id: priceTypeId,
-        product_id: productId,
+        priceTypeId,
+        productId,
         price,
         currency: currency || '₴'
       })

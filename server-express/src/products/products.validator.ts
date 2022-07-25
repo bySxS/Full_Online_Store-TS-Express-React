@@ -9,10 +9,6 @@ export const validateProduct = () => {
       .notEmpty(),
     body('categoryId', 'Категория (categoryId) должны быть только цифры')
       .matches('^[a-zA-Z0-9]+$'),
-    // body('userId', 'Пользователь (userId) не указан')
-    //   .notEmpty(),
-    // body('userId', 'Пользователь (userId) должны быть только цифры')
-    //   .matches('^[a-zA-Z0-9]+$'),
     body('description', 'Описание (description) не указано')
       .notEmpty(),
     body('count', 'Количество (count) товара не указано')

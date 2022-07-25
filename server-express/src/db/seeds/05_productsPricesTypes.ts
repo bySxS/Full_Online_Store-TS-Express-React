@@ -5,9 +5,7 @@
 import { Knex } from 'knex'
 
 exports.seed = async function (knex: Knex) {
-  // Deletes ALL existing entries
-  // await knex('category_news').del()
-  await knex('products_price_type').insert([
+  await knex('productsPriceType').insert([
     { id: 1, name: 'Основная' },
     { id: 2, name: 'Акционная' },
     { id: 3, name: 'Новогодняя' },

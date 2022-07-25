@@ -7,13 +7,13 @@ Model.knex(dbKnex)
 
 export default class ProductsViewsModel extends Model {
   public id!: number
-  public product_id!: number
+  public productId!: number
   public views!: number
 
   products?: Products
 
   static get tableName () {
-    return 'products_views'
+    return 'productsViews'
   }
 
   static get jsonSchema () {
@@ -22,7 +22,7 @@ export default class ProductsViewsModel extends Model {
 
       properties: {
         id: { type: 'integer' },
-        product_id: { type: 'integer' },
+        productId: { type: 'integer' },
         views: { type: 'integer' }
       }
     }
@@ -34,7 +34,7 @@ export default class ProductsViewsModel extends Model {
         relation: Model.HasOneRelation,
         modelClass: Products,
         join: {
-          from: this.tableName + '.product_id',
+          from: this.tableName + '.productId',
           to: Products.tableName + '.id'
         }
       }

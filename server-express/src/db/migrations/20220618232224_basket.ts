@@ -10,7 +10,7 @@ exports.up = function (knex: Knex) {
       tbl.increments('id')
         .primary()
         .unsigned()
-      tbl.integer('user_id')
+      tbl.integer('userId')
         .references('id')
         .inTable('users')
         .unsigned()
@@ -20,20 +20,21 @@ exports.up = function (knex: Knex) {
       tbl.string('status', 40)
         .notNullable()
         .checkIn([
-          'In processing',
-          'Selects the product',
+          'SelectsTheProduct',
+          'InProcessing',
+          'InDelivery',
           'Completed',
           'Cancelled'])
-        .defaultTo('Selects the product')
-      tbl.string('full_name', 100)
+        .defaultTo('SelectsTheProduct')
+      tbl.string('fullName', 100)
       tbl.string('comment', 1000)
-      tbl.string('delivery_address', 500)
-      tbl.string('phone_number', 25)
-      tbl.dateTime('date_processing')
+      tbl.string('deliveryAddress', 500)
+      tbl.string('phoneNumber', 25)
+      tbl.dateTime('dateProcessing')
         .defaultTo(null)
-      tbl.dateTime('delivery_date')
+      tbl.dateTime('deliveryDate')
         .defaultTo(null)
-      tbl.timestamps(true, true)
+      tbl.timestamps(true, true, true)
     })
 }
 

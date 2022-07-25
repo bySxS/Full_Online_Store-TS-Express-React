@@ -10,7 +10,7 @@ exports.up = function (knex: Knex) {
       tbl.increments('id')
         .primary()
         .unsigned()
-      tbl.integer('user_id')
+      tbl.integer('userId')
         .references('id')
         .inTable('users')
         .unsigned()
@@ -24,7 +24,7 @@ exports.up = function (knex: Knex) {
         .notNullable()
       tbl.string('refreshToken')
         .notNullable()
-      tbl.timestamps(true, true)
+      tbl.timestamps(true, true, true)
     })
 }
 

@@ -13,7 +13,9 @@ class ReviewController implements IReviewController {
     return ReviewController.instance
   }
 
-  async addReview (req: Request, res: Response, next: NextFunction) {
+  async addReview (
+    req: Request, res: Response, next: NextFunction
+  ) {
     try {
       const authUser = req.user as IJwt
       req.body.userId = authUser.id
@@ -24,7 +26,9 @@ class ReviewController implements IReviewController {
     }
   }
 
-  async delReview (req: Request, res: Response, next: NextFunction) {
+  async delReview (
+    req: Request, res: Response, next: NextFunction
+  ) {
     try {
       const id = +req.params.id
       const result =
@@ -35,7 +39,9 @@ class ReviewController implements IReviewController {
     }
   }
 
-  async getAllReviewByProductId (req: Request, res: Response, next: NextFunction) {
+  async getAllReviewByProductId (
+    req: Request, res: Response, next: NextFunction
+  ) {
     try {
       const id = +req.params.id
       const limit = +(req.query.limit || 20)
@@ -48,7 +54,9 @@ class ReviewController implements IReviewController {
     }
   }
 
-  async getAllReviewByUserId (req: Request, res: Response, next: NextFunction) {
+  async getAllReviewByUserId (
+    req: Request, res: Response, next: NextFunction
+  ) {
     try {
       const id = +req.params.id
       const limit = +(req.query.limit || 20)

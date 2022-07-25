@@ -8,21 +8,21 @@ Model.knex(dbKnex)
 
 export default class ProductsPriceModel extends Model {
   public id!: number
-  public price_type_id!: number
-  public product_id!: number
+  public priceTypeId!: number
+  public productId!: number
   public price!: number
   public currency!: string
-  public created_at!: Date | string
-  public updated_at!: Date | string
+  public createdAt!: Date | string
+  public updatedAt!: Date | string
 
-  products_price_type?: PricesTypes
+  productsPriceType?: PricesTypes
   products?: Products
 
   // innerJoin as
   public priceType!: string
 
   static get tableName () {
-    return 'products_price'
+    return 'productsPrice'
   }
 
   static get jsonSchema () {
@@ -31,23 +31,23 @@ export default class ProductsPriceModel extends Model {
 
       properties: {
         id: { type: 'integer' },
-        price_type_id: { type: 'integer' },
-        product_id: { type: 'integer' },
+        priceTypeId: { type: 'integer' },
+        productId: { type: 'integer' },
         price: { type: 'number' },
         currency: { type: 'string', maxLength: 40 },
-        created_at: { type: 'string' },
-        updated_at: { type: 'string' }
+        createdAt: { type: 'string' },
+        updatedAt: { type: 'string' }
       }
     }
   }
 
   static get relationMappings () {
     return {
-      price_type: {
+      priceType: {
         relation: Model.BelongsToOneRelation,
         modelClass: PricesTypes,
         join: {
-          from: this.tableName + '.price_type_id',
+          from: this.tableName + '.priceTypeId',
           to: PricesTypes.tableName + '.id'
         }
       },
@@ -55,7 +55,7 @@ export default class ProductsPriceModel extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Products,
         join: {
-          from: this.tableName + '.product_id',
+          from: this.tableName + '.productId',
           to: Products.tableName + '.id'
         }
       }
@@ -63,10 +63,10 @@ export default class ProductsPriceModel extends Model {
   }
 
   $beforeInsert () {
-    this.created_at = new Date(Date.now())
+    this.createdAt = new Date(Date.now())
   }
 
   $beforeUpdate () {
-    this.updated_at = new Date(Date.now())
+    this.updatedAt = new Date(Date.now())
   }
 }

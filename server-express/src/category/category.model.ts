@@ -1,7 +1,7 @@
-import Objection, { Model } from 'objection'
+import { Model } from 'objection'
 import { dbKnex } from '@/db'
 
-import Products from '../products.model'
+import Products from '@/products/products.model'
 
 Model.knex(dbKnex)
 
@@ -9,8 +9,8 @@ Model.knex(dbKnex)
 export default class CategoryModel extends Model {
   public id!: number
   public name!: string
-  public name_eng!: string
-  public parent_id!: number
+  public nameEng!: string
+  public parentId!: number
 
   products?: Products[]
 
@@ -25,8 +25,8 @@ export default class CategoryModel extends Model {
       properties: {
         id: { type: 'integer' },
         name: { type: 'string', minLength: 1, maxLength: 50 },
-        name_eng: { type: 'string', minLength: 1, maxLength: 50 },
-        parent_id: { type: 'integer' }
+        nameEng: { type: 'string', minLength: 1, maxLength: 50 },
+        parentId: { type: 'integer' }
       }
     }
   }
@@ -38,14 +38,14 @@ export default class CategoryModel extends Model {
         modelClass: Products,
         join: {
           from: this.tableName + '.id',
-          to: Products.tableName + '.category_id'
+          to: Products.tableName + '.categoryId'
         }
       },
       parent: {
         relation: Model.BelongsToOneRelation,
         modelClass: this,
         join: {
-          from: this.tableName + '.parent_id',
+          from: this.tableName + '.parentId',
           to: this.tableName + '.id'
         }
       }

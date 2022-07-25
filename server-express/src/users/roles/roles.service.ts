@@ -1,7 +1,7 @@
 import { IRoles, IRolesService } from './roles.interface'
-import { IMessage } from '../../interface'
+import { IMessage } from '@/interface'
 import RolesModel from './roles.model'
-import ApiError from '../../apiError'
+import ApiError from '@/apiError'
 
 class RolesService implements IRolesService {
   private static instance = new RolesService()
@@ -18,7 +18,7 @@ class RolesService implements IRolesService {
     const result = await RolesModel.query()
       .insert({
         name,
-        name_eng: nameEng
+        nameEng
       })
     if (!result) {
       throw ApiError.badRequest(

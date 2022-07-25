@@ -6,25 +6,25 @@ import { Knex } from 'knex'
 
 exports.up = function (knex: Knex) {
   return knex.schema
-    .createTable('favorites_products', tbl => {
+    .createTable('favoritesProducts', tbl => {
       tbl.increments('id')
         .primary()
         .unsigned()
-      tbl.integer('user_id')
+      tbl.integer('userId')
         .references('id')
         .inTable('users')
         .unsigned()
         .notNullable()
         .onDelete('CASCADE')
         .onUpdate('CASCADE')
-      tbl.integer('product_id')
+      tbl.integer('productId')
         .references('id')
         .inTable('products')
         .unsigned()
         .notNullable()
         .onDelete('CASCADE')
         .onUpdate('CASCADE')
-      tbl.timestamps(true, true)
+      tbl.timestamps(true, true, true)
     })
 }
 
@@ -34,5 +34,5 @@ exports.up = function (knex: Knex) {
  */
 exports.down = function (knex: Knex) {
   return knex.schema
-    .dropTable('favorites_products')
+    .dropTable('favoritesProducts')
 }

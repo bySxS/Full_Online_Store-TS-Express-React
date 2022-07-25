@@ -1,21 +1,21 @@
 import { Model } from 'objection'
 import { dbKnex } from '@/db'
 
-import Category from '../category/category.model'
+import Category from '@/category/category.model'
 
 Model.knex(dbKnex)
 
 export default class CharacteristicsNameModel extends Model {
   public id!: number
-  public category_id!: number
+  public categoryId!: number
   public name!: string
-  public field_type!: string
-  public parent_id!: number
+  public fieldType!: string
+  public parentId!: number
 
   category?: Category
 
   static get tableName () {
-    return 'characteristics_name'
+    return 'characteristicsName'
   }
 
   static get jsonSchema () {
@@ -24,10 +24,10 @@ export default class CharacteristicsNameModel extends Model {
 
       properties: {
         id: { type: 'integer' },
-        category_id: { type: 'integer' },
+        categoryId: { type: 'integer' },
         name: { type: 'string', minLength: 1, maxLength: 150 },
-        field_type: { type: 'string', maxLength: 100 },
-        parent_id: { type: 'integer' }
+        fieldType: { type: 'string', maxLength: 100 },
+        parentId: { type: 'integer' }
       }
     }
   }
@@ -38,7 +38,7 @@ export default class CharacteristicsNameModel extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Category,
         join: {
-          from: this.tableName + '.category_id',
+          from: this.tableName + '.categoryId',
           to: Category.tableName + '.id'
         }
       },
@@ -46,7 +46,7 @@ export default class CharacteristicsNameModel extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: this,
         join: {
-          from: this.tableName + '.parent_id',
+          from: this.tableName + '.parentId',
           to: this.tableName + '.id'
         }
       }

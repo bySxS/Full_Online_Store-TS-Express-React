@@ -1,5 +1,5 @@
 import { Model } from 'objection'
-import { dbKnex } from '../db'
+import { dbKnex } from '@/db'
 
 import BasketProducts from './basketProducts.model'
 import Users from '../users/users.model'
@@ -8,18 +8,18 @@ Model.knex(dbKnex)
 
 export default class BasketModel extends Model {
   public id!: number
-  public user_id!: number
+  public userId!: number
   public status!: string
-  public full_name!: string
+  public fullName!: string
   public comment!: string
-  public delivery_address!: string
-  public phone_number!: string
-  public date_processing!: Date | string
-  public delivery_date!: Date | string
-  public created_at!: Date | string
-  public updated_at!: Date | string
+  public deliveryAddress!: string
+  public phoneNumber!: string
+  public dateProcessing!: Date | string
+  public deliveryDate!: Date | string
+  public createdAt!: Date | string
+  public updatedAt!: Date | string
 
-  basket_products?: BasketProducts[]
+  basketProducts?: BasketProducts[]
   users?: Users
 
   static get tableName () {
@@ -32,16 +32,16 @@ export default class BasketModel extends Model {
 
       properties: {
         id: { type: 'integer' },
-        user_id: { type: 'integer' },
-        full_name: { type: 'string', maxLength: 100 },
+        userId: { type: 'integer' },
+        fullName: { type: 'string', maxLength: 100 },
         status: { type: 'string', maxLength: 40 },
         comment: { type: 'string', maxLength: 1000 },
-        delivery_address: { type: 'string', maxLength: 500 },
-        phone_number: { type: 'string', maxLength: 25 },
-        date_processing: { type: 'string' },
-        delivery_date: { type: 'string' },
-        created_at: { type: 'string' },
-        updated_at: { type: 'string' }
+        deliveryAddress: { type: 'string', maxLength: 500 },
+        phoneNumber: { type: 'string', maxLength: 25 },
+        dateProcessing: { type: 'string' },
+        deliveryDate: { type: 'string' },
+        createdAt: { type: 'string' },
+        updatedAt: { type: 'string' }
       }
     }
   }
@@ -52,7 +52,7 @@ export default class BasketModel extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Users,
         join: {
-          from: this.tableName + '.user_id',
+          from: this.tableName + '.userId',
           to: Users.tableName + '.id'
         }
       },
@@ -61,17 +61,17 @@ export default class BasketModel extends Model {
         modelClass: BasketProducts,
         join: {
           from: this.tableName + '.id',
-          to: BasketProducts.tableName + '.basket_id'
+          to: BasketProducts.tableName + '.basketId'
         }
       }
     }
   }
 
   $beforeInsert () {
-    this.created_at = new Date(Date.now())
+    this.createdAt = new Date(Date.now())
   }
 
   $beforeUpdate () {
-    this.updated_at = new Date(Date.now())
+    this.updatedAt = new Date(Date.now())
   }
 }

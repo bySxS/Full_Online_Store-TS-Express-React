@@ -2,7 +2,7 @@ import { Model } from 'objection'
 import { dbKnex } from '@/db'
 
 import Users from '@/users/users.model'
-import Category from './category/category.model'
+import Category from '../category/category.model'
 import Review from '@/review/review.model'
 import ProductsPrice from './prices/productsPrice.model'
 import ProductsViews from './views/productsViews.model'
@@ -12,11 +12,11 @@ Model.knex(dbKnex)
 export default class ProductsModel extends Model {
   public id!: number
   public title!: string
-  public category_id!: number
-  public user_id!: number
+  public categoryId!: number
+  public userId!: number
   public description!: string
   public count!: number
-  public price_type_id!: number
+  public priceTypeId!: number
   public availability!: boolean
   public screen!: string
   public image1!: string
@@ -29,17 +29,17 @@ export default class ProductsModel extends Model {
   public image8!: string
   public image9!: string
   public image10!: string
-  public video_youtube_url!: string
-  public parent_id!: number
+  public videoYoutubeUrl!: string
+  public parentId!: number
   public url!: string
-  public created_at!: Date | string
-  public updated_at!: Date | string
+  public createdAt!: Date | string
+  public updatedAt!: Date | string
 
   users?: Users
   category?: Category
   review?: Review
-  products_price?: ProductsPrice
-  products_views?: ProductsViews
+  productsPrice?: ProductsPrice
+  productsViews?: ProductsViews
 
   // innerJoin as
   public priceId!: number
@@ -55,11 +55,11 @@ export default class ProductsModel extends Model {
       properties: {
         id: { type: 'integer' },
         title: { type: 'string', minLength: 5, maxLength: 255 },
-        category_id: { type: 'integer' },
-        user_id: { type: 'integer' },
+        categoryId: { type: 'integer' },
+        userId: { type: 'integer' },
         description: { type: 'string', minLength: 10, maxLength: 3000 },
         count: { type: 'integer' },
-        price_type_id: { type: 'integer' },
+        priceTypeId: { type: 'integer' },
         availability: { type: 'boolean' },
         screen: { type: 'string', maxLength: 255 },
         image1: { type: 'string', maxLength: 255 },
@@ -72,11 +72,11 @@ export default class ProductsModel extends Model {
         image8: { type: 'string', maxLength: 255 },
         image9: { type: 'string', maxLength: 255 },
         image10: { type: 'string', maxLength: 255 },
-        video_youtube_url: { type: 'string', maxLength: 255 },
-        parent_id: { type: 'integer' },
+        videoYoutubeUrl: { type: 'string', maxLength: 255 },
+        parentId: { type: 'integer' },
         url: { type: 'string', maxLength: 255 },
-        created_at: { type: 'string' },
-        updated_at: { type: 'string' }
+        createdAt: { type: 'string' },
+        updatedAt: { type: 'string' }
       }
     }
   }
@@ -87,7 +87,7 @@ export default class ProductsModel extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Users,
         join: {
-          from: this.tableName + '.user_id',
+          from: this.tableName + '.userId',
           to: Users.tableName + '.id'
         }
       },
@@ -95,7 +95,7 @@ export default class ProductsModel extends Model {
         relation: Model.HasManyRelation,
         modelClass: Category,
         join: {
-          from: this.tableName + '.category_id',
+          from: this.tableName + '.categoryId',
           to: Category.tableName + '.id'
         }
       },
@@ -104,14 +104,14 @@ export default class ProductsModel extends Model {
         modelClass: Review,
         join: {
           from: this.tableName + '.id',
-          to: Review.tableName + '.product_id'
+          to: Review.tableName + '.productId'
         }
       },
       parent: {
         relation: Model.HasOneRelation,
         modelClass: this,
         join: {
-          from: this.tableName + '.parent_id',
+          from: this.tableName + '.parentId',
           to: this.tableName + '.id'
         }
       },
@@ -120,7 +120,7 @@ export default class ProductsModel extends Model {
         modelClass: ProductsPrice,
         join: {
           from: this.tableName + '.id',
-          to: ProductsPrice.tableName + '.product_id'
+          to: ProductsPrice.tableName + '.productId'
         }
       },
       view: {
@@ -128,17 +128,17 @@ export default class ProductsModel extends Model {
         modelClass: ProductsViews,
         join: {
           from: this.tableName + '.id',
-          to: ProductsViews.tableName + '.product_id'
+          to: ProductsViews.tableName + '.productId'
         }
       }
     }
   }
 
   $beforeInsert () {
-    this.created_at = new Date(Date.now())
+    this.createdAt = new Date(Date.now())
   }
 
   $beforeUpdate () {
-    this.updated_at = new Date(Date.now())
+    this.updatedAt = new Date(Date.now())
   }
 }

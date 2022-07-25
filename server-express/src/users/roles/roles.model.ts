@@ -7,7 +7,7 @@ Model.knex(dbKnex)
 export default class RolesModel extends Model {
   public id!: number
   public name!: string
-  public name_eng!: string
+  public nameEng!: string
 
   users?: Users[]
 
@@ -22,7 +22,7 @@ export default class RolesModel extends Model {
       properties: {
         id: { type: 'integer' },
         name: { type: 'string', minLength: 1, maxLength: 40 },
-        name_eng: { type: 'string', minLength: 1, maxLength: 40 }
+        nameEng: { type: 'string', minLength: 1, maxLength: 40 }
       }
     }
   }
@@ -34,7 +34,7 @@ export default class RolesModel extends Model {
         modelClass: Users,
         join: {
           from: this.tableName + '.id',
-          to: Users.tableName + '.roles_id'
+          to: Users.tableName + '.rolesId'
         }
       }
     }
