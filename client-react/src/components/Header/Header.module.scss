@@ -1,0 +1,36 @@
+.menu_text {
+  color: #ffcd39;
+}
+
+.menu_item {
+  color: #fff;
+  padding: 0 5px 0 10px;
+  text-decoration: none;
+}
+
+.menu_item:hover {
+  color: #ffcd39;
+}
+
+.drop_menu {
+  position: absolute;
+  transform: translate(-125px, 5px);
+}
+
+.btn {
+  border: none!important;;
+}
+.btn:focus {
+  background: none!important;
+  border: none!important;
+  box-shadow: none!important;;
+}
+.btn:hover {
+  background: none!important;;
+  border: none!important;;
+}
+.btn:active {
+  box-shadow: none!important;;
+}
+
+

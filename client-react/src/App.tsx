@@ -1,36 +1,25 @@
 import React from 'react'
-import {
-  BrowserRouter, Routes, Route, Navigate
-} from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { setupStore } from 'store'
-import Header from 'components/header/header'
-import { ModuleName } from 'constants/page'
-import AdminPanel from 'pages/AdminPanelPage/AdminPanelPage'
-import Loader from 'components/UI/Loader/loader'
+import Header from 'components/Header/Header'
+import AppRouter from 'AppRouter'
+import { Helmet } from 'react-helmet'
+import SideBar from 'components/SideBar/SideBar'
 
 const store = setupStore()
 
 function App () {
   return (
     <Provider store={ store }>
+      <Helmet titleTemplate={'%s - My First Store'}>
+        <meta charSet="utf-8" />
+      </Helmet>
     <BrowserRouter>
       <div className="App">
         <Header/>
-        <Routes>
-          <Route path={'/'}
-                 element={<Navigate to={`/${ModuleName.ADMIN_PANEL}`} />}/>
-          <Route path={`/${ModuleName.ADMIN_PANEL}`}
-                 element={<AdminPanel/>}/>
-          {/* <Route path={`/${ModuleName.MOVIES}/:id`} */}
-          {/*       element={<MovieDetails modulePage={ModuleName.MOVIES}/>}/> */}
-          {/* <Route path={`/${ModuleName.FAVOURITE_MOVIES}`} */}
-          {/*       element={<FavouriteMovies/>}/> */}
-          {/* <Route path={`/${ModuleName.FAVOURITE_MOVIES}/:id`} */}
-          {/*       element={<MovieDetails modulePage={ModuleName.FAVOURITE_MOVIES}/>}/> */}
-           <Route path={'/loader'}
-                 element={<Loader/>}/>
-        </Routes>
+        <SideBar />
+        <AppRouter />
       </div>
     </BrowserRouter>
     </Provider>

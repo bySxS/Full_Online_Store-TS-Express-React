@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { SUBSCRIBE_STORE } from 'constants/constant'
-import myStoreApi from 'api/myStoreApi'
+import myStoreApi from 'store/api/myStoreApi'
 
 const reducers = {
   // favouriteMovies: favouriteMoviesSlice,

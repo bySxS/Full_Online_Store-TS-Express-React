@@ -1,0 +1,18 @@
+.sideMenu {
+  height: 100%;
+  padding-top: 100px;
+  float: left;
+  align-items: center;
+  position: fixed;
+}
+
+.link_flex {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+.name_page {
+  display: none;
+}

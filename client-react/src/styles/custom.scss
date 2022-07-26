@@ -2,15 +2,19 @@
 
 .body {
   padding-top: 60px;
+  padding-left: 80px;
+  margin: auto;
   //color: #fbfbfb;
 }
 
 .active {
-  text-decoration: underline;
+  //text-decoration: underline;
+  background: #766ED3 !important;
 }
 
 .App {
   background: #EBECEE;
+  display: flex;
 }
 
 $theme-colors: (
@@ -19,7 +23,6 @@ $theme-colors: (
 );
 
 // Import Bootstrap and its default variables
-//@import '~bootstrap/scss/bootstrap.scss';
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import 'bootstrap-icons/font/bootstrap-icons';
 
