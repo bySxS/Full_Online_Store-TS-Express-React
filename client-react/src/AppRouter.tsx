@@ -46,7 +46,7 @@ export const routes: IRoute[] = [
   { path: RoutePath.HOME, element: <Home name={RouteName.HOME} /> },
   { path: RoutePath.LOGIN_REGISTRATION, element: <LoginReg name={RouteName.LOGIN_REGISTRATION} /> },
   { path: RoutePath.PRODUCTS, element: <Product name={RouteName.PRODUCTS} /> },
-  { path: RoutePath.PRODUCTS_ID, element: <ProductDetails name={RouteName.PRODUCTS_ID} /> },
+  { path: RoutePath.PRODUCTS_ID, element: <ProductDetails /> },
   { path: RoutePath.FAVORITES_PRODUCT, element: <Favorites name={RouteName.FAVORITES_PRODUCT} /> },
   { path: RoutePath.USERS, element: <Users name={RouteName.USERS} /> },
   { path: RoutePath.USERS_ID, element: <UserDetails name={RouteName.USERS_ID} /> },

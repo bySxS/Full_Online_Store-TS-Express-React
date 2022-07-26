@@ -1,9 +1,9 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC } from 'react'
 import UserItems from 'components/UserItems/UserItems'
-import { useFetchAllUsersQuery } from 'store/api/myStoreApi'
+import { useFetchAllUsersQuery } from 'store/myStore/myStore.api'
 import Loader from 'components/UI/Loader/Loader'
-import { IMessage } from 'store/api/myStoreApi.interface'
 import { Helmet } from 'react-helmet'
+import { useErrorFix } from 'hooks/useErrorFix'
 import Alarm from 'components/UI/Alarm/Alarm'
 
 interface UsersProps {
@@ -11,15 +11,10 @@ interface UsersProps {
 }
 
 const Users: FC<UsersProps> = ({ name }) => {
-  const [errorStr, setErrorStr] = useState('')
   const { isLoading, isSuccess, isError, data, error } =
     useFetchAllUsersQuery({ limit: 10, page: 1 })
-  useEffect(() => {
-    if ((isError) && (error && 'status' in error)) {
-      const err = error.data as IMessage<string>
-      setErrorStr(err.message)
-    }
-  }, [isError])
+  const err = useErrorFix(isError, error)
+
   return (
     <div className="body">
       <Helmet>
@@ -33,8 +28,8 @@ const Users: FC<UsersProps> = ({ name }) => {
         />
       )}</div>}
       {isLoading && <Loader/>}
-      {errorStr && <Alarm title={'Ошибка'} status={'error'} message={errorStr}/>}
-      {isSuccess && <Alarm title={'Успех'} message={data.message}/>}
+      {isSuccess && data && <Alarm message={data.message} />}
+      {isError && err && <Alarm message={err} status={'error'} />}
     </div>
   )
 }

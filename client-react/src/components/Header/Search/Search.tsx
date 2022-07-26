@@ -1,52 +1,58 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Button, Form } from 'react-bootstrap'
+import React, { useRef, useState } from 'react'
+import { Form, InputGroup } from 'react-bootstrap'
 import { useDebounce } from 'hooks/useDebounce'
-import { useSearchProductsQuery } from 'store/api/myStoreApi'
-import Alarm from 'components/UI/Alarm/Alarm'
+import { useSearchProductsQuery } from 'store/myStore/myStore.api'
+// import Alarm from 'components/UI/Alarm/Alarm'
 import Loader from 'components/UI/Loader/Loader'
-import { IMessage } from 'store/api/myStoreApi.interface'
+import { useNavigate } from 'react-router-dom'
+import { RoutePath } from 'AppRouter'
+import { useErrorFix } from 'hooks/useErrorFix'
+import Alarm from 'components/UI/Alarm/Alarm'
 
 const Search = () => {
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
-  const [errorStr, setErrorStr] = useState('')
   const debounced = useDebounce(search)
   const refInput = useRef<HTMLInputElement>(null)
-  const { isLoading, isError, isSuccess, data, error } =
-    useSearchProductsQuery({ value: debounced, limit: 10, page: 1 }, {
-      skip: debounced.length < 3
+  const { isLoading, isError, isSuccess, data: products, error } =
+    useSearchProductsQuery({ value: debounced, limit: 50, page: 1 }, {
+      skip: debounced.length < 3,
+      refetchOnFocus: true
     })
-  useEffect(() => {
-    console.log(search)
-  }, [search])
-
-  useEffect(() => {
-    if ((isError) && (error && 'status' in error)) {
-      const err = error.data as IMessage<string>
-      setErrorStr(err.message)
-    }
-  }, [isError])
+  const err = useErrorFix(isError, error)
 
   const inputSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation()
     setSearch(e.target.value)
   }
-
-  const btnSearch = (e: any) => {
-    if (refInput) {
-      setSearch(refInput.current?.value + ' ' || '')
-    }
-    e.stopPropagation()
-  }
-  const submitHandler = (e: any) => {
-    if (refInput) {
-      setSearch(refInput.current?.value + ' ' || '')
-    }
+  // const btnSearch = (e: any) => {
+  //   e.stopPropagation()
+  //   if (refInput) {
+  //     const text = refInput.current?.value
+  //     setSearch(text + ' ' || '')
+  //   }
+  // }
+  const searchSubmitHandler = (e: any) => {
     e.preventDefault()
+    if (refInput) {
+      const text = refInput.current?.value
+      setSearch(text + ' ' || '')
+    }
+  }
+  const clickLiHandler = (id: number) => {
+    setSearch('')
+    const path = `${RoutePath.PRODUCTS}/${id}`
+    navigate(path)
   }
 
   return (
     <div>
-      <Form className="d-flex" onSubmit={submitHandler}>
+    <div className="w-[560px] relative">
+      <InputGroup className="mb-3 relative justify-content-center">
+        <InputGroup.Text id="basic-addon1">
+          <i className="bi bi-search"></i>
+        </InputGroup.Text>
+        <Form className="d-flex w-[300px]" onSubmit={searchSubmitHandler}>
         <Form.Control
           type="search"
           placeholder="Search"
@@ -56,18 +62,29 @@ const Search = () => {
           aria-label="Search"
           ref={refInput}
         />
-        <Button variant="outline-success"
-                onClick={btnSearch}
-                onKeyDown={btnSearch}>
-          Search
-        </Button>
+        {/* <Button variant="outline-success" */}
+        {/*        onClick={btnSearch} */}
+        {/*        onKeyDown={btnSearch}> */}
+        {/*  Search */}
+        {/* </Button> */}
       </Form>
-      <ul className={'list-none position-absolute top-[42px] left-0 right-0 max-h-[200px] shadow-md bg-white'}>
-
+    </InputGroup>
+      <div>
+      <ul className={'list-none position-absolute top-[50px] left-0 right-0 max-h-[200px] overflow-y-scroll shadow-md bg-white'}>
+        {isSuccess && products?.result?.results.map(product => (
+          <li key={product.id}
+              className="py-2 px-4 hover:bg-gray-500 hover:text-white transition-colors cursor-pointer"
+              onClick={() => clickLiHandler(product.id)}
+          >
+            { product.title }
+          </li>
+        ))}
       </ul>
+      </div>
+    </div>
       {isLoading && <Loader/>}
-      {errorStr && <Alarm title={'Ошибка'} status={'error'} message={errorStr}/>}
-      {isSuccess && <Alarm title={'Успех'} message={data.message}/>}
+      {isSuccess && products && <Alarm message={products.message} />}
+      {isError && err && <Alarm message={err} status={'error'} />}
     </div>
   )
 }

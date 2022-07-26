@@ -1,4 +1,4 @@
-import { IUsers } from 'store/api/myStoreApi.interface'
+import { IUsers } from 'store/myStore/myStore.interface'
 
 export interface UserItemProps {
   user: IUsers

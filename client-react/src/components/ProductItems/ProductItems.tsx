@@ -1,9 +1,14 @@
 import React, { FC } from 'react'
+import { IProduct } from 'store/myStore/myStore.interface'
 
-const ProductItems: FC = () => {
+interface ProductItemProps {
+  product: IProduct
+}
+
+const ProductItems: FC<ProductItemProps> = ({ product }) => {
   return (
     <div>
-      ProductItems
+      {product.title}
     </div>
   )
 }

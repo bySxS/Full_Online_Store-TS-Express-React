@@ -1,13 +1,13 @@
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import { setupStore } from 'store'
+import { store } from 'store'
 import Header from 'components/Header/Header'
 import AppRouter from 'AppRouter'
 import { Helmet } from 'react-helmet'
 import SideBar from 'components/SideBar/SideBar'
 
-const store = setupStore()
+// const store = setupStore()
 
 function App () {
   return (
