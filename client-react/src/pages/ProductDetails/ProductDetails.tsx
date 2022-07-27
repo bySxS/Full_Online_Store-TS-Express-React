@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useLazyGetProductByIdQuery } from 'store/myStore/myStore.api'
 import { useParams, useNavigate } from 'react-router-dom'
-import Loader from 'components/UI/Loader/Loader'
-import { useErrorFix } from 'hooks/useErrorFix'
+import { useInfoLoading } from 'hooks/useInfoLoading'
 import { RoutePath } from 'AppRouter'
-import Alarm from 'components/UI/Alarm/Alarm'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
 
 interface ProductDetailsParams {
@@ -15,16 +13,22 @@ interface ProductDetailsParams {
 const ProductDetails = () => {
   const { id } = useParams<ProductDetailsParams>()
   const navigate = useNavigate()
+  const {
+    addToBasket, delFromBasket, addToAlertStack
+  } = useAppActions()
   if (!id || isNaN(+id)) {
     navigate(RoutePath.PRODUCTS)
-    return (<Alarm message={'ID должен быть с цифр'} title={'Ошибка'} status={'error'} />)
+    addToAlertStack({
+      message: 'ID должен быть с цифр',
+      status: 'error'
+    })
+    return (<></>)
   }
   const [fetchProductById, { isLoading, isSuccess, isError, data: product, error }] =
     useLazyGetProductByIdQuery()
-  const err = useErrorFix(isError, error)
+  useInfoLoading({ isLoading, isSuccess, isError, data: product, error })
   const { basket } = useAppSelector(state => state)
   const [isFav, setIsFav] = useState(basket.product.includes(+id))
-  const { addToBasket, delFromBasket } = useAppActions()
 
   const clickAddToBasket = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
@@ -43,7 +47,7 @@ const ProductDetails = () => {
   }, [id])
 
   return (
-    <div className={'body'}>
+    <div>
       {isSuccess && product &&
         <div>
         <Helmet>
@@ -73,9 +77,6 @@ const ProductDetails = () => {
           </div>
         </div>
       }
-      {isLoading && <Loader/>}
-      {isSuccess && product && <Alarm message={product.message} />}
-      {isError && err && <Alarm message={err} status={'error'} />}
     </div>
   )
 }

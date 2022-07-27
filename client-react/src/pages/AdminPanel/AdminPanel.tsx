@@ -7,7 +7,7 @@ interface AdminPanelProps {
 
 const AdminPanel: FC<AdminPanelProps> = ({ name }) => {
   return (
-    <div className={'body'}>
+    <div>
       <Helmet>
         <title>{name}</title>
         <meta name="description" content="{name}" />

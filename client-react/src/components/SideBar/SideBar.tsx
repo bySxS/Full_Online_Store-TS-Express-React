@@ -6,7 +6,7 @@ import st from './SideBar.module.scss'
 const SideBar = () => {
   return (
     <div className={`d-flex flex-column flex-shrink-0 bg-light text-gray-600 ${st.sideMenu}`}>
-      <ul className="nav nav-pills nav-flush flex-column mb-auto py-2">
+      <ul className="nav nav-pills nav-flush flex-column mb-auto">
         <li className="nav-item">
           <NavLink to={RoutePath.HOME} className="nav-link link-dark py-3 border-bottom rounded-0">
             <div className={st.link_flex}>

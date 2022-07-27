@@ -7,7 +7,7 @@ interface UserDetailsProps {
 
 const UserDetails: FC<UserDetailsProps> = ({ name }) => {
   return (
-    <div className="body">
+    <div>
       <Helmet>
         <title>{name}</title>
         <meta name="description" content="{name}" />

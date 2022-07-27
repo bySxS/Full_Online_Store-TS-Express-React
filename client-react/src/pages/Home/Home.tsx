@@ -7,7 +7,7 @@ interface HomeProps {
 
 const Home: FC<HomeProps> = ({ name }) => {
   return (
-    <div className="body">
+    <div>
       <Helmet>
         <title>{name}</title>
         <meta name="description" content="My First Store - {name}" />

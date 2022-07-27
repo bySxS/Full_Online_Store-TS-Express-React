@@ -7,7 +7,7 @@ interface LoginRegProps {
 
 const LoginReg: FC<LoginRegProps> = ({ name }) => {
   return (
-    <div className={'body'}>
+    <div>
       <Helmet>
         <title>{name}</title>
         <meta name="description" content="{name}" />

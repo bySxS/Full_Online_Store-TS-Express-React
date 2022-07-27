@@ -7,7 +7,7 @@ interface AllOrdersProps {
 
 const AllOrders: FC<AllOrdersProps> = ({ name }) => {
   return (
-    <div className="body">
+    <div>
       <Helmet>
         <title>{name}</title>
         <meta name="description" content="{name}" />

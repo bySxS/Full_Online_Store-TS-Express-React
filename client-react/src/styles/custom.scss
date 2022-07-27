@@ -3,8 +3,14 @@
 .body {
   padding-top: 70px;
   //padding-left: 80px;
-  margin: auto;
+  //margin: auto;
   //color: #fbfbfb;
+}
+
+.btn-close-white {
+  @apply bi bi-x-square text-xl text-gray-900;
+  margin-top: -10px;
+  filter: none;
 }
 
 .active {

@@ -1,10 +1,8 @@
 import React, { FC } from 'react'
 import UserItems from 'components/UserItems/UserItems'
 import { useFetchAllUsersQuery } from 'store/myStore/myStore.api'
-import Loader from 'components/UI/Loader/Loader'
 import { Helmet } from 'react-helmet'
-import { useErrorFix } from 'hooks/useErrorFix'
-import Alarm from 'components/UI/Alarm/Alarm'
+import { useInfoLoading } from 'hooks/useInfoLoading'
 
 interface UsersProps {
   name: string
@@ -13,10 +11,10 @@ interface UsersProps {
 const Users: FC<UsersProps> = ({ name }) => {
   const { isLoading, isSuccess, isError, data, error } =
     useFetchAllUsersQuery({ limit: 10, page: 1 })
-  const err = useErrorFix(isError, error)
+  useInfoLoading({ isLoading, isSuccess, isError, data, error })
 
   return (
-    <div className="body">
+    <div>
       <Helmet>
         <title>{name}</title>
         <meta name="description" content={name + ' все клиенты'} />
@@ -27,9 +25,6 @@ const Users: FC<UsersProps> = ({ name }) => {
                    key={user.id}
         />
       )}</div>}
-      {isLoading && <Loader/>}
-      {isSuccess && data && <Alarm message={data.message} />}
-      {isError && err && <Alarm message={err} status={'error'} />}
     </div>
   )
 }

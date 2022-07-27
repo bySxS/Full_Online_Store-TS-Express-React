@@ -140,7 +140,7 @@ class UsersService implements IUserService {
       fingerprint
     }
     const tokenData = await TokenService.saveToken(dtoToken)
-    const result = { ...token, ...user }
+    const result = { token, user }
     return {
       success: true,
       result,
@@ -179,7 +179,7 @@ class UsersService implements IUserService {
       fingerprint
     }
     const tokenData = await TokenService.saveToken(dtoToken)
-    const result = { ...token, ...user.result }
+    const result = { token, user: user.result }
     return {
       success: true,
       result,
@@ -240,7 +240,7 @@ class UsersService implements IUserService {
       fingerprint
     }
     const tokenData = await TokenService.saveToken(dtoToken)
-    const result = { ...token, ...user.result }
+    const result = { token, user: user.result }
     return {
       success: true,
       result,

@@ -1,55 +1,52 @@
-import React, { FC, useEffect } from 'react'
+import React from 'react'
 import {
   Toast, ToastBody, ToastContainer, ToastHeader
 } from 'react-bootstrap'
-import { useAlert } from 'hooks/useAlarm'
+import { useAppActions, useAppDispatch, useAppSelector } from 'hooks/useStore'
+import { getAlerts } from 'store/alert/alert.selector'
 
-export interface IAlarmStack {
-  title?: string
-  message: string
-  time?: string
-  delay?: number
-  color?: string
-  status?: string
-  // show: boolean
-}
+const Alarm = () => {
+  const stackAlert = useAppSelector(getAlerts)
+  const dispatch = useAppDispatch()
+  const { delFromAlertStack } = useAppActions()
 
-// interface IAlarmProps {
-//   alarm: IAlarmStack
-// }
-
-const Alarm: FC<IAlarmStack> = (props) => {
-  const { closeAlert, alarm, setAlert } = useAlert()
-
-  useEffect(() => {
-    setAlert(props)
-  }, [])
+  const delAlert = (id: number | undefined) => {
+    console.log('удаляем ', id)
+    dispatch(delFromAlertStack(id || 0))
+  }
 
   return (
       <div>
-        {alarm &&
+        {stackAlert &&
         <ToastContainer
           containerPosition={'fixed'}
           position={'bottom-center'}
-          className="p-3">
+        >
+          {stackAlert.map((alert, index) =>
             <Toast
-              className="d-inline-block m-1"
-              bg={alarm.color?.toLowerCase()}
-              delay={alarm.delay}
+              key={index}
+              className="mt-1 mb-2"
+              bg={alert.color?.toLowerCase()}
+              delay={alert.delay}
               animation={true}
               autohide={true}
               show={true}
-              onClose={closeAlert}
+              onClose={() => delAlert(alert.id)}
             >
-              <ToastHeader closeVariant={'white'}>
+              <ToastHeader
+                closeButton={true}
+                closeVariant={'white'}
+                closeLabel={'Close'}
+              >
                 <i className="bi bi-envelope-exclamation-fill pr-1.5"></i>
-                <strong className="me-auto">{alarm.title}</strong>
-                <small>{''}</small>
+                <strong className="me-auto">{alert.title}</strong>
+                <small>{alert.time}</small>
               </ToastHeader>
               <ToastBody>
-                {alarm.message}
+                {alert.message}
               </ToastBody>
             </Toast>
+          )}
         </ToastContainer>
         }
       </div>

@@ -1,9 +1,9 @@
 .sideMenu {
   height: 100%;
-  padding-top: 100px;
-  float: left;
-  align-items: center;
-  position: fixed;
+  //padding-top: 100px;
+  //float: left;
+  //align-items: center;
+  //position: fixed;
 }
 
 .link_flex {
@@ -13,6 +13,8 @@
   flex-direction: row;
 }
 
-.name_page {
-  display: none;
+@media only screen and (max-width: 735px) {
+  .name_page {
+    display: none;
+  }
 }

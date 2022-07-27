@@ -57,6 +57,7 @@ export const routes: IRoute[] = [
 
 const AppRouter = () => {
   return (
+    <div className={'p-4'}>
     <Routes>
       {routes.map(route =>
       <Route
@@ -66,6 +67,7 @@ const AppRouter = () => {
       />
       )}
     </Routes>
+    </div>
   )
 }
 

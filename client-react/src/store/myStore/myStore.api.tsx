@@ -1,17 +1,47 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { IMessage, IProduct, IResultList, IUsers } from 'store/myStore/myStore.interface'
+import {
+  createApi, fetchBaseQuery, retry
+} from '@reduxjs/toolkit/query/react'
+import {
+  ILoginIn, IMessage,
+  IProduct, IResultList, IUsers, ILoginResult
+} from 'store/myStore/myStore.interface'
+import { RootState } from 'store/index'
 
 const baseUrl =
   process.env.REACT_APP_API_URL_STORE || 'http://localhost:3000/api'
 
+const staggeredBaseQuery = retry(fetchBaseQuery({
+  baseUrl,
+  prepareHeaders: (headers, { getState }) => {
+    const token = (getState() as RootState).user.token
+    if (token) {
+      headers.set('authorization', `Bearer ${token}`)
+    }
+    return headers
+  }
+}), {
+  maxRetries: 0
+})
+
 const myStoreApi = createApi({
   reducerPath: 'store/api',
-  baseQuery: fetchBaseQuery({
-    baseUrl
-  }),
-  // refetchOnFocus: true,
+  baseQuery: staggeredBaseQuery,
+  refetchOnFocus: true,
   endpoints: build => ({ // query - get, mutation - post, put
     //
+    login: build.mutation<IMessage<ILoginResult>, ILoginIn>({
+      query: (payload: ILoginIn) => ({
+        url: '/user/login',
+        method: 'POST',
+        body: payload,
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8'
+        }
+      })
+    }), // login
+    protected: build.mutation<{ message: string }, void>({
+      query: () => 'protected'
+    }), // protected
     fetchAllUsers: build.query<IMessage<IResultList<IUsers>>,
       {limit?: number, page: number}>({
         query: (args) => ({
@@ -59,5 +89,6 @@ export const {
   useFetchAllUsersQuery,
   useSearchProductsQuery,
   useLazyAllProductsQuery,
-  useLazyGetProductByIdQuery
+  useLazyGetProductByIdQuery,
+  useLoginMutation, useProtectedMutation
 } = myStoreApi

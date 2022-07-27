@@ -1,10 +1,13 @@
 import { IMessage } from '@/interface'
 import { NextFunction, Request, Response } from 'express'
 
+export type BasketStatus = 'SelectsTheProduct' |
+'InProcessing' | 'InDelivery' | 'Completed' | 'Cancelled'
+
 export interface IBasket {
   id?: number
   userId: number
-  status: string
+  status: BasketStatus
   fullName: string
   comment: string
   deliveryAddress: string

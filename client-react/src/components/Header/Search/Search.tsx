@@ -2,12 +2,9 @@ import React, { useRef, useState } from 'react'
 import { Form, InputGroup } from 'react-bootstrap'
 import { useDebounce } from 'hooks/useDebounce'
 import { useSearchProductsQuery } from 'store/myStore/myStore.api'
-// import Alarm from 'components/UI/Alarm/Alarm'
-import Loader from 'components/UI/Loader/Loader'
 import { useNavigate } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
-import { useErrorFix } from 'hooks/useErrorFix'
-import Alarm from 'components/UI/Alarm/Alarm'
+import { useInfoLoading } from 'hooks/useInfoLoading'
 
 const Search = () => {
   const navigate = useNavigate()
@@ -19,7 +16,7 @@ const Search = () => {
       skip: debounced.length < 3,
       refetchOnFocus: true
     })
-  const err = useErrorFix(isError, error)
+  useInfoLoading({ isLoading, isSuccess, isError, data: products, error })
 
   const inputSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation()
@@ -52,7 +49,8 @@ const Search = () => {
         <InputGroup.Text id="basic-addon1">
           <i className="bi bi-search"></i>
         </InputGroup.Text>
-        <Form className="d-flex w-[300px]" onSubmit={searchSubmitHandler}>
+        <Form className="d-flex w-[300px]"
+              onSubmit={searchSubmitHandler}>
         <Form.Control
           type="search"
           placeholder="Search"
@@ -63,8 +61,7 @@ const Search = () => {
           ref={refInput}
         />
         {/* <Button variant="outline-success" */}
-        {/*        onClick={btnSearch} */}
-        {/*        onKeyDown={btnSearch}> */}
+        {/*        onClick={btnSearch}> */}
         {/*  Search */}
         {/* </Button> */}
       </Form>
@@ -82,9 +79,6 @@ const Search = () => {
       </ul>
       </div>
     </div>
-      {isLoading && <Loader/>}
-      {isSuccess && products && <Alarm message={products.message} />}
-      {isError && err && <Alarm message={err} status={'error'} />}
     </div>
   )
 }

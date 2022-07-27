@@ -7,7 +7,7 @@ interface BasketProps {
 
 const Basket: FC<BasketProps> = ({ name }) => {
   return (
-    <div className="body">
+    <div>
       <Helmet>
         <title>{name}</title>
         <meta name="description" content="{name}" />

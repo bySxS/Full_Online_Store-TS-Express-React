@@ -7,7 +7,7 @@ interface FavoritesProps {
 
 const Favorites: FC<FavoritesProps> = ({ name }) => {
   return (
-    <div className="body">
+    <div>
       <Helmet>
         <title>{name}</title>
         <meta name="description" content="{name}" />

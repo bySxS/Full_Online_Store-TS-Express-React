@@ -3,9 +3,13 @@ import { SUBSCRIBE_STORE } from 'constants/constant'
 import myStoreApi from 'store/myStore/myStore.api'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { basketReducer } from 'store/reducers/basket.slice'
+import { alertReducer } from 'store/alert/alert.slice'
+import { userReducer } from 'store/user/user.slice'
 
 const reducers = {
+  user: userReducer,
   basket: basketReducer,
+  alert: alertReducer,
   [myStoreApi.reducerPath]: myStoreApi.reducer
 }
 
@@ -19,9 +23,9 @@ export const store = configureStore({
     getDefaultMiddleware().concat(myStoreApi.middleware)
 })
 
-const setupStore = () => {
-  return store
-}
+// const setupStore = () => {
+//   return store
+// }
 
 setupListeners(store.dispatch)
 
@@ -32,5 +36,6 @@ if (SUBSCRIBE_STORE) {
 }
 
 export type RootState = ReturnType<typeof store.getState>
-export type AppStore = ReturnType<typeof setupStore>
-export type AppDispatch = AppStore['dispatch']
+// export type AppStore = ReturnType<typeof setupStore>
+// export type AppDispatch = AppStore['dispatch']
+export type AppDispatch = typeof store.dispatch

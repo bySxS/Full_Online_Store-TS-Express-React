@@ -1,9 +1,13 @@
 import React from 'react'
 import cl from 'components/UI/Loader/Loader.module.scss'
+import { useAppSelector } from 'hooks/useStore'
+import { isLoading } from 'store/alert/alert.selector'
 
 const Loader = () => {
+  const Loading = useAppSelector(isLoading)
   return (
     <div>
+      {Loading &&
       <section>
         <div className={cl.loader}>
           <span style={{ '--i': 1 } as React.CSSProperties}></span>
@@ -29,6 +33,7 @@ const Loader = () => {
           <span style={{ '--i': 21 } as React.CSSProperties}></span>
         </div>
       </section>
+      }
     </div>
   )
 }

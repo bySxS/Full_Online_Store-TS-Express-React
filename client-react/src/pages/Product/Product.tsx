@@ -1,12 +1,10 @@
 import React, { FC, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useLazyAllProductsQuery } from 'store/myStore/myStore.api'
-import { useErrorFix } from 'hooks/useErrorFix'
-import Loader from 'components/UI/Loader/Loader'
 import style from './Product.module.scss'
 import { useObserver } from 'hooks/useObserver'
 import ProductItems from 'components/ProductItems/ProductItems'
-import Alarm from 'components/UI/Alarm/Alarm'
+import { useInfoLoading } from 'hooks/useInfoLoading'
 
 interface ProductProps {
   name: string
@@ -17,9 +15,9 @@ const Product: FC<ProductProps> = ({ name }) => {
   const [fetchProducts,
     { isLoading, isSuccess, isError, data: products, error }] =
     useLazyAllProductsQuery()
+  useInfoLoading({ isLoading, isSuccess, isError, data: products, error })
   const [totalPage, setTotalPage] = useState((products?.result.total || 10) / 10)
   const [page, setPage] = useState(1)
-  const err = useErrorFix(isError, error)
 
   const getProducts = () => {
     fetchProducts({ page })
@@ -30,24 +28,22 @@ const Product: FC<ProductProps> = ({ name }) => {
   useObserver(pagination, page, totalPage, isLoading, getProducts)
 
   return (
-    <div className="body">
+    <div>
+      <Helmet>
+        <title>{name}</title>
+        <meta name="description" content={name}/>
+      </Helmet>
+      <div className="font-bold">{name}</div>
+      {!products && <div>Нет продуктов :(</div>}
       {isSuccess && products &&
-        <div>
-          <Helmet>
-            <title>{name}</title>
-            <meta name="description" content={name}/>
-          </Helmet>
-          <div className="font-bold">{name}</div>
-          <div>{products.result.results.map(product =>
+          <div>
+            {products.result.results.map(product =>
             <ProductItems key={product.id} product={product} />
-          )}</div>
-        </div>
+            )}
+          </div>
       }
       <div ref={pagination}
            className={style.autoPagination}/>
-      {isLoading && <Loader/>}
-      {isSuccess && products && <Alarm message={products.message} />}
-      {isError && err && <Alarm message={err} status={'error'} />}
     </div>
   )
 }

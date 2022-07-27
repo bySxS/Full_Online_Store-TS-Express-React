@@ -6,8 +6,8 @@ import Header from 'components/Header/Header'
 import AppRouter from 'AppRouter'
 import { Helmet } from 'react-helmet'
 import SideBar from 'components/SideBar/SideBar'
-
-// const store = setupStore()
+import Alarm from 'components/UI/Alarm/Alarm'
+import Loader from 'components/UI/Loader/Loader'
 
 function App () {
   return (
@@ -18,8 +18,12 @@ function App () {
     <BrowserRouter>
       <div className="App">
         <Header/>
-        <SideBar />
-        <AppRouter />
+        <div className={'flex body'}>
+          <SideBar />
+          <AppRouter />
+        </div>
+        <Alarm/>
+        <Loader/>
       </div>
     </BrowserRouter>
     </Provider>
