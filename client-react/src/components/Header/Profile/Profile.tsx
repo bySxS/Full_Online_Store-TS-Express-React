@@ -1,8 +1,13 @@
 import React from 'react'
 import { Dropdown } from 'react-bootstrap'
 import st from 'components/Header/Header.module.scss'
+import { useAuth } from 'hooks/useAuth'
+import { RoutePath } from 'AppRouter'
+import { NavLink } from 'react-router-dom'
 
 const Profile = () => {
+  const { auth, user } = useAuth()
+
   return (
     <div>
       <Dropdown className={'pr-2'}>
@@ -13,8 +18,8 @@ const Profile = () => {
         <Dropdown.Menu className={st.drop_menu}>
 
           <Dropdown.Item className="dropdown-header">
-            <h6>Гость</h6>
-            <span>Група</span>
+            <h6>{auth ? user?.nickname : 'Гость'}</h6>
+            <span>{auth ? user?.rolesName : 'Група'}</span>
           </Dropdown.Item>
 
           <Dropdown.Item className="dropdown-item d-flex align-items-center">
@@ -34,11 +39,12 @@ const Profile = () => {
 
           <Dropdown.Divider />
 
-          <Dropdown.Item className="dropdown-item d-flex align-items-center" href="#">
+          {!auth &&
+            <NavLink className="dropdown-item d-flex align-items-center" to={`${RoutePath.LOGIN_REGISTRATION}`}>
             <i className="bi bi-box-arrow-right pr-1.5"></i>
-            <span>Sign Out</span>
-          </Dropdown.Item>
-
+            <span>Вход / Регистрация</span>
+            </NavLink>
+          }
         </Dropdown.Menu>
       </Dropdown>
     </div>

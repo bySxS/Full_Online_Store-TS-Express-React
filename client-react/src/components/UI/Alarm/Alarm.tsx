@@ -11,7 +11,6 @@ const Alarm = () => {
   const { delFromAlertStack } = useAppActions()
 
   const delAlert = (id: number | undefined) => {
-    console.log('удаляем ', id)
     dispatch(delFromAlertStack(id || 0))
   }
 

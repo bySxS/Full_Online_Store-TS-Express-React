@@ -10,6 +10,10 @@ export const useAppDispatch = () => useDispatch<AppDispatch>()
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 export const useAppActions = () => {
   const dispatch = useDispatch()
-  const actions = { ...basketAction, ...alertAction, ...userAction }
+  const actions = {
+    ...basketAction,
+    ...alertAction,
+    ...userAction
+  }
   return bindActionCreators(actions, dispatch)
 }

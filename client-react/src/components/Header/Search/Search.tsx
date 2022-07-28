@@ -5,6 +5,7 @@ import { useSearchProductsQuery } from 'store/myStore/myStore.api'
 import { useNavigate } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
 import { useInfoLoading } from 'hooks/useInfoLoading'
+import style from './Search.module.scss'
 
 const Search = () => {
   const navigate = useNavigate()
@@ -44,8 +45,7 @@ const Search = () => {
 
   return (
     <div>
-    <div className="w-[560px] relative">
-      <InputGroup className="mb-3 relative justify-content-center">
+      <InputGroup className="justify-content-center">
         <InputGroup.Text id="basic-addon1">
           <i className="bi bi-search"></i>
         </InputGroup.Text>
@@ -66,11 +66,11 @@ const Search = () => {
         {/* </Button> */}
       </Form>
     </InputGroup>
-      <div>
-      <ul className={'list-none position-absolute top-[50px] left-0 right-0 max-h-[200px] overflow-y-scroll shadow-md bg-white'}>
+      <div className={`${style.result_search} min-w-[360px] max-w-full`}>
+      <ul className={'list-none position-absolute top-[15px] left-0 right-0 max-h-[200px] overflow-y-auto shadow-md bg-white'}>
         {isSuccess && products?.result?.results.map(product => (
           <li key={product.id}
-              className="py-2 px-4 hover:bg-gray-500 hover:text-white transition-colors cursor-pointer"
+              className={`py-1 px-4 hover:bg-gray-500 hover:text-white transition-colors cursor-pointer ${style.li_item}`}
               onClick={() => clickLiHandler(product.id)}
           >
             { product.title }
@@ -78,7 +78,6 @@ const Search = () => {
         ))}
       </ul>
       </div>
-    </div>
     </div>
   )
 }

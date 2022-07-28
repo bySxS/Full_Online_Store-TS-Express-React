@@ -11,9 +11,28 @@ interface IUserState {
   user: IUser | undefined
 }
 
+const tokenString = localStorage.getItem(LS_TOKEN_KEY) || ''
+let token = ''
+if (tokenString) {
+  try {
+    token = JSON.parse(tokenString)
+  } catch (e) {
+    token = ''
+  }
+}
+const isAuthString = localStorage.getItem(LS_IS_AUTH_KEY) || ''
+let isAuth = false
+if (isAuthString) {
+  try {
+    isAuth = JSON.parse(isAuthString)
+  } catch (e) {
+    isAuth = false
+  }
+}
+
 const initialState: IUserState = {
-  token: JSON.parse(localStorage.getItem(LS_TOKEN_KEY) ?? '[]'),
-  isAuth: JSON.parse(localStorage.getItem(LS_IS_AUTH_KEY) ?? '[]'),
+  token,
+  isAuth,
   user: JSON.parse(localStorage.getItem(LS_USER_KEY) ?? '[]')
 }
 
