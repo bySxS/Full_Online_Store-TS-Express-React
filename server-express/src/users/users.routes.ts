@@ -19,7 +19,7 @@ try {
     validateLogin(), ValidatorResultMiddleware,
     UsersController.login)
   // success
-  router.post('/logout',
+  router.get('/logout',
     AuthMiddleware,
     UsersController.logout)
   // success

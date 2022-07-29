@@ -32,7 +32,7 @@ class UsersController implements IUserController {
       const result =
         await UsersService.registration(req.body, req.ip, finger, req.files as IUsersFilesArray)
       res.cookie('refreshToken',
-        result.result.refreshToken,
+        result.result.token.refreshToken,
         { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
       return res.status(201).json(result)
     } catch (err) {
@@ -46,7 +46,7 @@ class UsersController implements IUserController {
       const result =
         await UsersService.login(req.body, req.ip, finger)
       res.cookie('refreshToken',
-        result.result.refreshToken,
+        result.result.token.refreshToken,
         { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
       return res.status(200).json(result)
     } catch (err) {
@@ -73,7 +73,7 @@ class UsersController implements IUserController {
       const result =
         await UsersService.refresh(refreshToken, req.ip, finger)
       res.cookie('refreshToken',
-        result.result.refreshToken,
+        result.result.token.refreshToken,
         { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
       return res.status(200).json(result)
     } catch (e) {

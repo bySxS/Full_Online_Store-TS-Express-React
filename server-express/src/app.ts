@@ -21,17 +21,12 @@ const app = express()
 const PORT = process.env.PORT
 
 const staticPath = path.resolve(__dirname, '..', 'static')
-const corsOptions = { origin: '*', optionsSuccessStatus: 200 }
-const corsSetting = function (req: Request, res: Response, next: NextFunction) {
-  res.header('Access-Control-Allow-Origin', '*')
-  return next()
-}
+const corsOptions = { origin: process.env.CLIENT_URL, credentials: true, optionsSuccessStatus: 200 }
 
 app.use(helmet())
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors(corsOptions))
-app.use(corsSetting)
 app.use(express.urlencoded({ extended: true }))
 app.use(fileUpload({}))
 app.use(express.static(staticPath))
