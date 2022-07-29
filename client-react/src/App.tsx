@@ -8,6 +8,7 @@ import { Helmet } from 'react-helmet'
 import SideBar from 'components/SideBar/SideBar'
 import Alarm from 'components/UI/Alarm/Alarm'
 import Loader from 'components/UI/Loader/Loader'
+import { ALERT_CONNECTION } from 'constants/constant'
 
 function App () {
   return (
@@ -22,7 +23,7 @@ function App () {
           <SideBar />
           <AppRouter />
         </div>
-        <Alarm/>
+        {ALERT_CONNECTION && <Alarm/>}
         <Loader/>
       </div>
     </BrowserRouter>

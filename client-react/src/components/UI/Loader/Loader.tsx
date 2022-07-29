@@ -1,13 +1,17 @@
-import React from 'react'
+import React, { FC } from 'react'
 import cl from 'components/UI/Loader/Loader.module.scss'
 import { useAppSelector } from 'hooks/useStore'
 import { isLoading } from 'store/alert/alert.selector'
 
-const Loader = () => {
+interface ILoaderProps {
+  alwaysShow?: boolean
+}
+
+const Loader: FC<ILoaderProps> = ({ alwaysShow = false }) => {
   const Loading = useAppSelector(isLoading)
   return (
     <div>
-      {Loading &&
+      {(Loading || (alwaysShow !== undefined && alwaysShow)) &&
       <section>
         <div className={cl.loader}>
           <span style={{ '--i': 1 } as React.CSSProperties}></span>

@@ -4,7 +4,7 @@ import st from 'components/Header/Header.module.scss'
 import { useAuth } from 'hooks/useAuth'
 import { RoutePath } from 'AppRouter'
 import { NavLink } from 'react-router-dom'
-import { useLazyLogoutQuery } from 'store/myStore/myStore.api'
+import { useLazyLogoutQuery } from 'store/myStore/myStoreUser.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 
 const Profile = () => {

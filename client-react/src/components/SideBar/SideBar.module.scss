@@ -1,5 +1,6 @@
 .sideMenu {
   height: 100%;
+  min-width: 204px;
   //padding-top: 100px;
   //float: left;
   //align-items: center;
@@ -16,5 +17,9 @@
 @media only screen and (max-width: 735px) {
   .name_page {
     display: none;
+  }
+  .sideMenu {
+    min-width: 63px;
+    width: 63px;
   }
 }

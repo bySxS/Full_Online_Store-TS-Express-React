@@ -1,17 +1,20 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { SUBSCRIBE_STORE } from 'constants/constant'
-import myStoreApi from 'store/myStore/myStore.api'
+import myStoreUserApi from 'store/myStore/myStoreUser.api'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { basketReducer } from 'store/reducers/basket.slice'
 import { alertReducer } from 'store/alert/alert.slice'
 import { userReducer } from 'store/user/user.slice'
 import { alertListenerMiddleware } from 'store/alert/alert.listener'
+import { logoutListenerMiddleware } from 'store/user/user.listener'
+import myStoreProductApi from 'store/myStore/myStoreProduct.api'
 
 const reducers = {
   user: userReducer,
   basket: basketReducer,
   alert: alertReducer,
-  [myStoreApi.reducerPath]: myStoreApi.reducer
+  [myStoreUserApi.reducerPath]: myStoreUserApi.reducer,
+  [myStoreProductApi.reducerPath]: myStoreProductApi.reducer
 }
 
 const rootReducer = combineReducers({
@@ -22,8 +25,10 @@ export const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware()
-      .concat(myStoreApi.middleware)
+      .concat(myStoreUserApi.middleware, myStoreProductApi.middleware)
       .prepend(alertListenerMiddleware.middleware)
+      .prepend(logoutListenerMiddleware.middleware),
+  devTools: process.env.NODE_ENV !== 'production'
 })
 
 setupListeners(store.dispatch)
@@ -35,6 +40,4 @@ if (SUBSCRIBE_STORE) {
 }
 
 export type RootState = ReturnType<typeof store.getState>
-// export type AppStore = ReturnType<typeof setupStore>
-// export type AppDispatch = AppStore['dispatch']
 export type AppDispatch = typeof store.dispatch

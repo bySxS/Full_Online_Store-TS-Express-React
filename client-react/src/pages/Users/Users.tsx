@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import UserItems from 'components/UserItems/UserItems'
-import { useFetchAllUsersQuery } from 'store/myStore/myStore.api'
+import { useFetchAllUsersQuery } from 'store/myStore/myStoreUser.api'
 import { Helmet } from 'react-helmet'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 
@@ -9,9 +9,9 @@ interface UsersProps {
 }
 
 const Users: FC<UsersProps> = ({ name }) => {
-  const { isLoading, isSuccess, isError, data, error } =
+  const { isLoading, isSuccess, isError, data: users, error } =
     useFetchAllUsersQuery({ limit: 10, page: 1 })
-  useInfoLoading({ isLoading, isSuccess, isError, data, error })
+  useInfoLoading({ isLoading, isSuccess, isError, data: users, error })
 
   return (
     <div>
@@ -20,7 +20,7 @@ const Users: FC<UsersProps> = ({ name }) => {
         <meta name="description" content={name + ' все клиенты'} />
       </Helmet>
       <div className="font-bold text-center">{name}</div>
-      {isSuccess && <div>{data.result?.results.map(user =>
+      {isSuccess && users && <div>{users.result?.results.map(user =>
         <UserItems user={user}
                    key={user.id}
         />

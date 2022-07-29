@@ -1,16 +1,16 @@
 import React, { FC, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet'
-import { useLazyAllProductsQuery } from 'store/myStore/myStore.api'
-import style from './Product.module.scss'
+import style from 'pages/Products/Products.module.scss'
 import { useObserver } from 'hooks/useObserver'
 import ProductItems from 'components/ProductItems/ProductItems'
 import { useInfoLoading } from 'hooks/useInfoLoading'
+import { useLazyAllProductsQuery } from 'store/myStore/myStoreProduct.api'
 
 interface ProductProps {
   name: string
 }
 
-const Product: FC<ProductProps> = ({ name }) => {
+const Products: FC<ProductProps> = ({ name }) => {
   const pagination = useRef<HTMLHeadingElement>(null)
   const [fetchProducts,
     { isLoading, isSuccess, isError, data: products, error }] =
@@ -48,4 +48,4 @@ const Product: FC<ProductProps> = ({ name }) => {
   )
 }
 
-export default Product
+export default Products

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
-import { useLazyGetProductByIdQuery } from 'store/myStore/myStore.api'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { RoutePath } from 'AppRouter'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
+import { useLazyGetProductByIdQuery } from 'store/myStore/myStoreProduct.api'
 
 interface ProductDetailsParams {
   [id: string]: string

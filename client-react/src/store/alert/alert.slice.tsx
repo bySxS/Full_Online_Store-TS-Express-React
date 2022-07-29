@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-const LS_ALERT_KEY = 'rak'
+// const LS_ALERT_KEY = 'rak'
 
 export interface IAlertStack {
   id?: number
@@ -18,7 +18,7 @@ interface IAlertState {
 }
 
 const initialState: IAlertState = {
-  alertSt: JSON.parse(localStorage.getItem(LS_ALERT_KEY) ?? '[]'),
+  alertSt: [], // JSON.parse(localStorage.getItem(LS_ALERT_KEY) ?? '[]'),
   isLoading: false
 }
 
@@ -53,16 +53,16 @@ export const AlertSlice = createSlice({
           action.payload.time = new Date(Date.now()).toString()
         }
         state.alertSt = [...state.alertSt, action.payload]
-        localStorage.setItem(LS_ALERT_KEY, JSON.stringify(state.alertSt))
+        // localStorage.setItem(LS_ALERT_KEY, JSON.stringify(state.alertSt))
       }
     },
     delFromAlertStack (state, action: PayloadAction<number>) {
       state.alertSt = state.alertSt.filter(a => a.id !== action.payload)
-      localStorage.setItem(LS_ALERT_KEY, JSON.stringify(state.alertSt))
+      // localStorage.setItem(LS_ALERT_KEY, JSON.stringify(state.alertSt))
     }
   }
 })
 
-export const { addToAlertStack, delFromAlertStack } = AlertSlice.actions
+export const { addToAlertStack, delFromAlertStack, setLoading } = AlertSlice.actions
 export const alertAction = AlertSlice.actions
 export const alertReducer = AlertSlice.reducer

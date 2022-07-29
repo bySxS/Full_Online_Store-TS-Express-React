@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ILoginResult, IMessage, IUser } from 'store/myStore/myStore.interface'
-import { myStoreEndpoints } from 'store/myStore/myStore.api'
+// import { myStoreUserEndpoints } from 'store/myStore/myStoreUser.api'
 
 const LS_TOKEN_KEY = 'rtk'
 const LS_USER_KEY = 'ruk'
@@ -66,21 +66,21 @@ export const UserSlice = createSlice({
     logout (state) {
       setLogout(state)
     }
-  },
-  extraReducers: (builder) => {
-    builder.addMatcher(
-      myStoreEndpoints.login.matchFulfilled,
-      (state, action: PayloadAction<IMessage<ILoginResult>>) => {
-        setLogin(state, action)
-      }
-    )
-    builder.addMatcher(
-      myStoreEndpoints.logout.matchFulfilled,
-      (state) => {
-        setLogout(state)
-      }
-    )
   }
+  // extraReducers: (builder) => {
+  //   builder.addMatcher(
+  //     myStoreUserEndpoints.login.matchFulfilled,
+  //     (state, action: PayloadAction<IMessage<ILoginResult>>) => {
+  //       setLogin(state, action)
+  //     }
+  //   )
+  // builder.addMatcher(
+  //   myStoreUserEndpoints.logout.matchFulfilled,
+  //   (state) => {
+  //     setLogout(state)
+  //   }
+  // )
+  // }
 })
 
 export const { logout, login } = UserSlice.actions

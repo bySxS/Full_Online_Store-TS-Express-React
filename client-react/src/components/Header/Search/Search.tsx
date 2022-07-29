@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react'
 import { Form, InputGroup } from 'react-bootstrap'
 import { useDebounce } from 'hooks/useDebounce'
-import { useSearchProductsQuery } from 'store/myStore/myStore.api'
 import { useNavigate } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import style from './Search.module.scss'
+import { useSearchProductsQuery } from 'store/myStore/myStoreProduct.api'
 
 const Search = () => {
   const navigate = useNavigate()
@@ -23,13 +23,7 @@ const Search = () => {
     e.stopPropagation()
     setSearch(e.target.value)
   }
-  // const btnSearch = (e: any) => {
-  //   e.stopPropagation()
-  //   if (refInput) {
-  //     const text = refInput.current?.value
-  //     setSearch(text + ' ' || '')
-  //   }
-  // }
+
   const searchSubmitHandler = (e: any) => {
     e.preventDefault()
     if (refInput) {

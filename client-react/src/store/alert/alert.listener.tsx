@@ -1,5 +1,5 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit'
-import { addToAlertStack, delFromAlertStack } from 'store/alert/alert.slice'
+import { addToAlertStack, delFromAlertStack, setLoading } from 'store/alert/alert.slice'
 
 // Create the middleware instance and methods
 export const alertListenerMiddleware = createListenerMiddleware()
@@ -29,6 +29,7 @@ alertListenerMiddleware.startListening({
         // listenerApi.dispatch(todoAdded('Buy pet food'))
         clearTimeout(timer)
 
+        await listenerApi.dispatch(setLoading(false))
         // Spawn "child tasks" that can do more work and return results
         // const task = listenerApi.fork(async (forkApi) => {
         // Can pause execution
