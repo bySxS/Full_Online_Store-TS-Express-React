@@ -2,17 +2,17 @@ import React from 'react'
 import {
   Toast, ToastBody, ToastContainer, ToastHeader
 } from 'react-bootstrap'
-import { useAppActions, useAppDispatch, useAppSelector } from 'hooks/useStore'
+import { useAppSelector } from 'hooks/useStore'
 import { getAlerts } from 'store/alert/alert.selector'
 
 const Alarm = () => {
   const stackAlert = useAppSelector(getAlerts)
-  const dispatch = useAppDispatch()
-  const { delFromAlertStack } = useAppActions()
+  // const dispatch = useAppDispatch()
+  // const { delFromAlertStack } = useAppActions()
 
-  const delAlert = (id: number | undefined) => {
-    dispatch(delFromAlertStack(id || 0))
-  }
+  // const delAlert = (id: number | undefined) => {
+  //   dispatch(delFromAlertStack(id || 0))
+  // }
 
   return (
       <div>
@@ -28,12 +28,12 @@ const Alarm = () => {
               bg={alert.color?.toLowerCase()}
               delay={alert.delay}
               animation={true}
-              autohide={true}
+              autohide={false}
               show={true}
-              onClose={() => delAlert(alert.id)}
+              // onClose={() => delAlert(alert.id)}
             >
               <ToastHeader
-                closeButton={true}
+                closeButton={false}
                 closeVariant={'white'}
                 closeLabel={'Close'}
               >

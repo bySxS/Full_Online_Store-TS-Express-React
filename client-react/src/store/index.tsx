@@ -5,6 +5,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import { basketReducer } from 'store/reducers/basket.slice'
 import { alertReducer } from 'store/alert/alert.slice'
 import { userReducer } from 'store/user/user.slice'
+import { alertListenerMiddleware } from 'store/alert/alert.listener'
 
 const reducers = {
   user: userReducer,
@@ -20,12 +21,10 @@ const rootReducer = combineReducers({
 export const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(myStoreApi.middleware)
+    getDefaultMiddleware()
+      .concat(myStoreApi.middleware)
+      .prepend(alertListenerMiddleware.middleware)
 })
-
-// const setupStore = () => {
-//   return store
-// }
 
 setupListeners(store.dispatch)
 

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ILoginResult, IUser } from 'store/myStore/myStore.interface'
+import { ILoginResult, IMessage, IUser } from 'store/myStore/myStore.interface'
+import { myStoreEndpoints } from 'store/myStore/myStore.api'
 
 const LS_TOKEN_KEY = 'rtk'
 const LS_USER_KEY = 'ruk'
@@ -36,28 +37,52 @@ const initialState: IUserState = {
   user: JSON.parse(localStorage.getItem(LS_USER_KEY) ?? '[]')
 }
 
+const setLogin = (state: IUserState, action: PayloadAction<IMessage<ILoginResult>>) => {
+  const { payload } = action
+  state.token = payload.result.token.accessToken
+  state.user = payload.result.user
+  state.isAuth = true
+  localStorage.setItem(LS_TOKEN_KEY, JSON.stringify(state.token))
+  localStorage.setItem(LS_IS_AUTH_KEY, JSON.stringify(state.isAuth))
+  localStorage.setItem(LS_USER_KEY, JSON.stringify(state.user))
+}
+
+const setLogout = (state: IUserState) => {
+  state.token = ''
+  state.isAuth = false
+  state.user = undefined
+  localStorage.removeItem(LS_TOKEN_KEY)
+  localStorage.removeItem(LS_IS_AUTH_KEY)
+  localStorage.removeItem(LS_USER_KEY)
+}
+
 export const UserSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    addToken (state, action: PayloadAction<ILoginResult>) {
-      state.token = action.payload.token.accessToken
-      state.isAuth = true
-      state.user = action.payload.user
-      localStorage.setItem(LS_TOKEN_KEY, JSON.stringify(state.token))
-      localStorage.setItem(LS_IS_AUTH_KEY, JSON.stringify(state.isAuth))
-      localStorage.setItem(LS_USER_KEY, JSON.stringify(state.user))
+    login (state, action: PayloadAction<IMessage<ILoginResult>>) {
+      setLogin(state, action)
     },
-    delToken (state) {
-      state.token = ''
-      state.isAuth = false
-      state.user = undefined
-      localStorage.removeItem(LS_TOKEN_KEY)
-      localStorage.removeItem(LS_IS_AUTH_KEY)
-      localStorage.removeItem(LS_USER_KEY)
+    logout (state) {
+      setLogout(state)
     }
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      myStoreEndpoints.login.matchFulfilled,
+      (state, action: PayloadAction<IMessage<ILoginResult>>) => {
+        setLogin(state, action)
+      }
+    )
+    builder.addMatcher(
+      myStoreEndpoints.logout.matchFulfilled,
+      (state) => {
+        setLogout(state)
+      }
+    )
   }
 })
 
+export const { logout, login } = UserSlice.actions
 export const userAction = UserSlice.actions
 export const userReducer = UserSlice.reducer

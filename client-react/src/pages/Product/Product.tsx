@@ -34,7 +34,6 @@ const Product: FC<ProductProps> = ({ name }) => {
         <meta name="description" content={name}/>
       </Helmet>
       <div className="font-bold">{name}</div>
-      {!products && <div>Нет продуктов :(</div>}
       {isSuccess && products &&
           <div>
             {products.result.results.map(product =>
@@ -44,6 +43,7 @@ const Product: FC<ProductProps> = ({ name }) => {
       }
       <div ref={pagination}
            className={style.autoPagination}/>
+      {!products && <div>Нет продуктов :(</div>}
     </div>
   )
 }

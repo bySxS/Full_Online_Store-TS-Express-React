@@ -4,7 +4,7 @@ import { ILoginIn } from 'store/myStore/myStore.interface'
 import { InputGroup, Form, Button } from 'react-bootstrap'
 import { useLoginMutation } from 'store/myStore/myStore.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
-import { useAppActions, useAppDispatch } from 'hooks/useStore'
+// import { useAppActions, useAppDispatch } from 'hooks/useStore'
 import { useNavigate } from 'react-router-dom'
 
 interface LoginRegProps {
@@ -15,8 +15,8 @@ const LoginReg: FC<LoginRegProps> = ({ name }) => {
   const navigate = useNavigate()
   const [login, { isLoading, isSuccess, isError, data: user, error }] = useLoginMutation()
   useInfoLoading({ isLoading, isSuccess, isError, data: user, error })
-  const dispatch = useAppDispatch()
-  const { addToken } = useAppActions()
+  // const dispatch = useAppDispatch()
+  // const { addToken } = useAppActions()
   const [formState, setFormState] = React.useState<ILoginIn>({
     nickname: '',
     password: ''
@@ -30,7 +30,7 @@ const LoginReg: FC<LoginRegProps> = ({ name }) => {
 
   useEffect(() => {
     if (isSuccess && user) {
-      dispatch(addToken(user.result))
+      // dispatch(addToken(user.result))
       navigate('/')
     }
   }, [isSuccess])

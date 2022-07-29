@@ -35,7 +35,7 @@ export const AlertSlice = createSlice({
         if (!action.payload.status) {
           action.payload.status = 'success'
         }
-        action.payload.id = state.alertSt.length + Math.floor(Math.random() * 100)
+        action.payload.id = state.alertSt.length + Math.floor(Math.random() * 10000)
         if (action.payload.status.toLowerCase() === 'success') {
           action.payload.color = 'success'
           action.payload.title = 'Успех'
@@ -63,5 +63,6 @@ export const AlertSlice = createSlice({
   }
 })
 
+export const { addToAlertStack, delFromAlertStack } = AlertSlice.actions
 export const alertAction = AlertSlice.actions
 export const alertReducer = AlertSlice.reducer

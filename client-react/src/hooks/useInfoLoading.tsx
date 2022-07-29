@@ -18,10 +18,13 @@ export function useInfoLoading (arg: IInfoLoading) {
   useEffect(() => {
     if ((arg.isError) && (arg.error && 'status' in arg.error)) {
       const err = arg.error.data as IMessage<string>
-      addToAlertStack({
-        message: err.message,
-        status: 'error'
-      })
+      if (err.message !==
+        'Пользователь не авторизован или время сессии истекло') {
+        addToAlertStack({
+          message: err.message,
+          status: 'error'
+        })
+      }
     }
   }, [arg.isError])
 
