@@ -1,9 +1,14 @@
 import React from 'react'
-import style from './Breadcrumb.module.scss'
+// import style from './Breadcrumb.module.scss'
+
+export interface ICrumbs {
+  title: string,
+  path: string
+}
 
 interface IBreadcrumb {
-  crumbs: string[]
-  selected: (title: string) => void
+  crumbs: ICrumbs[]
+  selected: (crumb: string) => void
 }
 
 function Breadcrumb (props: IBreadcrumb) {
@@ -12,8 +17,8 @@ function Breadcrumb (props: IBreadcrumb) {
   }
 
   return (
-    <nav className="row justify-content-center mt-4">
-      <ol className={`breadcrumb ${style.breadcrumb}`}>
+    <div>
+      <ol className={'breadcrumb'}>
         {
           props.crumbs.map((crumb, ci) => {
             const disabled = isLast(ci) ? 'disabled' : ''
@@ -24,15 +29,15 @@ function Breadcrumb (props: IBreadcrumb) {
                 className="breadcrumb-item align-items-center"
               >
                 <button className={`btn btn-link ${disabled}`}
-                        onClick={() => props.selected(crumb)}>
-                  { crumb }
+                        onClick={() => props.selected(crumb.path)}>
+                  { crumb.title }
                 </button>
               </li>
             )
           })
         }
       </ol>
-    </nav>
+    </div>
   )
 }
 

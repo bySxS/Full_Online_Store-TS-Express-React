@@ -1,18 +1,18 @@
-import React, { FC } from 'react'
+import React from 'react'
 import { Helmet } from 'react-helmet'
 
-interface UserDetailsProps {
-  name: string
-}
+// interface UserDetailsProps {
+//   name: string
+// }
 
-const UserDetails: FC<UserDetailsProps> = ({ name }) => {
+const UserDetails = () => {
   return (
     <div>
       <Helmet>
-        <title>{name}</title>
+        <title></title>
         <meta name="description" content="{name}" />
       </Helmet>
-      <div className="font-bold text-center">{name}</div>
+      <div className="font-bold text-center"></div>
     </div>
   )
 }

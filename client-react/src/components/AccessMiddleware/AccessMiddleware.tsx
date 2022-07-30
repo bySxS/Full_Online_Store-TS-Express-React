@@ -21,28 +21,30 @@ const AccessMiddleware: FC<IRequireUserProps> = ({ allow }) => {
   let needRoles
   let needUsers
 
+  const checkAuth: () => boolean = () => {
+    return (allow.allowedAuth !== undefined) && isAuth === allow.allowedAuth
+  }
+  const checkRoles: () => boolean = () => {
+    return !!((allow.allowedRoles &&
+      (typeof (allow.allowedRoles) === 'object')
+      ? (needRoles = [...allow.allowedRoles])
+      : (needRoles = [allow.allowedRoles])) &&
+      (isAuth && needRoles && needRoles.includes(roles)))
+  }
+
+  const checkUser: () => boolean = () => {
+    return !!((allow.allowedUsers &&
+      (typeof (allow.allowedUsers) === 'object')
+      ? (needUsers = [...allow.allowedUsers])
+      : (needUsers = [allow.allowedUsers])) &&
+      (isAuth && user?.nickname &&
+        needUsers && needUsers.includes(user.nickname)))
+  }
+
   useEffect(() => {
-    let needRoles
-    let needUsers
-    if (allow.allowedRoles) {
-      if (typeof (allow.allowedRoles) === 'object') {
-        needRoles = [...allow.allowedRoles]
-      } else {
-        needRoles = [allow.allowedRoles]
-      }
-    }
-    if (allow.allowedUsers) {
-      if (typeof (allow.allowedUsers) === 'object') {
-        needUsers = [...allow.allowedUsers]
-      } else {
-        needUsers = [allow.allowedUsers]
-      }
-    }
-    if (
-      !(((allow.allowedAuth !== undefined) && isAuth === allow.allowedAuth) ||
-        (isAuth && needRoles && needRoles.includes(roles)) ||
-        (isAuth && user?.nickname && needUsers && needUsers.includes(user.nickname)))
-    ) {
+    if (!(checkAuth() ||
+        checkRoles() ||
+        checkUser())) {
       dispatch(addToAlertStack({
         message: 'У вас нет доступа к этой странице!',
         status: 'warning'
@@ -50,22 +52,13 @@ const AccessMiddleware: FC<IRequireUserProps> = ({ allow }) => {
     }
   }, [location.pathname, allow])
 
-  // пришлось без стейтов
-  return ((allow.allowedAuth !== undefined) && isAuth === allow.allowedAuth)
+  return checkAuth()
     ? (<Outlet/>)
-    : (allow.allowedRoles &&
-  (typeof (allow.allowedRoles) === 'object')
-        ? (needRoles = [...allow.allowedRoles])
-        : (needRoles = [allow.allowedRoles])) &&
-  (isAuth && needRoles && needRoles.includes(roles))
+    : checkRoles()
+      ? (<Outlet/>)
+      : checkUser()
         ? (<Outlet/>)
-        : (allow.allowedUsers &&
-    (typeof (allow.allowedUsers) === 'object')
-            ? (needUsers = [...allow.allowedUsers])
-            : (needUsers = [allow.allowedUsers])) &&
-    (isAuth && user?.nickname && needUsers && needUsers.includes(user.nickname))
-            ? (<Outlet/>)
-            : (<Navigate to={RoutePath.HOME} state={{ from: location }} replace/>)
+        : (<Navigate to={RoutePath.HOME} state={{ from: location }} replace/>)
 }
 
 export default AccessMiddleware

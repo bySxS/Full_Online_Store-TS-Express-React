@@ -50,10 +50,8 @@ export enum RouteName {
   LOGIN_REGISTRATION = 'Логин / Регистрация',
   ADMIN_PANEL = 'Админ панель',
   PRODUCTS = 'Товары',
-  // PRODUCTS_ID = '',
   FAVORITES_PRODUCT = 'Избранные товары',
   USERS = 'Пользователи',
-  // USERS_ID = '',
   BASKET = 'Корзина',
   ALL_ORDERS = 'Все заказы'
 }
@@ -66,7 +64,7 @@ const routes: IRoute[] = [
   { path: RoutePath.PRODUCTS_ID, element: <ProductDetails /> },
   { path: RoutePath.FAVORITES_PRODUCT, allowAuth: true, element: <Favorites name={RouteName.FAVORITES_PRODUCT} /> },
   { path: RoutePath.USERS, allowRoles: RolesName.admin, element: <Users name={RouteName.USERS} /> },
-  // { path: RoutePath.USERS_ID, element: <UserDetails name={RouteName.USERS_ID} /> },
+  { path: RoutePath.USERS_ID, element: <UserDetails /> },
   { path: RoutePath.BASKET, element: <Basket name={RouteName.BASKET} /> },
   { path: RoutePath.ALL_ORDERS, lazy: true, allowAuth: true, element: <AllOrders name={RouteName.ALL_ORDERS} /> },
   { path: RoutePath.ADMIN_PANEL, lazy: true, allowRoles: [RolesName.admin], element: <AdminPanel name={RouteName.ADMIN_PANEL} /> }
@@ -86,7 +84,6 @@ const lazyReturn = (element: ReactNode, lazy: boolean | undefined): ReactNode =>
 
 const AppRouter = () => {
   return (
-    <div className={'p-4'}>
     <Routes>
       {routes.map(route =>
         (route.allowAuth !== undefined ||
@@ -94,6 +91,7 @@ const AppRouter = () => {
           route.allowUsers)
           ? (<Route
             key={route.path}
+            path={route.path}
             element={requireAccess({
               allowedAuth: route.allowAuth,
               allowedRoles: route.allowRoles,
@@ -101,7 +99,7 @@ const AppRouter = () => {
             })}
             >
               <Route
-                path={route.path}
+                index
                 element={lazyReturn(route.element, route.lazy)}
               />
             </Route>)
@@ -112,7 +110,6 @@ const AppRouter = () => {
             />)
       )}
     </Routes>
-    </div>
   )
 }
 

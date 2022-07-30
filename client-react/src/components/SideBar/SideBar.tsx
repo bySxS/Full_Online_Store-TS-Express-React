@@ -54,7 +54,7 @@ const SideBar = () => {
           </NavLink>
         </li>
         }
-        {roles === 'admin' &&
+        {/* {roles === 'admin' && */}
         <li className="nav-item">
           <NavLink to={RoutePath.USERS} className="nav-link link-dark py-3 border-bottom rounded-0">
             <div className={st.link_flex}>
@@ -63,7 +63,7 @@ const SideBar = () => {
             </div>
           </NavLink>
         </li>
-        }
+        {/* } */}
         {roles === 'admin' &&
         <li className="nav-item">
           <NavLink to={RoutePath.ADMIN_PANEL} className="nav-link link-dark py-3 border-bottom rounded-0">
