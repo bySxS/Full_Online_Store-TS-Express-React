@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import type { TypedUseSelectorHook } from 'react-redux'
 import type { AppDispatch, RootState } from 'store'
 import { bindActionCreators } from '@reduxjs/toolkit'
-import { basketAction } from 'store/reducers/basket.slice'
+import { basketAction } from 'store/basket/basket.slice'
 import { alertAction } from 'store/alert/alert.slice'
 import { userAction } from 'store/user/user.slice'
 

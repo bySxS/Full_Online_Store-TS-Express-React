@@ -14,31 +14,31 @@ interface IRequireUserProps {
 }
 
 const AccessMiddleware: FC<IRequireUserProps> = ({ allow }) => {
+  const { allowedUsers, allowedAuth, allowedRoles } = allow
   const location = useLocation()
   const { addToAlertStack } = useAppActions()
   const dispatch = useAppDispatch()
-  const { user, auth: isAuth, roles } = useAuth()
+  const { nickname, isAuth, roles } = useAuth()
   let needRoles
   let needUsers
 
   const checkAuth: () => boolean = () => {
-    return (allow.allowedAuth !== undefined) && isAuth === allow.allowedAuth
+    return (allowedAuth !== undefined) && isAuth === allowedAuth
   }
   const checkRoles: () => boolean = () => {
-    return !!((allow.allowedRoles &&
-      (typeof (allow.allowedRoles) === 'object')
-      ? (needRoles = [...allow.allowedRoles])
-      : (needRoles = [allow.allowedRoles])) &&
+    return !!((allowedRoles &&
+      (typeof (allowedRoles) === 'object')
+      ? (needRoles = [...allowedRoles])
+      : (needRoles = [allowedRoles])) &&
       (isAuth && needRoles && needRoles.includes(roles)))
   }
 
   const checkUser: () => boolean = () => {
-    return !!((allow.allowedUsers &&
-      (typeof (allow.allowedUsers) === 'object')
-      ? (needUsers = [...allow.allowedUsers])
-      : (needUsers = [allow.allowedUsers])) &&
-      (isAuth && user?.nickname &&
-        needUsers && needUsers.includes(user.nickname)))
+    return !!((allowedUsers &&
+      (typeof (allowedUsers) === 'object')
+      ? (needUsers = [...allowedUsers])
+      : (needUsers = [allowedUsers])) &&
+      (isAuth && needUsers && needUsers.includes(nickname)))
   }
 
   useEffect(() => {

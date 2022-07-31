@@ -1,17 +1,21 @@
 import { Mutex } from 'async-mutex'
-import { BaseQueryFn, FetchArgs, fetchBaseQuery, retry } from '@reduxjs/toolkit/dist/query/react'
+import {
+  BaseQueryFn, FetchArgs, fetchBaseQuery, retry
+} from '@reduxjs/toolkit/dist/query/react'
 import { RootState } from 'store/index'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
-import { ILoginResult, IMessage } from 'store/myStore/myStore.interface'
+import { IMessage } from 'store/myStore/myStore.interface'
 import { addToAlertStack } from 'store/alert/alert.slice'
 import { login, logout } from 'store/user/user.slice'
+import { ILoginResult } from 'store/myStore/myStoreUser.interface'
 
 const baseUrl =
-  process.env.REACT_APP_API_URL_STORE || 'http://localhost:3000/api'
+  process.env.REACT_APP_API_URL_SERVER
 
 // настройка репитов неправильных запросов с ошибкой плюс add header
 const staggeredBaseQuery = retry(fetchBaseQuery({
   baseUrl,
+  credentials: 'include', // принимать куки от сервера у всех запросов
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).user.token
     if (token) {
@@ -56,7 +60,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
         const refreshResult = await staggeredBaseQuery(
           {
             credentials: 'include',
-            url: '/user/refresh',
+            url: 'user/refresh',
             method: 'get'
           },
           api,

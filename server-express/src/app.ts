@@ -21,9 +21,14 @@ const app = express()
 const PORT = process.env.PORT
 
 const staticPath = path.resolve(__dirname, '..', 'static')
-const corsOptions = { origin: process.env.CLIENT_URL, credentials: true, optionsSuccessStatus: 200 }
+const corsOptions = {
+  origin: process.env.CLIENT_URL,
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  credentials: true,
+  optionsSuccessStatus: 200
+}
 
-app.use(helmet())
+app.use(helmet(corsOptions))
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors(corsOptions))

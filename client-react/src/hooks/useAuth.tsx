@@ -1,11 +1,30 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { currentUser, isAuth, currentRoles } from 'store/user/user.selector'
+import selectUser from 'store/user/user.selector'
 
 export const useAuth = () => {
-  const user = useSelector(currentUser)
-  const roles = useSelector(currentRoles)
-  const auth = useSelector(isAuth)
+  const user = useSelector(selectUser.currentUser)
+  const roles = useSelector(selectUser.currentRoles)
+  const isActivated = useSelector(selectUser.userIsActivated)
+  const nickname = useSelector(selectUser.nickname)
+  const avatarUrl = useSelector(selectUser.avatarUrl)
+  const isAuth = useSelector(selectUser.isAuth)
+  const isUser = useSelector(selectUser.isUser)
+  const isModer = useSelector(selectUser.isModer)
+  const isAdmin = useSelector(selectUser.isAdmin)
 
-  return useMemo(() => ({ user, auth, roles }), [user, auth, roles])
+  return useMemo(() => ({
+    user,
+    roles,
+    isActivated,
+    nickname,
+    avatarUrl,
+    isAuth,
+    isUser,
+    isModer,
+    isAdmin
+  }), [
+    user, roles, isActivated, nickname, avatarUrl,
+    isAuth, isUser, isModer, isAdmin
+  ])
 }

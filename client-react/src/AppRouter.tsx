@@ -1,4 +1,4 @@
-import React, { ReactNode, Suspense, lazy } from 'react'
+import React, { ReactNode, Suspense, lazy, FC } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Home from 'pages/Home/Home'
 import LoginReg from 'pages/LoginReg/LoginReg'
@@ -30,6 +30,7 @@ export interface IRoute {
   allowAuth?: boolean
   allowRoles?: TRoles[] | TRoles
   allowUsers?: string[] | string
+  breadcrumb: any
 }
 
 export enum RoutePath {
@@ -56,18 +57,89 @@ export enum RouteName {
   ALL_ORDERS = 'Все заказы'
 }
 
+interface IBreadcrumbParams {
+  match: {
+    params: {
+      id: number
+    }
+  }
+}
+
+// мини компонент получения данных о продукте для breadcrumbs
+const ProductIDBreadcrumb: FC<IBreadcrumbParams> = ({ match }) => {
+  const { id } = match.params
+  return (
+    <span>{id}</span>
+  )
+}
+
+// мини компонент получения данных о пользователе для breadcrumbs
+const UserIDBreadcrumb: FC<IBreadcrumbParams> = ({ match }) => {
+  const { id } = match.params
+  return (
+    <span>{id}</span>
+  )
+}
+
 // навигация с доступом и lazy
-const routes: IRoute[] = [
-  { path: RoutePath.HOME, element: <Home name={RouteName.HOME} /> },
-  { path: RoutePath.LOGIN_REGISTRATION, allowAuth: false, element: <LoginReg name={RouteName.LOGIN_REGISTRATION} /> },
-  { path: RoutePath.PRODUCTS, element: <Products name={RouteName.PRODUCTS} /> },
-  { path: RoutePath.PRODUCTS_ID, element: <ProductDetails /> },
-  { path: RoutePath.FAVORITES_PRODUCT, allowAuth: true, element: <Favorites name={RouteName.FAVORITES_PRODUCT} /> },
-  { path: RoutePath.USERS, allowRoles: RolesName.admin, element: <Users name={RouteName.USERS} /> },
-  { path: RoutePath.USERS_ID, element: <UserDetails /> },
-  { path: RoutePath.BASKET, element: <Basket name={RouteName.BASKET} /> },
-  { path: RoutePath.ALL_ORDERS, lazy: true, allowAuth: true, element: <AllOrders name={RouteName.ALL_ORDERS} /> },
-  { path: RoutePath.ADMIN_PANEL, lazy: true, allowRoles: [RolesName.admin], element: <AdminPanel name={RouteName.ADMIN_PANEL} /> }
+export const routes: IRoute[] = [
+  {
+    path: RoutePath.HOME,
+    element: <Home name={RouteName.HOME} />,
+    breadcrumb: () => (<i className="bi bi-house-door-fill"></i>)
+  },
+  {
+    path: RoutePath.LOGIN_REGISTRATION,
+    allowAuth: false,
+    element: <LoginReg name={RouteName.LOGIN_REGISTRATION} />,
+    breadcrumb: RouteName.LOGIN_REGISTRATION
+  },
+  {
+    path: RoutePath.PRODUCTS,
+    element: <Products name={RouteName.PRODUCTS} />,
+    breadcrumb: RouteName.PRODUCTS
+  },
+  {
+    path: RoutePath.PRODUCTS_ID,
+    element: <ProductDetails />,
+    breadcrumb: ProductIDBreadcrumb
+  },
+  {
+    path: RoutePath.FAVORITES_PRODUCT,
+    allowAuth: true,
+    element: <Favorites name={RouteName.FAVORITES_PRODUCT} />,
+    breadcrumb: RouteName.FAVORITES_PRODUCT
+  },
+  {
+    path: RoutePath.USERS,
+    allowRoles: RolesName.admin,
+    element: <Users name={RouteName.USERS} />,
+    breadcrumb: RouteName.USERS
+  },
+  {
+    path: RoutePath.USERS_ID,
+    element: <UserDetails />,
+    breadcrumb: UserIDBreadcrumb
+  },
+  {
+    path: RoutePath.BASKET,
+    element: <Basket name={RouteName.BASKET} />,
+    breadcrumb: RouteName.BASKET
+  },
+  {
+    path: RoutePath.ALL_ORDERS,
+    lazy: true,
+    allowAuth: true,
+    element: <AllOrders name={RouteName.ALL_ORDERS} />,
+    breadcrumb: RouteName.ALL_ORDERS
+  },
+  {
+    path: RoutePath.ADMIN_PANEL,
+    lazy: true,
+    allowRoles: [RolesName.admin],
+    element: <AdminPanel name={RouteName.ADMIN_PANEL} />,
+    breadcrumb: RouteName.ADMIN_PANEL
+  }
 ]
 
 const requireAccess = (access: IRequireUser): ReactNode => {
@@ -84,6 +156,7 @@ const lazyReturn = (element: ReactNode, lazy: boolean | undefined): ReactNode =>
 
 const AppRouter = () => {
   return (
+    <div className={'text-center'}>
     <Routes>
       {routes.map(route =>
         (route.allowAuth !== undefined ||
@@ -110,6 +183,7 @@ const AppRouter = () => {
             />)
       )}
     </Routes>
+    </div>
   )
 }
 

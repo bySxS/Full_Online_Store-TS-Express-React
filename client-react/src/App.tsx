@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { store } from 'store'
@@ -9,25 +9,11 @@ import SideBar from 'components/SideBar/SideBar'
 import Alarm from 'components/UI/Alarm/Alarm'
 import Loader from 'components/UI/Loader/Loader'
 import { ALERT_CONNECTION } from 'constants/constant'
-import Breadcrumb from 'components/Breadcrumb/Breadcrumb'
-
-interface ICrumbs {
-  title: string,
-  path: string
-}
+import { Breadcrumbs } from 'components/Breadcrumb/Breadcrumb'
+import style from './styles/App.module.scss'
+import { ModalState } from 'components/UI/Modal/ModalContext'
 
 function App () {
-  const [crumbs] =
-    useState<ICrumbs[]>([
-      { title: 'Home', path: '/' },
-      { title: 'Category', path: '/category' },
-      { title: 'Sub Category', path: '/category/sub' }
-    ])
-
-  const selected = (crumb: string) => {
-    console.log(crumb)
-  }
-
   return (
     <Provider store={ store }>
       <Helmet titleTemplate={'%s - My First Store'}>
@@ -35,16 +21,18 @@ function App () {
       </Helmet>
     <BrowserRouter>
       <div className="App">
-        <Header/>
-        <div className={'flex body'}>
-          <SideBar />
-          <div className={'p-4'}>
-            <Breadcrumb crumbs={crumbs} selected={selected}/>
-            <AppRouter />
+        <ModalState>  {/* контекст модального окна */}
+          <Header />
+          <div className={'flex body'}>
+            <SideBar />
+            <div className={`p-4 ${style.body_content}`}>
+              <Breadcrumbs />
+              <AppRouter />
+            </div>
           </div>
-        </div>
-        {ALERT_CONNECTION && <Alarm/>}
-        <Loader/>
+          {ALERT_CONNECTION && <Alarm/>}
+          <Loader/>
+        </ModalState>
       </div>
     </BrowserRouter>
     </Provider>

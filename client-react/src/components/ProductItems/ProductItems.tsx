@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { IProduct } from 'store/myStore/myStore.interface'
+import { IProduct } from 'store/myStore/myStoreProduct.interface'
 
 interface ProductItemProps {
   product: IProduct

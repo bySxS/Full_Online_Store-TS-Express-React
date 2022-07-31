@@ -2,6 +2,7 @@
 
 .body {
   padding-top: 70px;
+  width: 100%;
   //padding-left: 80px;
   //margin: auto;
   //color: #fbfbfb;
@@ -13,7 +14,7 @@
   filter: none;
 }
 
-.active {
+.nav-link.active, .dropdown-item.active {
   //text-decoration: underline;
   background: #766ED3 !important;
 }

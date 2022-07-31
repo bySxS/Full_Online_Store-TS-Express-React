@@ -1,44 +1,38 @@
-import React from 'react'
-// import style from './Breadcrumb.module.scss'
+import React, { memo, useState } from 'react'
+import useBreadcrumbs from 'use-react-router-breadcrumbs'
+import style from './Breadcrumb.module.scss'
+import { IRoute, routes } from 'AppRouter'
+import { NavLink } from 'react-router-dom'
 
-export interface ICrumbs {
-  title: string,
-  path: string
-}
-
-interface IBreadcrumb {
-  crumbs: ICrumbs[]
-  selected: (crumb: string) => void
-}
-
-function Breadcrumb (props: IBreadcrumb) {
-  function isLast (index: number) {
-    return index === props.crumbs.length - 1
-  }
+const BreadcrumbsComponent = () => {
+  const [rout] = useState<IRoute[]>(routes)
+  const breadcrumbs = useBreadcrumbs(rout)
 
   return (
     <div>
-      <ol className={'breadcrumb'}>
-        {
-          props.crumbs.map((crumb, ci) => {
-            const disabled = isLast(ci) ? 'disabled' : ''
-
-            return (
-              <li
-                key={ ci }
-                className="breadcrumb-item align-items-center"
-              >
-                <button className={`btn btn-link ${disabled}`}
-                        onClick={() => props.selected(crumb.path)}>
-                  { crumb.title }
-                </button>
-              </li>
-            )
-          })
-        }
-      </ol>
+      <nav className={style.Breadcrumbs}>
+        {breadcrumbs.map(({
+          match,
+          breadcrumb
+        }, i) => (
+          (i !== 0)
+            ? <span key={match.pathname}>
+                <span className={'px-2'}>
+                  <i className="bi bi-arrow-right-short"/>
+                </span>
+                <span>
+                  <NavLink className={''} to={match.pathname}>
+                    {breadcrumb}
+                  </NavLink>
+                </span>
+              </span>
+            : <span key={match.pathname}>
+                <NavLink to={match.pathname}>{breadcrumb}</NavLink>
+              </span>
+        ))}
+      </nav>
     </div>
   )
 }
 
-export default Breadcrumb
+export const Breadcrumbs = memo(BreadcrumbsComponent)

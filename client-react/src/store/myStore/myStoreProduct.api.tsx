@@ -1,7 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import {
-  IMessage, IProduct, IResultList
-} from 'store/myStore/myStore.interface'
+import { IMessage, IResultList } from 'store/myStore/myStore.interface'
+import { IProduct } from 'store/myStore/myStoreProduct.interface'
 import baseQueryWithRefreshToken from 'store/myStore/customFetch'
 
 const myStoreProductApi = createApi({
@@ -12,7 +11,7 @@ const myStoreProductApi = createApi({
     searchProducts: build.query<IMessage<IResultList<IProduct>>,
       {value: string, limit?: number, page: number}>({
         query: (args) => ({
-          url: '/product/search',
+          url: 'product/search',
           params: {
             value: args.value,
             limit: args.limit || 50,
@@ -23,7 +22,7 @@ const myStoreProductApi = createApi({
     allProducts: build.query<IMessage<IResultList<IProduct>>,
       {limit?: number, page: number}>({
         query: (args) => ({
-          url: '/product',
+          url: 'product',
           params: {
             limit: args.limit || 10,
             page: args.page
@@ -33,7 +32,7 @@ const myStoreProductApi = createApi({
     getProductById: build.query<IMessage<IProduct>,
       number>({
         query: (id: number) => ({
-          url: `/product/${id}`
+          url: `product/${id}`
         })
       }) // /getProductById
   })

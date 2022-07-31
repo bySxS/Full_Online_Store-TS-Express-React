@@ -1,5 +1,9 @@
 import React, { FC } from 'react'
-import { UserItemProps } from 'components/UserItems/UserItems.interface'
+import { IUsers } from 'store/myStore/myStoreUser.interface'
+
+interface UserItemProps {
+  user: IUsers
+}
 
 const UserItems: FC<UserItemProps> = ({ user }) => {
   return (

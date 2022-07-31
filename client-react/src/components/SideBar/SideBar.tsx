@@ -5,7 +5,7 @@ import st from './SideBar.module.scss'
 import { useAuth } from 'hooks/useAuth'
 
 const SideBar = () => {
-  const { auth: isAuth, roles } = useAuth()
+  const { isAuth, isAdmin } = useAuth()
 
   return (
     <div className={`d-flex flex-column flex-shrink-0 bg-light text-gray-600 ${st.sideMenu}`}>
@@ -54,22 +54,12 @@ const SideBar = () => {
           </NavLink>
         </li>
         }
-        {/* {roles === 'admin' && */}
+        {isAdmin &&
         <li className="nav-item">
           <NavLink to={RoutePath.USERS} className="nav-link link-dark py-3 border-bottom rounded-0">
             <div className={st.link_flex}>
               <div><i className="bi bi-people-fill text-2xl pr-1.5"></i></div>
               <div className={st.name_page}>Пользователи</div>
-            </div>
-          </NavLink>
-        </li>
-        {/* } */}
-        {roles === 'admin' &&
-        <li className="nav-item">
-          <NavLink to={RoutePath.ADMIN_PANEL} className="nav-link link-dark py-3 border-bottom rounded-0">
-            <div className={st.link_flex}>
-              <div><i className="bi bi-pc-display-horizontal text-2xl pr-1.5"></i></div>
-              <div className={st.name_page}>Админ-панель</div>
             </div>
           </NavLink>
         </li>

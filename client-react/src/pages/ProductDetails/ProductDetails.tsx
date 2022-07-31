@@ -1,49 +1,52 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { RoutePath } from 'AppRouter'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
 import { useLazyGetProductByIdQuery } from 'store/myStore/myStoreProduct.api'
+import { productIsInBasket } from 'store/basket/basket.selector'
 
-interface ProductDetailsParams {
+export interface ProductDetailsParams {
   [id: string]: string
 }
 
 const ProductDetails = () => {
-  const { id } = useParams<ProductDetailsParams>()
+  const { id: idParam } = useParams<ProductDetailsParams>()
+  const id = Number(idParam || '')
   const navigate = useNavigate()
   const {
     addToBasket, delFromBasket, addToAlertStack
   } = useAppActions()
-  if (!id || isNaN(+id)) {
-    navigate(RoutePath.PRODUCTS)
-    addToAlertStack({
-      message: 'ID должен быть с цифр',
-      status: 'error'
-    })
-    return (<></>)
-  }
+  useEffect(() => {
+    if (!id || isNaN(+id)) {
+      navigate(RoutePath.PRODUCTS)
+      addToAlertStack({
+        message: 'ID должен быть с цифр',
+        status: 'error'
+      })
+    }
+  }, [])
+
   const [fetchProductById, { isLoading, isSuccess, isError, data: product, error }] =
     useLazyGetProductByIdQuery()
   useInfoLoading({ isLoading, isSuccess, isError, data: product, error })
-  const { basket } = useAppSelector(state => state)
-  const [isFav, setIsFav] = useState(basket.product.includes(+id))
+  const isFav = useAppSelector(productIsInBasket(id))
 
   const clickAddToBasket = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
-    addToBasket(+id)
-    setIsFav(true)
+    addToBasket(id)
   }
 
   const removeFromBasket = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
-    delFromBasket(+id)
-    setIsFav(false)
+    delFromBasket(id)
   }
 
   useEffect(() => {
-    fetchProductById(+id)
+    if (id && !isNaN(id)) {
+      fetchProductById(id)
+    }
   }, [id])
 
   return (

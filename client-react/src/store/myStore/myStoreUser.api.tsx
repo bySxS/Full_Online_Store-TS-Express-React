@@ -1,8 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import {
-  ILoginIn, IMessage,
-  IResultList, IUsers, ILoginResult
-} from 'store/myStore/myStore.interface'
+import { IMessage, IResultList } from 'store/myStore/myStore.interface'
+import { ILoginIn, ILoginResult, IUsers } from 'store/myStore/myStoreUser.interface'
 import { login, logout } from 'store/user/user.slice'
 import baseQueryWithRefreshToken from 'store/myStore/customFetch'
 
@@ -12,24 +10,37 @@ const myStoreUserApi = createApi({
   // tagTypes: ['Users'],
   endpoints: build => ({ // query - get, mutation - post, put
     //
-    login: build.mutation<IMessage<ILoginResult>, ILoginIn>({
+    registration: build.mutation<IMessage<ILoginResult>, ILoginIn>({
       query: (payload: ILoginIn) => ({
-        url: '/user/login',
+        url: 'user/login',
         method: 'POST',
-        body: payload,
-        credentials: 'include' // для получения cookies
+        body: payload
       }),
       async onQueryStarted (args, api) {
         try {
           const reason = await api.queryFulfilled
-          await api.dispatch(login(reason.data))
+          api.dispatch(login(reason.data))
+        } catch (e) {}
+      }
+    }), // registration
+
+    login: build.mutation<IMessage<ILoginResult>, ILoginIn>({
+      query: (payload: ILoginIn) => ({
+        url: 'user/login',
+        method: 'POST',
+        body: payload
+      }),
+      async onQueryStarted (args, api) {
+        try {
+          const reason = await api.queryFulfilled
+          api.dispatch(login(reason.data))
         } catch (e) {}
       }
     }), // login
+
     logout: build.query<IMessage<null>, string>({
       query: () => ({
-        url: '/user/logout',
-        credentials: 'include'
+        url: 'user/logout'
       }),
       async onQueryStarted (args, api) {
         try {
@@ -39,10 +50,11 @@ const myStoreUserApi = createApi({
       }
       // invalidatesTags: ['Users']
     }), // logout
+
     fetchAllUsers: build.query<IMessage<IResultList<IUsers>>,
       {limit?: number, page: number}>({
         query: (args) => ({
-          url: '/user',
+          url: 'user',
           params: {
             limit: args.limit || 10,
             page: args.page
