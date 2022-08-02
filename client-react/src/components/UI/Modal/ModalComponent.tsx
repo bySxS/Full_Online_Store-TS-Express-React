@@ -27,9 +27,11 @@ export function ModalComponent (
         </Modal.Body>
         {onSend !== undefined &&
         <Modal.Footer>
-          <Button variant="primary" onClick={onSend}>
-            {onSendName !== undefined ? onSendName : 'Отправить'}
-          </Button>
+          {onSend &&
+            <Button variant="primary" onClick={onSend}>
+              {onSendName !== undefined ? onSendName : 'Отправить'}
+            </Button>
+          }
         </Modal.Footer>
         }
       </Modal>

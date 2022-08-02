@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IMessage } from 'store/myStore/myStore.interface'
 import { ILoginResult, IUser } from 'store/myStore/myStoreUser.interface'
-// import { myStoreUserEndpoints } from 'store/myStore/myStoreUser.api'
 
 const LS_TOKEN_KEY = 'rtk'
 const LS_USER_KEY = 'ruk'

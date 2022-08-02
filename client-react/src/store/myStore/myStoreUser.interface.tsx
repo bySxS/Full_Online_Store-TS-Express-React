@@ -53,6 +53,13 @@ export interface IRegistrationIn {
   nickname: string
   password: string
   email: string
+  fullName?: string
+  city?: string
+  address?: string
+  deliveryAddress?: string
+  phoneNumber?: string
+  isSubscribeToNews?: boolean
+  avatar?: File | null
 }
 
 export interface ILoginResult {

@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { IMessage, IResultList } from 'store/myStore/myStore.interface'
 import { ILoginIn, ILoginResult, IUsers } from 'store/myStore/myStoreUser.interface'
 import { login, logout } from 'store/user/user.slice'
-import baseQueryWithRefreshToken from 'store/myStore/customFetch'
+import { baseQueryWithRefreshToken } from 'store/myStore/customFetch'
 
 const myStoreUserApi = createApi({
   reducerPath: 'storeUser/api',
@@ -10,9 +10,9 @@ const myStoreUserApi = createApi({
   // tagTypes: ['Users'],
   endpoints: build => ({ // query - get, mutation - post, put
     //
-    registration: build.mutation<IMessage<ILoginResult>, ILoginIn>({
-      query: (payload: ILoginIn) => ({
-        url: 'user/login',
+    registration: build.mutation<IMessage<ILoginResult>, FormData>({
+      query: (payload) => ({
+        url: 'user/registration',
         method: 'POST',
         body: payload
       }),
@@ -20,7 +20,9 @@ const myStoreUserApi = createApi({
         try {
           const reason = await api.queryFulfilled
           api.dispatch(login(reason.data))
-        } catch (e) {}
+        } catch (e) {
+          // console.log(e)
+        }
       }
     }), // registration
 
@@ -71,6 +73,7 @@ export default myStoreUserApi
 export const {
   useFetchAllUsersQuery,
   useLoginMutation,
+  useRegistrationMutation,
   useLazyLogoutQuery
   // endpoints: myStoreUserEndpoints
 } = myStoreUserApi

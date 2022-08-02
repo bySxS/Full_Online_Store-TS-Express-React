@@ -9,9 +9,9 @@ const BreadcrumbsComponent = () => {
   const breadcrumbs = useBreadcrumbs(rout)
 
   return (
-    <div>
-      <nav className={style.Breadcrumbs}>
-        {breadcrumbs.map(({
+    <div className={breadcrumbs.length !== 1 ? style.head : undefined}>
+      <nav className={style.body}>
+        {breadcrumbs.length !== 1 && breadcrumbs.map(({
           match,
           breadcrumb
         }, i) => (

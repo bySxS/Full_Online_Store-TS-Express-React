@@ -10,7 +10,7 @@ const Header = () => {
       <Navbar fixed={'top'} bg="light" variant="light"
               className={'d-flex align-items-center justify-content-between pl-8'}>
           <Navbar.Brand className={style.hide_logo}>
-            <i className="bi bi-shop pr-1 text-3xl"></i>
+            <i className="bi bi-shop text-4xl"></i>
           </Navbar.Brand>
 
           <Search />

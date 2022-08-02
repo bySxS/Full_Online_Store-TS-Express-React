@@ -1,11 +1,16 @@
 // Override default variables before the import
 
 .body {
-  padding-top: 70px;
+  padding-top: 68px;
   width: 100%;
   //padding-left: 80px;
   //margin: auto;
   //color: #fbfbfb;
+}
+
+.legend {
+  @apply py-1 w-full flex flex-row justify-center items-center;
+  flex-direction: row;
 }
 
 .btn-close-white {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { IMessage } from 'store/myStore/myStore.interface'
-import { SerializedError } from '@reduxjs/toolkit'
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
+// import { SerializedError } from '@reduxjs/toolkit'
+// import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { useAppActions } from 'hooks/useStore'
 
 interface IInfoLoading {
@@ -9,7 +9,7 @@ interface IInfoLoading {
      isSuccess: boolean
      isError: boolean
      data: any
-     error: FetchBaseQueryError | SerializedError | undefined
+     error: any
 }
 
 export function useInfoLoading (arg: IInfoLoading) {

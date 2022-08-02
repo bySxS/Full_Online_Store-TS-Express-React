@@ -7,13 +7,14 @@ const urlServer =
 export const currentUser = (state: RootState) => state.user.user
 export const nickname = (state: RootState) => state.user.user?.nickname ?? 'Гость'
 export const avatarUrl = (state: RootState) => {
-  if (!(state.user.user?.avatar || state.user.user?.id)) {
-    return ''
+  const urlAvatar = state.user.user?.avatar || ''
+  const id = state.user.user?.id || 0
+  let avatar = ''
+  if (urlAvatar !== '' && id > 0) {
+    const path = 'user_avatar/' + div(id, 100) + '/'
+    avatar = urlServer + path + urlAvatar
   }
-  const urlAvatar = state.user.user?.avatar
-  const id = state.user.user?.id
-  const path = 'user_avatar/' + div(id, 100) + '/'
-  return urlServer + path + urlAvatar
+  return avatar
 }
 export const userIsActivated = (state: RootState) => state.user.user?.isActivated === 1
 export const currentRoles = (state: RootState) => state.user.user?.rolesName ?? 'Гость'

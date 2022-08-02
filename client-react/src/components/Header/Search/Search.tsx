@@ -24,7 +24,7 @@ const Search = () => {
     setSearch(e.target.value)
   }
 
-  const searchSubmitHandler = (e: any) => {
+  const searchSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (refInput) {
       const text = refInput.current?.value

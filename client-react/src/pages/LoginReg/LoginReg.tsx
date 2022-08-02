@@ -1,41 +1,16 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC } from 'react'
 import { Helmet } from 'react-helmet'
-import { InputGroup, Form, Button } from 'react-bootstrap'
-import { useLoginMutation } from 'store/myStore/myStoreUser.api'
-import { useInfoLoading } from 'hooks/useInfoLoading'
-import { useNavigate } from 'react-router-dom'
-import { ILoginIn } from 'store/myStore/myStoreUser.interface'
+import { CardComponent } from 'components/UI/Card/CardComponent'
+import Login from 'components/Login/Login'
+import { useLocation } from 'react-router-dom'
+import Registration from 'components/Registration/Registration'
 
 interface LoginRegProps {
   name: string
 }
 
 const LoginReg: FC<LoginRegProps> = ({ name }) => {
-  const navigate = useNavigate()
-  const [login, { isLoading, isSuccess, isError, data: user, error }] = useLoginMutation()
-  useInfoLoading({ isLoading, isSuccess, isError, data: user, error })
-
-  const [formState, setFormState] = React.useState<ILoginIn>({
-    nickname: '',
-    password: ''
-  })
-  const [show, setShow] = useState(false)
-
-  const btnLogin = (e: any) => {
-    e.stopPropagation()
-    login(formState)
-  }
-
-  useEffect(() => {
-    if (isSuccess && user) {
-      navigate('/')
-    }
-  }, [isSuccess])
-
-  const handleClick = () => setShow(!show)
-
-  const handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) =>
-    setFormState((prev) => ({ ...prev, [name]: value }))
+  const location = useLocation()
 
   return (
     <div>
@@ -43,34 +18,12 @@ const LoginReg: FC<LoginRegProps> = ({ name }) => {
         <title>{name}</title>
         <meta name="description" content="{name}" />
       </Helmet>
-      <div className="font-bold">{name}</div>
-      <div>
-        <Form.Label>Никнейм</Form.Label>
-        <InputGroup className="mb-2">
-          <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
-          <Form.Control
-            onChange={handleChange}
-            name={'nickname'}
-            placeholder="nickname"
-            aria-label="nickname"
-            aria-describedby="basic-addon1"
-          />
-        </InputGroup>
-        <Form.Label>Пароль</Form.Label>
-        <InputGroup className="mb-3">
-          <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
-          <Form.Control
-            onChange={handleChange}
-            className={'pr-[4.5rem] md'}
-            type={show ? 'text' : 'password'}
-            placeholder="Enter password"
-            name={'password'} />
-            <Button className={'bg-emerald-600'} onClick={handleClick}>
-              {show ? 'Hide' : 'Show'}
-            </Button>
-        </InputGroup>
-        <Button variant="primary" className={'bg-emerald-600'} onClick={btnLogin}>Login</Button>
-      </div>
+      <CardComponent title={name} className="w-[400px]">
+        {location.pathname === '/login'
+          ? <Login/>
+          : <Registration />
+        }
+      </CardComponent>
     </div>
   )
 }

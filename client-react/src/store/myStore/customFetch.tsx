@@ -13,15 +13,19 @@ const baseUrl =
   process.env.REACT_APP_API_URL_SERVER
 
 // настройка репитов неправильных запросов с ошибкой плюс add header
-const staggeredBaseQuery = retry(fetchBaseQuery({
+export const staggeredBaseQuery = retry(fetchBaseQuery({
   baseUrl,
   credentials: 'include', // принимать куки от сервера у всех запросов
-  prepareHeaders: (headers, { getState }) => {
+  prepareHeaders: (headers, { getState, endpoint }) => {
     const token = (getState() as RootState).user.token
     if (token) {
       headers.set('Authorization', `Bearer ${token}`)
     }
-    headers.set('Content-type', 'application/json; charset=UTF-8')
+    const UPLOAD_ENDPOINTS = ['registration']
+    if (!UPLOAD_ENDPOINTS.includes(endpoint)) {
+      headers.set('content-type', 'application/json; charset=UTF-8')
+    }
+    console.log(endpoint)
     return headers
   }
 }), {
@@ -31,7 +35,7 @@ const staggeredBaseQuery = retry(fetchBaseQuery({
 const mutex = new Mutex()
 
 // обновление рефреш токена когда потребуется в автоматическом режиме
-const baseQueryWithRefreshToken: BaseQueryFn<
+export const baseQueryWithRefreshToken: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError

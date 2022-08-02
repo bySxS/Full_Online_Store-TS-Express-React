@@ -35,7 +35,8 @@ export interface IRoute {
 
 export enum RoutePath {
   HOME = '/',
-  LOGIN_REGISTRATION = '/login_reg',
+  LOGIN = '/login',
+  REGISTRATION = '/registration',
   ADMIN_PANEL = '/admin_panel',
   PRODUCTS = '/products',
   PRODUCTS_ID = '/products/:id',
@@ -48,7 +49,8 @@ export enum RoutePath {
 
 export enum RouteName {
   HOME = 'Главная',
-  LOGIN_REGISTRATION = 'Логин / Регистрация',
+  LOGIN = 'Вход',
+  REGISTRATION = 'Регистрация',
   ADMIN_PANEL = 'Админ панель',
   PRODUCTS = 'Товары',
   FAVORITES_PRODUCT = 'Избранные товары',
@@ -89,10 +91,16 @@ export const routes: IRoute[] = [
     breadcrumb: () => (<i className="bi bi-house-door-fill"></i>)
   },
   {
-    path: RoutePath.LOGIN_REGISTRATION,
+    path: RoutePath.LOGIN,
     allowAuth: false,
-    element: <LoginReg name={RouteName.LOGIN_REGISTRATION} />,
-    breadcrumb: RouteName.LOGIN_REGISTRATION
+    element: <LoginReg name={RouteName.LOGIN} />,
+    breadcrumb: RouteName.LOGIN
+  },
+  {
+    path: RoutePath.REGISTRATION,
+    allowAuth: false,
+    element: <LoginReg name={RouteName.REGISTRATION} />,
+    breadcrumb: RouteName.REGISTRATION
   },
   {
     path: RoutePath.PRODUCTS,
@@ -156,7 +164,7 @@ const lazyReturn = (element: ReactNode, lazy: boolean | undefined): ReactNode =>
 
 const AppRouter = () => {
   return (
-    <div className={'text-center'}>
+    <div className={'text-center flex justify-center'}>
     <Routes>
       {routes.map(route =>
         (route.allowAuth !== undefined ||

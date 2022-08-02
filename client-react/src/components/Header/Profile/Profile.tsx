@@ -20,18 +20,18 @@ const Profile = () => {
   return (
     <div>
       <Dropdown className={'pr-2'}>
-        <Dropdown.Toggle className={`border-0 ${st.btn}`}>
+        <Dropdown.Toggle className={`border-0 pt-0 ${st.btn} ${style.btnAvatar}`}>
           {isAuth && avatarUrl
-            ? <img src={avatarUrl} className={style.avatar} />
-            : <i className="bi bi-person-circle text-3xl text-gray-700 pr-1.5"/>
+            ? <img src={avatarUrl} alt={nickname} className={style.avatar} />
+            : <i className="bi bi-person-circle text-5xl text-gray-700"/>
           }
         </Dropdown.Toggle>
 
         <Dropdown.Menu className={st.drop_menu}>
 
           <Dropdown.Item className="dropdown-header">
-            <h6>{nickname}</h6>
-            <span>{roles}</span>
+            <h6>Ник: {nickname}</h6>
+            <span>Группа: {roles}</span>
           </Dropdown.Item>
 
           {isAuth &&
@@ -63,13 +63,15 @@ const Profile = () => {
           }
           {!isAuth
             ? <>
-            <NavLink className="dropdown-item d-flex align-items-center" to={RoutePath.LOGIN_REGISTRATION}>
+            <NavLink className="dropdown-item d-flex align-items-center"
+                     to={RoutePath.LOGIN}>
             <i className="bi bi-box-arrow-in-right pr-1.5"></i>
-            <span>Вход / Регистрация</span>
+            <span>Вход</span>
             </NavLink>
             </>
             : <>
-            <Dropdown.Item className="dropdown-item d-flex align-items-center" onClick={() => logout('')}>
+            <Dropdown.Item className="dropdown-item d-flex align-items-center"
+                           onClick={() => logout('')}>
             <i className="bi bi-box-arrow-in-left pr-1.5"></i>
             <span>Выйти</span>
             </Dropdown.Item>
