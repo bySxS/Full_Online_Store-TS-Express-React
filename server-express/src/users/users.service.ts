@@ -32,7 +32,7 @@ class UsersService implements IUserService {
     DtoFile: IUsersFilesArray | null,
     delAvatar: boolean = false,
     userFind: UsersModel | undefined = undefined
-  ): Promise<string> {
+  ): Promise<IMessage> {
     if (!id || isNaN(id)) {
       throw ApiError.badRequest(
         'ID пользователя не верный, для обновления аватарки',
@@ -61,7 +61,11 @@ class UsersService implements IUserService {
         `Аватарка для пользователя с id${id} не обновлена`,
         'UsersService updAvatar')
     }
-    return `Аватарка для пользователя с id${id} успешно обновлена`
+    return {
+      success: true,
+      result: { avatar: fileNameAvatar },
+      message: `Аватарка для пользователя с id${id} успешно обновлена`
+    }
   }
 
   async registration (
@@ -76,7 +80,6 @@ class UsersService implements IUserService {
       password, city,
       address, deliveryAddress, phoneNumber
     } = Dto
-
     const rolesId = 3
     const userNickname = await UsersModel.query()
       .findOne('nickname', nickname)
@@ -116,7 +119,7 @@ class UsersService implements IUserService {
         isActivated: false,
         registrationIp: ip,
         activateLink,
-        isSubscribeToNews
+        isSubscribeToNews: Boolean(isSubscribeToNews)
       })
       .select('*')
     if (!user) {
@@ -140,11 +143,11 @@ class UsersService implements IUserService {
       fingerprint
     }
     const tokenData = await TokenService.saveToken(dtoToken)
-    const result = { token, user }
+    const result = { token, user: { ...user, ...avatarInfo.result } }
     return {
       success: true,
       result,
-      message: `Пользователь ${nickname} успешно зарегистрирован; ${avatarInfo}; ${tokenData.message}`
+      message: `Пользователь ${nickname} успешно зарегистрирован; ${avatarInfo.message}; ${tokenData.message}`
     }
   }
 
@@ -312,7 +315,7 @@ class UsersService implements IUserService {
         `Пользователя с ID ${id} не найдено!`,
         'UsersService updateUserById')
     }
-    const changeUser = await UsersModel.query()
+    await UsersModel.query()
       .where('id', '=', id)
       .update({
         nickname,
@@ -324,14 +327,26 @@ class UsersService implements IUserService {
         deliveryAddress,
         phoneNumber,
         rolesId,
-        isSubscribeToNews
+        isSubscribeToNews: Boolean(isSubscribeToNews)
       })
     const avatarInfo =
       await this.updAvatar(user.id, DtoFile, delAvatar, user)
     return {
       success: true,
-      result: changeUser,
-      message: `Данные пользователя с ID${id} изменены; ${avatarInfo}`
+      result: {
+        nickname,
+        email,
+        fullName,
+        password,
+        city,
+        address,
+        deliveryAddress,
+        phoneNumber,
+        rolesId,
+        isSubscribeToNews: Boolean(isSubscribeToNews),
+        ...avatarInfo.result
+      },
+      message: `Данные пользователя с ID${id} изменены; ${avatarInfo.message}`
     }
   }
 

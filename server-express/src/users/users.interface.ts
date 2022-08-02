@@ -23,9 +23,12 @@ export interface IUsersFilesArray extends FileArray {
 }
 
 export interface IUserService {
-    updAvatar: (id: number, DtoFile: IUsersFilesArray | null, delAvatar: boolean, userFind: UsersModel | undefined) => Promise<string>
+    updAvatar: (id: number, DtoFile: IUsersFilesArray | null,
+                delAvatar: boolean,
+                userFind: UsersModel | undefined) => Promise<IMessage>
     registration: (Dto: IUsers, ip: string,
-                   fingerprint: string, DtoFile: IUsersFilesArray) => Promise<IMessage>
+                   fingerprint: string,
+                   DtoFile: IUsersFilesArray) => Promise<IMessage>
     login: (Dto: IUsers, ip: string,
             fingerprint: string) => Promise<IMessage>
     logout: (refreshToken: string) => Promise<IMessage>

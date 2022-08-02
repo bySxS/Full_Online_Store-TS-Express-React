@@ -28,6 +28,7 @@ export const errorApiMiddleware = (err: ApiError | Error, req: Request, res: Res
       .json({ success: false, message: err.message })
   }
   writeLogger('Непредвиденная ошибка: ' + err.toString(), 500, req.path, req)
+  console.log(err)
   return res.status(500)
     .json({ success: false, message: 'Непредвиденная ошибка!' })
 }
