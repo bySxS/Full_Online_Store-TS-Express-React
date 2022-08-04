@@ -5,6 +5,9 @@ import { useObserver } from 'hooks/useObserver'
 import ProductItems from 'components/ProductItems/ProductItems'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useLazyAllProductsQuery } from 'store/myStore/myStoreProduct.api'
+import { useAppSelector } from 'hooks/useStore'
+import selectProduct from 'store/product/product.selector'
+import ProductsPanelSetting from 'components/ProductsPanelSetting/ProductsPanelSetting'
 
 interface ProductProps {
   name: string
@@ -13,38 +16,39 @@ interface ProductProps {
 const Products: FC<ProductProps> = ({ name }) => {
   const pagination = useRef<HTMLHeadingElement>(null)
   const [fetchProducts,
-    { isLoading, isSuccess, isError, data: products, error }] =
+    { isLoading, isSuccess, isError, data, error }] =
     useLazyAllProductsQuery()
-  useInfoLoading({ isLoading, isSuccess, isError, data: products, error })
-  const [totalPage, setTotalPage] = useState((products?.result.total || 10) / 10)
+  useInfoLoading({ isLoading, isSuccess, isError, data, error })
+  const products = useAppSelector(selectProduct.allProducts)
+  const [totalPage, setTotalPage] = useState((data?.result.total || 10) / 10)
   const [page, setPage] = useState(1)
 
   const getProducts = () => {
     fetchProducts({ page })
     setPage(prevState => prevState + 1)
-    setTotalPage((products?.result.total || 10) / 10)
+    setTotalPage((data?.result.total || 10) / 10)
   }
 
   useObserver(pagination, page, totalPage, isLoading, getProducts)
 
   return (
-    <div>
+    <>
       <Helmet>
         <title>{name}</title>
         <meta name="description" content={name}/>
       </Helmet>
-      <div className="font-bold">{name}</div>
+      <ProductsPanelSetting />
       {isSuccess && products &&
-          <div>
-            {products.result.results.map(product =>
+        <div className={style.productsView}>
+            {products.map(product =>
             <ProductItems key={product.id} product={product} />
             )}
-          </div>
+        </div>
       }
       <div ref={pagination}
            className={style.autoPagination}/>
-      {!products && <div>Нет продуктов :(</div>}
-    </div>
+      {!data && <div>Нет продуктов :(</div>}
+    </>
   )
 }
 

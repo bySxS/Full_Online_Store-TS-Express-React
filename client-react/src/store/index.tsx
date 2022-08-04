@@ -1,18 +1,20 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { SUBSCRIBE_STORE } from 'constants/constant'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { basketReducer } from 'store/basket/basket.slice'
-import { alertReducer } from 'store/alert/alert.slice'
-import { userReducer } from 'store/user/user.slice'
-import { alertListenerMiddleware } from 'store/alert/alert.listener'
-import { logoutListenerMiddleware } from 'store/user/user.listener'
-import myStoreUserApi from 'store/myStore/myStoreUser.api'
-import myStoreProductApi from 'store/myStore/myStoreProduct.api'
+import { basketReducer } from './basket/basket.slice'
+import { alertReducer } from './alert/alert.slice'
+import { userReducer } from './user/user.slice'
+import { alertListenerMiddleware } from './alert/alert.listener'
+import { logoutListenerMiddleware } from './user/user.listener'
+import { productReducer } from './product/product.slice'
+import myStoreUserApi from './myStore/myStoreUser.api'
+import myStoreProductApi from './myStore/myStoreProduct.api'
 
 const reducers = {
   user: userReducer,
   basket: basketReducer,
   alert: alertReducer,
+  product: productReducer,
   [myStoreUserApi.reducerPath]: myStoreUserApi.reducer,
   [myStoreProductApi.reducerPath]: myStoreProductApi.reducer
 }
@@ -25,7 +27,10 @@ export const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({})
-      .concat([myStoreUserApi.middleware, myStoreProductApi.middleware])
+      .concat([
+        myStoreUserApi.middleware,
+        myStoreProductApi.middleware
+      ])
       .prepend(alertListenerMiddleware.middleware)
       .prepend(logoutListenerMiddleware.middleware),
   devTools: process.env.NODE_ENV !== 'production'

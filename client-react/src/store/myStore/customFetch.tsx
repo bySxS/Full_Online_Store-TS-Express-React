@@ -25,7 +25,6 @@ export const staggeredBaseQuery = retry(fetchBaseQuery({
     if (!UPLOAD_ENDPOINTS.includes(endpoint)) {
       headers.set('content-type', 'application/json; charset=UTF-8')
     }
-    console.log(endpoint)
     return headers
   }
 }), {

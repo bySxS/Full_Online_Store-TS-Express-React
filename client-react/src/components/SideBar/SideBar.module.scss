@@ -1,10 +1,6 @@
 .sideMenu {
-  height: 100%;
-  min-width: 204px;
-  //padding-top: 100px;
-  //float: left;
-  //align-items: center;
-  //position: fixed;
+  @apply flex flex-col flex-shrink-0
+  bg-gray-50 text-gray-600 w-[204px] h-full fixed;
 }
 
 .link_flex {
@@ -14,12 +10,11 @@
   flex-direction: row;
 }
 
-@media only screen and (max-width: 735px) {
+@media only screen and (max-width: 775px) {
   .name_page {
     display: none;
   }
   .sideMenu {
-    min-width: 63px;
     width: 63px;
   }
 }

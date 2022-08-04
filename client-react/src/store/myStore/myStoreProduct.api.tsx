@@ -43,5 +43,6 @@ export default myStoreProductApi
 export const {
   useSearchProductsQuery,
   useLazyAllProductsQuery,
-  useLazyGetProductByIdQuery
+  useLazyGetProductByIdQuery,
+  endpoints: myStoreProductEndpoint
 } = myStoreProductApi

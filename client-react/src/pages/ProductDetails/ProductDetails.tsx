@@ -5,7 +5,7 @@ import { useInfoLoading } from 'hooks/useInfoLoading'
 import { RoutePath } from 'AppRouter'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
 import { useLazyGetProductByIdQuery } from 'store/myStore/myStoreProduct.api'
-import { productIsInBasket } from 'store/basket/basket.selector'
+import selectBasket from 'store/basket/basket.selector'
 
 export interface ProductDetailsParams {
   [id: string]: string
@@ -31,7 +31,7 @@ const ProductDetails = () => {
   const [fetchProductById, { isLoading, isSuccess, isError, data: product, error }] =
     useLazyGetProductByIdQuery()
   useInfoLoading({ isLoading, isSuccess, isError, data: product, error })
-  const isFav = useAppSelector(productIsInBasket(id))
+  const isFav = useAppSelector(selectBasket.productIsInBasket(id))
 
   const clickAddToBasket = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()

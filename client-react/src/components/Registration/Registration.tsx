@@ -11,25 +11,22 @@ const Registration: FC = () => {
   const [registration, { isLoading, isSuccess, isError, data: user, error }] =
     useRegistrationMutation()
   useInfoLoading({ isLoading, isSuccess, isError, data: user, error })
-  // const [validated, setValidated] = useState(false)
-  // const [file, setFile] = useState<File | null>(null)
-
-  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //   const form = event.currentTarget
-  //   // event.preventDefault()
-  //   if (!form.checkValidity()) {
-  //     event.stopPropagation()
-  //   }
-  //   setValidated(true)
-  //   event.preventDefault()
-  // }
-
-  const [formState, setFormState] = React.useState<IRegistrationIn>({
+  const [validated, setValidated] = useState(false)
+  const [formState, setFormState] = useState<IRegistrationIn>({
     nickname: '',
     email: '',
     password: ''
   })
   const [showPass, setShowPass] = useState(false)
+
+  const handleChange = (event: React.FormEvent<HTMLFormElement>) => {
+    const form = event.currentTarget
+    if (!form.checkValidity()) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    setValidated(form.checkValidity())
+  }
 
   const btnLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
@@ -59,9 +56,9 @@ const Registration: FC = () => {
     if (formState.avatar) {
       formData.append('avatar', formState.avatar)
     }
-    // if (validated) {
-    registration(formData)
-    // }
+    if (validated) {
+      registration(formData)
+    }
   }
 
   useEffect(() => {
@@ -75,10 +72,8 @@ const Registration: FC = () => {
   const handleChangeFile =
     ({ target: { name, files } }: React.ChangeEvent<HTMLInputElement>) => {
       if (files) {
-        // setFile(files[0])
         setFormState((prev) => ({ ...prev, [name]: files[0] }))
       } else {
-        // setFile(null)
         setFormState((prev) => ({ ...prev, [name]: null }))
       }
     }
@@ -89,31 +84,38 @@ const Registration: FC = () => {
     }
 
   const handleChangeString =
-    ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
+    ({ target: { name, value }, currentTarget }: React.ChangeEvent<HTMLInputElement>) => {
       setFormState((prev) => ({ ...prev, [name]: value }))
+      currentTarget.checkValidity()
     }
 
   return (
     <div>
       <div className={'text-left'}>
+        <Form noValidate validated={true} onChange={handleChange}>
         <Form.Label>Никнейм</Form.Label>
-        <InputGroup className="mb-2">
+        <InputGroup hasValidation className="mb-2">
           <InputGroup.Text id="basic-addon1">
             <i className="bi bi-person"/>
           </InputGroup.Text>
           <Form.Control
+            required
             onChange={handleChangeString}
             name={'nickname'}
             placeholder="Введите ник"
             aria-label="nickname"
             aria-describedby="basic-addon1"
           />
+          <Form.Control.Feedback type="invalid">
+            Пожалуйста, введите никнейм
+          </Form.Control.Feedback>
         </InputGroup>
 
         <Form.Label>E-mail</Form.Label>
-        <InputGroup className="mb-2">
+        <InputGroup hasValidation className="mb-2">
           <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
           <Form.Control
+            required
             onChange={handleChangeString}
             name={'email'}
             placeholder="Введите E-mail"
@@ -121,28 +123,31 @@ const Registration: FC = () => {
             aria-describedby="basic-addon1"
           />
            {/* <Form.Control.Feedback>Отлично!</Form.Control.Feedback> */}
-           {/* <Form.Control.Feedback type="invalid"> */}
-           {/* Пожалуйста, введите e-mail */}
-           {/* </Form.Control.Feedback> */}
+            <Form.Control.Feedback type="invalid">
+            Пожалуйста, введите e-mail
+            </Form.Control.Feedback>
         </InputGroup>
 
         <Form.Label>Пароль</Form.Label>
-        <InputGroup className="mb-3">
+        <InputGroup hasValidation className="mb-3">
           <InputGroup.Text id="basic-addon1">
             <i className="bi bi-pass"/>
           </InputGroup.Text>
           <Form.Control
+            required
             onChange={handleChangeString}
             className={'pr-[4.5rem] md'}
             type={showPass ? 'text' : 'password'}
             placeholder="Введите пароль"
-            name={'password'} />
+            name={'password'}
+          />
           <Button className={'bg-emerald-600'} onClick={handleClick}>
             {showPass ? 'Hide' : 'Show'}
           </Button>
-           {/* <Form.Control.Feedback type="invalid"> */}
-           {/* Пожалуйста, введите пароль */}
-           {/* </Form.Control.Feedback> */}
+          {/* <Form.Control.Feedback>Отлично!</Form.Control.Feedback> */}
+            <Form.Control.Feedback type="invalid">
+            Пожалуйста, введите пароль
+            </Form.Control.Feedback>
         </InputGroup>
 
         <Form.Label>ФИО</Form.Label>
@@ -214,8 +219,6 @@ const Registration: FC = () => {
             aria-describedby="basic-addon1"
           />
         </InputGroup>
-
-        {/* <FileUpload limit={1} multiple={false} name='avatar' /> */}
          <Form.Group controlId="formFileMultiple" className="mb-3">
           <Form.Label>Аватар</Form.Label>
           <Form.Control
@@ -224,14 +227,14 @@ const Registration: FC = () => {
             type="file"
             size="sm" />
          </Form.Group>
-
-        <Form.Group className="mb-3">
+         <Form.Group className="mb-3">
           <Form.Check
             onChange={handleChangeCheckbox}
             name={'isSubscribeToNews'}
             label="Получать новости магазина"
           />
-        </Form.Group>
+         </Form.Group>
+        </Form>
       </div>
       <Button variant="primary"
               className={'bg-emerald-600 w-full'}

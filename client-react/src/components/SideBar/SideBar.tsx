@@ -8,7 +8,8 @@ const SideBar = () => {
   const { isAuth, isAdmin } = useAuth()
 
   return (
-    <div className={`d-flex flex-column flex-shrink-0 bg-light text-gray-600 ${st.sideMenu}`}>
+    <div className={st.sideMenu}>
+      <div className={'top-[30%] relative'}>
       <ul className="nav nav-pills nav-flush flex-column mb-auto">
         <li className="nav-item">
           <NavLink to={RoutePath.HOME} className="nav-link link-dark py-3 border-bottom rounded-0">
@@ -36,14 +37,6 @@ const SideBar = () => {
             </div>
           </NavLink>
         </li>
-        <li className="nav-item">
-          <NavLink to={RoutePath.BASKET} className="nav-link link-dark py-3 border-bottom rounded-0">
-            <div className={st.link_flex}>
-              <div><i className="bi bi-cart-fill text-2xl pr-1.5"></i></div>
-              <div className={st.name_page}>Корзина</div>
-            </div>
-          </NavLink>
-        </li>
         {isAuth &&
           <li className="nav-item">
           <NavLink to={RoutePath.ALL_ORDERS} className="nav-link link-dark py-3 border-bottom rounded-0">
@@ -65,6 +58,7 @@ const SideBar = () => {
         </li>
         }
       </ul>
+      </div>
     </div>
   )
 }

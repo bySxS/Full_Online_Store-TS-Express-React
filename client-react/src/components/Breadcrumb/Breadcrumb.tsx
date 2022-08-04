@@ -18,7 +18,8 @@ const BreadcrumbsComponent = () => {
           (i !== 0)
             ? <span key={match.pathname}>
                 <span className={'px-2'}>
-                  <i className="bi bi-arrow-right-short"/>
+                  {/* &#707; */}
+                   <i className="bi bi-arrow-right-short"/>
                 </span>
                 <span>
                   <NavLink className={''} to={match.pathname}>

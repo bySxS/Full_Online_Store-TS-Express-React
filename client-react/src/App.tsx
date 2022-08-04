@@ -9,9 +9,10 @@ import SideBar from 'components/SideBar/SideBar'
 import Alarm from 'components/UI/Alarm/Alarm'
 import Loader from 'components/UI/Loader/Loader'
 import { ALERT_CONNECTION } from 'constants/constant'
-import { Breadcrumbs } from 'components/Breadcrumb/Breadcrumb'
+// import { Breadcrumbs } from 'components/Breadcrumb/Breadcrumb'
 import style from './styles/App.module.scss'
 import { ModalState } from 'components/UI/Modal/ModalContext'
+import { Breadcrumbs } from 'components/Breadcrumb/Breadcrumb'
 
 function App () {
   return (
@@ -23,9 +24,9 @@ function App () {
       <div className="App">
         <ModalState>  {/* контекст модального окна */}
           <Header />
-          <div className={'flex body'}>
-            <SideBar />
-            <div className={`p-4 ${style.body_content}`}>
+          <SideBar />
+          <div className={'body'}>
+            <div className={style.body_content}>
               <Breadcrumbs />
               <AppRouter />
             </div>

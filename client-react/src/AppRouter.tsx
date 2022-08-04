@@ -164,7 +164,7 @@ const lazyReturn = (element: ReactNode, lazy: boolean | undefined): ReactNode =>
 
 const AppRouter = () => {
   return (
-    <div className={'text-center flex justify-center'}>
+    <>
     <Routes>
       {routes.map(route =>
         (route.allowAuth !== undefined ||
@@ -191,7 +191,7 @@ const AppRouter = () => {
             />)
       )}
     </Routes>
-    </div>
+    </>
   )
 }
 

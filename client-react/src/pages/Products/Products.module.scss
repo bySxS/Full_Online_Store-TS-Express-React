@@ -5,3 +5,8 @@
   position: relative;
   display: flex;
 }
+
+.productsView {
+  @apply flex flex-col items-center;
+  // justify-evenly flex-wrap content-center;
+}
