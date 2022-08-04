@@ -7,7 +7,7 @@ import fs from 'fs-extra'
 import ProductsViewsService from './views/productsViews.service'
 import ProductsPriceService from './prices/productsPrice.service'
 import { cacheRedisDB } from '@/cache'
-import { raw } from 'objection'
+import { Page, QueryBuilder, raw } from 'objection'
 import FavoritesProductsService from '@/favoritesProducts/favoritesProducts.service'
 import { div } from '@/service/math.service'
 import { delFile, saveFile } from '@/service/file.service'
@@ -295,7 +295,7 @@ class ProductsService implements IProductService {
     }
   }
 
-  getProductById (id: number) {
+  getProductById (id: number): QueryBuilder<ProductsModel, ProductsModel | undefined> {
     return ProductsModel.query()
       .where('products.id', '=', id)
       .andWhere('productsPrice.priceTypeId', '=',
@@ -333,7 +333,7 @@ class ProductsService implements IProductService {
 
   getAllProducts (
     title: string = '', limit: number = 20, page: number = 1
-  ) {
+  ): QueryBuilder<ProductsModel, Page<ProductsModel>> {
     return ProductsModel.query()
       .page(page - 1, limit)
       .where('products.title', 'like', `%${title}%`)

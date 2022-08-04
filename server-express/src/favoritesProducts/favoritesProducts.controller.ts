@@ -26,8 +26,9 @@ class FavoritesProductController implements IFavoritesProductController {
 
   async del (req: Request, res: Response, next: NextFunction) {
     try {
-      const id = +req.params.id
-      const result = await FavoritesProductsService.del(id)
+      const authUser = req.user as IJwt
+      req.body.userId = authUser.id
+      const result = await FavoritesProductsService.del(req.body)
       return res.status(200).json(result)
     } catch (err) {
       next(err)

@@ -143,7 +143,15 @@ class UsersService implements IUserService {
       fingerprint
     }
     const tokenData = await TokenService.saveToken(dtoToken)
-    const result = { token, user: { ...user, ...avatarInfo.result } }
+    const result = {
+      token,
+      user: {
+        ...user,
+        ...avatarInfo.result,
+        rolesName: roles.result.nameEng,
+        roles: roles.result.name
+      }
+    }
     return {
       success: true,
       result,
@@ -258,7 +266,8 @@ class UsersService implements IUserService {
         'users.rolesId', '=',
         'roles.id')
       .select('users.*',
-        'roles.nameEng as rolesName')
+        'roles.nameEng as rolesName',
+        'roles.name as roles')
     if (!result) {
       throw ApiError.badRequest(
         `Пользователь с ником ${nickname} не найден`,

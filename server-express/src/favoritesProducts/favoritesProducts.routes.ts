@@ -11,7 +11,7 @@ const router = Router()
 
 try {
   // success
-  router.post('/add',
+  router.post('/',
     validateFavoriteProduct(), ValidatorResultMiddleware,
     AuthMiddleware,
     FavoritesProductsController.add)
@@ -21,8 +21,8 @@ try {
     RoleMiddleware('admin'),
     FavoritesProductsController.getCountFavoritesByProductId)
   // success
-  router.delete('/:id',
-    validateId(), ValidatorResultMiddleware,
+  router.delete('/',
+    validateFavoriteProduct(), ValidatorResultMiddleware,
     AuthMiddleware,
     FavoritesProductsController.del)
   // success

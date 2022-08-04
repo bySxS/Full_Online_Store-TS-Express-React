@@ -92,11 +92,13 @@ class CharacteristicsService implements ICharacteristicService {
       .innerJoin('characteristicsName as parent',
         'characteristicsName.parentId', '=',
         'parent.id')
-      .select('characteristicsName.id',
+      .select('characteristicsSetValue.id',
         'characteristicsName.parentId',
         'characteristicsName.name as propertyName',
         'characteristicsSetValue.value as propertyValue',
         'parent.name as sectionName')
+      .groupBy('characteristicsName.parentId',
+        'characteristicsSetValue.id')
 
     if (!result) {
       throw ApiError.badRequest(

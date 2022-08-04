@@ -17,7 +17,7 @@ try {
   router.use('/category', CategoryRoutes)
   router.use('/product', ProductsRoutes)
   router.use('/characteristics', CharacteristicsRoutes)
-  router.use('/favoritesProducts', FavoritesProductsRoutes)
+  router.use('/favorites_products', FavoritesProductsRoutes)
   router.use('/product/prices', ProductsPriceRoutes)
   router.use('/basket', BasketRoutes)
   router.use('/review', ReviewRoutes)

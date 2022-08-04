@@ -52,18 +52,28 @@ class FavoritesProductsService implements IFavoritesProductService {
     }
   }
 
-  async del (id: number): Promise<IMessage> {
+  async del (Dto: IFavoritesProduct): Promise<IMessage> {
+    const { productId, userId } = Dto
+    const product = await FavoritesProductsModel.query()
+      .where({ userId })
+      .andWhere({ productId })
+      .first()
+    if (!product) {
+      throw ApiError.badRequest(
+        `Продукта с id${productId} нет в избранном`,
+        'FavoritesProductsService del')
+    }
     const result = await FavoritesProductsModel.query()
-      .deleteById(id)
+      .deleteById(product.id)
     if (!result) {
       throw ApiError.badRequest(
-        `Произошла ошибка при удаления из избранного продукта с id${id}`,
+        `Произошла ошибка при удаления из избранного продукта с id${productId}`,
         'FavoritesProductsService del')
     }
     return {
       success: true,
-      result,
-      message: `Продукт с id${id} уделен из избранного`
+      result: product,
+      message: `Продукт с id${productId} уделен из избранного`
     }
   }
 

@@ -2,6 +2,7 @@ import { IMessage } from '@/interface'
 import { NextFunction, Request, Response } from 'express'
 import { FileArray, UploadedFile } from 'express-fileupload'
 import ProductsModel from './products.model'
+import { Page, QueryBuilder } from 'objection'
 
 export interface IProduct {
   id: number,
@@ -68,6 +69,9 @@ export interface IProductService {
   getAll: (limit: number, page: number) => Promise<IMessage>
   search: (title: string, limit: number,
            page: number) => Promise<IMessage>
+  getProductById: (id: number) => QueryBuilder<ProductsModel, ProductsModel | undefined>
+  getAllProducts: (title: string, limit: number, page: number) =>
+    QueryBuilder<ProductsModel, Page<ProductsModel>>
 }
 
 export interface IProductController {
