@@ -11,7 +11,7 @@ const router = Router()
 
 try {
   // success
-  router.post('/add',
+  router.post('/',
     validateBasketProduct(), ValidatorResultMiddleware,
     AuthMiddleware,
     BasketController.addProductToBasket)
@@ -26,7 +26,7 @@ try {
     AuthMiddleware,
     BasketController.getAllOrdersByUserId)
   // success
-  router.get('/current',
+  router.get('/',
     AuthMiddleware,
     BasketController.getCurrentBasketByAuthUser)
   // success
@@ -35,7 +35,7 @@ try {
     RoleMiddleware(['admin']),
     BasketController.getAllOrdersInProgressAllUsers)
   // success
-  router.post('/to_processing',
+  router.post('/to_order',
     validateBasket(), ValidatorResultMiddleware,
     AuthMiddleware,
     BasketController.currentBasketToProcessing)

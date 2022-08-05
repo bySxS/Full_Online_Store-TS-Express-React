@@ -167,7 +167,7 @@ class BasketService implements IBasketService {
     }
     return {
       success: true,
-      result,
+      result: { productId: id },
       message: `Продукт с id${productId} успешно удалён из корзины`
     }
   }

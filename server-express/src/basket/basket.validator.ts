@@ -28,9 +28,9 @@ export const validateUpdBasket = () => {
 
 export const validateBasketProduct = () => {
   return [
-    body('productId', 'Продукт (productId) не указан')
+    body('productId', 'ID продукта (productId) не указан')
       .notEmpty(),
-    body('productId', 'ID пользователя (productId) должны быть только цифры')
+    body('productId', 'ID продукта (productId) должны быть только цифры')
       .matches('^[a-zA-Z0-9]+$'),
     body('productCount', 'Количество продукта (productCount) не указано')
       .notEmpty(),
