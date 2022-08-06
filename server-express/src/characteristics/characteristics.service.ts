@@ -84,30 +84,78 @@ class CharacteristicsService implements ICharacteristicService {
   }
 
   async getCharacteristicValueProductById (id: number): Promise<IMessage> {
-    const result = await CharacteristicsSetValueModel.query()
+    const characteristics = await CharacteristicsSetValueModel.query()
       .where('characteristicsSetValue.productId', '=', id)
-      .innerJoin('characteristicsName',
-        'characteristicsSetValue.characteristicsNameId', '=',
-        'characteristicsName.id')
-      .innerJoin('characteristicsName as parent',
-        'characteristicsName.parentId', '=',
-        'parent.id')
-      .select('characteristicsSetValue.id',
-        'characteristicsName.parentId',
+      .joinRelated('characteristicsName')
+      .joinRelated('characteristicsName.parent')
+      .select('characteristicsName.parentId',
+        'characteristicsName.id as propertyNameId',
         'characteristicsName.name as propertyName',
+        'characteristicsSetValue.id as propertyValueId',
         'characteristicsSetValue.value as propertyValue',
-        'parent.name as sectionName')
+        'characteristicsName:parent.name as sectionName',
+        'characteristicsName:parent.id as sectionId')
       .groupBy('characteristicsName.parentId',
         'characteristicsSetValue.id')
 
-    if (!result) {
-      throw ApiError.badRequest(
-        'Характеристик не найдено',
-        'CharacteristicsService getCharacteristicValueProductById')
+    // .where('characteristicsSetValue.productId', '=', id)
+    // .joinRelated('characteristicsName.parent')
+    // .select('characteristicsName:parent.name as sectionName',
+    //   'characteristicsName:parent.id as sectionId')
+    // .groupBy('characteristicsName.parentId')
+
+    // .where('characteristicsSetValue.productId', '=', id)
+    // .joinRelated('characteristicsName')
+    // .joinRelated('characteristicsName.parent')
+    // .select('characteristicsSetValue.id',
+    //   'characteristicsName.parentId',
+    //   'characteristicsName.name as propertyName',
+    //   'characteristicsSetValue.value as propertyValue',
+    //   'characteristicsName:parent.name as sectionName')
+    // .groupBy('characteristicsName.parentId',
+    //   'characteristicsSetValue.id')
+    if (characteristics.length === 0) {
+      return {
+        success: true,
+        message: `Характеристики для продукта с id${id} нет`
+      }
     }
+
+    const section: any[] = []
+    characteristics.forEach((all) => {
+      const ids = new Set(section.map(section => section.sectionId))
+      if (!ids.has(all.sectionId)) {
+        const filterCharacteristics =
+          characteristics.filter(char => char.sectionId === all.sectionId)
+        section.push({
+          sectionName: all.sectionName,
+          sectionId: all.sectionId,
+          characteristics: filterCharacteristics.map(char => ({
+            propertyNameId: char.propertyNameId,
+            propertyName: char.propertyName,
+            propertyValueId: char.propertyValueId,
+            propertyValue: char.propertyValue
+          }))
+        })
+      }
+    })
+    // characteristics.push({
+    //   ...parent,
+    //   characteristics: await CharacteristicsSetValueModel.query()
+    //     .where('characteristicsSetValue.productId', '=', id)
+    //     .andWhere('characteristicsName:parent.id', '=', parent.sectionId)
+    //     .joinRelated('characteristicsName')
+    //     .joinRelated('characteristicsName.parent')
+    //     .select('characteristicsName.id as propertyNameId',
+    //       'characteristicsName.name as propertyName',
+    //       'characteristicsSetValue.id as propertyValueId',
+    //       'characteristicsSetValue.value as propertyValue')
+    //     .groupBy('characteristicsSetValue.id')
+    // })
+    // }
     return {
       success: true,
-      result,
+      result: section,
       message: `Характеристики для продукта с id${id} загружены`
     }
   }

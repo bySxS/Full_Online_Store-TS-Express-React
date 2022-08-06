@@ -4,7 +4,7 @@ import ApiError from '@/apiError'
 import BasketModel from '@/basket/basket.model'
 import BasketProductsModel from '@/basket/basketProducts.model'
 import ProductsService from '@/products/products.service'
-import { raw } from 'objection'
+import { QueryBuilder, raw } from 'objection'
 
 class BasketService implements IBasketService {
   private static instance = new BasketService()
@@ -32,7 +32,7 @@ class BasketService implements IBasketService {
       .where({ id: currentBasket.result.id })
       .update({
         status: 'InProcessing',
-        dateProcessing: new Date(Date.now()),
+        dateProcessing: new Date().toISOString().slice(0, 19).replace('T', ' '),
         comment: comment || '',
         fullName,
         phoneNumber,
@@ -56,6 +56,27 @@ class BasketService implements IBasketService {
     }
   }
 
+  getBasketProducts (basketId: number): QueryBuilder<BasketProductsModel, BasketProductsModel[]> {
+    return BasketProductsModel.query()
+      .where('basketProducts.basketId', '=', basketId)
+      .andWhere('products:priceType.id', '=',
+        raw('products.priceTypeId'))
+      .joinRelated('products')
+      .joinRelated('products.category')
+      .joinRelated('products.category.parent')
+      .joinRelated('products.priceType')
+      .select('basketProducts.*',
+        'products.title as productTitle',
+        'products.id as productId',
+        'products:category.name as productCategory',
+        'products:category.id as productCategoryId',
+        'products:category:parent.name as productSection',
+        'products:category:parent.id as productSectionId',
+        'products.screen as productScreen',
+        'products:priceType.name as productPriceType',
+        'products.availability as productAvailability')
+  }
+
   async getCurrentBasketByUserId (userId: number): Promise<IMessage> {
     let basket = await BasketModel.query()
       .where('basket.userId', '=', userId)
@@ -72,25 +93,7 @@ class BasketService implements IBasketService {
         })
         .select('*')
     }
-    const productsInBasket = await BasketProductsModel.query()
-      .where('basketProducts.basketId', '=', basket.id)
-      .andWhere('productsPriceType.id', '=',
-        raw('products.priceTypeId'))
-      .innerJoin('products',
-        'basketProducts.productId', '=',
-        'products.id')
-      .innerJoin('category',
-        'category.id', '=',
-        'products.categoryId')
-      .innerJoin('productsPriceType',
-        'productsPriceType.id', '=',
-        'products.priceTypeId')
-      .select('basketProducts.*',
-        'products.title as productTitle',
-        'category.name as productCategory',
-        'products.screen as productScreen',
-        'productsPriceType.name as productPriceType',
-        'products.availability as productAvailability')
+    const productsInBasket = await this.getBasketProducts(basket.id)
     return {
       success: true,
       result: { ...basket, BasketProducts: productsInBasket },
@@ -179,16 +182,18 @@ class BasketService implements IBasketService {
       .page(page - 1, limit)
       .where('basket.status', '<>', 'SelectsTheProduct')
       .andWhere('basket.userId', '=', userId)
-      .innerJoin('basketProducts',
-        'basket.id', '=',
-        'basketProducts.basketId')
-      .innerJoin('products',
-        'products.id', '=',
-        'basketProducts.productId')
+      .joinRelated('basketProducts')
+      .joinRelated('basketProducts.products')
+      // .innerJoin('basketProducts',
+      //   'basket.id', '=',
+      //   'basketProducts.basketId')
+      // .innerJoin('products',
+      //   'products.id', '=',
+      //   'basketProducts.productId')
       .select('basket.*',
         'basketProducts.currentPrice',
         'basketProducts.productCount',
-        'products.title')
+        'basketProducts:products.title')
     if (!result) {
       throw ApiError.badRequest(
         `У пользователя с id${userId} нет заказов`,
@@ -202,23 +207,25 @@ class BasketService implements IBasketService {
   }
 
   async getAllOrdersInProgressAllUsers (limit: number, page: number): Promise<IMessage> {
-    const result = await BasketModel.query()
+    const orders = await BasketModel.query()
       .page(page - 1, limit)
       .where({ 'basket.status': 'InProcessing' })
-      .innerJoin('basketProducts',
-        'basket.id', '=',
-        'basketProducts.basketId')
-      .innerJoin('products',
-        'products.id', '=',
-        'basketProducts.productId')
-      .select('basket.*',
-        'basketProducts.currentPrice',
-        'basketProducts.productCount',
-        'products.title')
-    if (!result) {
+      .select('basket.*')
+    if (!orders) {
       throw ApiError.badRequest(
         'Нет заказов для обработки',
         'BasketService getAllOrdersInProgressAllUsers')
+    }
+    const products = []
+    for (const basket of orders.results) {
+      products.push({
+        ...basket,
+        BasketProducts: await this.getBasketProducts(basket.id)
+      })
+    }
+    const result = {
+      results: products,
+      total: orders.total
     }
     return {
       success: true,
@@ -231,9 +238,10 @@ class BasketService implements IBasketService {
     const result = await BasketProductsModel.query()
       .first()
       .where('basketProducts.productId', '=', productId)
-      .innerJoin('basket',
-        'basketProducts.basketId',
-        'basket.id')
+      .joinRelated('basket')
+      // .innerJoin('basket',
+      //   'basketProducts.basketId',
+      //   'basket.id')
       .andWhere('basket.status', '=', 'Completed')
       .andWhere('basket.userId', '=', userId)
       .select(
@@ -264,7 +272,7 @@ class BasketService implements IBasketService {
       .where({ id })
       .update({
         status,
-        comment: comment || '',
+        comment,
         dateProcessing,
         deliveryDate
       })
@@ -275,7 +283,13 @@ class BasketService implements IBasketService {
     }
     return {
       success: true,
-      result,
+      result: {
+        basketId: id,
+        status,
+        comment,
+        dateProcessing,
+        deliveryDate
+      },
       message: `Заказ с id${id} успешно обработан`
     }
   }

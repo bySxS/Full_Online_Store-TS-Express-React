@@ -51,7 +51,7 @@ export default class BasketProductsModel extends Model {
           to: Basket.tableName + '.id'
         }
       },
-      product: {
+      products: {
         relation: Model.BelongsToOneRelation,
         modelClass: Products,
         join: {
@@ -59,7 +59,7 @@ export default class BasketProductsModel extends Model {
           to: Products.tableName + '.id'
         }
       },
-      productPrice: {
+      productsPrice: {
         relation: Model.BelongsToOneRelation,
         modelClass: ProductsPrice,
         join: {

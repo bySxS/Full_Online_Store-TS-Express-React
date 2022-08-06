@@ -6,6 +6,7 @@ import Category from '../category/category.model'
 import Review from '@/review/review.model'
 import ProductsPrice from './prices/productsPrice.model'
 import ProductsViews from './views/productsViews.model'
+import ProductsPriceType from './prices/productsPriceType.model'
 Model.knex(dbKnex)
 
 // NewsModel
@@ -123,7 +124,15 @@ export default class ProductsModel extends Model {
           to: ProductsPrice.tableName + '.productId'
         }
       },
-      view: {
+      priceType: {
+        relation: Model.HasManyRelation,
+        modelClass: ProductsPriceType,
+        join: {
+          from: this.tableName + '.priceTypeId',
+          to: ProductsPriceType.tableName + '.id'
+        }
+      },
+      views: {
         relation: Model.BelongsToOneRelation,
         modelClass: ProductsViews,
         join: {

@@ -298,37 +298,27 @@ class ProductsService implements IProductService {
   getProductById (id: number): QueryBuilder<ProductsModel, ProductsModel | undefined> {
     return ProductsModel.query()
       .where('products.id', '=', id)
-      .andWhere('productsPrice.priceTypeId', '=',
+      .andWhere('price.priceTypeId', '=',
         raw('products.priceTypeId'))
-      .andWhere('productsPriceType.id', '=',
+      .andWhere('priceType.id', '=',
         raw('products.priceTypeId'))
       .first()
-      .innerJoin('productsViews',
-        'products.id', '=',
-        'productsViews.productId')
-      .innerJoin('productsPriceType',
-        'products.priceTypeId', '=',
-        'productsPriceType.id')
-      .innerJoin('productsPrice',
-        'products.id', '=',
-        'productsPrice.productId')
-      .innerJoin('category',
-        'products.categoryId', '=',
-        'category.id')
-      .innerJoin('category as section',
-        'section.id', '=',
-        'category.parentId')
+      .joinRelated('views')
+      .joinRelated('priceType')
+      .joinRelated('price')
+      .joinRelated('category')
+      .joinRelated('category.parent', { alias: 'section' })
       .select('products.*',
-        'productsViews.views as view',
-        'productsPrice.id as priceId',
-        'productsPrice.price as price',
-        'productsPrice.currency as priceCurrency',
-        'productsPriceType.name as priceType',
+        'views.views as view',
+        'price.id as priceId',
+        'price.price as price',
+        'price.currency as priceCurrency',
+        'priceType.name as priceType',
         'category.name as categoryName',
         'section.name as sectionName')
-      .groupBy('productsPrice.id',
-        'productsPrice.price',
-        'productsPrice.currency')
+      .groupBy('price.id',
+        'price.price',
+        'price.currency')
   }
 
   getAllProducts (
@@ -337,31 +327,21 @@ class ProductsService implements IProductService {
     return ProductsModel.query()
       .page(page - 1, limit)
       .where('products.title', 'like', `%${title}%`)
-      .andWhere('productsPrice.priceTypeId', '=',
+      .andWhere('price.priceTypeId', '=',
         raw('products.priceTypeId'))
-      .andWhere('productsPriceType.id', '=',
+      .andWhere('priceType.id', '=',
         raw('products.priceTypeId'))
-      .innerJoin('productsViews',
-        'products.id', '=',
-        'productsViews.productId')
-      .innerJoin('productsPriceType',
-        'products.priceTypeId', '=',
-        'productsPriceType.id')
-      .innerJoin('productsPrice',
-        'products.id', '=',
-        'productsPrice.productId')
-      .innerJoin('category',
-        'products.categoryId', '=',
-        'category.id')
-      .innerJoin('category as section',
-        'section.id', '=',
-        'category.parentId')
+      .joinRelated('views')
+      .joinRelated('priceType')
+      .joinRelated('price')
+      .joinRelated('category')
+      .joinRelated('category.parent', { alias: 'section' })
       .select('products.*',
-        'productsViews.views as view',
-        'productsPrice.id as priceId',
-        'productsPrice.price as price',
-        'productsPrice.currency as priceCurrency',
-        'productsPriceType.name as priceType',
+        'views.views as view',
+        'price.id as priceId',
+        'price.price as price',
+        'price.currency as priceCurrency',
+        'priceType.name as priceType',
         'category.name as categoryName',
         'section.name as sectionName')
   }

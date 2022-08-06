@@ -1,5 +1,7 @@
 import { IMessage } from '@/interface'
 import { NextFunction, Request, Response } from 'express'
+import { QueryBuilder } from 'objection'
+import BasketProductsModel from '@/basket/basketProducts.model'
 
 export type BasketStatus = 'SelectsTheProduct' |
 'InProcessing' | 'InDelivery' | 'Completed' | 'Cancelled'
@@ -35,6 +37,7 @@ export interface IBasketService {
   isUserBoughtProduct: (userId: number, productId: number) => Promise<boolean>
   currentBasketToProcessing: (Dto: IBasket) => Promise<IMessage>
   updBasketById: (id: number, Dto: IBasket) => Promise<IMessage>
+  getBasketProducts: (basketId: number) => QueryBuilder<BasketProductsModel, BasketProductsModel[]>
 }
 
 export interface IBasketController {

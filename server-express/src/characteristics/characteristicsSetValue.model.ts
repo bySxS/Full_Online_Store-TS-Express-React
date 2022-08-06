@@ -14,6 +14,12 @@ export default class CharacteristicsSetValueModel extends Model {
 
   products?: Products
   characteristicsName?: CharacteristicsName
+  sectionName!: string
+  sectionId!: number
+  propertyNameId!: number
+  propertyName!: string
+  propertyValueId!: number
+  propertyValue!: string
 
   static get tableName () {
     return 'characteristicsSetValue'
@@ -42,14 +48,14 @@ export default class CharacteristicsSetValueModel extends Model {
           to: Products.tableName + '.id'
         }
       },
-      valueCharacteristics: {
+      characteristicsName: {
         relation: Model.BelongsToOneRelation,
         modelClass: CharacteristicsName,
         join: {
           from: this.tableName + '.characteristicsNameId',
           to: CharacteristicsName.tableName + '.id'
         }
-      },
+      }
     }
   }
 }

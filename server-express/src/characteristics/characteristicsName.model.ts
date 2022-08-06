@@ -2,6 +2,7 @@ import { Model } from 'objection'
 import { dbKnex } from '@/db'
 
 import Category from '@/category/category.model'
+import CharacteristicsSetValue from './characteristicsSetValue.model'
 
 Model.knex(dbKnex)
 
@@ -48,6 +49,14 @@ export default class CharacteristicsNameModel extends Model {
         join: {
           from: this.tableName + '.parentId',
           to: this.tableName + '.id'
+        }
+      },
+      characteristicsValue: {
+        relation: Model.HasManyRelation,
+        modelClass: CharacteristicsSetValue,
+        join: {
+          from: this.tableName + '.id',
+          to: CharacteristicsSetValue.tableName + '.characteristicsNameId'
         }
       }
     }

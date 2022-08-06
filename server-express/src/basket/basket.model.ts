@@ -56,8 +56,8 @@ export default class BasketModel extends Model {
           to: Users.tableName + '.id'
         }
       },
-      basket_products: {
-        relation: Model.BelongsToOneRelation,
+      basketProducts: {
+        relation: Model.HasManyRelation,
         modelClass: BasketProducts,
         join: {
           from: this.tableName + '.id',

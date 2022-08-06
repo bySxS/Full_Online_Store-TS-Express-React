@@ -2,6 +2,7 @@ import { Model } from 'objection'
 import { dbKnex } from '@/db'
 
 import ProductsPrice from './productsPrice.model'
+import Products from '@/products/products.model'
 Model.knex(dbKnex)
 
 export default class ProductsPriceTypeModel extends Model {
@@ -31,12 +32,20 @@ export default class ProductsPriceTypeModel extends Model {
 
   static get relationMappings () {
     return {
-      basket: {
+      price: {
         relation: Model.BelongsToOneRelation,
         modelClass: ProductsPrice,
         join: {
           from: this.tableName + '.id',
           to: ProductsPrice.tableName + '.priceTypeId'
+        }
+      },
+      product: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Products,
+        join: {
+          from: this.tableName + '.id',
+          to: Products.tableName + '.priceTypeId'
         }
       }
     }

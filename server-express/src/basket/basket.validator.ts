@@ -20,7 +20,7 @@ export const validateUpdBasket = () => {
     body('comment', 'При отмене заказа нужно написать причину (comment)')
       .if(body('status').isIn(['Cancelled']))
       .notEmpty(),
-    body('deliveryDate', 'Укажите примерную дату доставки (deliveryDate) в формате \'2022-05-24T15:00\'')
+    body('deliveryDate', 'Укажите примерную дату доставки (deliveryDate) в формате \'2022-05-24 15:00\'')
       .if(body('status').isIn(['InDelivery']))
       .notEmpty()
   ]
