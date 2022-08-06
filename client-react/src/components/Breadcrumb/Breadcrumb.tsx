@@ -1,15 +1,21 @@
-import React, { memo, useState } from 'react'
+import React, { FC, memo, useState } from 'react'
 import useBreadcrumbs from 'use-react-router-breadcrumbs'
 import style from './Breadcrumb.module.scss'
 import { IRoute, routes } from 'AppRouter'
 import { NavLink } from 'react-router-dom'
 
-const BreadcrumbsComponent = () => {
+interface IBreadcrumbsProps {
+  className?: string
+}
+
+const BreadcrumbsComponent: FC<IBreadcrumbsProps> = ({ className }) => {
   const [rout] = useState<IRoute[]>(routes)
   const breadcrumbs = useBreadcrumbs(rout)
 
   return (
-    <div className={breadcrumbs.length !== 1 ? style.head : undefined}>
+    <div className={breadcrumbs.length !== 1
+      ? (className !== undefined ? className : style.head)
+      : undefined}>
       <nav className={style.body}>
         {breadcrumbs.length !== 1 && breadcrumbs.map(({
           match,

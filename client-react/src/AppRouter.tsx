@@ -41,7 +41,7 @@ export enum RoutePath {
   PRODUCTS = '/products',
   PRODUCTS_ID = '/products/:id',
   FAVORITES_PRODUCT = '/favorites_products',
-  USERS = '/users',
+  USERS = '/admin_panel/users',
   USERS_ID = '/users/:id',
   BASKET = '/basket',
   ALL_ORDERS = '/all_orders'
@@ -88,7 +88,7 @@ export const routes: IRoute[] = [
   {
     path: RoutePath.HOME,
     element: <Home name={RouteName.HOME} />,
-    breadcrumb: () => (<i className="bi bi-house-door-fill"></i>)
+    breadcrumb: () => (<i className="bi bi-house-door-fill"/>)
   },
   {
     path: RoutePath.LOGIN,
@@ -122,7 +122,7 @@ export const routes: IRoute[] = [
     path: RoutePath.USERS,
     allowRoles: RolesName.admin,
     element: <Users name={RouteName.USERS} />,
-    breadcrumb: RouteName.USERS
+    breadcrumb: () => (<>{RouteName.USERS}</>)
   },
   {
     path: RoutePath.USERS_ID,

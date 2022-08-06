@@ -1,7 +1,7 @@
 // Override default variables before the import
 
 .body {
-  @apply flex pt-[68px] w-full pl-[204px];
+  @apply flex flex-col pt-[68px] w-full pl-[204px];
 }
 
 @media only screen and (max-width: 775px) {
@@ -27,8 +27,8 @@
 }
 
 .App {
+  @apply flex flex-col;
   background: #EBECEE;
-  display: flex;
 }
 
 $theme-colors: (

@@ -8,6 +8,7 @@ import { useLazyAllProductsQuery } from 'store/myStore/myStoreProduct.api'
 import { useAppSelector } from 'hooks/useStore'
 import selectProduct from 'store/product/product.selector'
 import ProductsPanelSetting from 'components/ProductsPanelSetting/ProductsPanelSetting'
+import { Breadcrumbs } from 'components/Breadcrumb/Breadcrumb'
 
 interface ProductProps {
   name: string
@@ -37,6 +38,7 @@ const Products: FC<ProductProps> = ({ name }) => {
         <title>{name}</title>
         <meta name="description" content={name}/>
       </Helmet>
+      <Breadcrumbs />
       <ProductsPanelSetting />
       {isSuccess && products &&
         <div className={style.productsView}>

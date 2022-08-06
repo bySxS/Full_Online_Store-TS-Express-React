@@ -1,13 +1,17 @@
 .sideMenu {
-  @apply flex flex-col flex-shrink-0
-  bg-gray-50 text-gray-600 w-[204px] h-full fixed;
+  @apply fixed z-10 grid w-[204px] h-full content-center
+  justify-center bg-gray-50 text-gray-600 pb-[100px];
+}
+
+.nav_link {
+  @apply text-gray-800 py-3 border-b rounded-none;
 }
 
 .link_flex {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-direction: row;
+  @apply flex items-center justify-start flex-row;
+  :hover {
+    filter: drop-shadow(3px 3px 5px #4e03d5);
+  }
 }
 
 @media only screen and (max-width: 775px) {
@@ -15,6 +19,6 @@
     display: none;
   }
   .sideMenu {
-    width: 63px;
+    @apply w-[63px];
   }
 }

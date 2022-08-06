@@ -9,10 +9,9 @@ import SideBar from 'components/SideBar/SideBar'
 import Alarm from 'components/UI/Alarm/Alarm'
 import Loader from 'components/UI/Loader/Loader'
 import { ALERT_CONNECTION } from 'constants/constant'
-// import { Breadcrumbs } from 'components/Breadcrumb/Breadcrumb'
 import style from './styles/App.module.scss'
 import { ModalState } from 'components/UI/Modal/ModalContext'
-import { Breadcrumbs } from 'components/Breadcrumb/Breadcrumb'
+import Footer from 'components/Footer/Footer'
 
 function App () {
   return (
@@ -27,13 +26,13 @@ function App () {
           <SideBar />
           <div className={'body'}>
             <div className={style.body_content}>
-              <Breadcrumbs />
               <AppRouter />
             </div>
           </div>
+          <Footer />
           {ALERT_CONNECTION && <Alarm/>}
           <Loader/>
-        </ModalState>
+          </ModalState>
       </div>
     </BrowserRouter>
     </Provider>

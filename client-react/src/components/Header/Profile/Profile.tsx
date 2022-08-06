@@ -50,7 +50,17 @@ const Profile = () => {
               <i className="bi bi-gear pr-1.5"></i>
               <span>Account Settings</span>
             </Dropdown.Item>
+            <Dropdown.Divider />
           </>
+          }
+          {isAuth &&
+            <>
+              <NavLink className="dropdown-item d-flex align-items-center" to={RoutePath.ALL_ORDERS}>
+                <i className="bi bi-card-list pr-1.5"></i>
+                <span>Все заказы</span>
+              </NavLink>
+              <Dropdown.Divider />
+            </>
           }
           {isAdmin &&
           <>

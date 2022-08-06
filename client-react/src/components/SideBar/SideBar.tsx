@@ -5,7 +5,7 @@ import st from './SideBar.module.scss'
 import { useAuth } from 'hooks/useAuth'
 
 const SideBar = () => {
-  const { isAuth, isAdmin } = useAuth()
+  const { isAuth } = useAuth()
 
   return (
     <div className={st.sideMenu}>
@@ -37,26 +37,6 @@ const SideBar = () => {
             </div>
           </NavLink>
         </li>
-        {isAuth &&
-          <li className="nav-item">
-          <NavLink to={RoutePath.ALL_ORDERS} className="nav-link link-dark py-3 border-bottom rounded-0">
-            <div className={st.link_flex}>
-              <div><i className="bi bi-card-list text-2xl pr-1.5"></i></div>
-              <div className={st.name_page}>Все заказы</div>
-            </div>
-          </NavLink>
-        </li>
-        }
-        {isAdmin &&
-        <li className="nav-item">
-          <NavLink to={RoutePath.USERS} className="nav-link link-dark py-3 border-bottom rounded-0">
-            <div className={st.link_flex}>
-              <div><i className="bi bi-people-fill text-2xl pr-1.5"></i></div>
-              <div className={st.name_page}>Пользователи</div>
-            </div>
-          </NavLink>
-        </li>
-        }
       </ul>
       </div>
     </div>

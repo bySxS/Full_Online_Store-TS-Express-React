@@ -3,6 +3,8 @@ import UserItems from 'components/UserItems/UserItems'
 import { useFetchAllUsersQuery } from 'store/myStore/myStoreUser.api'
 import { Helmet } from 'react-helmet'
 import { useInfoLoading } from 'hooks/useInfoLoading'
+import { Breadcrumbs } from 'components/Breadcrumb/Breadcrumb'
+import style from './Users.module.scss'
 
 interface UsersProps {
   name: string
@@ -19,6 +21,7 @@ const Users: FC<UsersProps> = ({ name }) => {
         <title>{name}</title>
         <meta name="description" content={name + ' все клиенты'} />
       </Helmet>
+      <Breadcrumbs className={style.breadcrumbs} />
       <div className="font-bold text-center">{name}</div>
       {isSuccess && users && <div>{users.result?.results.map(user =>
         <UserItems user={user}
