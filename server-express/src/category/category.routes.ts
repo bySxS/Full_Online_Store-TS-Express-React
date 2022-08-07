@@ -11,7 +11,7 @@ const router = Router()
 
 try {
   // success
-  router.post('/add',
+  router.post('/',
     validateCategory(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     CategoryController.add)

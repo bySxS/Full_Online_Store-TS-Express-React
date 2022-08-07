@@ -41,7 +41,7 @@ export default class CharacteristicsSetValueModel extends Model {
   static get relationMappings () {
     return {
       products: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: Products,
         join: {
           from: this.tableName + '.productId',
@@ -49,7 +49,7 @@ export default class CharacteristicsSetValueModel extends Model {
         }
       },
       characteristicsName: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: CharacteristicsName,
         join: {
           from: this.tableName + '.characteristicsNameId',

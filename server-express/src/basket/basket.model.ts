@@ -34,7 +34,13 @@ export default class BasketModel extends Model {
         id: { type: 'integer' },
         userId: { type: 'integer' },
         fullName: { type: 'string', maxLength: 100 },
-        status: { type: 'string', maxLength: 40 },
+        status: {
+          type: 'string',
+          enum: ['SelectsTheProduct', 'InProcessing',
+            'InDelivery', 'Completed', 'Cancelled'],
+          default: 'SelectsTheProduct',
+          maxLength: 20
+        },
         comment: { type: 'string', maxLength: 1000 },
         deliveryAddress: { type: 'string', maxLength: 500 },
         phoneNumber: { type: 'string', maxLength: 25 },
@@ -49,7 +55,7 @@ export default class BasketModel extends Model {
   static get relationMappings () {
     return {
       user: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: Users,
         join: {
           from: this.tableName + '.userId',

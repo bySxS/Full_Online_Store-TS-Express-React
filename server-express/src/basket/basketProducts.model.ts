@@ -44,7 +44,7 @@ export default class BasketProductsModel extends Model {
   static get relationMappings () {
     return {
       basket: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: Basket,
         join: {
           from: this.tableName + '.basketId',
@@ -52,7 +52,7 @@ export default class BasketProductsModel extends Model {
         }
       },
       products: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: Products,
         join: {
           from: this.tableName + '.productId',
@@ -60,7 +60,7 @@ export default class BasketProductsModel extends Model {
         }
       },
       productsPrice: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: ProductsPrice,
         join: {
           from: this.tableName + '.productPriceId',

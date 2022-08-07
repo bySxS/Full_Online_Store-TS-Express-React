@@ -39,7 +39,7 @@ export default class TokenModel extends Model {
   static get relationMappings () {
     return {
       users: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: Users,
         join: {
           from: this.tableName + '.userId',

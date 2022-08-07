@@ -64,7 +64,7 @@ export default class UsersModel extends Model {
   static get relationMappings () {
     return {
       token: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: Token,
         join: {
           from: this.tableName + '.id',
@@ -72,7 +72,7 @@ export default class UsersModel extends Model {
         }
       },
       roles: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: Roles,
         join: {
           from: this.tableName + '.rolesId',

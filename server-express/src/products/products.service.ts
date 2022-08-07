@@ -255,6 +255,7 @@ class ProductsService implements IProductService {
         priceTypeId: +priceTypeId,
         price: +price
       })
+    await cacheRedisDB.del('product:' + id) // удаляем кеш
 
     return {
       success: true,
@@ -346,6 +347,58 @@ class ProductsService implements IProductService {
         'section.name as sectionName')
   }
 
+  getAllProductsByCategoryId (
+    id: number, limit: number = 20, page: number = 1
+  ): QueryBuilder<ProductsModel, Page<ProductsModel>> {
+    return ProductsModel.query()
+      .page(page - 1, limit)
+      .where('products.categoryId', '=', id)
+      .andWhere('price.priceTypeId', '=',
+        raw('products.priceTypeId'))
+      .andWhere('priceType.id', '=',
+        raw('products.priceTypeId'))
+      .joinRelated('views')
+      .joinRelated('priceType')
+      .joinRelated('price')
+      .joinRelated('category')
+      .joinRelated('category.parent', { alias: 'section' })
+      .select('products.*',
+        'views.views as view',
+        'price.id as priceId',
+        'price.price as price',
+        'price.currency as priceCurrency',
+        'priceType.name as priceType',
+        'category.name as categoryName',
+        'section.name as sectionName')
+  }
+
+  getAllProductsByCharacteristicsValueId (
+    id: number, limit: number = 20, page: number = 1
+  ): QueryBuilder<ProductsModel, Page<ProductsModel>> {
+    return ProductsModel.query()
+      .page(page - 1, limit)
+      .where('characteristicsValues.id', '=', id)
+      .andWhere('price.priceTypeId', '=',
+        raw('products.priceTypeId'))
+      .andWhere('priceType.id', '=',
+        raw('products.priceTypeId'))
+      .joinRelated('characteristicsValues')
+      // .joinRelated('characteristicsValues.characteristicsName')
+      .joinRelated('views')
+      .joinRelated('priceType')
+      .joinRelated('price')
+      .joinRelated('category')
+      .joinRelated('category.parent', { alias: 'section' })
+      .select('products.*',
+        'views.views as view',
+        'price.id as priceId',
+        'price.price as price',
+        'price.currency as priceCurrency',
+        'priceType.name as priceType',
+        'category.name as categoryName',
+        'section.name as sectionName')
+  }
+
   async getById (id: number, incView: boolean = true): Promise<IMessage> {
     const cacheProduct = await cacheRedisDB.get('product:' + id)
     if (cacheProduct) {
@@ -402,6 +455,40 @@ class ProductsService implements IProductService {
       success: true,
       result,
       message: `Страница ${page} продуктов успешно загружена`
+    }
+  }
+
+  async getAllByCategoryId (
+    id: number, limit: number = 20, page: number = 1
+  ): Promise<IMessage> {
+    const result = await this.getAllProductsByCategoryId(id, limit, page)
+    if (!result) {
+      return {
+        success: false,
+        message: `Продуктов на странице ${page}, c ID${id} категории не найдено`
+      }
+    }
+    return {
+      success: true,
+      result,
+      message: `Страница ${page} продуктов, c ID${id} категории успешно загружена`
+    }
+  }
+
+  async getAllByCharacteristicsId (
+    id: number, limit: number = 20, page: number = 1
+  ): Promise<IMessage> {
+    const result = await this.getAllProductsByCharacteristicsValueId(id, limit, page)
+    if (!result) {
+      return {
+        success: false,
+        message: `Продуктов на странице ${page}, c ID${id} характеристики не найдено`
+      }
+    }
+    return {
+      success: true,
+      result,
+      message: `Страница ${page} продуктов, c ID${id} характеристики успешно загружена`
     }
   }
 

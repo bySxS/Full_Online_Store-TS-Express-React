@@ -178,26 +178,26 @@ class BasketService implements IBasketService {
   async getAllOrdersByUserId (
     userId: number, limit: number = 20, page: number = 1
   ): Promise<IMessage> {
-    const result = await BasketModel.query()
+    const orders = await BasketModel.query()
       .page(page - 1, limit)
-      .where('basket.status', '<>', 'SelectsTheProduct')
-      .andWhere('basket.userId', '=', userId)
-      .joinRelated('basketProducts')
-      .joinRelated('basketProducts.products')
-      // .innerJoin('basketProducts',
-      //   'basket.id', '=',
-      //   'basketProducts.basketId')
-      // .innerJoin('products',
-      //   'products.id', '=',
-      //   'basketProducts.productId')
-      .select('basket.*',
-        'basketProducts.currentPrice',
-        'basketProducts.productCount',
-        'basketProducts:products.title')
-    if (!result) {
+      .where('status', '<>', 'SelectsTheProduct')
+      .andWhere('userId', '=', userId)
+      .select('*')
+    if (!orders) {
       throw ApiError.badRequest(
         `У пользователя с id${userId} нет заказов`,
         'BasketService getAllOrdersByUserId')
+    }
+    const products = []
+    for (const basket of orders.results) {
+      products.push({
+        ...basket,
+        BasketProducts: await this.getBasketProducts(basket.id)
+      })
+    }
+    const result = {
+      results: products,
+      total: orders.total
     }
     return {
       success: true,
@@ -239,9 +239,6 @@ class BasketService implements IBasketService {
       .first()
       .where('basketProducts.productId', '=', productId)
       .joinRelated('basket')
-      // .innerJoin('basket',
-      //   'basketProducts.basketId',
-      //   'basket.id')
       .andWhere('basket.status', '=', 'Completed')
       .andWhere('basket.userId', '=', userId)
       .select(

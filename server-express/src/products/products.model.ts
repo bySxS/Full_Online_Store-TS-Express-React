@@ -7,9 +7,10 @@ import Review from '@/review/review.model'
 import ProductsPrice from './prices/productsPrice.model'
 import ProductsViews from './views/productsViews.model'
 import ProductsPriceType from './prices/productsPriceType.model'
+import CharacteristicsSetValue from '@/characteristics/characteristicsSetValue.model'
 Model.knex(dbKnex)
 
-// NewsModel
+// ProductsModel
 export default class ProductsModel extends Model {
   public id!: number
   public title!: string
@@ -85,7 +86,7 @@ export default class ProductsModel extends Model {
   static get relationMappings () {
     return {
       user: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: Users,
         join: {
           from: this.tableName + '.userId',
@@ -93,11 +94,19 @@ export default class ProductsModel extends Model {
         }
       },
       category: {
-        relation: Model.HasManyRelation,
+        relation: Model.HasOneRelation,
         modelClass: Category,
         join: {
           from: this.tableName + '.categoryId',
           to: Category.tableName + '.id'
+        }
+      },
+      characteristicsValues: {
+        relation: Model.HasManyRelation,
+        modelClass: CharacteristicsSetValue,
+        join: {
+          from: this.tableName + '.id',
+          to: CharacteristicsSetValue.tableName + '.productId'
         }
       },
       reviews: {
@@ -133,7 +142,7 @@ export default class ProductsModel extends Model {
         }
       },
       views: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: ProductsViews,
         join: {
           from: this.tableName + '.id',
@@ -144,10 +153,10 @@ export default class ProductsModel extends Model {
   }
 
   $beforeInsert () {
-    this.createdAt = new Date(Date.now())
+    this.createdAt = new Date(Date.now()) // new Date().toISOString();
   }
 
   $beforeUpdate () {
-    this.updatedAt = new Date(Date.now())
+    this.updatedAt = new Date(Date.now()) // new Date().toISOString();
   }
 }

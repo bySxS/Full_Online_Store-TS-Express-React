@@ -107,24 +107,41 @@ class CategoryService implements ICategoryService {
   }
 
   async getAll (): Promise<IMessage> {
-    const result = await CategoryModel.query()
-      .innerJoin('category as parent',
-        'parent.id', '=',
-        'category.parentId')
+    const categoryNotSort = await CategoryModel.query()
+      .joinRelated('parent')
       .select('category.id',
         'category.parentId',
         'category.name as categoryName',
         'category.nameEng as categoryNameEng',
         'parent.name as sectionName',
         'parent.nameEng as sectionNameEng')
-    if (!result) {
+    if (!categoryNotSort) {
       throw ApiError.badRequest(
         'Категорий не найдено',
         'CategoryService getAll')
     }
+
+    const section: any[] = []
+    categoryNotSort.forEach((all) => {
+      const ids = new Set(section.map(section => section.sectionId))
+      if (!ids.has(all.parentId)) {
+        const filterCharacteristics =
+          categoryNotSort.filter(category => category.parentId === all.parentId)
+        section.push({
+          sectionName: all.sectionName,
+          sectionNameEng: all.sectionNameEng,
+          sectionId: all.parentId,
+          category: filterCharacteristics.map(category => ({
+            categoryName: category.categoryName,
+            categoryNameEng: category.categoryNameEng,
+            categoryId: category.id
+          }))
+        })
+      }
+    })
     return {
       success: true,
-      result,
+      result: section,
       message: 'Все категории загружены'
     }
   }
@@ -134,9 +151,7 @@ class CategoryService implements ICategoryService {
       .page(page - 1, limit)
       .where('category.name', 'like', `%${name}%`)
       .orWhere('category.nameEng', 'like', `%${name}%`)
-      .innerJoin('category as parent',
-        'parent.id', '=',
-        'category.parentId')
+      .joinRelated('parent')
       .select('category.id',
         'category.parentId',
         'category.name as categoryName',

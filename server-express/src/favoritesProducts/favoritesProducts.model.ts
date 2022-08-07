@@ -37,7 +37,7 @@ export default class FavoritesProductsModel extends Model {
   static get relationMappings () {
     return {
       user: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: Users,
         join: {
           from: this.tableName + '.userId',
@@ -45,7 +45,7 @@ export default class FavoritesProductsModel extends Model {
         }
       },
       product: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: Products,
         join: {
           from: this.tableName + '.productId',

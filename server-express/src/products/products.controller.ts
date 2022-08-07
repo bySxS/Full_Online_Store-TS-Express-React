@@ -108,6 +108,30 @@ class ProductsController implements IProductController {
       next(err)
     }
   }
+
+  async getAllByCategoryId (req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = +req.params.id
+      const limit = +(req.query.limit || 10)
+      const page = +(req.query.page || 1)
+      const products = await ProductsService.getAllByCategoryId(id, limit, page)
+      return res.status(200).json(products)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async getAllByCharacteristicsId (req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = +req.params.id
+      const limit = +(req.query.limit || 10)
+      const page = +(req.query.page || 1)
+      const products = await ProductsService.getAllByCharacteristicsId(id, limit, page)
+      return res.status(200).json(products)
+    } catch (err) {
+      next(err)
+    }
+  }
 }
 
 export default ProductsController.getInstance()

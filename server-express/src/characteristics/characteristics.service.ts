@@ -97,23 +97,6 @@ class CharacteristicsService implements ICharacteristicService {
         'characteristicsName:parent.id as sectionId')
       .groupBy('characteristicsName.parentId',
         'characteristicsSetValue.id')
-
-    // .where('characteristicsSetValue.productId', '=', id)
-    // .joinRelated('characteristicsName.parent')
-    // .select('characteristicsName:parent.name as sectionName',
-    //   'characteristicsName:parent.id as sectionId')
-    // .groupBy('characteristicsName.parentId')
-
-    // .where('characteristicsSetValue.productId', '=', id)
-    // .joinRelated('characteristicsName')
-    // .joinRelated('characteristicsName.parent')
-    // .select('characteristicsSetValue.id',
-    //   'characteristicsName.parentId',
-    //   'characteristicsName.name as propertyName',
-    //   'characteristicsSetValue.value as propertyValue',
-    //   'characteristicsName:parent.name as sectionName')
-    // .groupBy('characteristicsName.parentId',
-    //   'characteristicsSetValue.id')
     if (characteristics.length === 0) {
       return {
         success: true,
@@ -131,28 +114,14 @@ class CharacteristicsService implements ICharacteristicService {
           sectionName: all.sectionName,
           sectionId: all.sectionId,
           characteristics: filterCharacteristics.map(char => ({
-            propertyNameId: char.propertyNameId,
-            propertyName: char.propertyName,
-            propertyValueId: char.propertyValueId,
-            propertyValue: char.propertyValue
+            characteristicNameId: char.propertyNameId,
+            characteristicName: char.propertyName,
+            characteristicValueId: char.propertyValueId,
+            characteristicValue: char.propertyValue
           }))
         })
       }
     })
-    // characteristics.push({
-    //   ...parent,
-    //   characteristics: await CharacteristicsSetValueModel.query()
-    //     .where('characteristicsSetValue.productId', '=', id)
-    //     .andWhere('characteristicsName:parent.id', '=', parent.sectionId)
-    //     .joinRelated('characteristicsName')
-    //     .joinRelated('characteristicsName.parent')
-    //     .select('characteristicsName.id as propertyNameId',
-    //       'characteristicsName.name as propertyName',
-    //       'characteristicsSetValue.id as propertyValueId',
-    //       'characteristicsSetValue.value as propertyValue')
-    //     .groupBy('characteristicsSetValue.id')
-    // })
-    // }
     return {
       success: true,
       result: section,

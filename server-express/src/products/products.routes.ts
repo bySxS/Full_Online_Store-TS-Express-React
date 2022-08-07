@@ -11,17 +11,17 @@ const router = Router()
 
 try {
   // success
-  router.post('/add',
+  router.post('/',
     validateProduct(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     ProductsController.add)
   // success
-  router.delete('/delete/:id',
+  router.delete('/:id',
     validateId(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     ProductsController.deleteById)
   // success
-  router.put('/update/:id',
+  router.put('/:id',
     validateId(), validateProduct(), validateProductUpd(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     ProductsController.updateById)
@@ -37,6 +37,14 @@ try {
   router.get('/',
     validateLimitPage(), ValidatorResultMiddleware,
     ProductsController.getAll)
+  // success
+  router.get('/category/:id',
+    validateId(), validateLimitPage(), ValidatorResultMiddleware,
+    ProductsController.getAllByCategoryId)
+  // success
+  router.get('/characteristic/:id',
+    validateId(), validateLimitPage(), ValidatorResultMiddleware,
+    ProductsController.getAllByCharacteristicsId)
 } catch (e) {
   throw ApiError.internalRequest('Ошибка в Products routers', 'ProductsRouter')
 }

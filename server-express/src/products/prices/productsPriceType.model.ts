@@ -33,7 +33,7 @@ export default class ProductsPriceTypeModel extends Model {
   static get relationMappings () {
     return {
       price: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: ProductsPrice,
         join: {
           from: this.tableName + '.id',
@@ -41,7 +41,7 @@ export default class ProductsPriceTypeModel extends Model {
         }
       },
       product: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasManyRelation,
         modelClass: Products,
         join: {
           from: this.tableName + '.id',

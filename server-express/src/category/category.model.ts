@@ -14,6 +14,11 @@ export default class CategoryModel extends Model {
 
   products?: Products[]
 
+  categoryName!: string
+  categoryNameEng!: string
+  sectionName!: string
+  sectionNameEng!: string
+
   static get tableName () {
     return 'category'
   }
@@ -34,7 +39,7 @@ export default class CategoryModel extends Model {
   static get relationMappings () {
     return {
       products: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasManyRelation,
         modelClass: Products,
         join: {
           from: this.tableName + '.id',
@@ -42,7 +47,7 @@ export default class CategoryModel extends Model {
         }
       },
       parent: {
-        relation: Model.BelongsToOneRelation,
+        relation: Model.HasOneRelation,
         modelClass: this,
         join: {
           from: this.tableName + '.parentId',
