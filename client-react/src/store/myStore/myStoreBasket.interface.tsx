@@ -81,5 +81,5 @@ export interface IOrderChange {
   comment: string
   status: TBasketStatus
   dateProcessing: string | Date
-  forciblyUpd: boolean
+  forciblyUpd: boolean // обновить принудительно
 }

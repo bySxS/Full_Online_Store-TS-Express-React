@@ -9,6 +9,7 @@ import { logoutListenerMiddleware } from './user/user.listener'
 import { productReducer } from './product/product.slice'
 import myStoreUserApi from './myStore/myStoreUser.api'
 import myStoreProductApi from './myStore/myStoreProduct.api'
+import myStoreBasketApi from 'store/myStore/myStoreBasket.api'
 
 const reducers = {
   user: userReducer,
@@ -16,7 +17,8 @@ const reducers = {
   alert: alertReducer,
   product: productReducer,
   [myStoreUserApi.reducerPath]: myStoreUserApi.reducer,
-  [myStoreProductApi.reducerPath]: myStoreProductApi.reducer
+  [myStoreProductApi.reducerPath]: myStoreProductApi.reducer,
+  [myStoreBasketApi.reducerPath]: myStoreBasketApi.reducer
 }
 
 const rootReducer = combineReducers({
@@ -29,7 +31,8 @@ export const store = configureStore({
     getDefaultMiddleware({})
       .concat([
         myStoreUserApi.middleware,
-        myStoreProductApi.middleware
+        myStoreProductApi.middleware,
+        myStoreBasketApi.middleware
       ])
       .prepend(alertListenerMiddleware.middleware)
       .prepend(logoutListenerMiddleware.middleware),

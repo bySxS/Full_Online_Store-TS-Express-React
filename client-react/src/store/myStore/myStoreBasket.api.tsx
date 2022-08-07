@@ -82,5 +82,12 @@ const myStoreBasketApi = createApi({
 export default myStoreBasketApi
 
 export const {
+  useAddToBasketMutation,
+  useBasketToOrderMutation,
+  useChangeOrderMutation,
+  useDelFromBasketMutation,
+  useLazyGetBasketQuery,
+  useGetOrdersNeedProcessQuery,
+  useGetAllOrdersQuery,
   endpoints: myStoreBasketEndpoint
 } = myStoreBasketApi
