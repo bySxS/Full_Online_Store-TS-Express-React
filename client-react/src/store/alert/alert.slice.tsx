@@ -31,32 +31,31 @@ export const AlertSlice = createSlice({
     },
     addToAlertStack (state, action: PayloadAction<IAlertStack>) {
       const ids = new Set(state.alertSt.map(alert => alert.message))
-      const alert = action.payload
-      if (!ids.has(alert.message)) {
-        if (!alert.status) {
-          alert.status = 'success'
+      if (!ids.has(action.payload.message)) {
+        if (!action.payload.status) {
+          action.payload.status = 'success'
         }
-        alert.id =
+        action.payload.id =
             state.alertSt.length +
             Math.floor(Math.random() * 10000)
-        if (alert.status.toLowerCase() === 'success') {
-          alert.color = 'success'
-          alert.title = 'Успех'
-          alert.delay = 2000
-        } else if (alert.status.toLowerCase() === 'error') {
-          alert.color = 'danger'
-          alert.title = 'Ошибка'
-          alert.delay = 5000
-        } else if (alert.status.toLowerCase() === 'warning') {
-          alert.color = 'warning'
-          alert.title = 'Предупреждение'
-          alert.delay = 3500
+        if (action.payload.status.toLowerCase() === 'success') {
+          action.payload.color = 'success'
+          action.payload.title = 'Успех'
+          action.payload.delay = 2000
+        } else if (action.payload.status.toLowerCase() === 'error') {
+          action.payload.color = 'danger'
+          action.payload.title = 'Ошибка'
+          action.payload.delay = 5000
+        } else if (action.payload.status.toLowerCase() === 'warning') {
+          action.payload.color = 'warning'
+          action.payload.title = 'Предупреждение'
+          action.payload.delay = 3500
         }
-        if (!alert.time) {
-          alert.time = new Date().toISOString()
-            .slice(0, 19).replace('T', ' ')
+        if (!action.payload.time) {
+          action.payload.time = new Date().toLocaleString('en-US', { timeZone: 'Europe/Moscow' })
+          // .toISOString().slice(0, 19).replace('T', ' ')
         }
-        state.alertSt = [...state.alertSt, alert]
+        state.alertSt = [...state.alertSt, action.payload]
         // localStorage.setItem(LS_ALERT_KEY, JSON.stringify(state.alertSt))
       }
     },
