@@ -4,7 +4,3 @@ export interface IFavProduct {
   createdAt: Date
   id: number
 }
-
-export interface ICountFavProduct {
-  countInFavorites: number
-}

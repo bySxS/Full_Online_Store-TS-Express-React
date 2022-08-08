@@ -74,6 +74,6 @@ export const {
   useFetchAllUsersQuery,
   useLoginMutation,
   useRegistrationMutation,
-  useLazyLogoutQuery
-  // endpoints: myStoreUserEndpoints
+  useLazyLogoutQuery,
+  endpoints: myStoreUserEndpoints
 } = myStoreUserApi

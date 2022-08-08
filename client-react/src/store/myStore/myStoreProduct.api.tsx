@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { IMessage, IResultList } from 'store/myStore/myStore.interface'
-import { IProduct } from 'store/myStore/myStoreProduct.interface'
+import { IGetProductsWithFilter, IProduct, IProductIn } from 'store/myStore/myStoreProduct.interface'
 import baseQueryWithRefreshToken from 'store/myStore/customFetch'
 
 const myStoreProductApi = createApi({
@@ -8,6 +8,32 @@ const myStoreProductApi = createApi({
   baseQuery: baseQueryWithRefreshToken,
   refetchOnFocus: true,
   endpoints: build => ({
+    addProduct: build.mutation<IMessage<IProductIn>,
+      FormData>({
+        query: (body: FormData) => ({
+          url: 'product',
+          method: 'POST',
+          body
+        })
+      }),
+
+    delProduct: build.mutation<IMessage<null>,
+      number>({
+        query: (productId: number) => ({
+          url: 'product/' + productId,
+          method: 'DELETE'
+        })
+      }),
+
+    updateProduct: build.mutation<IMessage<IProductIn>,
+      {productId: number, body: FormData}>({
+        query: ({ productId, body }) => ({
+          url: 'product/' + productId,
+          method: 'PUT',
+          body
+        })
+      }),
+
     searchProducts: build.query<IMessage<IResultList<IProduct>>,
       {value: string, limit?: number, page: number}>({
         query: (args) => ({
@@ -18,23 +44,43 @@ const myStoreProductApi = createApi({
             page: args.page
           }
         })
-      }), // /searchProducts
+      }),
+
     allProducts: build.query<IMessage<IResultList<IProduct>>,
-      {limit?: number, page: number}>({
+      IGetProductsWithFilter>({
         query: (args) => ({
           url: 'product',
           params: {
+            filter: args.filter,
+            price: args.price,
+            sort: args.sort,
             limit: args.limit || 10,
             page: args.page
           }
         })
-      }), // /allProducts
+      }),
+
+    getAllProductsByCategoryId: build.query<IMessage<IResultList<IProduct>>,
+    {categoryId: number, args: IGetProductsWithFilter}>({
+      query: ({ categoryId, args }) => ({
+        url: 'product/category/' + categoryId,
+        params: {
+          filter: args.filter,
+          price: args.price,
+          sort: args.sort,
+          limit: args.limit || 10,
+          page: args.page
+        }
+      })
+    }),
+
     getProductById: build.query<IMessage<IProduct>,
       number>({
         query: (id: number) => ({
           url: `product/${id}`
         })
-      }) // /getProductById
+      })
+
   })
 })
 
@@ -44,5 +90,9 @@ export const {
   useSearchProductsQuery,
   useLazyAllProductsQuery,
   useLazyGetProductByIdQuery,
+  useAddProductMutation,
+  useDelProductMutation,
+  useUpdateProductMutation,
+  useLazyGetAllProductsByCategoryIdQuery,
   endpoints: myStoreProductEndpoint
 } = myStoreProductApi
