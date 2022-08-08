@@ -189,7 +189,7 @@ class CharacteristicsService implements ICharacteristicService {
     }
     return {
       success: true,
-      result,
+      result: { name, fieldType, categoryId, parentId },
       message: `Характеристика ${name} изменена`
     }
   }
