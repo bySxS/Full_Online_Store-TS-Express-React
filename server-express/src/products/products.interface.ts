@@ -59,7 +59,7 @@ export interface IProductService {
   updatePictures: (
     id: number, DtoFile: IProductFilesArray | null,
     Dto: IProduct, findProduct: ProductsModel | undefined
-  ) => Promise<string>
+  ) => Promise<IMessage>
   add: (Dto: IProduct, DtoFile: IProductFilesArray) => Promise<IMessage>
   updateById: (
     id: number, Dto: IProduct, DtoFile: IProductFilesArray
