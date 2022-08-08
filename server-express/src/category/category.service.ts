@@ -28,7 +28,7 @@ class CategoryService implements ICategoryService {
     const alreadyHave = await CategoryModel.query()
       .where({ name })
       .orWhere({ nameEng })
-    if (alreadyHave) {
+    if (alreadyHave.length > 0) {
       throw ApiError.badRequest(
         'Категория с таким названием уже существует',
         'CategoryService add')
@@ -86,7 +86,7 @@ class CategoryService implements ICategoryService {
     }
     return {
       success: true,
-      result,
+      result: { name, nameEng, parentId },
       message: `Категория ${findCategory.name} (${findCategory.nameEng}) изменена на ${name} (${nameEng})`
     }
   }
@@ -108,7 +108,7 @@ class CategoryService implements ICategoryService {
 
   async getAll (): Promise<IMessage> {
     const categoryNotSort = await CategoryModel.query()
-      .leftOuterJoinRelated('parent')
+      .joinRelated('parent')
       .select('category.id',
         'category.parentId',
         'category.name as categoryName',
@@ -151,7 +151,7 @@ class CategoryService implements ICategoryService {
       .page(page - 1, limit)
       .where('category.name', 'like', `%${name}%`)
       .orWhere('category.nameEng', 'like', `%${name}%`)
-      .leftOuterJoinRelated('parent')
+      .joinRelated('parent')
       .select('category.id',
         'category.parentId',
         'category.name as categoryName',

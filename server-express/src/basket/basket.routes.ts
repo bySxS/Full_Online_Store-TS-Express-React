@@ -5,7 +5,9 @@ import ApiError from '@/apiError'
 import BasketController from './basket.controller'
 import { validateId, validateLimitPage } from '@/validator'
 import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
-import { validateBasket, validateBasketProduct, validateUpdBasket } from '@/basket/basket.validator'
+import {
+  validateBasket, validateBasketProduct, validateUpdBasket
+} from '@/basket/basket.validator'
 
 const router = Router()
 

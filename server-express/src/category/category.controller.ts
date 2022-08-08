@@ -67,7 +67,8 @@ class CategoryController implements ICategoryController {
       const value: string = '' + req.query.value || ''
       const limit = +(req.query.limit || 10)
       const page = +(req.query.page || 1)
-      const searchCategory = await CategoryService.search(value, limit, page)
+      const searchCategory =
+        await CategoryService.search(value, limit, page)
       return res.status(200).send(searchCategory)
     } catch (err) {
       next(err)

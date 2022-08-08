@@ -3,7 +3,9 @@ import { RoleMiddleware } from '@/middleware/role'
 // import { AuthMiddleware } from 'middleware/auth'
 import ApiError from '@/apiError'
 import CategoryController from './category.controller'
-import { validateId, validateLimitPage, validateSearch } from '@/validator'
+import {
+  validateId, validateLimitPage, validateSearch
+} from '@/validator'
 import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
 import { validateCategory } from './category.validator'
 

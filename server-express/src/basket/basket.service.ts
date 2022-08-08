@@ -32,7 +32,8 @@ class BasketService implements IBasketService {
       .where({ id: currentBasket.result.id })
       .update({
         status: 'InProcessing',
-        dateProcessing: new Date().toISOString().slice(0, 19).replace('T', ' '),
+        dateProcessing: new Date().toISOString()
+          .slice(0, 19).replace('T', ' '),
         comment: comment || '',
         fullName,
         phoneNumber,
@@ -56,7 +57,9 @@ class BasketService implements IBasketService {
     }
   }
 
-  getBasketProducts (basketId: number): QueryBuilder<BasketProductsModel, BasketProductsModel[]> {
+  getBasketProducts (
+    basketId: number
+  ): QueryBuilder<BasketProductsModel, BasketProductsModel[]> {
     return BasketProductsModel.query()
       .where('basketProducts.basketId', '=', basketId)
       .andWhere('products:priceType.id', '=',
@@ -93,7 +96,8 @@ class BasketService implements IBasketService {
         })
         .select('*')
     }
-    const productsInBasket = await this.getBasketProducts(basket.id)
+    const productsInBasket =
+      await this.getBasketProducts(basket.id)
     return {
       success: true,
       result: { ...basket, BasketProducts: productsInBasket },
@@ -107,14 +111,16 @@ class BasketService implements IBasketService {
     const {
       productId, productCount
     } = Dto
-    const findCurrentBasket = await this.getCurrentBasketByUserId(userId)
-    findCurrentBasket.result.BasketProducts.forEach((product: { productId: number }) => {
-      if (product.productId === +productId) {
-        throw ApiError.badRequest(
+    const findCurrentBasket =
+      await this.getCurrentBasketByUserId(userId)
+    findCurrentBasket.result.BasketProducts
+      .forEach((product: { productId: number }) => {
+        if (product.productId === +productId) {
+          throw ApiError.badRequest(
           `Продукт с id${productId} уже в корзине, вы можете изменить количество`,
           'BasketService addProductToBasket')
-      }
-    })
+        }
+      })
     const product = await ProductsService.getById(productId)
     if (product.result.availability === false) {
       throw ApiError.badRequest(
@@ -149,13 +155,15 @@ class BasketService implements IBasketService {
   async delProductFromBasket (
     userId: number, productId: number
   ): Promise<IMessage> {
-    const findCurrentBasket = await this.getCurrentBasketByUserId(userId)
+    const findCurrentBasket =
+      await this.getCurrentBasketByUserId(userId)
     let id
-    findCurrentBasket.result.BasketProducts.forEach((product: { id: number, productId: number }) => {
-      if (product.productId === +productId) {
-        id = product.id
-      }
-    })
+    findCurrentBasket.result.BasketProducts
+      .forEach((product: { id: number, productId: number }) => {
+        if (product.productId === +productId) {
+          id = product.id
+        }
+      })
     if (!id) {
       throw ApiError.badRequest(
         `Ошибка удаления из корзины, продукта с id${productId} в корзине нет`,
@@ -206,7 +214,9 @@ class BasketService implements IBasketService {
     }
   }
 
-  async getAllOrdersInProgressAllUsers (limit: number, page: number): Promise<IMessage> {
+  async getAllOrdersInProgressAllUsers (
+    limit: number, page: number
+  ): Promise<IMessage> {
     const orders = await BasketModel.query()
       .page(page - 1, limit)
       .where({ 'basket.status': 'InProcessing' })
@@ -234,7 +244,9 @@ class BasketService implements IBasketService {
     }
   }
 
-  async isUserBoughtProduct (userId: number, productId: number): Promise<boolean> {
+  async isUserBoughtProduct (
+    userId: number, productId: number
+  ): Promise<boolean> {
     const result = await BasketProductsModel.query()
       .first()
       .where('basketProducts.productId', '=', productId)
