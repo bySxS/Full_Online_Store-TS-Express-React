@@ -26,7 +26,7 @@ class ProductsService implements IProductService {
     DtoFile: IProductFilesArray | null,
     Dto: IProduct | null = null,
     findProduct: ProductsModel | undefined = undefined
-  ): Promise<string> {
+  ): Promise<IMessage> {
     if (!id || isNaN(id)) {
       throw ApiError.badRequest(
         'ID продукта не верный, для обновления изображений',
@@ -131,7 +131,23 @@ class ProductsService implements IProductService {
         `Изображения для продукта с id${id} не обновлены`,
         'ProductsService updatePictures')
     }
-    return `Изображения для продукта с id${id} успешно обновлены`
+    return {
+      success: true,
+      result: {
+        screen: fileNameScreen,
+        image1: fileNameImage1,
+        image2: fileNameImage2,
+        image3: fileNameImage3,
+        image4: fileNameImage4,
+        image5: fileNameImage5,
+        image6: fileNameImage6,
+        image7: fileNameImage7,
+        image8: fileNameImage8,
+        image9: fileNameImage9,
+        image10: fileNameImage10
+      },
+      message: `Изображения для продукта с id${id} успешно обновлены`
+    }
   }
 
   async add (
@@ -186,17 +202,19 @@ class ProductsService implements IProductService {
     const imgResult =
       await this.updatePictures(product.id, DtoFile)
     const views =
-      await ProductsViewsService.createViewsProduct(product.id)
+      await ProductsViewsService
+        .createViewsProduct(product.id)
     const priceCommon =
-      await ProductsPriceService.addPriceForProduct({
-        priceTypeId,
-        productId: product.id,
-        price: +price
-      })
+      await ProductsPriceService
+        .addPriceForProduct({
+          priceTypeId,
+          productId: product.id,
+          price: +price
+        })
     return {
       success: true,
-      result: product,
-      message: `Продукт с id ${product.id} успешно добавлен; ${imgResult}; ${views.message}; ${priceCommon.message}`
+      result: { ...product, ...imgResult.result },
+      message: `Продукт с id ${product.id} успешно добавлен; ${imgResult.message}; ${views.message}; ${priceCommon.message}`
     }
   }
 
@@ -249,19 +267,35 @@ class ProductsService implements IProductService {
     const imgResult =
       await this.updatePictures(id, DtoFile, Dto, findProduct)
     const getPrice =
-      await ProductsPriceService.getProductPriceByTypesPricesId(+priceTypeId, id)
+      await ProductsPriceService
+        .getProductPriceByTypesPricesId(+priceTypeId, id)
     const prices =
-      await ProductsPriceService.updProductPrice(getPrice.result.id, {
-        productId: id,
-        priceTypeId: +priceTypeId,
-        price: +price
-      })
+      await ProductsPriceService
+        .updProductPrice(getPrice.result.id, {
+          productId: id,
+          priceTypeId: +priceTypeId,
+          price: +price
+        })
     await cacheRedisDB.del('product:' + id) // удаляем кеш
+
+    const result = {
+      title,
+      categoryId: +categoryId,
+      userId: +userId,
+      description,
+      count: +count,
+      availability: Boolean(availability),
+      parentId,
+      videoYoutubeUrl,
+      url,
+      priceTypeId: +priceTypeId,
+      ...imgResult.result
+    }
 
     return {
       success: true,
-      result: product,
-      message: `Продукт с id ${id} успешно обновлён; ${imgResult}; ${prices.message}`
+      result,
+      message: `Продукт с id ${id} успешно обновлён; ${imgResult.message}; ${prices.message}`
     }
   }
 
@@ -293,12 +327,11 @@ class ProductsService implements IProductService {
     }
     return {
       success: true,
-      message: `Продукт с id ${id} успешно удалён; ${imgResult}`
+      message: `Продукт с id ${id} успешно удалён; ${imgResult.message}`
     }
   }
 
   // universal - чтобы не дублировать код
-  // ToDo: нужно проверить на инъекции
   getAllProductsWithFilter (
     limit: number = 1,
     page: number = 1,
