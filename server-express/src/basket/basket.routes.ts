@@ -16,19 +16,14 @@ try {
     AuthMiddleware,
     BasketController.addProductToBasket)
   // success
-  router.delete('/:id',
-    validateId(), ValidatorResultMiddleware,
+  router.get('/',
     AuthMiddleware,
-    BasketController.delProductFromBasket)
+    BasketController.getCurrentBasketByAuthUser)
   // success
   router.get('/all_orders',
     validateLimitPage(), ValidatorResultMiddleware,
     AuthMiddleware,
     BasketController.getAllOrdersByUserId)
-  // success
-  router.get('/',
-    AuthMiddleware,
-    BasketController.getCurrentBasketByAuthUser)
   // success
   router.get('/need_process',
     validateLimitPage(), ValidatorResultMiddleware,
@@ -39,6 +34,11 @@ try {
     validateBasket(), ValidatorResultMiddleware,
     AuthMiddleware,
     BasketController.currentBasketToProcessing)
+  // success
+  router.delete('/:id',
+    validateId(), ValidatorResultMiddleware,
+    AuthMiddleware,
+    BasketController.delProductFromBasket)
   // success
   router.put('/:id',
     validateId(), validateUpdBasket(), ValidatorResultMiddleware,

@@ -11,15 +11,15 @@ const router = Router()
 
 try {
   // success
-  router.post('/add',
+  router.post('/',
     validateReview(), ValidatorResultMiddleware,
     AuthMiddleware,
     ReviewController.addReview)
   // success
-  router.delete('/:id',
-    validateId(), ValidatorResultMiddleware,
-    RoleMiddleware(['admin']),
-    ReviewController.delReview)
+  router.get('/',
+    validateLimitPage(), ValidatorResultMiddleware,
+    AuthMiddleware,
+    ReviewController.getAllReviewByAuthUser)
   // success
   router.get('/product/:id',
     validateId(), validateLimitPage(), ValidatorResultMiddleware,
@@ -30,10 +30,10 @@ try {
     RoleMiddleware(['moder', 'admin']),
     ReviewController.getAllReviewByUserId)
   // success
-  router.get('/',
-    validateLimitPage(), ValidatorResultMiddleware,
-    AuthMiddleware,
-    ReviewController.getAllReviewByAuthUser)
+  router.delete('/:id',
+    validateId(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    ReviewController.delReview)
 } catch (e) {
   throw ApiError.internalRequest(
     'Ошибка в Review routers', 'ReviewRouter'

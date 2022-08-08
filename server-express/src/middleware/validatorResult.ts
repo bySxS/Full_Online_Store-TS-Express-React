@@ -8,7 +8,7 @@ export const ValidatorResultMiddleware = (req: Request, res: Response, next: Nex
     throw ApiError.badRequest(
       'Ошибка: ' +
         errorsValid.map((value) => value.msg).join(', '),
-      req.method + ' ' + req.path)
+      req.method + ' ' + req.hostname + req.originalUrl)
   }
   next()
 }

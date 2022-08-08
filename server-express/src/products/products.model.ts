@@ -134,7 +134,7 @@ export default class ProductsModel extends Model {
         }
       },
       priceType: {
-        relation: Model.HasManyRelation,
+        relation: Model.HasOneRelation,
         modelClass: ProductsPriceType,
         join: {
           from: this.tableName + '.priceTypeId',

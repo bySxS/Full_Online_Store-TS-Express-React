@@ -72,13 +72,9 @@ export interface IProductService {
   getProductById: (id: number) => QueryBuilder<ProductsModel, ProductsModel | undefined>
   getAllProducts: (title: string, limit: number, page: number) =>
     QueryBuilder<ProductsModel, Page<ProductsModel>>
-  getAllProductsByCategoryId: (id: number, limit: number, page: number) =>
+  getAllProductsByCategoryId: (id: number, price: number[], limit: number, page: number) =>
     QueryBuilder<ProductsModel, Page<ProductsModel>>
-  getAllProductsByCharacteristicsValueId: (id: number, limit: number, page: number) =>
-    QueryBuilder<ProductsModel, Page<ProductsModel>>
-  getAllByCategoryId: (id: number, limit: number, page: number) =>
-    Promise<IMessage>
-  getAllByCharacteristicsId: (id: number, limit: number, page: number) =>
+  getAllByCategoryIdAndFilter: (id: number, filter: string[], price: number[], sortBy: string, limit: number, page: number) =>
     Promise<IMessage>
 }
 
@@ -93,10 +89,8 @@ export interface IProductController {
         next: NextFunction) => void
   getAll: (req: Request, res: Response,
         next: NextFunction) => void
-  getAllByCategoryId: (req: Request, res: Response,
+  getAllByCategoryIdAndFilter: (req: Request, res: Response,
            next: NextFunction) => void
-  getAllByCharacteristicsId: (req: Request, res: Response,
-                       next: NextFunction) => void
   search: (req: Request, res: Response,
         next: NextFunction) => void
 }

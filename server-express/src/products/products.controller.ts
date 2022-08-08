@@ -109,24 +109,17 @@ class ProductsController implements IProductController {
     }
   }
 
-  async getAllByCategoryId (req: Request, res: Response, next: NextFunction) {
+  async getAllByCategoryIdAndFilter (req: Request, res: Response, next: NextFunction) {
     try {
       const id = +req.params.id
+      const filterText = String(req.query.filter || '')
+      const filter = filterText.split(',')
+      const priceText = String(req.query.price || '0_1000000000')
+      const price = priceText.split('_').map(price => +price)
+      const sort = String(req.query.sort || '')
       const limit = +(req.query.limit || 10)
       const page = +(req.query.page || 1)
-      const products = await ProductsService.getAllByCategoryId(id, limit, page)
-      return res.status(200).json(products)
-    } catch (err) {
-      next(err)
-    }
-  }
-
-  async getAllByCharacteristicsId (req: Request, res: Response, next: NextFunction) {
-    try {
-      const id = +req.params.id
-      const limit = +(req.query.limit || 10)
-      const page = +(req.query.page || 1)
-      const products = await ProductsService.getAllByCharacteristicsId(id, limit, page)
+      const products = await ProductsService.getAllByCategoryIdAndFilter(id, filter, price, sort, limit, page)
       return res.status(200).json(products)
     } catch (err) {
       next(err)

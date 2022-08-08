@@ -26,6 +26,7 @@ exports.up = function (knex: Knex) {
         .notNullable()
       tbl.string('value', 100)
         .notNullable()
+        .index('index_characteristics_value')
     })
 }
 

@@ -16,6 +16,13 @@ try {
     RoleMiddleware(['admin']),
     CategoryController.add)
   // success
+  router.get('/',
+    CategoryController.getAll)
+  // success
+  router.get('/search',
+    validateLimitPage(), validateSearch(), ValidatorResultMiddleware,
+    CategoryController.search)
+  // success
   router.put('/:id',
     validateId(), validateCategory(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
@@ -25,13 +32,6 @@ try {
     validateId(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     CategoryController.del)
-  // success
-  router.get('/search',
-    validateLimitPage(), validateSearch(), ValidatorResultMiddleware,
-    CategoryController.search)
-  // success
-  router.get('/',
-    CategoryController.getAll)
 } catch (e) {
   throw ApiError.internalRequest(
     'Ошибка в Category routers',

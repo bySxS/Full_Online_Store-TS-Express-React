@@ -14,7 +14,7 @@ const router = Router()
 
 try {
   // success
-  router.post('/name/add',
+  router.post('/name',
     validateCharacteristicAddName(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     CharacteristicsController.addCharacteristicName)
@@ -29,7 +29,7 @@ try {
     RoleMiddleware(['admin']),
     CharacteristicsController.delCharacteristicNameById)
   // success
-  router.post('/value/add',
+  router.post('/value',
     validateCharacteristicSetValue(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     CharacteristicsController.addCharacteristicValueProduct)

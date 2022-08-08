@@ -7,6 +7,13 @@ export const validateId = () => {
   ]
 }
 
+export const validateFilter = () => {
+  return [
+    query('filter', 'параметр filter должнен быть не пустой')
+      .notEmpty()
+  ]
+}
+
 export const validateLimitPage = () => {
   return [
     query('limit', 'параметр limit должны быть только цифры')

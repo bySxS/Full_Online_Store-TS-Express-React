@@ -347,58 +347,6 @@ class ProductsService implements IProductService {
         'section.name as sectionName')
   }
 
-  getAllProductsByCategoryId (
-    id: number, limit: number = 20, page: number = 1
-  ): QueryBuilder<ProductsModel, Page<ProductsModel>> {
-    return ProductsModel.query()
-      .page(page - 1, limit)
-      .where('products.categoryId', '=', id)
-      .andWhere('price.priceTypeId', '=',
-        raw('products.priceTypeId'))
-      .andWhere('priceType.id', '=',
-        raw('products.priceTypeId'))
-      .joinRelated('views')
-      .joinRelated('priceType')
-      .joinRelated('price')
-      .joinRelated('category')
-      .joinRelated('category.parent', { alias: 'section' })
-      .select('products.*',
-        'views.views as view',
-        'price.id as priceId',
-        'price.price as price',
-        'price.currency as priceCurrency',
-        'priceType.name as priceType',
-        'category.name as categoryName',
-        'section.name as sectionName')
-  }
-
-  getAllProductsByCharacteristicsValueId (
-    id: number, limit: number = 20, page: number = 1
-  ): QueryBuilder<ProductsModel, Page<ProductsModel>> {
-    return ProductsModel.query()
-      .page(page - 1, limit)
-      .where('characteristicsValues.id', '=', id)
-      .andWhere('price.priceTypeId', '=',
-        raw('products.priceTypeId'))
-      .andWhere('priceType.id', '=',
-        raw('products.priceTypeId'))
-      .joinRelated('characteristicsValues')
-      // .joinRelated('characteristicsValues.characteristicsName')
-      .joinRelated('views')
-      .joinRelated('priceType')
-      .joinRelated('price')
-      .joinRelated('category')
-      .joinRelated('category.parent', { alias: 'section' })
-      .select('products.*',
-        'views.views as view',
-        'price.id as priceId',
-        'price.price as price',
-        'price.currency as priceCurrency',
-        'priceType.name as priceType',
-        'category.name as categoryName',
-        'section.name as sectionName')
-  }
-
   async getById (id: number, incView: boolean = true): Promise<IMessage> {
     const cacheProduct = await cacheRedisDB.get('product:' + id)
     if (cacheProduct) {
@@ -458,37 +406,77 @@ class ProductsService implements IProductService {
     }
   }
 
-  async getAllByCategoryId (
-    id: number, limit: number = 20, page: number = 1
-  ): Promise<IMessage> {
-    const result = await this.getAllProductsByCategoryId(id, limit, page)
-    if (!result) {
-      return {
-        success: false,
-        message: `Продуктов на странице ${page}, c ID${id} категории не найдено`
-      }
+  getAllProductsByCategoryId (
+    id: number, price: number[], limit: number = 20, page: number = 1
+  ): QueryBuilder<ProductsModel, Page<ProductsModel>> {
+    if (price.length === 1) {
+      price.push(price[0])
     }
-    return {
-      success: true,
-      result,
-      message: `Страница ${page} продуктов, c ID${id} категории успешно загружена`
-    }
+    return ProductsModel.query()
+      .page(page - 1, limit)
+      .where('products.categoryId', '=', id)
+      .andWhere('priceType.id', '=',
+        raw('products.priceTypeId'))
+      .andWhere('price.priceTypeId', '=',
+        raw('priceType.id'))
+      .andWhere('price.price', '>=', price[0])
+      .andWhere('price.price', '<=', price[1])
+      .leftOuterJoinRelated('views')
+      .leftOuterJoinRelated('priceType')
+      .leftOuterJoinRelated('price')
+      .leftOuterJoinRelated('category')
+      .leftOuterJoinRelated('category.parent', { alias: 'section' })
+      .leftOuterJoinRelated('characteristicsValues')
+      .leftOuterJoinRelated('reviews')
+      .select('products.*',
+        'views.views as view',
+        'price.id as priceId',
+        raw('avg(reviews.rating) as rating'),
+        'price.price as price',
+        'price.currency as priceCurrency',
+        'priceType.name as priceType',
+        'category.name as categoryName',
+        'section.name as sectionName')
+      .groupBy('products.id',
+        'price.id')
   }
 
-  async getAllByCharacteristicsId (
-    id: number, limit: number = 20, page: number = 1
+  async getAllByCategoryIdAndFilter (
+    id: number,
+    filter: string[],
+    price: number[],
+    sortBy: string,
+    limit: number = 20,
+    page: number = 1
   ): Promise<IMessage> {
-    const result = await this.getAllProductsByCharacteristicsValueId(id, limit, page)
-    if (!result) {
+    const filterQuery = (): QueryBuilder<ProductsModel, Page<ProductsModel>> => {
+      if (filter[0] === '') {
+        return this.getAllProductsByCategoryId(id, price, limit, page)
+      } else {
+        return this.getAllProductsByCategoryId(id, price, limit, page)
+          .whereIn('characteristicsValues.value', filter)
+      }
+    }
+
+    const groupByQuery = (): QueryBuilder<ProductsModel, Page<ProductsModel>> => {
+      switch (sortBy) {
+        case 'priceAsc': return filterQuery().orderBy('price.price', 'asc')
+        case 'priceDesc': return filterQuery().orderBy('price.price', 'desc')
+        default: return filterQuery()
+      }
+    }
+    const result = await groupByQuery()
+
+    if (result.total === 0) {
       return {
         success: false,
-        message: `Продуктов на странице ${page}, c ID${id} характеристики не найдено`
+        message: `Продуктов на странице ${page}, c ID${id} категории, фильтров (${filter.join(', ')}) и цены от ${price.join(' до ')} не найдено`
       }
     }
     return {
       success: true,
       result,
-      message: `Страница ${page} продуктов, c ID${id} характеристики успешно загружена`
+      message: `Страница ${page} продуктов, c ID${id} категории, фильтров (${filter.join(',')}) и цены от ${price.join(' до ')} успешно загружена`
     }
   }
 

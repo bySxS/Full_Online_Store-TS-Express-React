@@ -11,10 +11,20 @@ const router = Router()
 
 try {
   // success
-  router.post('/types/add',
+  router.post('/',
+    validateProductPrice(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    ProductsPriceController.addPriceForProduct)
+  // success
+  router.post('/types',
     validateTypePrice(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     ProductsPriceController.addTypePrice)
+  // success
+  router.get('/types',
+    validateLimitPage(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    ProductsPriceController.getTypesPrices)
   // success
   router.put('/types/:id',
     validateId(), validateTypePrice(), ValidatorResultMiddleware,
@@ -26,20 +36,10 @@ try {
     RoleMiddleware(['admin']),
     ProductsPriceController.delTypePriceById)
   // success
-  router.get('/types',
-    validateLimitPage(), ValidatorResultMiddleware,
-    RoleMiddleware(['admin']),
-    ProductsPriceController.getTypesPrices)
-  // success
   router.get('/:id',
     validateId(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     ProductsPriceController.getAllPriceByProductId)
-  // success
-  router.post('/add',
-    validateProductPrice(), ValidatorResultMiddleware,
-    RoleMiddleware(['admin']),
-    ProductsPriceController.addPriceForProduct)
   // success
   router.put('/:id',
     validateId(), validateProductPrice(), ValidatorResultMiddleware,
