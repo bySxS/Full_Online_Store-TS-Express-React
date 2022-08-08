@@ -30,6 +30,7 @@ class CharacteristicsService implements ICharacteristicService {
         characteristicsNameId: +characteristicsNameId,
         value
       })
+      .select('*')
     if (!result) {
       throw ApiError.badRequest(
         'Характеристики к продукту не добавлены',
@@ -63,7 +64,7 @@ class CharacteristicsService implements ICharacteristicService {
     }
     return {
       success: true,
-      result,
+      result: { productId, characteristicsNameId, value },
       message: `Характеристика ${id} для продукта с id${productId} изменена`
     }
   }
@@ -151,13 +152,13 @@ class CharacteristicsService implements ICharacteristicService {
       .select('*')
     if (!result) {
       throw ApiError.badRequest(
-        `Характеристика ${name} не добавлена`,
+        `Характеристика '${name}' не добавлена`,
         'ProductsPriceService addCharacteristicName')
     }
     return {
       success: true,
       result,
-      message: `Характеристика ${name} добавлена`
+      message: `Характеристика '${name}' добавлена`
     }
   }
 
