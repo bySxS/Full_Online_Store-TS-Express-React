@@ -2,6 +2,8 @@ import logger from '@/logger'
 import fs from 'fs-extra'
 import { UploadedFile } from 'express-fileupload'
 
+const showLog = process.env.SHOW_LOG_WRITE_FILE || false
+
 export const delFile = async (
   delPic: boolean,
   fileName: string,
@@ -10,7 +12,9 @@ export const delFile = async (
   let name = fileName || ''
   if (delPic) {
     if (name && name.length > 2) {
-      logger.info('удаляем ' + name)
+      if (showLog) {
+        logger.info('удаляем ' + name)
+      }
       await fs.remove(pathDir + '/' + name)
       name = ''
     }
@@ -31,7 +35,9 @@ export const saveFile = async (
     const splitName = file.name.split('.') || ['']
     const extension = splitName[splitName.length - 1] || 'jpg'
     name = `${id}_${fileName2}.${extension}`
-    logger.info('сохраняем ' + name)
+    if (showLog) {
+      logger.info('сохраняем ' + name)
+    }
     await file.mv(pathDir + '/' + name)
   } else if (fileName.split('.').length > 1) {
     name = fileName
