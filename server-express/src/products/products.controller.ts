@@ -42,9 +42,10 @@ class ProductsController implements IProductController {
       const id = +req.params.id
       const authUser = req.user as IJwt
       req.body.userId = authUser.id
-      const product = await ProductsService.getProductById(id)
+      const product = await ProductsService.getAllProductsWithFilter()
+        .where('products.id', '=', id)
       if (authUser.rolesId !== 1 &&
-        ((product) && (product.userId !== authUser.id))) {
+        (product && 'userId' in product && product.userId !== authUser.id)) {
         return next(ApiError.forbidden(
           'У вас нет доступа для изменения этого продукта',
           'ProductsController updateById'))
@@ -102,7 +103,14 @@ class ProductsController implements IProductController {
     try {
       const limit = +(req.query.limit || 10)
       const page = +(req.query.page || 1)
-      const products = await ProductsService.getAll(limit, page)
+      const filterText = String(req.query.filter || '')
+      const priceText = String(req.query.price || '0_1000000000')
+      const filter = filterText.split(',')
+      const price = priceText.split('_').map(price => +price)
+      const sort = String(req.query.sort || '')
+      const products = await ProductsService.getAll(
+        filter, price, sort, limit, page
+      )
       return res.status(200).json(products)
     } catch (err) {
       next(err)
@@ -119,7 +127,10 @@ class ProductsController implements IProductController {
       const sort = String(req.query.sort || '')
       const limit = +(req.query.limit || 10)
       const page = +(req.query.page || 1)
-      const products = await ProductsService.getAllByCategoryIdAndFilter(id, filter, price, sort, limit, page)
+      const products =
+        await ProductsService.getAllByCategoryId(
+          id, filter, price, sort, limit, page
+        )
       return res.status(200).json(products)
     } catch (err) {
       next(err)

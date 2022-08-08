@@ -4,7 +4,6 @@ import ApiError from '@/apiError'
 import {
   IFavoritesProduct, IFavoritesProductService
 } from './favoritesProducts.interface'
-import { raw } from 'objection'
 import ProductsService from '@/products/products.service'
 
 class FavoritesProductsService implements IFavoritesProductService {
@@ -77,58 +76,30 @@ class FavoritesProductsService implements IFavoritesProductService {
     }
   }
 
-  async getAllByUserId (userId: number, limit: number = 20, page: number = 1): Promise<IMessage> {
-    const result = await FavoritesProductsModel.query()
-      .page(page - 1, limit)
-      .where('favoritesProducts.userId', '=', userId)
-      .andWhere('productsPrice.priceTypeId', '=',
-        raw('products.priceTypeId'))
-      .innerJoin('products',
-        'favoritesProducts.productId', '=',
-        'products.id')
-      .innerJoin('productsViews',
-        'products.id', '=',
-        'productsViews.productId')
-      .innerJoin('productsPriceType',
-        'products.priceTypeId', '=',
-        'productsPriceType.id')
-      .innerJoin('productsPrice',
-        'products.id', '=',
-        'productsPrice.productId')
-      .innerJoin('category',
-        'products.categoryId', '=',
-        'category.id')
-      .innerJoin('category as section',
-        'section.id', '=',
-        'category.parentId')
-      .select('products.*',
-        'productsViews.views as view',
-        'productsPrice.price as price',
-        'productsPrice.currency as priceCurrency',
-        'productsPriceType.name as priceType',
-        'category.name as categoryName',
-        'section.name as sectionName')
-    if (!result) {
-      throw ApiError.badRequest(
-        `Избранных продуктов на странице ${page} не найдено`,
-        'FavoritesProductsService getAllByUserId')
+  async getAllByUserId (
+    userId: number,
+    filter: string[],
+    price: number[],
+    sortBy: string,
+    limit: number = 20,
+    page: number = 1
+  ): Promise<IMessage> {
+    const query = () => {
+      return ProductsService
+        .getAllProductsWithFilter(limit, page, filter, price, sortBy)
+        .where('favorites.userId', '=', userId)
+    }
+    const result = await query()
+    if (!result || (result && 'total' in result && result.total === 0)) {
+      return {
+        success: false,
+        message: `Избранных продуктов на странице ${page}, у пользователя с ID${userId}, фильтров (${filter.join(', ')}), цены от ${price.join(' до ')} и сортировкой '${sortBy}' не найдено`
+      }
     }
     return {
       success: true,
       result,
-      message: `Страница ${page} с избранными продуктами успешно загружена`
-    }
-  }
-
-  async getCountFavoritesByProductId (productId: number): Promise<IMessage> {
-    const result = await FavoritesProductsModel.query()
-      .where({ productId })
-      .count('*', { as: 'countInFavorites' })
-      .first()
-    return {
-      success: true,
-      result,
-      message: `Количество добавлений продукта в избранное с id${productId} получено`
+      message: `Страница ${page} с избранными продуктами, у пользователя с ID${userId}, фильтров (${filter.join(', ')}), цены от ${price.join(' до ')} и сортировкой '${sortBy}' успешно загружена`
     }
   }
 }

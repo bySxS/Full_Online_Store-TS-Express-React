@@ -66,15 +66,26 @@ export interface IProductService {
   ) => Promise<IMessage>
   deleteById: (id: number) => Promise<IMessage>
   getById: (id: number, incView: boolean) => Promise<IMessage>
-  getAll: (limit: number, page: number) => Promise<IMessage>
+  getAll: (filter: string[],
+           price: number[],
+           sortBy: string,
+           limit: number, page: number) => Promise<IMessage>
   search: (title: string, limit: number,
            page: number) => Promise<IMessage>
-  getProductById: (id: number) => QueryBuilder<ProductsModel, ProductsModel | undefined>
-  getAllProducts: (title: string, limit: number, page: number) =>
+  getAllProductsWithFilter: (
+    limit: number,
+    page: number,
+    filter: string[],
+    price: number[],
+    sortBy: string
+  ) =>
+    QueryBuilder<ProductsModel, ProductsModel | undefined> |
     QueryBuilder<ProductsModel, Page<ProductsModel>>
-  getAllProductsByCategoryId: (id: number, price: number[], limit: number, page: number) =>
-    QueryBuilder<ProductsModel, Page<ProductsModel>>
-  getAllByCategoryIdAndFilter: (id: number, filter: string[], price: number[], sortBy: string, limit: number, page: number) =>
+  getAllByCategoryId: (id: number,
+                       filter: string[],
+                       price: number[],
+                       sortBy: string,
+                       limit: number, page: number) =>
     Promise<IMessage>
 }
 

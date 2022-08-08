@@ -8,7 +8,6 @@ import ProductsViewsService from './views/productsViews.service'
 import ProductsPriceService from './prices/productsPrice.service'
 import { cacheRedisDB } from '@/cache'
 import { Page, QueryBuilder, raw } from 'objection'
-import FavoritesProductsService from '@/favoritesProducts/favoritesProducts.service'
 import { div } from '@/service/math.service'
 import { delFile, saveFile } from '@/service/file.service'
 
@@ -209,7 +208,9 @@ class ProductsService implements IProductService {
       description, count, availability,
       parentId, videoYoutubeUrl, url
     } = Dto
-    const findProduct = await this.getProductById(id)
+    const findProduct = await ProductsModel.query()
+      .findById(id)
+      .select('*')
     if (!findProduct) {
       throw ApiError.badRequest(
         `Продукта с id ${id} не существует`,
@@ -296,71 +297,133 @@ class ProductsService implements IProductService {
     }
   }
 
-  getProductById (id: number): QueryBuilder<ProductsModel, ProductsModel | undefined> {
-    return ProductsModel.query()
-      .where('products.id', '=', id)
-      .andWhere('price.priceTypeId', '=',
-        raw('products.priceTypeId'))
-      .andWhere('priceType.id', '=',
-        raw('products.priceTypeId'))
-      .first()
-      .joinRelated('views')
-      .joinRelated('priceType')
-      .joinRelated('price')
-      .joinRelated('category')
-      .joinRelated('category.parent', { alias: 'section' })
-      .select('products.*',
-        'views.views as view',
-        'price.id as priceId',
-        'price.price as price',
-        'price.currency as priceCurrency',
-        'priceType.name as priceType',
-        'category.name as categoryName',
-        'section.name as sectionName')
-      .groupBy('price.id',
-        'price.price',
-        'price.currency')
+  // universal - чтобы не дублировать код
+  // ToDo: нужно проверить на инъекции
+  getAllProductsWithFilter (
+    limit: number = 1,
+    page: number = 1,
+    filter: string[] = [''],
+    price: number[] = [0],
+    sortBy: string = ''
+  ): QueryBuilder<ProductsModel, ProductsModel | undefined> |
+    QueryBuilder<ProductsModel, Page<ProductsModel>
+      > {
+    if (price.length === 1) {
+      price[0] > 0
+        ? price.push(price[0])
+        : price.push(1000000000)
+    }
+
+    const query =
+      () => {
+        return ProductsModel.query()
+          .andWhere('priceType.id', '=',
+            raw('products.priceTypeId'))
+          .andWhere('price.priceTypeId', '=',
+            raw('products.priceTypeId'))
+          .andWhere('price.price', '>=', price[0])
+          .andWhere('price.price', '<=', price[1])
+          .leftOuterJoinRelated('views')
+          .leftOuterJoinRelated('priceType')
+          .leftOuterJoinRelated('price')
+          .leftOuterJoinRelated('category')
+          .leftOuterJoinRelated('category.parent', { alias: 'section' })
+          .leftOuterJoinRelated('reviews')
+          .leftOuterJoinRelated('favorites')
+          .select('products.*',
+            'views.views as view',
+            'price.id as priceId',
+            raw('avg(DISTINCT reviews.rating) as rating'),
+            raw('count(DISTINCT reviews.rating) as ratingCount'),
+            raw('count(DISTINCT favorites.id) as countInFavorites'),
+            'price.price as price',
+            'price.currency as priceCurrency',
+            'priceType.name as priceType',
+            'category.name as categoryName',
+            'section.name as sectionName')
+          .groupBy('products.id',
+            'price.id')
+      }
+    const filterQuery =
+      () => {
+        if (filter[0] === '') {
+          return query()
+        } else {
+          return query()
+            .leftOuterJoinRelated('characteristicsValues')
+            .whereIn('characteristicsValues.value', filter)
+        }
+      }
+    const PageOrFirst =
+      () => {
+        if (page === 1 && limit === 1) {
+          return filterQuery().first()
+        } else {
+          return filterQuery().page(page - 1, limit)
+        }
+      }
+
+    const groupByQuery =
+      () => {
+        switch (sortBy) {
+          case 'price_asc': return PageOrFirst().orderBy('price.price', 'asc')
+          case 'price_desc': return PageOrFirst().orderBy('price.price', 'desc')
+          case 'id_desc': return PageOrFirst().orderBy('products.id', 'desc')
+          case 'views_desc': return PageOrFirst().orderBy('views.views', 'desc')
+          case 'rating_desc': return PageOrFirst().orderBy('rating', 'desc')
+          case 'favorites_desc': return PageOrFirst().orderBy('countInFavorites', 'desc')
+          default: return PageOrFirst()
+        }
+      }
+    return groupByQuery()
   }
 
-  getAllProducts (
-    title: string = '', limit: number = 20, page: number = 1
-  ): QueryBuilder<ProductsModel, Page<ProductsModel>> {
-    return ProductsModel.query()
-      .page(page - 1, limit)
-      .where('products.title', 'like', `%${title}%`)
-      .andWhere('price.priceTypeId', '=',
-        raw('products.priceTypeId'))
-      .andWhere('priceType.id', '=',
-        raw('products.priceTypeId'))
-      .joinRelated('views')
-      .joinRelated('priceType')
-      .joinRelated('price')
-      .joinRelated('category')
-      .joinRelated('category.parent', { alias: 'section' })
-      .select('products.*',
-        'views.views as view',
-        'price.id as priceId',
-        'price.price as price',
-        'price.currency as priceCurrency',
-        'priceType.name as priceType',
-        'category.name as categoryName',
-        'section.name as sectionName')
+  async getAllByCategoryId (
+    id: number,
+    filter: string[],
+    price: number[],
+    sortBy: string,
+    limit: number = 20,
+    page: number = 1
+  ): Promise<IMessage> {
+    const query = () => {
+      return this.getAllProductsWithFilter(limit, page, filter, price, sortBy)
+        .where('products.categoryId', '=', id)
+    }
+
+    const result = await query()
+
+    if (!result || (result && 'total' in result && result.total === 0)) {
+      return {
+        success: false,
+        message: `Продуктов на странице ${page}, c ID${id} категории, фильтров (${filter.join(', ')}), цены от ${price.join(' до ')} и сортировкой '${sortBy}' не найдено`
+      }
+    }
+    return {
+      success: true,
+      result,
+      message: `Страница ${page} продуктов, c ID${id} категории, фильтров (${filter.join(',')}), цены от ${price.join(' до ')} и сортировкой '${sortBy}' успешно загружена`
+    }
   }
 
   async getById (id: number, incView: boolean = true): Promise<IMessage> {
-    const cacheProduct = await cacheRedisDB.get('product:' + id)
-    if (cacheProduct) {
-      if (incView) {
-        await ProductsViewsService.incrementViewById(id)
-      }
-      await cacheRedisDB.expire('product:' + id, 3600) // удалять через час
-      return {
-        success: true,
-        result: JSON.parse(cacheProduct),
-        message: `Продукт с id ${id} успешно получен с кеша`
-      }
+    // const cacheProduct = await cacheRedisDB.get('product:' + id)
+    // if (cacheProduct) {
+    //   if (incView) {
+    //     await ProductsViewsService.incrementViewById(id)
+    //   }
+    //   await cacheRedisDB.expire('product:' + id, 3600) // удалять через час
+    //   return {
+    //     success: true,
+    //     result: JSON.parse(cacheProduct),
+    //     message: `Продукт с id ${id} успешно получен с кеша`
+    //   }
+    // }
+    const query = (id: number) => {
+      return this.getAllProductsWithFilter()
+        .where('products.id', '=', id)
     }
-    const product = await this.getProductById(id)
+    const product = await query(id)
     if (!product) {
       throw ApiError.notFound(
         `Продукта с id ${id} не существует`,
@@ -369,19 +432,16 @@ class ProductsService implements IProductService {
     if (incView) {
       await ProductsViewsService.incrementViewById(id)
     }
-    const countFavorites =
-      await FavoritesProductsService.getCountFavoritesByProductId(id)
     let parentProduct = null
-    if (product.parentId !== null && !isNaN(product.parentId)) {
-      parentProduct = await this.getProductById(product.parentId)
+    if ('parentId' in product && product.parentId !== null && !isNaN(product.parentId)) {
+      parentProduct = await query(product.parentId)
     }
     const result = {
       ...product,
-      ...countFavorites.result,
       parentProduct
     }
-    await cacheRedisDB.set('product:' + id, JSON.stringify(result))
-    await cacheRedisDB.expire('product:' + id, 3600) // удалять через час
+    // await cacheRedisDB.set('product:' + id, JSON.stringify(result))
+    // await cacheRedisDB.expire('product:' + id, 3600) // удалять через час
     return {
       success: true,
       result,
@@ -390,100 +450,37 @@ class ProductsService implements IProductService {
   }
 
   async getAll (
-    limit: number = 20, page: number = 1
-  ): Promise<IMessage> {
-    const result = await this.getAllProducts('', limit, page)
-    if (!result) {
-      return {
-        success: false,
-        message: `Продуктов на странице ${page} не найдено`
-      }
-    }
-    return {
-      success: true,
-      result,
-      message: `Страница ${page} продуктов успешно загружена`
-    }
-  }
-
-  getAllProductsByCategoryId (
-    id: number, price: number[], limit: number = 20, page: number = 1
-  ): QueryBuilder<ProductsModel, Page<ProductsModel>> {
-    if (price.length === 1) {
-      price.push(price[0])
-    }
-    return ProductsModel.query()
-      .page(page - 1, limit)
-      .where('products.categoryId', '=', id)
-      .andWhere('priceType.id', '=',
-        raw('products.priceTypeId'))
-      .andWhere('price.priceTypeId', '=',
-        raw('priceType.id'))
-      .andWhere('price.price', '>=', price[0])
-      .andWhere('price.price', '<=', price[1])
-      .leftOuterJoinRelated('views')
-      .leftOuterJoinRelated('priceType')
-      .leftOuterJoinRelated('price')
-      .leftOuterJoinRelated('category')
-      .leftOuterJoinRelated('category.parent', { alias: 'section' })
-      .leftOuterJoinRelated('characteristicsValues')
-      .leftOuterJoinRelated('reviews')
-      .select('products.*',
-        'views.views as view',
-        'price.id as priceId',
-        raw('avg(reviews.rating) as rating'),
-        'price.price as price',
-        'price.currency as priceCurrency',
-        'priceType.name as priceType',
-        'category.name as categoryName',
-        'section.name as sectionName')
-      .groupBy('products.id',
-        'price.id')
-  }
-
-  async getAllByCategoryIdAndFilter (
-    id: number,
     filter: string[],
     price: number[],
     sortBy: string,
-    limit: number = 20,
-    page: number = 1
+    limit: number = 20, page: number = 1
   ): Promise<IMessage> {
-    const filterQuery = (): QueryBuilder<ProductsModel, Page<ProductsModel>> => {
-      if (filter[0] === '') {
-        return this.getAllProductsByCategoryId(id, price, limit, page)
-      } else {
-        return this.getAllProductsByCategoryId(id, price, limit, page)
-          .whereIn('characteristicsValues.value', filter)
-      }
+    const query = () => {
+      return this.getAllProductsWithFilter(limit, page, filter, price, sortBy)
+        .where('products.title', 'like', '%%')
     }
-
-    const groupByQuery = (): QueryBuilder<ProductsModel, Page<ProductsModel>> => {
-      switch (sortBy) {
-        case 'priceAsc': return filterQuery().orderBy('price.price', 'asc')
-        case 'priceDesc': return filterQuery().orderBy('price.price', 'desc')
-        default: return filterQuery()
-      }
-    }
-    const result = await groupByQuery()
-
-    if (result.total === 0) {
+    const result = await query()
+    if (!result || (result && 'total' in result && result.total === 0)) {
       return {
         success: false,
-        message: `Продуктов на странице ${page}, c ID${id} категории, фильтров (${filter.join(', ')}) и цены от ${price.join(' до ')} не найдено`
+        message: `Продуктов на странице ${page}, c фильтрами (${filter.join(', ')}), цены от ${price.join(' до ')} и сортировкой '${sortBy}' не найдено`
       }
     }
     return {
       success: true,
       result,
-      message: `Страница ${page} продуктов, c ID${id} категории, фильтров (${filter.join(',')}) и цены от ${price.join(' до ')} успешно загружена`
+      message: `Страница ${page} продуктов, c фильтрами (${filter.join(', ')}), цены от ${price.join(' до ')} и сортировкой '${sortBy}' успешно загружена`
     }
   }
 
   async search (
     title: string = '', limit: number = 20, page: number = 1
   ): Promise<IMessage> {
-    const result = await this.getAllProducts(title, limit, page)
+    const query = () => {
+      return this.getAllProductsWithFilter(limit, page)
+        .where('products.title', 'like', `%${title}%`)
+    }
+    const result = await query()
     if (!result) {
       return {
         success: false,

@@ -108,7 +108,7 @@ class CategoryService implements ICategoryService {
 
   async getAll (): Promise<IMessage> {
     const categoryNotSort = await CategoryModel.query()
-      .joinRelated('parent')
+      .leftOuterJoinRelated('parent')
       .select('category.id',
         'category.parentId',
         'category.name as categoryName',
@@ -151,7 +151,7 @@ class CategoryService implements ICategoryService {
       .page(page - 1, limit)
       .where('category.name', 'like', `%${name}%`)
       .orWhere('category.nameEng', 'like', `%${name}%`)
-      .joinRelated('parent')
+      .leftOuterJoinRelated('parent')
       .select('category.id',
         'category.parentId',
         'category.name as categoryName',

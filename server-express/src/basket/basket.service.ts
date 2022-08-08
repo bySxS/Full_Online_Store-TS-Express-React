@@ -61,10 +61,10 @@ class BasketService implements IBasketService {
       .where('basketProducts.basketId', '=', basketId)
       .andWhere('products:priceType.id', '=',
         raw('products.priceTypeId'))
-      .joinRelated('products')
-      .joinRelated('products.category')
-      .joinRelated('products.category.parent')
-      .joinRelated('products.priceType')
+      .leftOuterJoinRelated('products')
+      .leftOuterJoinRelated('products.category')
+      .leftOuterJoinRelated('products.category.parent')
+      .leftOuterJoinRelated('products.priceType')
       .select('basketProducts.*',
         'products.title as productTitle',
         'products.id as productId',

@@ -25,11 +25,6 @@ try {
     validateLimitPage(), ValidatorResultMiddleware,
     AuthMiddleware,
     FavoritesProductsController.getAllByAuthUser)
-  // success
-  router.get('/count_product/:id',
-    validateId(), ValidatorResultMiddleware,
-    RoleMiddleware('admin'),
-    FavoritesProductsController.getCountFavoritesByProductId)
 } catch (e) {
   throw ApiError.internalRequest(
     'Ошибка в FavoritesProducts routers',

@@ -8,6 +8,7 @@ import ProductsPrice from './prices/productsPrice.model'
 import ProductsViews from './views/productsViews.model'
 import ProductsPriceType from './prices/productsPriceType.model'
 import CharacteristicsSetValue from '@/characteristics/characteristicsSetValue.model'
+import FavoritesProducts from '@/favoritesProducts/favoritesProducts.model'
 Model.knex(dbKnex)
 
 // ProductsModel
@@ -117,6 +118,14 @@ export default class ProductsModel extends Model {
           to: Review.tableName + '.productId'
         }
       },
+      favorites: {
+        relation: Model.HasManyRelation,
+        modelClass: FavoritesProducts,
+        join: {
+          from: this.tableName + '.id',
+          to: FavoritesProducts.tableName + '.productId'
+        }
+      },
       parent: {
         relation: Model.HasOneRelation,
         modelClass: this,
@@ -153,10 +162,10 @@ export default class ProductsModel extends Model {
   }
 
   $beforeInsert () {
-    this.createdAt = new Date(Date.now()) // new Date().toISOString();
+    this.createdAt = new Date(Date.now()) // new Date().toISOString()
   }
 
   $beforeUpdate () {
-    this.updatedAt = new Date(Date.now()) // new Date().toISOString();
+    this.updatedAt = new Date(Date.now()) // new Date().toISOString()
   }
 }

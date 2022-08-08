@@ -86,8 +86,8 @@ class CharacteristicsService implements ICharacteristicService {
   async getCharacteristicValueProductById (id: number): Promise<IMessage> {
     const characteristics = await CharacteristicsSetValueModel.query()
       .where('characteristicsSetValue.productId', '=', id)
-      .joinRelated('characteristicsName')
-      .joinRelated('characteristicsName.parent')
+      .leftOuterJoinRelated('characteristicsName')
+      .leftOuterJoinRelated('characteristicsName.parent')
       .select('characteristicsName.parentId',
         'characteristicsName.id as propertyNameId',
         'characteristicsName.name as propertyName',

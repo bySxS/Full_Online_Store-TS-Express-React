@@ -3,6 +3,7 @@ import { dbKnex } from '@/db'
 
 import Users from '@/users/users.model'
 import Products from '@/products/products.model'
+import Review from '@/review/review.model'
 
 Model.knex(dbKnex)
 
@@ -44,12 +45,20 @@ export default class FavoritesProductsModel extends Model {
           to: Users.tableName + '.id'
         }
       },
-      product: {
+      products: {
         relation: Model.HasOneRelation,
         modelClass: Products,
         join: {
           from: this.tableName + '.productId',
           to: Products.tableName + '.id'
+        }
+      },
+      reviews: {
+        relation: Model.HasManyRelation,
+        modelClass: Review,
+        join: {
+          from: this.tableName + '.productId',
+          to: Review.tableName + '.productId'
         }
       }
     }
