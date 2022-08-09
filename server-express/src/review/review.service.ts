@@ -32,6 +32,7 @@ class ReviewService implements IReviewService {
         parentId,
         advantages
       })
+      .select('*')
     if (!result) {
       throw ApiError.badRequest(
         'Ошибка при добавлении ' +
@@ -43,7 +44,7 @@ class ReviewService implements IReviewService {
       success: true,
       result,
       message: (parentId ? 'Комментарий' : 'Отзыв') +
-        ' успешно отправлен'
+        ' успешно добавлен'
     }
   }
 
@@ -62,12 +63,14 @@ class ReviewService implements IReviewService {
     }
   }
 
+  // ToDo: сделать вывод комментариев древовидный
   async getAllReviewByProductId (
     productId: number, limit: number, page: number
   ): Promise<IMessage> {
     const result = await ReviewModel.query()
       .page(page - 1, limit)
       .where({ productId })
+      .select('*')
     if (!result) {
       return {
         success: true,
@@ -89,6 +92,7 @@ class ReviewService implements IReviewService {
     const result = await ReviewModel.query()
       .page(page - 1, limit)
       .where({ userId })
+      .select('*')
     if (!result) {
       return {
         success: true,
