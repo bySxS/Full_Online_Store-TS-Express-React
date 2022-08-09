@@ -429,13 +429,21 @@ class ProductsService implements IProductService {
     if (!result || (result && 'total' in result && result.total === 0)) {
       return {
         success: false,
-        message: `Продуктов на странице ${page}, c ID${id} категории, фильтров (${filter.join(', ')}), цены от ${price.join(' до ')} и сортировкой '${sortBy}' не найдено`
+        message: `Продуктов на странице ${page}, ID${id} категории, ` +
+          (filter[0] !== '' ? `c фильтрами (${filter.join(', ')}), ` : '') +
+          (price[0] !== 0 ? `цены от ${price.join(' до ')}, ` : '') +
+          (sortBy !== '' ? `сортировкой '${sortBy}' ` : '') +
+          'не найдено'
       }
     }
     return {
       success: true,
       result,
-      message: `Страница ${page} продуктов, c ID${id} категории, фильтров (${filter.join(',')}), цены от ${price.join(' до ')} и сортировкой '${sortBy}' успешно загружена`
+      message: `Страница ${page} продуктов, ID${id} категории, ` +
+        (filter[0] !== '' ? `c фильтрами (${filter.join(', ')}), ` : '') +
+        (price[0] !== 0 ? `цены от ${price.join(' до ')}, ` : '') +
+        (sortBy !== '' ? `сортировкой '${sortBy}' ` : '') +
+        'успешно загружена'
     }
   }
 
@@ -496,13 +504,21 @@ class ProductsService implements IProductService {
     if (!result || (result && 'total' in result && result.total === 0)) {
       return {
         success: false,
-        message: `Продуктов на странице ${page}, c фильтрами (${filter.join(', ')}), цены от ${price.join(' до ')} и сортировкой '${sortBy}' не найдено`
+        message: `Продуктов на странице ${page}, ` +
+          (filter[0] !== '' ? `c фильтрами (${filter.join(', ')}), ` : '') +
+          (price[0] !== 0 ? `цены от ${price.join(' до ')}, ` : '') +
+          (sortBy !== '' ? `сортировкой '${sortBy}' ` : '') +
+          ' не найдено'
       }
     }
     return {
       success: true,
       result,
-      message: `Страница ${page} продуктов, c фильтрами (${filter.join(', ')}), цены от ${price.join(' до ')} и сортировкой '${sortBy}' успешно загружена`
+      message: `Страница ${page} продуктов, ` +
+        (filter[0] !== '' ? `c фильтрами (${filter.join(', ')}), ` : '') +
+        (price[0] !== 0 ? `цены от ${price.join(' до ')}, ` : '') +
+        (sortBy !== '' ? `сортировкой '${sortBy}' ` : '') +
+        'успешно загружена'
     }
   }
 

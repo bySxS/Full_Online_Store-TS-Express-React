@@ -41,7 +41,8 @@ class FavoritesProductsService implements IFavoritesProductService {
       })
     if (!result) {
       throw ApiError.badRequest(
-        `Произошла ошибка добавления в избранное продукта с id${productId}`,
+        'Произошла ошибка добавления в ' +
+        `избранное продукта с id${productId}`,
         'FavoritesProductsService add')
     }
     return {
@@ -66,7 +67,8 @@ class FavoritesProductsService implements IFavoritesProductService {
       .deleteById(product.id)
     if (!result) {
       throw ApiError.badRequest(
-        `Произошла ошибка при удаления из избранного продукта с id${productId}`,
+        'Произошла ошибка при удаления из ' +
+        `избранного продукта с id${productId}`,
         'FavoritesProductsService del')
     }
     return {
@@ -90,16 +92,27 @@ class FavoritesProductsService implements IFavoritesProductService {
         .where('favorites.userId', '=', userId)
     }
     const result = await query()
-    if (!result || (result && 'total' in result && result.total === 0)) {
+    if (!result || (result &&
+      'total' in result && result.total === 0)) {
       return {
         success: false,
-        message: `Избранных продуктов на странице ${page}, у пользователя с ID${userId}, фильтров (${filter.join(', ')}), цены от ${price.join(' до ')} и сортировкой '${sortBy}' не найдено`
+        message: `Избранных продуктов на странице ${page}` +
+          `, у пользователя с ID${userId}, ` +
+          (filter[0] !== '' ? `c фильтрами (${filter.join(', ')}), ` : '') +
+          (price[0] !== 0 ? `цены от ${price.join(' до ')}, ` : '') +
+          (sortBy !== '' ? `сортировкой '${sortBy}' ` : '') +
+          'не найдено'
       }
     }
     return {
       success: true,
       result,
-      message: `Страница ${page} с избранными продуктами, у пользователя с ID${userId}, фильтров (${filter.join(', ')}), цены от ${price.join(' до ')} и сортировкой '${sortBy}' успешно загружена`
+      message: `Страница ${page} с избранными продуктами, ` +
+        `у пользователя с ID${userId}, ` +
+        (filter[0] !== '' ? `c фильтрами (${filter.join(', ')}), ` : '') +
+        (price[0] !== 0 ? `цены от ${price.join(' до ')}, ` : '') +
+        (sortBy !== '' ? `сортировкой '${sortBy}' ` : '') +
+        'успешно загружена'
     }
   }
 }
