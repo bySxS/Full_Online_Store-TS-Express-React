@@ -5,6 +5,7 @@ import {
   IFavoritesProduct, IFavoritesProductService
 } from './favoritesProducts.interface'
 import ProductsService from '@/products/products.service'
+import { filterMessage } from '@/service/filterMessage.service'
 
 class FavoritesProductsService implements IFavoritesProductService {
   private static instance = new FavoritesProductsService()
@@ -98,9 +99,7 @@ class FavoritesProductsService implements IFavoritesProductService {
         success: false,
         message: `Избранных продуктов на странице ${page}` +
           `, у пользователя с ID${userId}, ` +
-          (filter[0] !== '' ? `c фильтрами (${filter.join(', ')}), ` : '') +
-          (price[0] !== 0 ? `цены от ${price.join(' до ')}, ` : '') +
-          (sortBy !== '' ? `сортировкой '${sortBy}' ` : '') +
+          filterMessage(filter, price, sortBy) +
           'не найдено'
       }
     }
@@ -109,9 +108,7 @@ class FavoritesProductsService implements IFavoritesProductService {
       result,
       message: `Страница ${page} с избранными продуктами, ` +
         `у пользователя с ID${userId}, ` +
-        (filter[0] !== '' ? `c фильтрами (${filter.join(', ')}), ` : '') +
-        (price[0] !== 0 ? `цены от ${price.join(' до ')}, ` : '') +
-        (sortBy !== '' ? `сортировкой '${sortBy}' ` : '') +
+        filterMessage(filter, price, sortBy) +
         'успешно загружена'
     }
   }

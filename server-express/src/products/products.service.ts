@@ -10,6 +10,7 @@ import { cacheRedisDB } from '@/cache'
 import { Page, QueryBuilder, raw } from 'objection'
 import { div } from '@/service/math.service'
 import { delFile, saveFile } from '@/service/file.service'
+import { filterMessage } from '@/service/filterMessage.service'
 
 class ProductsService implements IProductService {
   private static instance = new ProductsService()
@@ -430,9 +431,7 @@ class ProductsService implements IProductService {
       return {
         success: false,
         message: `Продуктов на странице ${page}, ID${id} категории, ` +
-          (filter[0] !== '' ? `c фильтрами (${filter.join(', ')}), ` : '') +
-          (price[0] !== 0 ? `цены от ${price.join(' до ')}, ` : '') +
-          (sortBy !== '' ? `сортировкой '${sortBy}' ` : '') +
+          filterMessage(filter, price, sortBy) +
           'не найдено'
       }
     }
@@ -440,9 +439,7 @@ class ProductsService implements IProductService {
       success: true,
       result,
       message: `Страница ${page} продуктов, ID${id} категории, ` +
-        (filter[0] !== '' ? `c фильтрами (${filter.join(', ')}), ` : '') +
-        (price[0] !== 0 ? `цены от ${price.join(' до ')}, ` : '') +
-        (sortBy !== '' ? `сортировкой '${sortBy}' ` : '') +
+        filterMessage(filter, price, sortBy) +
         'успешно загружена'
     }
   }
@@ -505,9 +502,7 @@ class ProductsService implements IProductService {
       return {
         success: false,
         message: `Продуктов на странице ${page}, ` +
-          (filter[0] !== '' ? `c фильтрами (${filter.join(', ')}), ` : '') +
-          (price[0] !== 0 ? `цены от ${price.join(' до ')}, ` : '') +
-          (sortBy !== '' ? `сортировкой '${sortBy}' ` : '') +
+          filterMessage(filter, price, sortBy) +
           ' не найдено'
       }
     }
@@ -515,9 +510,7 @@ class ProductsService implements IProductService {
       success: true,
       result,
       message: `Страница ${page} продуктов, ` +
-        (filter[0] !== '' ? `c фильтрами (${filter.join(', ')}), ` : '') +
-        (price[0] !== 0 ? `цены от ${price.join(' до ')}, ` : '') +
-        (sortBy !== '' ? `сортировкой '${sortBy}' ` : '') +
+        filterMessage(filter, price, sortBy) +
         'успешно загружена'
     }
   }
