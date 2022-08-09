@@ -34,13 +34,16 @@ class ReviewService implements IReviewService {
       })
     if (!result) {
       throw ApiError.badRequest(
-        `Ошибка при добавлении отзыва к продукту с id${productId}`,
+        'Ошибка при добавлении ' +
+        (parentId ? 'комментария' : 'отзыва') + ' к продукту ' +
+        `с id${productId}`,
         'ReviewService addReview')
     }
     return {
       success: true,
       result,
-      message: 'Отзыв / комменетарий успешно отправлен'
+      message: (parentId ? 'Комментарий' : 'Отзыв') +
+        ' успешно отправлен'
     }
   }
 
@@ -68,13 +71,15 @@ class ReviewService implements IReviewService {
     if (!result) {
       return {
         success: true,
-        message: `У продукта с id${productId} нет отзывов и комментариев`
+        message: `У продукта с id${productId} нет` +
+          ' отзывов и комментариев'
       }
     }
     return {
       success: true,
       result,
-      message: `Страница ${page} отзывов продукта с id${productId} успешно загружена`
+      message: `Страница ${page} отзывов продукта` +
+        ` с id${productId} успешно загружена`
     }
   }
 
@@ -87,13 +92,15 @@ class ReviewService implements IReviewService {
     if (!result) {
       return {
         success: true,
-        message: `У пользователя с id${userId} нет отзывов и комментариев`
+        message: `У пользователя с id${userId} нет ` +
+          'отзывов и комментариев'
       }
     }
     return {
       success: true,
       result,
-      message: `Страница ${page} отзывов пользователя с id${userId} успешно загружена`
+      message: `Страница ${page} отзывов пользователя ` +
+        `с id${userId} успешно загружена`
     }
   }
 }
