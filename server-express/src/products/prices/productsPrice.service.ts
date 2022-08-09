@@ -29,7 +29,8 @@ class ProductsPriceService implements IProductPriceService {
       .select('name')
     if (!result) {
       throw ApiError.badRequest(
-        `Тип цены ${name} не добавлен, возможно уже существует`,
+        `Тип цены ${name} не добавлен, ` +
+        'возможно уже существует',
         'ProductsPriceService addTypePrice')
     }
     return {
@@ -54,7 +55,8 @@ class ProductsPriceService implements IProductPriceService {
     }
   }
 
-  async updateTypePrice (id: number, name: string): Promise<IMessage> {
+  async updateTypePrice (
+    id: number, name: string): Promise<IMessage> {
     const result = await ProductsPriceTypeModel.query()
       .where({ id })
       .update({ name })
@@ -112,16 +114,19 @@ class ProductsPriceService implements IProductPriceService {
     if (!result) {
       throw ApiError.badRequest(
         `Нет цены для продукта с id${productId}`,
-        'ProductsPriceService getProductPriceByTypesPricesId')
+        'ProductsPriceService ' +
+        'getProductPriceByTypesPricesId')
     }
     return {
       success: true,
       result,
-      message: `Цена для продукта с id${productId} успешно получена`
+      message: `Цена для продукта с id${productId
+      } успешно получена`
     }
   }
 
-  async getAllPriceByProductId (productId: number): Promise<IMessage> {
+  async getAllPriceByProductId (
+    productId: number): Promise<IMessage> {
     const result = await ProductsPriceModel.query()
       .where({ productId })
       .joinRelated('priceType')
@@ -135,11 +140,13 @@ class ProductsPriceService implements IProductPriceService {
     return {
       success: true,
       result,
-      message: `Все цены для продукта с id${productId} успешно получены`
+      message: `Все цены для продукта с id${productId
+      } успешно получены`
     }
   }
 
-  async addPriceForProduct (Dto: IProductPrice): Promise<IMessage> {
+  async addPriceForProduct (
+    Dto: IProductPrice): Promise<IMessage> {
     const { priceTypeId, productId, price, currency } = Dto
     const alreadyHave = await ProductsPriceModel.query()
       .where({
@@ -155,7 +162,9 @@ class ProductsPriceService implements IProductPriceService {
         'priceType.name as priceType')
     if (alreadyHave) {
       throw ApiError.badRequest(
-        `Цена для продукта с id${productId} типа '${alreadyHave.priceType}' уже есть, вы можете изменить цену по id${alreadyHave.id}`,
+        `Цена для продукта с id${productId}` +
+        ` типа '${alreadyHave.priceType}' уже есть,` +
+        ` вы можете изменить цену по id${alreadyHave.id}`,
         'ProductsPriceService addPriceForProduct')
     }
     const result = await ProductsPriceModel.query()
@@ -168,7 +177,8 @@ class ProductsPriceService implements IProductPriceService {
       .select('price', 'currency', 'priceTypeId')
     if (!result) {
       throw ApiError.badRequest(
-        `Новая цена для продукта с id${productId} не добавлена`,
+        `Новая цена для продукта с id${productId}` +
+        ' не добавлена',
         'ProductsPriceService addPriceForProduct')
     }
     return {
@@ -178,7 +188,8 @@ class ProductsPriceService implements IProductPriceService {
     }
   }
 
-  async updProductPrice (id: number, Dto: IProductPrice): Promise<IMessage> {
+  async updProductPrice (
+    id: number, Dto: IProductPrice): Promise<IMessage> {
     const { priceTypeId, productId, price, currency } = Dto
     const typePrice = await this.getTypePriceById(priceTypeId)
     if (!typePrice.result) {
@@ -210,7 +221,9 @@ class ProductsPriceService implements IProductPriceService {
     return {
       success: true,
       result: { currency: price + (currency || '₴') },
-      message: `Цена (${price}${currency || '₴'}) с id${id} для продукта '${product.title}' и типа '${typePrice.result.name}' успешно изменена`
+      message: `Цена (${price}${currency || '₴'}) ` +
+        `с id${id} для продукта '${product.title}' ` +
+        `и типа '${typePrice.result.name}' успешно изменена`
     }
   }
 
@@ -219,7 +232,8 @@ class ProductsPriceService implements IProductPriceService {
       .deleteById(id)
     if (!result) {
       throw ApiError.badRequest(
-        `Ошибка удаления цены с id${id}, возможно нету цены с таким id`,
+        `Ошибка удаления цены с id${id},` +
+        'возможно нету цены с таким id',
         'ProductsPriceService delProductPrice')
     }
     return {
