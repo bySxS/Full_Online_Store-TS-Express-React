@@ -64,7 +64,7 @@ export const baseQueryWithRefreshToken: BaseQueryFn<
           {
             credentials: 'include',
             url: 'user/refresh',
-            method: 'get'
+            method: 'GET'
           },
           api,
           extraOptions
