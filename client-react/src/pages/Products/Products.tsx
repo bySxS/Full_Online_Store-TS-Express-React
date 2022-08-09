@@ -22,13 +22,13 @@ const Products: FC<ProductProps> = ({ name }) => {
   useInfoLoading({ isLoading, isSuccess, isError, data, error })
   const products = useAppSelector(selectProduct.allProducts)
   const countProducts = useAppSelector(selectProduct.countProducts)
+  const filterState = useAppSelector(selectProduct.filterState)
   const [page, setPage] = useState(1)
   const [limit] = useState(10)
   const [totalPage, setTotalPage] = useState(Math.round((data?.result?.total ?? limit) / limit) + 1)
 
   const getProducts = () => {
-    console.log(page, totalPage)
-    fetchProducts({ page, limit })
+    fetchProducts({ page, limit, ...filterState })
     setPage(prev => prev + 1)
   }
 

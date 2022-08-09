@@ -37,11 +37,11 @@ export interface IProduct {
 }
 
 export type TSortProduct = 'price_asc' | 'price_desc' |
-  'id_desc' | 'views_desc' | 'rating_desc' | 'favorites_desc'
+  'id_desc' | 'views_desc' | 'rating_desc' | 'favorites_desc' | ''
 
 export interface IGetProductsWithFilter {
-  filter?: string[]
-  price?: number[]
+  filter?: string
+  price?: string
   sort?: TSortProduct
   limit?: number
   page: number
@@ -82,4 +82,10 @@ export interface IProductIn {
   videoYoutubeUrl?: string
   parentId?: number
   url?: string
+}
+
+export interface IFilterState {
+  filter?: string
+  price?: string
+  sort?: TSortProduct
 }

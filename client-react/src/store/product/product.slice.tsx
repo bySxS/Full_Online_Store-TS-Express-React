@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IMessage, IResultList } from 'store/myStore/myStore.interface'
-import { IProduct } from 'store/myStore/myStoreProduct.interface'
+import { IFilterState, IProduct } from 'store/myStore/myStoreProduct.interface'
 import { myStoreProductEndpoint } from 'store/myStore/myStoreProduct.api'
 import { addDomainToImgProducts } from 'utils'
 import { myStoreFavProductEndpoint } from 'store/myStore/myStoreFavProduct.api'
@@ -16,12 +16,14 @@ interface IProductState {
   ViewProducts: TypeMaterial
   products: IProduct[] | undefined
   favoriteProducts: IProduct[] | undefined
+  filterState: IFilterState
 }
 
 const initialState: IProductState = {
   ViewProducts: localStorage.getItem(LS_VIEW_PRODUCT_KEY) as TypeMaterial || 'Row',
   favoriteProducts: [], // JSON.parse(localStorage.getItem(LS_FAV_PRODUCT_KEY) ?? '[]'),
-  products: [] // JSON.parse(localStorage.getItem(LS_PRODUCT_KEY) ?? '[]'),
+  products: [], // JSON.parse(localStorage.getItem(LS_PRODUCT_KEY) ?? '[]'),
+  filterState: {}
 }
 
 const addProducts =
@@ -96,6 +98,9 @@ export const ProductSlice = createSlice({
   initialState,
   reducers: {
     addProducts,
+    changeFilterState (state, action: PayloadAction<IFilterState>) {
+      state.filterState = action.payload
+    },
     changeViewProducts (state) {
       state.ViewProducts = state.ViewProducts === 'Col' ? 'Row' : 'Col'
       localStorage.setItem(LS_VIEW_PRODUCT_KEY, state.ViewProducts)
