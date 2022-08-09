@@ -12,6 +12,7 @@ import myStoreProductApi from './myStore/myStoreProduct.api'
 import myStoreBasketApi from 'store/myStore/myStoreBasket.api'
 import myStoreCategoryApi from 'store/myStore/myStoreCategory.api'
 import myStoreCharacteristicApi from 'store/myStore/myStoreCharacteristics.api'
+import myStorePriceApi from 'store/myStore/myStorePrice.api'
 
 const reducers = {
   user: userReducer,
@@ -22,7 +23,8 @@ const reducers = {
   [myStoreProductApi.reducerPath]: myStoreProductApi.reducer,
   [myStoreBasketApi.reducerPath]: myStoreBasketApi.reducer,
   [myStoreCategoryApi.reducerPath]: myStoreCategoryApi.reducer,
-  [myStoreCharacteristicApi.reducerPath]: myStoreCharacteristicApi.reducer
+  [myStoreCharacteristicApi.reducerPath]: myStoreCharacteristicApi.reducer,
+  [myStorePriceApi.reducerPath]: myStorePriceApi.reducer
 }
 
 const rootReducer = combineReducers({
@@ -38,7 +40,8 @@ export const store = configureStore({
         myStoreProductApi.middleware,
         myStoreBasketApi.middleware,
         myStoreCategoryApi.middleware,
-        myStoreCharacteristicApi.middleware
+        myStoreCharacteristicApi.middleware,
+        myStorePriceApi.middleware
       ])
       .prepend(alertListenerMiddleware.middleware)
       .prepend(logoutListenerMiddleware.middleware),
