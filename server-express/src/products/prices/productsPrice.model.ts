@@ -34,7 +34,7 @@ export default class ProductsPriceModel extends Model {
         priceTypeId: { type: 'integer' },
         productId: { type: 'integer' },
         price: { type: 'number' },
-        currency: { type: 'string', maxLength: 40 },
+        currency: { type: 'string', maxLength: 40, default: '₴' },
         createdAt: { type: 'string' },
         updatedAt: { type: 'string' }
       }

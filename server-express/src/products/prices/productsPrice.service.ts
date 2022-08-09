@@ -18,7 +18,7 @@ class ProductsPriceService implements IProductPriceService {
   async addTypePrice (name: string): Promise<IMessage> {
     const findType = await ProductsPriceTypeModel.query()
       .findOne({ name })
-      .select('name')
+      .select('*')
     if (findType) {
       throw ApiError.badRequest(
         `Тип цены '${name}' уже существует`,
@@ -26,7 +26,7 @@ class ProductsPriceService implements IProductPriceService {
     }
     const result = await ProductsPriceTypeModel.query()
       .insert({ name })
-      .select('name')
+      .select('*')
     if (!result) {
       throw ApiError.badRequest(
         `Тип цены ${name} не добавлен, ` +
@@ -67,7 +67,7 @@ class ProductsPriceService implements IProductPriceService {
     }
     return {
       success: true,
-      result: { name },
+      result: { id, name },
       message: `Тип цены с id${id} успешно изменен`
     }
   }
@@ -93,6 +93,7 @@ class ProductsPriceService implements IProductPriceService {
   ): Promise<IMessage> {
     const result = await ProductsPriceTypeModel.query()
       .page(page - 1, limit)
+      .select('*')
     if (!result) {
       throw ApiError.badRequest(
         `Тип цен на странице ${page} не найдено`,
@@ -167,6 +168,19 @@ class ProductsPriceService implements IProductPriceService {
         ` вы можете изменить цену по id${alreadyHave.id}`,
         'ProductsPriceService addPriceForProduct')
     }
+    const typePrice = await this.getTypePriceById(priceTypeId)
+    if (!typePrice.result) {
+      throw ApiError.badRequest(
+        `Тип цены с id${priceTypeId} не существует`,
+        'ProductsPriceService updProductPrice')
+    }
+    const product =
+      await ProductsModel.query().findById(productId)
+    if (!product) {
+      throw ApiError.badRequest(
+        `Продукта с id${productId} не существует`,
+        'ProductsPriceService updProductPrice')
+    }
     const result = await ProductsPriceModel.query()
       .insert({
         priceTypeId: +priceTypeId,
@@ -174,7 +188,7 @@ class ProductsPriceService implements IProductPriceService {
         price,
         currency: currency || '₴'
       })
-      .select('price', 'currency', 'priceTypeId')
+      .select('*')
     if (!result) {
       throw ApiError.badRequest(
         `Новая цена для продукта с id${productId}` +
@@ -201,7 +215,7 @@ class ProductsPriceService implements IProductPriceService {
       await ProductsModel.query().findById(productId)
     if (!product) {
       throw ApiError.badRequest(
-        `Продукта с id${productId} нет`,
+        `Продукта с id${productId} не существует`,
         'ProductsPriceService updProductPrice')
     }
     const result = await ProductsPriceModel.query()
@@ -220,7 +234,12 @@ class ProductsPriceService implements IProductPriceService {
     }
     return {
       success: true,
-      result: { currency: price + (currency || '₴') },
+      result: {
+        priceTypeId,
+        productId,
+        price,
+        currency: currency || '₴'
+      },
       message: `Цена (${price}${currency || '₴'}) ` +
         `с id${id} для продукта '${product.title}' ` +
         `и типа '${typePrice.result.name}' успешно изменена`
