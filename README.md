@@ -11,4 +11,4 @@
 #### `docker-compose up start`
 
 #
-#### Docker Compose version v2.6.1
+#### Docker Compose version > v2.6.1
