@@ -3,7 +3,7 @@ import ProductsPriceModel from './productsPrice.model'
 import ProductsPriceTypeModel from './productsPriceType.model'
 import ApiError from '@/apiError'
 import { IProductPrice, IProductPriceService } from './productsPrice.interface'
-import ProductsService from '@/products/products.service'
+import ProductsModel from '@/products/products.model'
 
 class ProductsPriceService implements IProductPriceService {
   private static instance = new ProductsPriceService()
@@ -149,14 +149,12 @@ class ProductsPriceService implements IProductPriceService {
         'productsPrice.productId': +productId
       })
       .first()
-      .innerJoin('productsPriceType',
-        'productsPriceType.id', '=',
-        'productsPrice.priceTypeId')
+      .joinRelated('priceType')
       .select('productsPrice.price',
         'productsPrice.currency',
         'productsPrice.priceTypeId',
         'productsPrice.id',
-        'productsPriceType.name as priceType')
+        'priceType.name as priceType')
     if (alreadyHave) {
       throw ApiError.badRequest(
         `Цена для продукта с id${productId} типа '${alreadyHave.priceType}' уже есть, вы можете изменить цену по id${alreadyHave.id}`,
@@ -185,8 +183,18 @@ class ProductsPriceService implements IProductPriceService {
   async updProductPrice (id: number, Dto: IProductPrice): Promise<IMessage> {
     const { priceTypeId, productId, price, currency } = Dto
     const typePrice = await this.getTypePriceById(priceTypeId)
+    if (!typePrice.result) {
+      throw ApiError.badRequest(
+        `Тип цены с id${priceTypeId} не существует`,
+        'ProductsPriceService updProductPrice')
+    }
     const product =
-      await ProductsService.getById(productId, false)
+      await ProductsModel.query().findById(productId)
+    if (!product) {
+      throw ApiError.badRequest(
+        `Продукта с id${productId} нет`,
+        'ProductsPriceService updProductPrice')
+    }
     const result = await ProductsPriceModel.query()
       .where({ id })
       .update({
@@ -204,7 +212,7 @@ class ProductsPriceService implements IProductPriceService {
     return {
       success: true,
       result: { currency: price + (currency || '₴') },
-      message: `Цена (${price}${currency || '₴'}) с id${id} для продукта '${product.result.title}' и типа '${typePrice.result.name}' успешно изменена`
+      message: `Цена (${price}${currency || '₴'}) с id${id} для продукта '${product.title}' и типа '${typePrice.result.name}' успешно изменена`
     }
   }
 
