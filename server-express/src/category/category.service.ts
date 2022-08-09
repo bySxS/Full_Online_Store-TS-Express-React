@@ -1,7 +1,8 @@
 import { IMessage } from '@/interface'
 import CategoryModel from './category.model'
 import ApiError from '@/apiError'
-import { ICategory, ICategoryService } from './category.interface'
+import { ICategory, ICategoryOut, ICategoryService, ISectionOut } from './category.interface'
+import { raw } from 'objection'
 
 class CategoryService implements ICategoryService {
   private static instance = new CategoryService()
@@ -109,33 +110,44 @@ class CategoryService implements ICategoryService {
   async getAll (): Promise<IMessage> {
     const categoryNotSort = await CategoryModel.query()
       .joinRelated('parent')
+      .leftOuterJoinRelated('products')
       .select('category.id',
         'category.parentId',
         'category.name as categoryName',
         'category.nameEng as categoryNameEng',
+        raw('count(DISTINCT products.id) as categoryCountProducts'),
         'parent.name as sectionName',
         'parent.nameEng as sectionNameEng')
+      .groupBy('category.id')
     if (!categoryNotSort) {
       throw ApiError.badRequest(
         'Категорий не найдено',
         'CategoryService getAll')
     }
 
-    const section: any[] = []
+    const section: ISectionOut[] = []
     categoryNotSort.forEach((all) => {
       const ids = new Set(section.map(section => section.sectionId))
       if (!ids.has(all.parentId)) {
         const filterCharacteristics =
           categoryNotSort.filter(category => category.parentId === all.parentId)
-        section.push({
-          sectionName: all.sectionName,
-          sectionNameEng: all.sectionNameEng,
-          sectionId: all.parentId,
-          category: filterCharacteristics.map(category => ({
+        let sectionCountProducts = 0
+        const cat: ICategoryOut[] = []
+        filterCharacteristics.forEach(category => {
+          cat.push({
+            categoryId: category.id,
             categoryName: category.categoryName,
             categoryNameEng: category.categoryNameEng,
-            categoryId: category.id
-          }))
+            categoryCountProducts: category.categoryCountProducts
+          })
+          sectionCountProducts += category.categoryCountProducts
+        })
+        section.push({
+          sectionId: all.parentId,
+          sectionName: all.sectionName,
+          sectionNameEng: all.sectionNameEng,
+          sectionCountProducts,
+          category: cat
         })
       }
     })
@@ -152,12 +164,15 @@ class CategoryService implements ICategoryService {
       .where('category.name', 'like', `%${name}%`)
       .orWhere('category.nameEng', 'like', `%${name}%`)
       .joinRelated('parent')
+      .leftOuterJoinRelated('products')
       .select('category.id',
         'category.parentId',
         'category.name as categoryName',
         'category.nameEng as categoryNameEng',
+        raw('count(DISTINCT products.id) as categoryCountProducts'),
         'parent.name as sectionName',
         'parent.nameEng as sectionNameEng')
+      .groupBy('category.id')
     if (!result) {
       return {
         success: false,

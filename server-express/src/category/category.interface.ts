@@ -8,6 +8,21 @@ export interface ICategory {
   parentId?: number
 }
 
+export interface ICategoryOut {
+  categoryId: number
+  categoryName: string
+  categoryNameEng: string
+  categoryCountProducts: number
+}
+
+export interface ISectionOut {
+  sectionId: number
+  sectionName: string
+  sectionNameEng: string
+  sectionCountProducts: number
+  category: ICategoryOut[]
+}
+
 export interface ICategoryService {
   add: (Dto: ICategory) => Promise<IMessage>
   upd: (id: number, Dto: ICategory) => Promise<IMessage>

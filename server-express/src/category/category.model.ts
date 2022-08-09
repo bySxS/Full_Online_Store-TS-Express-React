@@ -18,6 +18,7 @@ export default class CategoryModel extends Model {
   categoryNameEng!: string
   sectionName!: string
   sectionNameEng!: string
+  categoryCountProducts!: number
 
   static get tableName () {
     return 'category'

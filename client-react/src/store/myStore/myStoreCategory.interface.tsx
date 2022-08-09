@@ -6,15 +6,17 @@ export interface ICategory {
 }
 
 export interface ICategoryOut {
+  categoryId: number
   categoryName: string
   categoryNameEng: string
-  categoryId: number
+  categoryCountProducts: number
 }
 
 export interface ISection {
+  sectionId: number
   sectionName: string
   sectionNameEng: string
-  sectionId: number
+  sectionCountProducts: number
   category: ICategoryOut[]
 }
 
@@ -22,6 +24,7 @@ export interface ICategorySearch {
   id: number
   categoryName: string
   categoryNameEng: string
+  categoryCountProducts: number
   sectionName: string
   sectionNameEng: string
   parentId: number
