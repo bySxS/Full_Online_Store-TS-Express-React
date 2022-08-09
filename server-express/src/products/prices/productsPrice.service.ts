@@ -124,11 +124,9 @@ class ProductsPriceService implements IProductPriceService {
   async getAllPriceByProductId (productId: number): Promise<IMessage> {
     const result = await ProductsPriceModel.query()
       .where({ productId })
-      .innerJoin('productsPriceType',
-        'productsPrice.priceTypeId', '=',
-        'productsPriceType.id')
+      .joinRelated('priceType')
       .select('productsPrice.*',
-        'productsPriceType.name as typeName')
+        'priceType.name as typeName')
     if (!result) {
       throw ApiError.badRequest(
         `Нет цен для продукта с id${productId}`,
