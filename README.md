@@ -1,4 +1,4 @@
-# Store-typescript-express-(redis, jwt-auth, mysql)-react-(redux-toolkit-query)
+# Store-typescript-express-(redis, jwt-auth, mysql)-react-(redux-toolkit-query, Bootstrap, Tailwind CSS)
  
 ### Run:
 
