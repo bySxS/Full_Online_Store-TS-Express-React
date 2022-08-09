@@ -3,7 +3,7 @@ import CharacteristicsSetValueModel from './characteristicsSetValue.model'
 import CharacteristicsNameModel from './characteristicsName.model'
 import ApiError from '@/apiError'
 import {
-  ICharacteristicName,
+  ICharacteristicName, ICharacteristicProduct,
   ICharacteristicService, ICharacteristicSetValue
 } from './characteristics.interface'
 
@@ -84,6 +84,14 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
+  // ToDo: сделать функцию получения доступных названий хакактеристик для категорий по id
+  // ToDo: понадобится при добавлении нового продукта и редактировании
+
+  // ToDo: сделать функцию для выгрузки всех характеристик чтобы добавить их в панель фильтра
+  // ToDo: и подсчитать для каждой количество материалов с каждой характеристикой
+
+
+
   async getCharacteristicValueProductById (id: number): Promise<IMessage> {
     const characteristics = await CharacteristicsSetValueModel.query()
       .where('characteristicsSetValue.productId', '=', id)
@@ -105,7 +113,7 @@ class CharacteristicsService implements ICharacteristicService {
       }
     }
 
-    const section: any[] = []
+    const section: ICharacteristicProduct[] = []
     characteristics.forEach((all) => {
       const ids = new Set(section.map(section => section.sectionId))
       if (!ids.has(all.sectionId)) {

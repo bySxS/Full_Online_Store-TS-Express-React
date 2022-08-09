@@ -16,6 +16,19 @@ export interface ICharacteristicSetValue {
   characteristicsNameId: number
 }
 
+export interface ICharacteristic {
+  characteristicNameId: number
+  characteristicName: string
+  characteristicValueId: number
+  characteristicValue: string
+}
+
+export interface ICharacteristicProduct {
+  sectionName: string
+  sectionId: number
+  characteristics: ICharacteristic[]
+}
+
 export interface ICharacteristicService {
   addCharacteristicName: (Dto: ICharacteristicName) => Promise<IMessage>
   updCharacteristicName: (id: number, Dto: ICharacteristicName) => Promise<IMessage>
