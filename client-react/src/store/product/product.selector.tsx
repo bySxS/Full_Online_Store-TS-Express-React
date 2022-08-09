@@ -7,11 +7,16 @@ const productIsInFavorite = (id: number) => (state: RootState): boolean => {
   return ids.has(id)
 }
 
+const countProducts = (state: RootState) => state.product.products?.length || 0
 const allProducts = (state: RootState) => state.product.products
 const viewProducts = (state: RootState) => state.product.ViewProducts
 
 const selectProduct = {
-  allProducts, viewProducts, productIsInFavorite, allFavProducts
+  allProducts,
+  viewProducts,
+  productIsInFavorite,
+  allFavProducts,
+  countProducts
 }
 
 export default selectProduct

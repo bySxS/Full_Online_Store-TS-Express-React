@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import style from 'pages/Products/Products.module.scss'
 import { useObserver } from 'hooks/useObserver'
@@ -21,14 +21,20 @@ const Products: FC<ProductProps> = ({ name }) => {
     useLazyAllProductsQuery()
   useInfoLoading({ isLoading, isSuccess, isError, data, error })
   const products = useAppSelector(selectProduct.allProducts)
-  const [totalPage, setTotalPage] = useState((data?.result.total || 10) / 10)
+  const countProducts = useAppSelector(selectProduct.countProducts)
   const [page, setPage] = useState(1)
+  const [limit] = useState(10)
+  const [totalPage, setTotalPage] = useState(Math.round((data?.result?.total ?? limit) / limit) + 1)
 
   const getProducts = () => {
-    fetchProducts({ page })
-    setPage(prevState => prevState + 1)
-    setTotalPage((data?.result.total || 10) / 10)
+    console.log(page, totalPage)
+    fetchProducts({ page, limit })
+    setPage(prev => prev + 1)
   }
+
+  useEffect(() => {
+    setTotalPage(Math.round((data?.result?.total ?? limit) / limit) + 1)
+  }, [data])
 
   useObserver(pagination, page, totalPage, isLoading, getProducts)
 
@@ -40,6 +46,7 @@ const Products: FC<ProductProps> = ({ name }) => {
       </Helmet>
       <Breadcrumbs />
       <ProductsPanelSetting />
+      продукты {countProducts}
       {isSuccess && products &&
         <div className={style.productsView}>
             {products.map(product =>

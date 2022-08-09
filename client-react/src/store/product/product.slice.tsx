@@ -6,9 +6,9 @@ import { addDomainToImgProducts } from 'utils'
 import { myStoreFavProductEndpoint } from 'store/myStore/myStoreFavProduct.api'
 import { IFavProduct } from 'store/myStore/myStoreFavProduct.interface'
 
-const LS_PRODUCT_KEY = 'rpk'
+// const LS_PRODUCT_KEY = 'rpk'
 const LS_VIEW_PRODUCT_KEY = 'rViewPk'
-const LS_FAV_PRODUCT_KEY = 'rFavPk'
+// const LS_FAV_PRODUCT_KEY = 'rFavPk'
 
 export type TypeMaterial = 'Col' | 'Row'
 
@@ -18,20 +18,10 @@ interface IProductState {
   favoriteProducts: IProduct[] | undefined
 }
 
-const viewProductsString = localStorage.getItem(LS_VIEW_PRODUCT_KEY) || ''
-let ViewProducts = ''
-if (viewProductsString) {
-  try {
-    ViewProducts = JSON.parse(viewProductsString)
-  } catch (e) {
-    ViewProducts = ''
-  }
-}
-
 const initialState: IProductState = {
-  ViewProducts: ViewProducts as TypeMaterial || 'Row',
-  favoriteProducts: JSON.parse(localStorage.getItem(LS_FAV_PRODUCT_KEY) ?? '[]'),
-  products: JSON.parse(localStorage.getItem(LS_PRODUCT_KEY) ?? '[]')
+  ViewProducts: localStorage.getItem(LS_VIEW_PRODUCT_KEY) as TypeMaterial || 'Row',
+  favoriteProducts: [], // JSON.parse(localStorage.getItem(LS_FAV_PRODUCT_KEY) ?? '[]'),
+  products: [] // JSON.parse(localStorage.getItem(LS_PRODUCT_KEY) ?? '[]'),
 }
 
 const addProducts =
@@ -48,8 +38,6 @@ const addProducts =
       ...prevProducts,
       ...productsChanged.filter(o => !ids.has(o.id))
     ]
-    localStorage.setItem(LS_PRODUCT_KEY,
-      JSON.stringify(state.products))
   }
 
 const addFavProducts =
@@ -66,8 +54,8 @@ const addFavProducts =
       ...prevProducts,
       ...productsChanged.filter(o => !ids.has(o.id))
     ]
-    localStorage.setItem(LS_FAV_PRODUCT_KEY,
-      JSON.stringify(state.favoriteProducts))
+    // localStorage.setItem(LS_FAV_PRODUCT_KEY,
+    //   JSON.stringify(state.favoriteProducts))
   }
 
 const addOneFavProduct =
@@ -84,8 +72,8 @@ const addOneFavProduct =
         ...prevProducts,
         ...needProduct.filter(o => !ids.has(o.id))
       ]
-      localStorage.setItem(LS_FAV_PRODUCT_KEY,
-        JSON.stringify(state.favoriteProducts))
+      // localStorage.setItem(LS_FAV_PRODUCT_KEY,
+      //   JSON.stringify(state.favoriteProducts))
     }
   }
 
@@ -99,8 +87,8 @@ const delOneFavProduct =
     state.favoriteProducts = [
       ...prevProducts.filter(o => o.id !== productId)
     ]
-    localStorage.setItem(LS_FAV_PRODUCT_KEY,
-      JSON.stringify(state.favoriteProducts))
+    // localStorage.setItem(LS_FAV_PRODUCT_KEY,
+    //   JSON.stringify(state.favoriteProducts))
   }
 
 export const ProductSlice = createSlice({
@@ -108,10 +96,9 @@ export const ProductSlice = createSlice({
   initialState,
   reducers: {
     addProducts,
-    changeViewProducts (state, action: PayloadAction<TypeMaterial>) {
-      state.ViewProducts = action.payload
-      localStorage.setItem(LS_VIEW_PRODUCT_KEY,
-        JSON.stringify(state.ViewProducts))
+    changeViewProducts (state) {
+      state.ViewProducts = state.ViewProducts === 'Col' ? 'Row' : 'Col'
+      localStorage.setItem(LS_VIEW_PRODUCT_KEY, state.ViewProducts)
     }
   },
   extraReducers: (builder) => {
