@@ -17,20 +17,20 @@ const myStoreProductApi = createApi({
         })
       }),
 
-    delProduct: build.mutation<IMessage<null>,
-      number>({
-        query: (productId: number) => ({
-          url: 'product/' + productId,
-          method: 'DELETE'
-        })
-      }),
-
     updateProduct: build.mutation<IMessage<IProductIn>,
       {productId: number, body: FormData}>({
         query: ({ productId, body }) => ({
           url: 'product/' + productId,
           method: 'PUT',
           body
+        })
+      }),
+
+    delProduct: build.mutation<IMessage<null>,
+      number>({
+        query: (productId: number) => ({
+          url: 'product/' + productId,
+          method: 'DELETE'
         })
       }),
 
@@ -77,7 +77,7 @@ const myStoreProductApi = createApi({
     getProductById: build.query<IMessage<IProduct>,
       number>({
         query: (id: number) => ({
-          url: `product/${id}`
+          url: 'product/' + id
         })
       })
 
