@@ -16,6 +16,11 @@ class BasketService implements IBasketService {
     return BasketService.instance
   }
 
+  /*
+  *  ToDo: реализовать функцию добавления товаров корзины
+  *     state store в бд после регистрации или авторизации в синхронном режиме
+  *     можно реализовать через очередь queue
+` */
   async currentBasketToProcessing (Dto: IBasket): Promise<IMessage> {
     const {
       userId, comment,

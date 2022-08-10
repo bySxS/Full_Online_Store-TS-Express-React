@@ -63,7 +63,7 @@ class ReviewService implements IReviewService {
     }
   }
 
-  // ToDo: сделать вывод комментариев древовидный
+  // ToDo: сделать вывод комментариев древовидный c parentId
   async getAllReviewByProductId (
     productId: number, limit: number, page: number
   ): Promise<IMessage> {
