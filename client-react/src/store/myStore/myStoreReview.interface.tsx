@@ -20,7 +20,7 @@ export interface IReviewOut {
   bought: number
   rating: number
   parentId?: number
-  parent?: IReviewOut
+  child?: IReviewOut[]
   createdAt: Date
   updatedAt: Date
 }

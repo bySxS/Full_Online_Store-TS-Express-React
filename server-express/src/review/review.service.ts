@@ -63,24 +63,77 @@ class ReviewService implements IReviewService {
     }
   }
 
-  // ToDo: сделать вывод комментариев древовидный c parentId
+  recursFind (reviews: IReview[], review: IReview): IReview[] {
+    const newReview = reviews
+    newReview.forEach((value, i) => {
+      if (value.id === review.parentId) {
+        if (!value.child) { value.child = [] }
+        value.child?.push(review)
+        return newReview
+      } else { // recurs
+        if (value.child) {
+          value.child = this.recursFind(value.child, review)
+        }
+      }
+    })
+    return newReview
+  }
+
+  sortReviewTree (reviews: ReviewModel[]): IReview[] {
+    let newReview: IReview[] = []
+    const parentId: number[] = []
+    reviews.forEach(review => {
+      (review.parentId) && parentId.push(review.parentId)
+    })
+    const parentIds = new Set(parentId.map(id => id))
+    reviews.forEach((review) => {
+      if (review.id) {
+        if (!parentIds.has(review.parentId)) {
+          newReview.push({ ...review, child: [] })
+        } else {
+          newReview = this.recursFind(newReview, review)
+        }
+      }
+    })
+    return newReview
+  }
+
   async getAllReviewByProductId (
     productId: number, limit: number, page: number
   ): Promise<IMessage> {
-    const result = await ReviewModel.query()
-      .page(page - 1, limit)
-      .where({ productId })
-      .select('*')
+    const query = () => {
+      return ReviewModel.query()
+        .where({ productId })
+        .select('*')
+        .orderBy(['id'])
+    }
+    let result
+    if (limit === 0) {
+      result = await query()
+    } else {
+      result = await query()
+        .page(page - 1, limit)
+    }
     if (!result) {
       return {
         success: true,
-        message: `У продукта с id${productId} нет` +
-          ' отзывов и комментариев'
+        message: `У продукта с id${productId} нет ` +
+          'отзывов и комментариев'
       }
     }
+    let reviews
+    if ('results' in result) {
+      reviews = result.results
+    } else {
+      reviews = this.sortReviewTree(result)
+    }
+    
     return {
       success: true,
-      result,
+      result: {
+        total: ('total' in result ? result.total : reviews.length),
+        results: reviews
+      },
       message: `Страница ${page} отзывов продукта` +
         ` с id${productId} успешно загружена`
     }

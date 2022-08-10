@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { IMessage } from '@/interface'
+import ReviewModel from '@/review/review.model'
 
 export interface IReview {
   id?: number
@@ -11,6 +12,7 @@ export interface IReview {
   bought?: boolean
   rating?: number
   parentId?: number
+  child?: IReview[]
 }
 
 export interface IReviewService {
@@ -18,6 +20,8 @@ export interface IReviewService {
   delReview: (id: number) => Promise<IMessage>
   getAllReviewByProductId: (productId: number, limit: number, page: number) => Promise<IMessage>
   getAllReviewByUserId: (userId: number, limit: number, page: number) => Promise<IMessage>
+  recursFind: (reviews: IReview[], review: IReview) => IReview[]
+  sortReviewTree: (reviews: ReviewModel[]) => IReview[]
 }
 
 export interface IReviewController {
