@@ -29,5 +29,5 @@ export const useObserver = (
     if (lastItem.current) {
       observer.current.observe(lastItem.current)
     }
-  }, [isLoading, load, page, totalPages])
+  }, [load, totalPages])
 }

@@ -17,13 +17,21 @@ interface IProductState {
   products: IProduct[] | undefined
   favoriteProducts: IProduct[] | undefined
   filterState: IFilterState
+  pageProduct: number
+  totalProduct: number
+  pageFavProduct: number
+  totalFavProduct: number
 }
 
 const initialState: IProductState = {
   ViewProducts: localStorage.getItem(LS_VIEW_PRODUCT_KEY) as TypeMaterial || 'Row',
   favoriteProducts: [], // JSON.parse(localStorage.getItem(LS_FAV_PRODUCT_KEY) ?? '[]'),
   products: [], // JSON.parse(localStorage.getItem(LS_PRODUCT_KEY) ?? '[]'),
-  filterState: {}
+  filterState: {},
+  pageProduct: 1,
+  totalProduct: 10,
+  pageFavProduct: 1,
+  totalFavProduct: 10
 }
 
 const addProducts =
@@ -40,6 +48,7 @@ const addProducts =
       ...prevProducts,
       ...productsChanged.filter(o => !ids.has(o.id))
     ]
+    state.totalProduct = payload.result.total
   }
 
 const addFavProducts =
@@ -56,6 +65,7 @@ const addFavProducts =
       ...prevProducts,
       ...productsChanged.filter(o => !ids.has(o.id))
     ]
+    state.totalFavProduct = payload.result.total
     // localStorage.setItem(LS_FAV_PRODUCT_KEY,
     //   JSON.stringify(state.favoriteProducts))
   }
@@ -98,8 +108,20 @@ export const ProductSlice = createSlice({
   initialState,
   reducers: {
     addProducts,
+    incPageProduct (state) {
+      state.pageProduct = state.pageProduct + 1
+    },
+    incPageFavProduct (state) {
+      state.pageFavProduct = state.pageFavProduct + 1
+    },
     changeFilterState (state, action: PayloadAction<IFilterState>) {
       state.filterState = action.payload
+      state.products = [] // очищаем при изменении фильтра
+      state.favoriteProducts = [] // очищаем при изменении фильтра
+      state.pageProduct = 1 // ставим начальные страницы для paginator
+      state.pageFavProduct = 1
+      state.totalProduct = 10
+      state.totalFavProduct = 10
     },
     changeViewProducts (state) {
       state.ViewProducts = state.ViewProducts === 'Col' ? 'Row' : 'Col'

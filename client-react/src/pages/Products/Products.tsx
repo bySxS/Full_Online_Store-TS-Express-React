@@ -5,7 +5,7 @@ import { useObserver } from 'hooks/useObserver'
 import ProductItems from 'components/ProductItems/ProductItems'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useLazyAllProductsQuery } from 'store/myStore/myStoreProduct.api'
-import { useAppSelector } from 'hooks/useStore'
+import { useAppActions, useAppSelector } from 'hooks/useStore'
 import selectProduct from 'store/product/product.selector'
 import ProductsPanelSetting from 'components/ProductsPanelSetting/ProductsPanelSetting'
 import { Breadcrumbs } from 'components/Breadcrumb/Breadcrumb'
@@ -23,20 +23,22 @@ const Products: FC<ProductProps> = ({ name }) => {
   const products = useAppSelector(selectProduct.allProducts)
   const countProducts = useAppSelector(selectProduct.countProducts)
   const filterState = useAppSelector(selectProduct.filterState)
-  const [page, setPage] = useState(1)
+  const pageProduct = useAppSelector(selectProduct.pageProduct)
+  const totalProduct = useAppSelector(selectProduct.totalProduct)
+  const { incPageProduct } = useAppActions()
   const [limit] = useState(10)
-  const [totalPage, setTotalPage] = useState(Math.round((data?.result?.total ?? limit) / limit) + 1)
+  const [totalPage, setTotalPage] = useState(Math.round((totalProduct ?? limit) / limit) + 1)
 
   const getProducts = () => {
-    fetchProducts({ page, limit, ...filterState })
-    setPage(prev => prev + 1)
+    fetchProducts({ page: pageProduct, limit, ...filterState })
+    incPageProduct()
   }
 
   useEffect(() => {
-    setTotalPage(Math.round((data?.result?.total ?? limit) / limit) + 1)
-  }, [data])
+    setTotalPage(Math.round((totalProduct ?? limit) / limit) + 1)
+  }, [totalProduct])
 
-  useObserver(pagination, page, totalPage, isLoading, getProducts)
+  useObserver(pagination, pageProduct, totalPage, isLoading, getProducts)
 
   return (
     <>
@@ -47,7 +49,7 @@ const Products: FC<ProductProps> = ({ name }) => {
       <Breadcrumbs />
       <ProductsPanelSetting />
       продукты {countProducts}
-      {isSuccess && products &&
+      {products &&
         <div className={style.productsView}>
             {products.map(product =>
             <ProductItems key={product.id} product={product} />
@@ -56,7 +58,7 @@ const Products: FC<ProductProps> = ({ name }) => {
       }
       <div ref={pagination}
            className={style.autoPagination}/>
-      {!data && <div>Нет продуктов :(</div>}
+      {!products && <div>Нет продуктов :(</div>}
     </>
   )
 }
