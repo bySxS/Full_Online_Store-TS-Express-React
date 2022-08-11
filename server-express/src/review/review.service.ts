@@ -65,15 +65,14 @@ class ReviewService implements IReviewService {
 
   recursFind (reviews: IReview[], review: IReview): IReview[] {
     const newReview = reviews
-    newReview.forEach((value, i) => {
+    newReview.forEach((value) => {
       if (value.id === review.parentId) {
-        if (!value.child) { value.child = [] }
+        (!value.child) && (value.child = [])
         value.child?.push(review)
         return newReview
       } else { // recurs
-        if (value.child) {
-          value.child = this.recursFind(value.child, review)
-        }
+        (value.child) &&
+          (value.child = this.recursFind(value.child, review))
       }
     })
     return newReview
@@ -81,18 +80,14 @@ class ReviewService implements IReviewService {
 
   sortReviewTree (reviews: ReviewModel[]): IReview[] {
     let newReview: IReview[] = []
-    const parentId: number[] = []
-    reviews.forEach(review => {
-      (review.parentId) && parentId.push(review.parentId)
-    })
-    const parentIds = new Set(parentId.map(id => id))
+    const parentIds = new Set(reviews
+      .filter(review => (review.parentId))
+      .map(review => (review.parentId)))
     reviews.forEach((review) => {
       if (review.id) {
-        if (!parentIds.has(review.parentId)) {
-          newReview.push({ ...review, child: [] })
-        } else {
-          newReview = this.recursFind(newReview, review)
-        }
+        (!parentIds.has(review.parentId))
+          ? newReview.push({ ...review, child: [] })
+          : newReview = this.recursFind(newReview, review)
       }
     })
     return newReview
@@ -127,12 +122,13 @@ class ReviewService implements IReviewService {
     } else {
       reviews = this.sortReviewTree(result)
     }
-    
     return {
       success: true,
       result: {
         total: ('total' in result ? result.total : reviews.length),
-        results: reviews
+        results: reviews,
+        page,
+        limit
       },
       message: `Страница ${page} отзывов продукта` +
         ` с id${productId} успешно загружена`
@@ -155,7 +151,7 @@ class ReviewService implements IReviewService {
     }
     return {
       success: true,
-      result,
+      result: { ...result, page, limit },
       message: `Страница ${page} отзывов пользователя ` +
         `с id${userId} успешно загружена`
     }
