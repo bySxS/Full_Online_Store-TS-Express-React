@@ -60,7 +60,35 @@ class CharacteristicsController implements ICharacteristicController {
     try {
       const id = +req.params.id
       const result =
-        await CharacteristicsService.getCharacteristicValueProductById(id)
+        await CharacteristicsService
+          .getCharacteristicValueProductById(id)
+      return res.status(200).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async getAllCharacteristics (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const result =
+        await CharacteristicsService
+          .getAllCharacteristics(req.body)
+      return res.status(200).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async getAllCharacteristicsNameByCategoryId (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const id = +req.params.id
+      const result =
+        await CharacteristicsService
+          .getAllCharacteristicsNameByCategoryId(id)
       return res.status(200).json(result)
     } catch (err) {
       next(err)

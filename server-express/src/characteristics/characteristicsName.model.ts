@@ -13,8 +13,6 @@ export default class CharacteristicsNameModel extends Model {
   public fieldType!: string
   public parentId!: number
 
-  category?: Category
-
   static get tableName () {
     return 'characteristicsName'
   }
@@ -51,7 +49,7 @@ export default class CharacteristicsNameModel extends Model {
           to: this.tableName + '.id'
         }
       },
-      characteristicsValue: {
+      characteristicsSetValue: {
         relation: Model.HasManyRelation,
         modelClass: CharacteristicsSetValue,
         join: {

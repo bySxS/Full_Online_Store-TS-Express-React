@@ -14,6 +14,9 @@ const router = Router()
 
 try {
   // success
+  router.post('/',
+    CharacteristicsController.getAllCharacteristics)
+  // success
   router.post('/name',
     validateCharacteristicAddName(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
@@ -47,6 +50,11 @@ try {
   router.get('/product/:id',
     validateId(), ValidatorResultMiddleware,
     CharacteristicsController.getCharacteristicValueProductById)
+  // success
+  router.get('/category/:id',
+    validateId(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    CharacteristicsController.getAllCharacteristicsNameByCategoryId)
 } catch (e) {
   throw ApiError.internalRequest(
     'Ошибка в Characteristics routers',

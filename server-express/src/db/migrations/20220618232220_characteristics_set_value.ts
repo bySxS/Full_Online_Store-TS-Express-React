@@ -24,9 +24,11 @@ exports.up = function (knex: Knex) {
         .onDelete('CASCADE')
         .onUpdate('CASCADE')
         .notNullable()
-      tbl.string('value', 100)
+      tbl.integer('characteristicsValueId')
+        .references('id')
+        .inTable('characteristicsValues')
+        .unsigned()
         .notNullable()
-        .index('index_characteristics_value')
     })
 }
 

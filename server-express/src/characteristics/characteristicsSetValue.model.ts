@@ -3,6 +3,7 @@ import { dbKnex } from '@/db'
 
 import Products from '@/products/products.model'
 import CharacteristicsName from '@/characteristics/characteristicsName.model'
+import CharacteristicsValues from '@/characteristics/characteristicsValues.model'
 
 Model.knex(dbKnex)
 
@@ -10,16 +11,10 @@ export default class CharacteristicsSetValueModel extends Model {
   public id!: number
   public productId!: number
   public characteristicsNameId!: number
-  public value!: string
+  public characteristicsValueId!: number
 
   products?: Products
   characteristicsName?: CharacteristicsName
-  sectionName!: string
-  sectionId!: number
-  propertyNameId!: number
-  propertyName!: string
-  propertyValueId!: number
-  propertyValue!: string
 
   static get tableName () {
     return 'characteristicsSetValue'
@@ -33,7 +28,7 @@ export default class CharacteristicsSetValueModel extends Model {
         id: { type: 'integer' },
         productId: { type: 'integer' },
         characteristicsNameId: { type: 'integer' },
-        value: { type: 'string', maxLength: 100 }
+        characteristicsValueId: { type: 'integer' }
       }
     }
   }
@@ -54,6 +49,14 @@ export default class CharacteristicsSetValueModel extends Model {
         join: {
           from: this.tableName + '.characteristicsNameId',
           to: CharacteristicsName.tableName + '.id'
+        }
+      },
+      characteristicsValues: {
+        relation: Model.HasOneRelation,
+        modelClass: CharacteristicsValues,
+        join: {
+          from: this.tableName + '.characteristicsValueId',
+          to: CharacteristicsValues.tableName + '.id'
         }
       }
     }

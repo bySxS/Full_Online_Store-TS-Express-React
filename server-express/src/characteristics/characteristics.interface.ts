@@ -1,5 +1,8 @@
 import { IMessage } from '@/interface'
 import { NextFunction, Request, Response } from 'express'
+import { QueryBuilder } from 'objection'
+import CharacteristicsSetValueModel from '@/characteristics/characteristicsSetValue.model'
+import CharacteristicsNameModel from '@/characteristics/characteristicsName.model'
 
 export interface ICharacteristicName {
   id?: number
@@ -16,11 +19,15 @@ export interface ICharacteristicSetValue {
   characteristicsNameId: number
 }
 
+export interface ICharacteristicValue {
+  characteristicValueId: number
+  characteristicValue: string
+}
+
 export interface ICharacteristic {
   characteristicNameId: number
   characteristicName: string
-  characteristicValueId: number
-  characteristicValue: string
+  values?: ICharacteristicValue[]
 }
 
 export interface ICharacteristicProduct {
@@ -38,6 +45,16 @@ export interface ICharacteristicService {
   updCharacteristicValueProduct: (id: number, Dto: ICharacteristicSetValue) => Promise<IMessage>
   delCharacteristicValueProduct: (id: number) => Promise<IMessage>
   getCharacteristicValueProductById: (id: number) => Promise<IMessage>
+  getAllCharacteristics: ({ categoryId }: { categoryId: number }) => Promise<IMessage>
+  getAllCharacteristicsNameByCategoryId: (categoryId: number) => Promise<IMessage>
+
+  getCharacteristicValue: () =>
+    QueryBuilder<CharacteristicsSetValueModel, CharacteristicsSetValueModel[]>
+  getCharacteristicName: () =>
+    QueryBuilder<CharacteristicsNameModel, CharacteristicsNameModel[]>
+  sortCharacteristicsTree: (
+    characteristics: CharacteristicsSetValueModel[] | CharacteristicsNameModel[]
+  ) => ICharacteristicProduct[]
 }
 
 export interface ICharacteristicController {
@@ -49,4 +66,6 @@ export interface ICharacteristicController {
   updCharacteristicValueProductById: (req: Request, res: Response, next: NextFunction) => void
   delCharacteristicValueProductById: (req: Request, res: Response, next: NextFunction) => void
   getCharacteristicValueProductById: (req: Request, res: Response, next: NextFunction) => void
+  getAllCharacteristics: (req: Request, res: Response, next: NextFunction) => void
+  getAllCharacteristicsNameByCategoryId: (req: Request, res: Response, next: NextFunction) => void
 }

@@ -342,73 +342,76 @@ class ProductsService implements IProductService {
   ): QueryBuilder<ProductsModel, ProductsModel | undefined> |
     QueryBuilder<ProductsModel, Page<ProductsModel>
       > {
-    if (price.length === 1) {
-      price[0] > 0
-        ? price.push(price[0])
-        : price.push(1000000000)
+    const query = () => {
+      return ProductsModel.query()
+        .andWhere('priceType.id', '=',
+          raw('products.priceTypeId'))
+        .andWhere('price.priceTypeId', '=',
+          raw('products.priceTypeId'))
+        .leftOuterJoinRelated('views')
+        .leftOuterJoinRelated('priceType')
+        .leftOuterJoinRelated('price')
+        .leftOuterJoinRelated('category')
+        .leftOuterJoinRelated('category.parent', { alias: 'section' })
+        .leftOuterJoinRelated('reviews')
+        .leftOuterJoinRelated('favorites')
+        .leftOuterJoinRelated('characteristicsSetValue.characteristicsValues')
+        .select('products.*',
+          'views.views as view',
+          'price.id as priceId',
+          raw('avg(DISTINCT reviews.rating) as rating'),
+          raw('count(DISTINCT reviews.rating) as ratingCount'),
+          raw('count(DISTINCT favorites.id) as countInFavorites'),
+          'price.price as price',
+          'price.currency as priceCurrency',
+          'priceType.name as priceType',
+          'category.name as categoryName',
+          'section.name as sectionName')
+        .groupBy('products.id',
+          'price.id')
     }
-
-    const query =
-      () => {
-        return ProductsModel.query()
-          .andWhere('priceType.id', '=',
-            raw('products.priceTypeId'))
-          .andWhere('price.priceTypeId', '=',
-            raw('products.priceTypeId'))
+    const priceQuery = () => {
+      if (price.length === 1) {
+        (price[0] > 0 &&
+            price.push(price[0]))
+      }
+      if (price.length === 2) {
+        return query()
           .andWhere('price.price', '>=', price[0])
           .andWhere('price.price', '<=', price[1])
-          .leftOuterJoinRelated('views')
-          .leftOuterJoinRelated('priceType')
-          .leftOuterJoinRelated('price')
-          .leftOuterJoinRelated('category')
-          .leftOuterJoinRelated('category.parent', { alias: 'section' })
-          .leftOuterJoinRelated('reviews')
-          .leftOuterJoinRelated('favorites')
-          .select('products.*',
-            'views.views as view',
-            'price.id as priceId',
-            raw('avg(DISTINCT reviews.rating) as rating'),
-            raw('count(DISTINCT reviews.rating) as ratingCount'),
-            raw('count(DISTINCT favorites.id) as countInFavorites'),
-            'price.price as price',
-            'price.currency as priceCurrency',
-            'priceType.name as priceType',
-            'category.name as categoryName',
-            'section.name as sectionName')
-          .groupBy('products.id',
-            'price.id')
+      } else {
+        return query()
       }
-    const filterQuery =
-      () => {
-        if (filter[0] === '') {
-          return query()
-        } else {
-          return query()
-            .leftOuterJoinRelated('characteristicsValues')
-            .whereIn('characteristicsValues.value', filter)
-        }
+    }
+    const filterQuery = () => {
+      if (filter[0] === '') {
+        return priceQuery()
+      } else {
+        return priceQuery()
+          .whereIn('characteristicsSetValue:characteristicsValues.value', filter)
       }
-    const PageOrFirst =
-      () => {
-        if (page === 1 && limit === 1) {
-          return filterQuery().first()
-        } else {
-          return filterQuery().page(page - 1, limit)
-        }
+    }
+    const PageOrFirst = () => {
+      if (page === 1 && limit === 1) {
+        return filterQuery()
+          .first()
+      } else {
+        return filterQuery()
+          .page(page - 1, limit)
       }
+    }
 
-    const groupByQuery =
-      () => {
-        switch (sortBy) {
-          case 'price_asc': return PageOrFirst().orderBy('price.price', 'asc')
-          case 'price_desc': return PageOrFirst().orderBy('price.price', 'desc')
-          case 'id_desc': return PageOrFirst().orderBy('products.id', 'desc')
-          case 'views_desc': return PageOrFirst().orderBy('views.views', 'desc')
-          case 'rating_desc': return PageOrFirst().orderBy('rating', 'desc')
-          case 'favorites_desc': return PageOrFirst().orderBy('countInFavorites', 'desc')
-          default: return PageOrFirst()
-        }
+    const groupByQuery = () => {
+      switch (sortBy) {
+        case 'price_asc': return PageOrFirst().orderBy('price.price', 'asc')
+        case 'price_desc': return PageOrFirst().orderBy('price.price', 'desc')
+        case 'id_desc': return PageOrFirst().orderBy('products.id', 'desc')
+        case 'views_desc': return PageOrFirst().orderBy('views.views', 'desc')
+        case 'rating_desc': return PageOrFirst().orderBy('rating', 'desc')
+        case 'favorites_desc': return PageOrFirst().orderBy('countInFavorites', 'desc')
+        default: return PageOrFirst()
       }
+    }
     return groupByQuery()
   }
 
@@ -437,7 +440,7 @@ class ProductsService implements IProductService {
     }
     return {
       success: true,
-      result,
+      result: { ...result, page, limit },
       message: `Страница ${page} продуктов, ID${id} категории, ` +
         filterMessage(filter, price, sortBy) +
         'успешно загружена'
@@ -503,12 +506,12 @@ class ProductsService implements IProductService {
         success: false,
         message: `Продуктов на странице ${page}, ` +
           filterMessage(filter, price, sortBy) +
-          ' не найдено'
+          'не найдено'
       }
     }
     return {
       success: true,
-      result,
+      result: { ...result, page, limit },
       message: `Страница ${page} продуктов, ` +
         filterMessage(filter, price, sortBy) +
         'успешно загружена'
@@ -531,7 +534,7 @@ class ProductsService implements IProductService {
     }
     return {
       success: true,
-      result,
+      result: { ...result, page, limit },
       message: 'Поиск прошёл успешно'
     }
   }

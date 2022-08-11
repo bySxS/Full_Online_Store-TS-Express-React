@@ -102,7 +102,7 @@ export default class ProductsModel extends Model {
           to: Category.tableName + '.id'
         }
       },
-      characteristicsValues: {
+      characteristicsSetValue: {
         relation: Model.HasManyRelation,
         modelClass: CharacteristicsSetValue,
         join: {
