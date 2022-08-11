@@ -53,6 +53,12 @@ const knexConfig: IKnexConfig = {
     },
     debug (message: string) {
       logger.info('knex mysql debug: ' + message, { knex: 'debug' })
+    },
+    deprecate (message: string) {
+      logger.info('knex mysql deprecate: ' + message, { knex: 'deprecate' })
+    },
+    warn (message: string) {
+      logger.info('knex mysql warn: ' + message, { knex: 'warn' })
     }
   }
 
