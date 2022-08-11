@@ -6,10 +6,10 @@ export const filterMessage =
     return (filter[0] !== ''
       ? `c фильтрами (${filter.join(', ')}), `
       : '') +
-    (price[0] !== 0
-      ? `цены от ${price.join(' до ')}, `
+    ((price[0] > 0 || price.length === 2)
+      ? `с ценой от ${price.join(' до ')}, `
       : '') +
     (sortBy !== ''
-      ? `сортировкой '${sortBy}', `
+      ? `с сортировкой '${sortBy}', `
       : '')
   }

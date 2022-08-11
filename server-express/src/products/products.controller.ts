@@ -104,7 +104,7 @@ class ProductsController implements IProductController {
       const limit = +(req.query.limit || 10)
       const page = +(req.query.page || 1)
       const filterText = String(req.query.filter || '')
-      const priceText = String(req.query.price || '0_1000000000')
+      const priceText = String(req.query.price || '0')
       const filter = filterText.split(',')
       const price = priceText.split('_').map(price => +price)
       const sort = String(req.query.sort || '')
@@ -122,7 +122,7 @@ class ProductsController implements IProductController {
       const id = +req.params.id
       const filterText = String(req.query.filter || '')
       const filter = filterText.split(',')
-      const priceText = String(req.query.price || '0_1000000000')
+      const priceText = String(req.query.price || '0')
       const price = priceText.split('_').map(price => +price)
       const sort = String(req.query.sort || '')
       const limit = +(req.query.limit || 10)

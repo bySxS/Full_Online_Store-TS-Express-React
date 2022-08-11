@@ -398,7 +398,7 @@ class UsersService implements IUserService {
     }
     return {
       success: true,
-      result,
+      result: { ...result, page, limit },
       message: `Страница ${page} пользователей успешно загружена`
     }
   }
@@ -417,7 +417,7 @@ class UsersService implements IUserService {
     }
     return {
       success: true,
-      result: users,
+      result: { ...users, page, limit },
       message: 'Поиск прошёл успешно'
     }
   }

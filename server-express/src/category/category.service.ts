@@ -182,7 +182,7 @@ class CategoryService implements ICategoryService {
 
     return {
       success: true,
-      result,
+      result: { ...result, page, limit },
       message: 'Поиск прошёл успешно'
     }
   }

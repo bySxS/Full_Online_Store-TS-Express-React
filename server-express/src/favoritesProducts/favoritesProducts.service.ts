@@ -105,7 +105,7 @@ class FavoritesProductsService implements IFavoritesProductService {
     }
     return {
       success: true,
-      result,
+      result: { ...result, page, limit },
       message: `Страница ${page} с избранными продуктами, ` +
         `у пользователя с ID${userId}, ` +
         filterMessage(filter, price, sortBy) +

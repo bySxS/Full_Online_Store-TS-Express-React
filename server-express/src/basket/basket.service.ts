@@ -210,7 +210,9 @@ class BasketService implements IBasketService {
     }
     const result = {
       results: products,
-      total: orders.total
+      total: orders.total,
+      limit,
+      page
     }
     return {
       success: true,
@@ -240,7 +242,9 @@ class BasketService implements IBasketService {
     }
     const result = {
       results: products,
-      total: orders.total
+      total: orders.total,
+      page,
+      limit
     }
     return {
       success: true,

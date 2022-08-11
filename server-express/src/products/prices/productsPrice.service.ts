@@ -101,7 +101,7 @@ class ProductsPriceService implements IProductPriceService {
     }
     return {
       success: true,
-      result,
+      result: { ...result, page, limit },
       message: `Страница ${page} тип цен успешно загружена`
     }
   }

@@ -39,7 +39,7 @@ class FavoritesProductController implements IFavoritesProductController {
     try {
       const filterText = String(req.query.filter || '')
       const filter = filterText.split(',')
-      const priceText = String(req.query.price || '0_1000000000')
+      const priceText = String(req.query.price || '0')
       const price = priceText.split('_').map(price => +price)
       const sort = String(req.query.sort || '')
       const authUser = req.user as IJwt
