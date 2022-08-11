@@ -1,0 +1,46 @@
+import { Knex } from 'knex'
+
+exports.seed = async function (knex: Knex) {
+  await knex('characteristicsValues').insert([
+    { id: 1, value: 'Yellow' },
+    { id: 2, value: '1 месяц' },
+    { id: 3, value: 'NFC' },
+    { id: 4, value: 'Wi-Fi' },
+    { id: 5, value: 'Гарантийный талон' },
+    { id: 6, value: 'Зарядное устройство' },
+    { id: 7, value: '3G' },
+    { id: 8, value: '4G (LTE)' },
+    { id: 9, value: '5G' },
+    { id: 10, value: 'GSM' },
+    { id: 11, value: '6.67' },
+    { id: 12, value: '2400 x 1080' },
+    { id: 13, value: 'AMOLED' },
+    { id: 14, value: '10' },
+    { id: 15, value: 'Стекло (Gorilla Glass 5)' },
+    { id: 16, value: '2' },
+    { id: 17, value: 'Nano-SIM' },
+    { id: 18, value: '8 ГБ' },
+    { id: 19, value: '256 ГБ' },
+    { id: 20, value: 'Android' },
+    { id: 21, value: '16 Мп' },
+    { id: 22, value: 'Qualсomm Snapdragon' },
+    { id: 23, value: 'Kryo 660' },
+    { id: 24, value: 'Qualcomm Adreno 619' },
+    { id: 25, value: '8' },
+    { id: 26, value: '2.2 ГГц' },
+    { id: 27, value: '108 Мп + 8 Мп + 2 Мп' },
+    { id: 28, value: 'Вспышка' },
+    { id: 29, value: 'Full HD / 1920х1080 / стереозвук' },
+    { id: 30, value: '5000 мА*ч' },
+    { id: 31, value: 'Type-C' },
+    { id: 32, value: 'Type-B' },
+    { id: 33, value: '3.5 мм' },
+    { id: 34, value: 'GPS' },
+    { id: 35, value: 'Есть' },
+    { id: 36, value: '205' },
+    { id: 37, value: '76.1 мм' },
+    { id: 38, value: '164.2 мм' },
+    { id: 39, value: '8.1 мм' }
+
+  ])
+}
