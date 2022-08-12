@@ -355,7 +355,7 @@ class ProductsService implements IProductService {
         .leftOuterJoinRelated('category.parent', { alias: 'section' })
         .leftOuterJoinRelated('reviews')
         .leftOuterJoinRelated('favorites')
-        .leftOuterJoinRelated('characteristicsSetValue.characteristicsValues')
+        // .leftOuterJoinRelated('characteristicsSetValue')
         .select('products.*',
           'views.views as view',
           'price.id as priceId',
@@ -366,9 +366,14 @@ class ProductsService implements IProductService {
           'price.currency as priceCurrency',
           'priceType.name as priceType',
           'category.name as categoryName',
-          'section.name as sectionName')
+          'section.name as sectionName'
+          // raw('concat(characteristicsSetValue.characteristicsNameId, \' value: \', characteristicsSetValue.characteristicsValueId)')
+          //  .as('characteristics')
+        )
         .groupBy('products.id',
-          'price.id')
+          'price.id'
+          // 'characteristicsSetValue.id'
+        )
     }
     const priceQuery = () => {
       if (price.length === 1) {
@@ -388,6 +393,7 @@ class ProductsService implements IProductService {
         return priceQuery()
       } else {
         return priceQuery()
+          .leftOuterJoinRelated('characteristicsSetValue.characteristicsValues')
           .whereIn('characteristicsSetValue:characteristicsValues.value', filter)
       }
     }
