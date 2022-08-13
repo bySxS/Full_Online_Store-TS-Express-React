@@ -9,6 +9,7 @@ import ProductsViews from './views/productsViews.model'
 import ProductsPriceType from './prices/productsPriceType.model'
 import CharacteristicsSetValue from '@/characteristics/characteristicsSetValue.model'
 import FavoritesProducts from '@/favoritesProducts/favoritesProducts.model'
+import { ICharacteristicProduct } from '@/characteristics/characteristics.interface'
 Model.knex(dbKnex)
 
 // ProductsModel
@@ -46,6 +47,7 @@ export default class ProductsModel extends Model {
 
   // innerJoin as
   public priceId!: number
+  characteristics!: ICharacteristicProduct[]
 
   static get tableName () {
     return 'products'

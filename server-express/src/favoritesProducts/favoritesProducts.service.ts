@@ -92,7 +92,7 @@ class FavoritesProductsService implements IFavoritesProductService {
         .getAllProductsWithFilter(limit, page, filter, price, sortBy)
         .where('favorites.userId', '=', userId)
     }
-    const result = await query()
+    let result = await query()
     if (!result || (result &&
       'total' in result && result.total === 0)) {
       return {
@@ -102,6 +102,9 @@ class FavoritesProductsService implements IFavoritesProductService {
           filterMessage(filter, price, sortBy) +
           'не найдено'
       }
+    }
+    if ('results' in result) {
+      result = await ProductsService.sortAndAddCharacteristicsToProducts(result)
     }
     return {
       success: true,

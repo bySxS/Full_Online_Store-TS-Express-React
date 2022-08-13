@@ -11,6 +11,8 @@ import { Page, QueryBuilder, raw } from 'objection'
 import { div } from '@/service/math.service'
 import { delFile, saveFile } from '@/service/file.service'
 import { filterMessage } from '@/service/filterMessage.service'
+import CharacteristicsSetValueModel from '@/characteristics/characteristicsSetValue.model'
+import CharacteristicsService from '@/characteristics/characteristics.service'
 
 class ProductsService implements IProductService {
   private static instance = new ProductsService()
@@ -355,7 +357,6 @@ class ProductsService implements IProductService {
         .leftOuterJoinRelated('category.parent', { alias: 'section' })
         .leftOuterJoinRelated('reviews')
         .leftOuterJoinRelated('favorites')
-        // .leftOuterJoinRelated('characteristicsSetValue')
         .select('products.*',
           'views.views as view',
           'price.id as priceId',
@@ -366,14 +367,9 @@ class ProductsService implements IProductService {
           'price.currency as priceCurrency',
           'priceType.name as priceType',
           'category.name as categoryName',
-          'section.name as sectionName'
-          // raw('concat(characteristicsSetValue.characteristicsNameId, \' value: \', characteristicsSetValue.characteristicsValueId)')
-          //  .as('characteristics')
-        )
+          'section.name as sectionName')
         .groupBy('products.id',
-          'price.id'
-          // 'characteristicsSetValue.id'
-        )
+          'price.id')
     }
     const priceQuery = () => {
       if (price.length === 1) {
@@ -421,6 +417,40 @@ class ProductsService implements IProductService {
     return groupByQuery()
   }
 
+  getCharacteristicsForProducts (
+    productsIds: number[]
+  ): QueryBuilder<CharacteristicsSetValueModel, CharacteristicsSetValueModel[]> {
+    return CharacteristicsService.getCharacteristicValue()
+      .whereIn('characteristicsSetValue.productId', productsIds)
+      .andWhere('characteristicsName:parent.name', '=', 'Общие характеристики')
+      .select('characteristicsSetValue.productId')
+  }
+
+  async sortAndAddCharacteristicsToProducts (
+    products: Page<ProductsModel>
+  ): Promise<Page<ProductsModel>> {
+    const newProducts = products
+    const characteristics =
+        await this.getCharacteristicsForProducts(
+          products.results.map(product => product.id)
+        )
+    const productsIdsAdded: number[] = []
+    characteristics.forEach(char => {
+      if (!productsIdsAdded.includes(char.productId)) {
+        productsIdsAdded.push(char.productId)
+        const characteristicForProduct =
+            characteristics.filter(character => character.productId === char.productId)
+        newProducts.results.forEach(product => {
+          if (product.id === char.productId) {
+            product.characteristics =
+                CharacteristicsService.sortCharacteristicsTree(characteristicForProduct)
+          }
+        })
+      }
+    })
+    return newProducts
+  }
+
   async getAllByCategoryId (
     id: number,
     filter: string[],
@@ -434,7 +464,7 @@ class ProductsService implements IProductService {
         .where('products.categoryId', '=', id)
     }
 
-    const result = await query()
+    let result = await query()
 
     if (!result || (result && 'total' in result && result.total === 0)) {
       return {
@@ -443,6 +473,9 @@ class ProductsService implements IProductService {
           filterMessage(filter, price, sortBy) +
           'не найдено'
       }
+    }
+    if ('results' in result) {
+      result = await this.sortAndAddCharacteristicsToProducts(result)
     }
     return {
       success: true,
@@ -506,14 +539,17 @@ class ProductsService implements IProductService {
       return this.getAllProductsWithFilter(limit, page, filter, price, sortBy)
         .where('products.title', 'like', '%%')
     }
-    const result = await query()
+    let result = await query()
     if (!result || (result && 'total' in result && result.total === 0)) {
       return {
         success: false,
         message: `Продуктов на странице ${page}, ` +
-          filterMessage(filter, price, sortBy) +
-          'не найдено'
+            filterMessage(filter, price, sortBy) +
+            'не найдено'
       }
+    }
+    if ('results' in result) {
+      result = await this.sortAndAddCharacteristicsToProducts(result)
     }
     return {
       success: true,

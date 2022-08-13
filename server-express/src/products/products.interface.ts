@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import { FileArray, UploadedFile } from 'express-fileupload'
 import ProductsModel from './products.model'
 import { Page, QueryBuilder } from 'objection'
+import CharacteristicsSetValueModel from '@/characteristics/characteristicsSetValue.model'
 
 export interface IProduct {
   id: number,
@@ -87,6 +88,12 @@ export interface IProductService {
                        sortBy: string,
                        limit: number, page: number) =>
     Promise<IMessage>
+  getCharacteristicsForProducts: (
+      productsIds: number[]
+  ) => QueryBuilder<CharacteristicsSetValueModel, CharacteristicsSetValueModel[]>
+  sortAndAddCharacteristicsToProducts: (
+      products: Page<ProductsModel>
+  ) => Promise<Page<ProductsModel>>
 }
 
 export interface IProductController {
