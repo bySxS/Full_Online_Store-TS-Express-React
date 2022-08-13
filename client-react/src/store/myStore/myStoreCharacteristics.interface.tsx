@@ -14,15 +14,19 @@ export interface ICharacteristicValue {
   value: string
 }
 
-export interface ICharacteristic {
-  characteristicNameId: number
-  characteristicName: string
+export interface ICharValue {
   characteristicValueId: number
   characteristicValue: string
+}
+
+export interface ICharName {
+  characteristicNameId: number
+  characteristicName: string
+  value: ICharValue[]
 }
 
 export interface ICharacteristicSection {
   sectionName: string
   sectionId: number
-  characteristics: ICharacteristic[]
+  characteristics: ICharName[]
 }

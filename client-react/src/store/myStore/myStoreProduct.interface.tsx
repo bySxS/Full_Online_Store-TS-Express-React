@@ -1,3 +1,5 @@
+import { ICharacteristicSection } from './myStoreCharacteristics.interface'
+
 export interface IProduct {
   id: number
   title: string
@@ -33,6 +35,7 @@ export interface IProduct {
   priceType: string
   categoryName: string
   sectionName: string
+  characteristics?: ICharacteristicSection[]
   parentProduct?: IProduct
 }
 

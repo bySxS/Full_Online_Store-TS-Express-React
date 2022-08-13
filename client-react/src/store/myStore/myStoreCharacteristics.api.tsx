@@ -7,15 +7,15 @@ import {
   ICharacteristicValue
 } from 'store/myStore/myStoreCharacteristics.interface'
 
-const myStoreCharacteristicApi = createApi({
-  reducerPath: 'storeCharacteristic/api',
+const myStoreCharacteristicsApi = createApi({
+  reducerPath: 'storeCharacteristics/api',
   baseQuery: baseQueryWithRefreshToken,
   refetchOnFocus: true,
   endpoints: build => ({
     addCharacteristicName: build.mutation<IMessage<ICharacteristicName>,
       ICharacteristicName>({
         query: (body) => ({
-          url: 'characteristic/name',
+          url: 'characteristics/name',
           method: 'POST',
           body
         })
@@ -24,7 +24,7 @@ const myStoreCharacteristicApi = createApi({
     updateCharacteristicName: build.mutation<IMessage<ICharacteristicName>,
   { characteristicNameId: number, body: ICharacteristicName }>({
     query: ({ characteristicNameId, body }) => ({
-      url: 'characteristic/name/' + characteristicNameId,
+      url: 'characteristics/name/' + characteristicNameId,
       method: 'PUT',
       body
     })
@@ -33,7 +33,7 @@ const myStoreCharacteristicApi = createApi({
     deleteCharacteristicName: build.mutation<IMessage<null>,
       number>({
         query: (characteristicNameId: number) => ({
-          url: 'characteristic/name/' + characteristicNameId,
+          url: 'characteristics/name/' + characteristicNameId,
           method: 'DELETE'
         })
       }),
@@ -41,7 +41,7 @@ const myStoreCharacteristicApi = createApi({
     addCharacteristicValue: build.mutation<IMessage<ICharacteristicValue>,
       ICharacteristicValue>({
         query: (body) => ({
-          url: 'characteristic/value',
+          url: 'characteristics/value',
           method: 'POST',
           body
         })
@@ -50,7 +50,7 @@ const myStoreCharacteristicApi = createApi({
     updateCharacteristicValue: build.mutation<IMessage<ICharacteristicValue>,
       { characteristicValueId: number, body: ICharacteristicValue }>({
         query: ({ characteristicValueId, body }) => ({
-          url: 'characteristic/value/' + characteristicValueId,
+          url: 'characteristics/value/' + characteristicValueId,
           method: 'PUT',
           body
         })
@@ -59,7 +59,7 @@ const myStoreCharacteristicApi = createApi({
     deleteCharacteristicValue: build.mutation<IMessage<null>,
       number>({
         query: (characteristicValueId: number) => ({
-          url: 'characteristic/value/' + characteristicValueId,
+          url: 'characteristics/value/' + characteristicValueId,
           method: 'DELETE'
         })
       }),
@@ -67,14 +67,14 @@ const myStoreCharacteristicApi = createApi({
     getCharacteristicProductById: build.query<IMessage<ICharacteristicSection>,
       number>({
         query: (productId: number) => ({
-          url: 'characteristic/product/' + productId
+          url: 'characteristics/product/' + productId
         })
       })
 
   })
 })
 
-export default myStoreCharacteristicApi
+export default myStoreCharacteristicsApi
 
 export const {
   useAddCharacteristicNameMutation,
@@ -85,4 +85,4 @@ export const {
   useUpdateCharacteristicValueMutation,
   useLazyGetCharacteristicProductByIdQuery,
   endpoints: myStoreCharacteristicEndpoint
-} = myStoreCharacteristicApi
+} = myStoreCharacteristicsApi
