@@ -8,33 +8,27 @@ const SideBar = () => {
   const { isAuth } = useAuth()
 
   return (
-    <div className={st.sideMenu}>
-      <div className={'top-[30%] relative'}>
-      <ul className="nav nav-pills nav-flush flex-column mb-auto">
-        <li className="nav-item">
-          <NavLink to={RoutePath.HOME} className="nav-link link-dark py-3 border-bottom rounded-0">
-            <div className={st.link_flex}>
-              <div><i className="bi bi-house-fill text-2xl pr-1.5"></i></div>
-              <div className={st.name_page}>Главная</div>
-            </div>
+    <div className={st.sideMenuHead}>
+      <div className={st.sideMenuBody}>
+      <ul>
+        <li>
+          <NavLink to={RoutePath.HOME} className="sideBarLink">
+              <i className={`bi bi-house-fill ${st.icon}`}/>
+              <span className={st.name_page}>Главная</span>
           </NavLink>
         </li>
         {isAuth &&
-          <li className="nav-item">
-            <NavLink to={RoutePath.FAVORITES_PRODUCT} className="nav-link link-dark py-3 border-bottom rounded-0">
-              <div className={st.link_flex}>
-                <div><i className="bi bi-bookmark-fill text-2xl pr-1.5"></i></div>
-                <div className={st.name_page}>Избранные товары</div>
-              </div>
+          <li>
+            <NavLink to={RoutePath.FAVORITES_PRODUCT} className="sideBarLink">
+                <i className={`bi bi-bookmark-fill ${st.icon}`}/>
+                <span className={st.name_page}>Избранные товары</span>
             </NavLink>
           </li>
         }
-        <li className="nav-item">
-          <NavLink to={RoutePath.PRODUCTS} className="nav-link link-dark py-3 border-bottom rounded-0">
-            <div className={st.link_flex}>
-              <div><i className="bi bi-grid-fill text-2xl pr-1.5"></i></div>
-              <div className={st.name_page}>Товары</div>
-            </div>
+        <li>
+          <NavLink to={RoutePath.PRODUCTS} className="sideBarLink">
+              <i className={`bi bi-grid-fill ${st.icon}`}/>
+              <span className={st.name_page}>Товары</span>
           </NavLink>
         </li>
       </ul>

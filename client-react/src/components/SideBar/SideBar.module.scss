@@ -1,7 +1,17 @@
-.sideMenu {
+.sideMenuHead {
   @apply fixed z-30 grid w-[204px] h-full content-center
   justify-center bg-gray-50 text-gray-600 pb-[100px];
 }
+
+.sideMenuBody {
+  @apply top-[30%] relative w-[204px];
+}
+
+.icon {
+  @apply text-2xl pr-1.5;
+}
+
+
 
 .nav_link {
   @apply text-gray-800 py-3 border-b rounded-none;
@@ -9,16 +19,16 @@
 
 .link_flex {
   @apply flex items-center justify-start flex-row;
-  :hover {
-    filter: drop-shadow(3px 3px 5px #4e03d5);
-  }
 }
 
 @media only screen and (max-width: 775px) {
   .name_page {
     display: none;
   }
-  .sideMenu {
+  .sideMenuHead {
+    @apply w-[63px];
+  }
+  .sideMenuBody {
     @apply w-[63px];
   }
 }

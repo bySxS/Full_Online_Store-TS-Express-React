@@ -24,6 +24,22 @@
 .nav-link.active, .dropdown-item.active {
   //text-decoration: underline;
   background: #766ED3 !important;
+  color: #ffffff!important;
+}
+
+.sideBarLink {
+  @apply py-3 pl-3 border-b px-4 text-black flex flex-row items-center;
+  text-decoration: none;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.sideBarLink:hover {
+  background: #dedede;
+}
+
+.sideBarLink.active {
+  background: #766ED3 !important;
+  color: #ffffff !important;
 }
 
 .App {
