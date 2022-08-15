@@ -10,6 +10,8 @@ import ProductDetails from 'pages/ProductDetails/ProductDetails'
 import UserDetails from 'pages/UserDetails/UserDetails'
 import AccessMiddleware, { IRequireUser } from 'components/AccessMiddleware/AccessMiddleware'
 import Loader from 'components/UI/Loader/Loader'
+import Login from 'components/Login/Login'
+import Registration from 'components/Registration/Registration'
 
 // test динамической подгрузки
 const AdminPanel = lazy(() => import('pages/AdminPanel/AdminPanel'))
@@ -103,13 +105,13 @@ export const routes: IRoute[] = [
   {
     path: RoutePath.LOGIN,
     allowAuth: false,
-    element: <LoginReg name={RouteName.LOGIN} />,
+    element: <LoginReg name={RouteName.LOGIN}><Login/></LoginReg>,
     breadcrumb: RouteName.LOGIN
   },
   {
     path: RoutePath.REGISTRATION,
     allowAuth: false,
-    element: <LoginReg name={RouteName.REGISTRATION} />,
+    element: <LoginReg name={RouteName.REGISTRATION}><Registration/></LoginReg>,
     breadcrumb: RouteName.REGISTRATION
   },
   {
