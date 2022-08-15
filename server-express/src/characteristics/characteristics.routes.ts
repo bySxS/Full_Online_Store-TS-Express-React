@@ -6,8 +6,8 @@ import CharacteristicsController from './characteristics.controller'
 import { validateId } from '@/validator'
 import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
 import {
-  validateCharacteristicAddName,
-  validateCharacteristicSetValue
+  validateCharacteristicAddName, validateCharacteristicDelete,
+  validateCharacteristicSetValue, validateCharacteristicUpdate
 } from './characteristics.validator'
 
 const router = Router()
@@ -37,13 +37,13 @@ try {
     RoleMiddleware(['admin']),
     CharacteristicsController.addCharacteristicValueProduct)
   // success
-  router.put('/value/:id',
-    validateId(), validateCharacteristicSetValue(), ValidatorResultMiddleware,
+  router.put('/value',
+    validateCharacteristicUpdate(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     CharacteristicsController.updCharacteristicValueProductById)
   // success
-  router.delete('/value/:id',
-    validateId(), ValidatorResultMiddleware,
+  router.delete('/value',
+    validateCharacteristicDelete(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     CharacteristicsController.delCharacteristicValueProductById)
   // success

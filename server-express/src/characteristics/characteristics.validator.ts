@@ -16,6 +16,35 @@ export const validateCharacteristicSetValue = () => {
   ]
 }
 
+export const validateCharacteristicUpdate = () => {
+  return [
+    body('value',
+      'Значение характеристики (value) не указано')
+      .notEmpty(),
+    body('productId', 'ID продукта (productId) не указано')
+      .notEmpty(),
+    body('productId', 'ID продукта (productId) должны быть только цифры')
+      .matches('^[a-zA-Z0-9]+$'),
+    body('characteristicsValueId', 'ID значения характеристики (characteristicsValueId) не указано')
+      .notEmpty(),
+    body('characteristicsValueId', 'ID значения характеристики (characteristicsValueId) должны быть только цифры')
+      .matches('^[a-zA-Z0-9]+$')
+  ]
+}
+
+export const validateCharacteristicDelete = () => {
+  return [
+    body('productId', 'ID продукта (productId) не указано')
+      .notEmpty(),
+    body('productId', 'ID продукта (productId) должны быть только цифры')
+      .matches('^[a-zA-Z0-9]+$'),
+    body('characteristicsValueId', 'ID значения характеристики (characteristicsValueId) не указано')
+      .notEmpty(),
+    body('characteristicsValueId', 'ID значения характеристики (characteristicsValueId) должны быть только цифры')
+      .matches('^[a-zA-Z0-9]+$')
+  ]
+}
+
 export const validateCharacteristicAddName = () => {
   return [
     body('name',

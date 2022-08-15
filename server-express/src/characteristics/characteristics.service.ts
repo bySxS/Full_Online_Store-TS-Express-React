@@ -5,7 +5,7 @@ import ApiError from '@/apiError'
 import {
   ICharacteristic,
   ICharacteristicName, ICharacteristicProduct,
-  ICharacteristicService, ICharacteristicSetValue
+  ICharacteristicService, ICharacteristicSetValue, ICharacteristicValueDelete, ICharacteristicValueUpdate
 } from './characteristics.interface'
 import { QueryBuilder, raw } from 'objection'
 import CharacteristicsValuesModel from '@/characteristics/characteristicsValues.model'
@@ -23,9 +23,9 @@ class CharacteristicsService implements ICharacteristicService {
   async addCharacteristicValueProduct (
     Dto: ICharacteristicSetValue): Promise<IMessage> {
     const { productId, characteristicsNameId, value } = Dto
-    if (!productId) {
+    if (!productId || !characteristicsNameId) {
       throw ApiError.badRequest(
-        'Не выбран id продукта',
+        'Не выбран id продукта или id названия характеристики',
         'CharacteristicsService addCharacteristicProduct')
     }
     let haveValue = await CharacteristicsValuesModel.query()
@@ -69,12 +69,19 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
-  async updCharacteristicValueProduct (id: number, Dto: ICharacteristicSetValue): Promise<IMessage> {
-    const { productId, characteristicsNameId, value } = Dto
-    if (!productId) {
+  async updCharacteristicValueProduct (Dto: ICharacteristicValueUpdate): Promise<IMessage> {
+    const { productId, characteristicsValueId, value } = Dto
+    const setValue = await CharacteristicsSetValueModel.query()
+      .where({
+        characteristicsValueId,
+        productId
+      })
+      .first()
+      .select('*')
+    if (!setValue) {
       throw ApiError.badRequest(
-        'Не выбран id продукта',
-        'CharacteristicsService updCharacteristicProduct')
+        `Характеристики с id${characteristicsValueId} к продукту нет`,
+        'CharacteristicsService delCharacteristicProduct')
     }
     let haveValue = await CharacteristicsValuesModel.query()
       .findOne({ value })
@@ -85,10 +92,10 @@ class CharacteristicsService implements ICharacteristicService {
         .select('*')
     }
     const result = await CharacteristicsSetValueModel.query()
-      .where({ id })
+      .findById(setValue.id)
       .update({
-        productId: +productId,
-        characteristicsNameId: +characteristicsNameId,
+        productId: setValue.productId,
+        characteristicsNameId: setValue.characteristicsNameId,
         characteristicsValueId: haveValue.id
       })
     if (!result) {
@@ -98,22 +105,32 @@ class CharacteristicsService implements ICharacteristicService {
     }
     return {
       success: true,
-      result: { productId, characteristicsNameId, value },
-      message: `Характеристика ${id} для продукта с id${productId} изменена`
+      result: { productId, id: setValue.id, characteristicsValueId, value },
+      message: `Характеристика ${setValue.id} для продукта с id${productId} изменена`
     }
   }
 
-  async delCharacteristicValueProduct (id: number): Promise<IMessage> {
+  async delCharacteristicValueProduct (Dto: ICharacteristicValueDelete): Promise<IMessage> {
+    const { productId, characteristicsValueId } = Dto
     const setValue = await CharacteristicsSetValueModel.query()
-      .findById(id)
-      .select('characteristicsValueId', 'productId')
+      .where({
+        characteristicsValueId,
+        productId
+      })
+      .first()
+      .select('characteristicsValueId', 'productId', 'id')
     if (!setValue) {
       throw ApiError.badRequest(
-        `Характеристики с id${id} к продукту нет`,
+        `Характеристики с id${characteristicsValueId} к продукту нет`,
         'CharacteristicsService delCharacteristicProduct')
     }
     const result = await CharacteristicsSetValueModel.query()
-      .deleteById(id)
+      .where({
+        characteristicsValueId,
+        productId
+      })
+      .first()
+      .delete()
     const haveValueInProducts =
       await CharacteristicsValuesModel.query()
         .findById(setValue.characteristicsValueId)
@@ -133,7 +150,7 @@ class CharacteristicsService implements ICharacteristicService {
     return {
       success: true,
       result,
-      message: `Характеристика ${id} к продукту c id${setValue.productId} удалена`
+      message: `Характеристика ${characteristicsValueId} к продукту c id${productId} удалена`
     }
   }
 

@@ -29,10 +29,9 @@ class CharacteristicsController implements ICharacteristicController {
     req: Request, res: Response, next: NextFunction
   ) {
     try {
-      const id = +req.params.id
       const result =
         await CharacteristicsService
-          .updCharacteristicValueProduct(id, req.body)
+          .updCharacteristicValueProduct(req.body)
       return res.status(201).json(result)
     } catch (err) {
       next(err)
@@ -43,10 +42,9 @@ class CharacteristicsController implements ICharacteristicController {
     req: Request, res: Response, next: NextFunction
   ) {
     try {
-      const id = +req.params.id
       const result =
         await CharacteristicsService
-          .delCharacteristicValueProduct(id)
+          .delCharacteristicValueProduct(req.body)
       return res.status(200).json(result)
     } catch (err) {
       next(err)

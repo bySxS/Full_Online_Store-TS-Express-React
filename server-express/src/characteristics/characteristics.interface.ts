@@ -12,6 +12,17 @@ export interface ICharacteristicName {
   parentId?: number
 }
 
+export interface ICharacteristicValueDelete {
+  productId: number
+  characteristicsValueId: number
+}
+
+export interface ICharacteristicValueUpdate {
+  productId: number
+  characteristicsValueId: number
+  value: string
+}
+
 export interface ICharacteristicSetValue {
   id?: number
   productId: number
@@ -42,8 +53,8 @@ export interface ICharacteristicService {
   delCharacteristicName: (id: number) => Promise<IMessage>
 
   addCharacteristicValueProduct: (Dto: ICharacteristicSetValue) => Promise<IMessage>
-  updCharacteristicValueProduct: (id: number, Dto: ICharacteristicSetValue) => Promise<IMessage>
-  delCharacteristicValueProduct: (id: number) => Promise<IMessage>
+  updCharacteristicValueProduct: (Dto: ICharacteristicValueUpdate) => Promise<IMessage>
+  delCharacteristicValueProduct: (Dto: ICharacteristicValueDelete) => Promise<IMessage>
   getCharacteristicValueProductById: (id: number) => Promise<IMessage>
   getAllCharacteristics: ({ categoryId }: { categoryId: number }) => Promise<IMessage>
   getAllCharacteristicsNameByCategoryId: (categoryId: number) => Promise<IMessage>
