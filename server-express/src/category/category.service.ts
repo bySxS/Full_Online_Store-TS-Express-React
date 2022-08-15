@@ -2,7 +2,7 @@ import { IMessage } from '@/interface'
 import CategoryModel from './category.model'
 import ApiError from '@/apiError'
 import { ICategory, ICategoryOut, ICategoryService, ISectionOut } from './category.interface'
-import { QueryBuilder, raw } from 'objection'
+import { raw } from 'objection'
 
 class CategoryService implements ICategoryService {
   private static instance = new CategoryService()
@@ -117,9 +117,11 @@ class CategoryService implements ICategoryService {
           'category.parentId',
           'category.name as categoryName',
           'category.nameEng as categoryNameEng',
+          'category.iconClass as categoryIconClass',
           raw('count(DISTINCT products.id) as categoryCountProducts'),
           'parent.name as sectionName',
-          'parent.nameEng as sectionNameEng')
+          'parent.nameEng as sectionNameEng',
+          'parent.iconClass as sectionIconClass')
         .groupBy('category.id')
     }
 
@@ -139,7 +141,7 @@ class CategoryService implements ICategoryService {
 
     const section: ISectionOut[] = []
     categoryNotSort.forEach((all) => {
-      const ids = new Set(section.map(section => section.sectionId))
+      const ids = new Set(section.map(section => section.sectionId)) // добавленные
       if (!ids.has(all.parentId)) {
         const filterCharacteristics =
           categoryNotSort.filter(category => category.parentId === all.parentId)
@@ -150,6 +152,7 @@ class CategoryService implements ICategoryService {
             categoryId: category.id,
             categoryName: category.categoryName,
             categoryNameEng: category.categoryNameEng,
+            categoryIconClass: category.categoryIconClass,
             categoryCountProducts: category.categoryCountProducts
           })
           sectionCountProducts += category.categoryCountProducts
@@ -158,14 +161,30 @@ class CategoryService implements ICategoryService {
           sectionId: all.parentId,
           sectionName: all.sectionName,
           sectionNameEng: all.sectionNameEng,
+          sectionIconClass: all.sectionIconClass,
           sectionCountProducts,
           category: cat
         })
       }
     })
+    section.forEach((sect) => {
+      section
+        .filter((sect2) => sect2.sectionId !== sect.sectionId)
+        .map((sect2) => sect2.category)
+        .forEach((category) => {
+          category.forEach((cat) => {
+            if (sect.sectionId === cat.categoryId) {
+              cat.subcategory = sect.category
+              sect.sectionName = 'delete'
+            }
+          })
+        })
+    })
+    const result = section
+      .filter((sect) => sect.sectionName !== 'delete')
     return {
       success: true,
-      result: section,
+      result,
       message: 'Все категории загружены'
     }
   }

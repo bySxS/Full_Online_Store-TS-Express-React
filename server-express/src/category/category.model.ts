@@ -10,14 +10,17 @@ export default class CategoryModel extends Model {
   public id!: number
   public name!: string
   public nameEng!: string
+  public iconClass!: string
   public parentId!: number
 
   products?: Products[]
 
   categoryName!: string
   categoryNameEng!: string
+  categoryIconClass!: string
   sectionName!: string
   sectionNameEng!: string
+  sectionIconClass!: string
   categoryCountProducts!: number
 
   static get tableName () {
@@ -32,6 +35,7 @@ export default class CategoryModel extends Model {
         id: { type: 'integer' },
         name: { type: 'string', minLength: 1, maxLength: 50 },
         nameEng: { type: 'string', minLength: 1, maxLength: 50 },
+        iconClass: { type: 'string', maxLength: 50 },
         parentId: { type: 'integer' }
       }
     }

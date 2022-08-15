@@ -5,6 +5,7 @@ export interface ICategory {
   id?: number
   name: string
   nameEng: string
+  iconClass?: string
   parentId?: number
 }
 
@@ -12,13 +13,16 @@ export interface ICategoryOut {
   categoryId: number
   categoryName: string
   categoryNameEng: string
+  categoryIconClass: string
   categoryCountProducts: number
+  subcategory?: ICategoryOut[]
 }
 
 export interface ISectionOut {
   sectionId: number
   sectionName: string
   sectionNameEng: string
+  sectionIconClass: string
   sectionCountProducts: number
   category: ICategoryOut[]
 }
