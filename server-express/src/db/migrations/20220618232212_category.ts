@@ -16,6 +16,8 @@ exports.up = function (knex: Knex) {
       tbl.string('nameEng', 50)
         .notNullable()
         .unique()
+      tbl.string('iconClass', 50)
+        .defaultTo('')
       tbl.integer('parentId')
         .defaultTo(null)
     })
