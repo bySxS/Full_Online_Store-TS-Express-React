@@ -4,7 +4,7 @@ import baseQueryWithRefreshToken from 'store/myStore/customFetch'
 import {
   ICharacteristicName,
   ICharacteristicSection,
-  ICharacteristicValue
+  ICharacteristicValue, ICharacteristicValueDelete, ICharacteristicValueUpdate
 } from 'store/myStore/myStoreCharacteristics.interface'
 
 const myStoreCharacteristicsApi = createApi({
@@ -48,19 +48,20 @@ const myStoreCharacteristicsApi = createApi({
       }),
 
     updateCharacteristicValue: build.mutation<IMessage<ICharacteristicValue>,
-      { characteristicValueId: number, body: ICharacteristicValue }>({
-        query: ({ characteristicValueId, body }) => ({
-          url: 'characteristics/value/' + characteristicValueId,
+      ICharacteristicValueUpdate>({
+        query: (body) => ({
+          url: 'characteristics/value',
           method: 'PUT',
           body
         })
       }),
 
     deleteCharacteristicValue: build.mutation<IMessage<null>,
-      number>({
-        query: (characteristicValueId: number) => ({
-          url: 'characteristics/value/' + characteristicValueId,
-          method: 'DELETE'
+      ICharacteristicValueDelete>({
+        query: (body) => ({
+          url: 'characteristics/value/',
+          method: 'DELETE',
+          body
         })
       }),
 

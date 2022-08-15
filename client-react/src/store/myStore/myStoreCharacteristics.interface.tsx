@@ -14,6 +14,17 @@ export interface ICharacteristicValue {
   value: string
 }
 
+export interface ICharacteristicValueDelete {
+  productId: number
+  characteristicsValueId: number
+}
+
+export interface ICharacteristicValueUpdate {
+  productId: number
+  characteristicsValueId: number
+  value: string
+}
+
 export interface ICharValue {
   characteristicValueId: number
   characteristicValue: string
