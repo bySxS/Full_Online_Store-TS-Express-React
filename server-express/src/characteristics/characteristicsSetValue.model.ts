@@ -36,7 +36,7 @@ export default class CharacteristicsSetValueModel extends Model {
   static get relationMappings () {
     return {
       products: {
-        relation: Model.HasOneRelation,
+        relation: Model.HasManyRelation,
         modelClass: Products,
         join: {
           from: this.tableName + '.productId',
