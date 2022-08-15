@@ -17,9 +17,8 @@ class CharacteristicsController implements ICharacteristicController {
   ) {
     try {
       const result =
-        await CharacteristicsService.addCharacteristicValueProduct(
-          req.body
-        )
+        await CharacteristicsService
+          .addCharacteristicValueProduct(req.body)
       return res.status(201).json(result)
     } catch (err) {
       next(err)
@@ -32,9 +31,8 @@ class CharacteristicsController implements ICharacteristicController {
     try {
       const id = +req.params.id
       const result =
-        await CharacteristicsService.updCharacteristicValueProduct(
-          id, req.body
-        )
+        await CharacteristicsService
+          .updCharacteristicValueProduct(id, req.body)
       return res.status(201).json(result)
     } catch (err) {
       next(err)
@@ -47,7 +45,8 @@ class CharacteristicsController implements ICharacteristicController {
     try {
       const id = +req.params.id
       const result =
-        await CharacteristicsService.delCharacteristicValueProduct(id)
+        await CharacteristicsService
+          .delCharacteristicValueProduct(id)
       return res.status(200).json(result)
     } catch (err) {
       next(err)
@@ -100,7 +99,8 @@ class CharacteristicsController implements ICharacteristicController {
   ) {
     try {
       const result =
-        await CharacteristicsService.addCharacteristicName(req.body)
+        await CharacteristicsService
+          .addCharacteristicName(req.body)
       return res.status(201).json(result)
     } catch (err) {
       next(err)
@@ -113,7 +113,8 @@ class CharacteristicsController implements ICharacteristicController {
     try {
       const id = +req.params.id
       const result =
-        await CharacteristicsService.updCharacteristicName(id, req.body)
+        await CharacteristicsService
+          .updCharacteristicName(id, req.body)
       return res.status(201).json(result)
     } catch (err) {
       next(err)
@@ -126,7 +127,8 @@ class CharacteristicsController implements ICharacteristicController {
     try {
       const id = +req.params.id
       const result =
-        await CharacteristicsService.delCharacteristicName(id)
+        await CharacteristicsService
+          .delCharacteristicName(id)
       return res.status(200).json(result)
     } catch (err) {
       next(err)

@@ -7,7 +7,7 @@ import {
   ICharacteristicName, ICharacteristicProduct,
   ICharacteristicService, ICharacteristicSetValue
 } from './characteristics.interface'
-import { QueryBuilder } from 'objection'
+import { QueryBuilder, raw } from 'objection'
 import CharacteristicsValuesModel from '@/characteristics/characteristicsValues.model'
 
 class CharacteristicsService implements ICharacteristicService {
@@ -164,10 +164,6 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
-  /* ToDo: сделать функцию для выгрузки всех характеристик и значений с возможностью выбора categoryId
-   *   в древовидном виде чтобы добавить их в панель фильтра
-   *     и подсчитать для каждой количество материалов с каждой характеристикой
-   */
   async getAllCharacteristics ({ categoryId = 0 }: { categoryId: number }): Promise<IMessage> {
     let characteristics
     if (categoryId > 0) {
@@ -199,34 +195,23 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
-  getCharacteristicName = (): QueryBuilder<CharacteristicsNameModel, CharacteristicsNameModel[]> => {
-    return CharacteristicsNameModel.query()
-      .leftOuterJoinRelated('characteristicsValue')
-      .joinRelated('parent')
-      .select('characteristicsName.parentId',
-        'characteristicsName.id as propertyNameId',
-        'characteristicsName.name as propertyName',
-        'characteristicsValue.id as propertyValueId',
-        'characteristicsValue.value as propertyValue',
-        'parent.name as sectionName',
-        'parent.id as sectionId')
-      .groupBy('characteristicsName.parentId',
-        'characteristicsName.id',
-        'characteristicsValue.id')
-  }
-
   getCharacteristicValue = (): QueryBuilder<CharacteristicsSetValueModel, CharacteristicsSetValueModel[]> => {
     return CharacteristicsSetValueModel.query()
       .leftOuterJoinRelated('characteristicsName')
       .leftOuterJoinRelated('characteristicsName.parent')
+      .leftOuterJoinRelated('products')
       .leftJoinRelated('characteristicsValues')
       .select('characteristicsName.parentId',
         'characteristicsName.id as propertyNameId',
         'characteristicsName.name as propertyName',
-        'characteristicsSetValue.id as propertyValueId',
+        raw('count(DISTINCT products.id) as propertyCountProducts'),
+        'characteristicsValues.id as propertyValueId',
         'characteristicsValues.value as propertyValue',
         'characteristicsName:parent.name as sectionName',
         'characteristicsName:parent.id as sectionId')
+      .groupBy('characteristicsName.parentId',
+        'characteristicsName.id',
+        'characteristicsValues.id')
   }
 
   sortCharacteristicsTree (character: CharacteristicsSetValueModel[] | CharacteristicsNameModel[]): ICharacteristicProduct[] {
@@ -235,6 +220,7 @@ class CharacteristicsService implements ICharacteristicService {
       parentId: number
       propertyNameId: number
       propertyName: string
+      propertyCountProducts: number
       propertyValueId: number
       propertyValue: string
       sectionName: string
@@ -260,10 +246,11 @@ class CharacteristicsService implements ICharacteristicService {
                   charValue: { propertyNameId: number }) =>
                   charValue.propertyNameId === charName.propertyNameId)
                 .map(
-                  (charValue: { propertyValueId: number, propertyValue: string }
+                  (charValue: { propertyValueId: number, propertyValue: string, propertyCountProducts: number }
                   ) => ({
                     characteristicValueId: charValue.propertyValueId,
-                    characteristicValue: charValue.propertyValue
+                    characteristicValue: charValue.propertyValue,
+                    characteristicCountProducts: charValue.propertyCountProducts
                   }))
             }))
             .filter((value: { characteristicNameId: number }) => {

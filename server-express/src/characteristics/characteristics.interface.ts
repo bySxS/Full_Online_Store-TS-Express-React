@@ -50,8 +50,8 @@ export interface ICharacteristicService {
 
   getCharacteristicValue: () =>
     QueryBuilder<CharacteristicsSetValueModel, CharacteristicsSetValueModel[]>
-  getCharacteristicName: () =>
-    QueryBuilder<CharacteristicsNameModel, CharacteristicsNameModel[]>
+  // getCharacteristicName: () =>
+  //   QueryBuilder<CharacteristicsNameModel, CharacteristicsNameModel[]>
   sortCharacteristicsTree: (
     characteristics: CharacteristicsSetValueModel[] | CharacteristicsNameModel[]
   ) => ICharacteristicProduct[]
