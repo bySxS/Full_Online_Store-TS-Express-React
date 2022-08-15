@@ -6,9 +6,9 @@ import { Knex } from 'knex'
 
 exports.seed = async function (knex: Knex) {
   await knex('category').insert([
-    { id: 1, name: 'Автотовары', nameEng: 'Auto-goods', parentId: null },
-    { id: 2, name: 'Электроника', nameEng: 'Electronica', parentId: null },
-    { id: 3, name: 'Одежда', nameEng: 'Clothing', parentId: null },
+    { id: 1, name: 'Автотовары', nameEng: 'Auto-goods', iconClass: 'bi bi-car-front-fill', parentId: null },
+    { id: 2, name: 'Электроника', nameEng: 'Electronica', iconClass: 'bi bi-pc-display-horizontal', parentId: null },
+    { id: 3, name: 'Одежда', nameEng: 'Clothing', iconClass: 'bi bi-person', parentId: null },
 
     { id: 4, name: 'Автоаксессуары', nameEng: 'Auto Aviation-ses', parentId: 1 },
     { id: 5, name: 'Автозапчасти', nameEng: 'Auto parts', parentId: 1 },
