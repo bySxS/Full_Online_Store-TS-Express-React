@@ -39,6 +39,7 @@ export enum RoutePath {
   REGISTRATION = '/registration',
   ADMIN_PANEL = '/admin_panel',
   PRODUCTS = '/products',
+  PRODUCTS_CATEGORY = '/products/category/:id',
   PRODUCTS_ID = '/products/:id',
   FAVORITES_PRODUCT = '/favorites_products',
   USERS = '/admin_panel/users',
@@ -53,6 +54,7 @@ export enum RouteName {
   REGISTRATION = 'Регистрация',
   ADMIN_PANEL = 'Админ панель',
   PRODUCTS = 'Товары',
+  PRODUCTS_CATEGORY = 'Товары категории',
   FAVORITES_PRODUCT = 'Избранные товары',
   USERS = 'Пользователи',
   BASKET = 'Корзина',
@@ -71,7 +73,7 @@ interface IBreadcrumbParams {
 const ProductIDBreadcrumb: FC<IBreadcrumbParams> = ({ match }) => {
   const { id } = match.params
   return (
-    <span>{id}</span>
+    <span>Продукт с ID {id}</span>
   )
 }
 
@@ -79,7 +81,15 @@ const ProductIDBreadcrumb: FC<IBreadcrumbParams> = ({ match }) => {
 const UserIDBreadcrumb: FC<IBreadcrumbParams> = ({ match }) => {
   const { id } = match.params
   return (
-    <span>{id}</span>
+    <span>Пользователь {id}</span>
+  )
+}
+
+// мини компонент получения данных о пользователе для breadcrumbs
+const ProductsCategoryIDBreadcrumb: FC<IBreadcrumbParams> = ({ match }) => {
+  const { id } = match.params
+  return (
+    <span>Товары категории {id}</span>
   )
 }
 
@@ -106,6 +116,11 @@ export const routes: IRoute[] = [
     path: RoutePath.PRODUCTS,
     element: <Products name={RouteName.PRODUCTS} />,
     breadcrumb: RouteName.PRODUCTS
+  },
+  {
+    path: RoutePath.PRODUCTS_CATEGORY,
+    element: <Products name={RouteName.PRODUCTS_CATEGORY} />,
+    breadcrumb: ProductsCategoryIDBreadcrumb
   },
   {
     path: RoutePath.PRODUCTS_ID,

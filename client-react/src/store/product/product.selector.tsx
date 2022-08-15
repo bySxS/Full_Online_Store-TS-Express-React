@@ -1,4 +1,4 @@
-import { RootState } from 'store/index'
+import { RootState } from '../index'
 
 const allFavProducts = (state: RootState) => state.product.favoriteProducts
 const productIsInFavorite = (id: number) => (state: RootState): boolean => {

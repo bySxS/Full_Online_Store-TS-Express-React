@@ -61,9 +61,9 @@ const myStoreProductApi = createApi({
       }),
 
     getAllProductsByCategoryId: build.query<IMessage<IResultList<IProduct>>,
-    {categoryId: number, args: IGetProductsWithFilter}>({
-      query: ({ categoryId, args }) => ({
-        url: 'product/category/' + categoryId,
+    IGetProductsWithFilter>({
+      query: (args) => ({
+        url: 'product/category/' + args.categoryId,
         params: {
           filter: args.filter,
           price: args.price,

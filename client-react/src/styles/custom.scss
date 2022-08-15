@@ -1,7 +1,7 @@
 // Override default variables before the import
 
 .body {
-  @apply flex flex-col pt-[68px] w-full pl-[204px];
+  @apply flex flex-col pt-[68px] w-full pl-[210px];
 }
 
 @media only screen and (max-width: 775px) {
@@ -28,9 +28,16 @@
 }
 
 .sideBarLink {
-  @apply py-3 pl-3 border-b px-4 text-black flex flex-row items-center;
+  @apply py-3 pl-3 border-b px-4 text-black flex flex-row items-center m-1;
+  border-radius: 10px;
   text-decoration: none;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+@media only screen and (max-width: 775px) {
+  .sideBarLink {
+    @apply px-0;
+  }
 }
 
 .sideBarLink:hover {

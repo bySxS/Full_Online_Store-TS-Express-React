@@ -1,4 +1,4 @@
-import { RootState } from 'store/index'
+import { RootState } from '../index'
 
 const basketProduct = (state: RootState) => state.basket.product
 

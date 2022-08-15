@@ -17,7 +17,7 @@ class CategoryController implements ICategoryController {
   ) {
     try {
       const result =
-        await CategoryService.getAll()
+          await CategoryService.getAll(req.body)
       return res.status(200).json(result)
     } catch (err) {
       next(err)

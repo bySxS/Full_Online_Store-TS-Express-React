@@ -1,4 +1,4 @@
-import { RootState } from 'store/index'
+import { RootState } from '../index'
 
 export const currentUser = (state: RootState) => state.user.user
 export const nickname = (state: RootState) => state.user.user?.nickname ?? 'Гость'

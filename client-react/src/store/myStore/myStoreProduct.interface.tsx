@@ -43,6 +43,7 @@ export type TSortProduct = 'price_asc' | 'price_desc' |
   'id_desc' | 'views_desc' | 'rating_desc' | 'favorites_desc' | ''
 
 export interface IGetProductsWithFilter {
+  categoryId?: number
   filter?: string
   price?: string
   sort?: TSortProduct

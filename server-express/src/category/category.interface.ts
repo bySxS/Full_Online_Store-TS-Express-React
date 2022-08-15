@@ -27,7 +27,7 @@ export interface ICategoryService {
   add: (Dto: ICategory) => Promise<IMessage>
   upd: (id: number, Dto: ICategory) => Promise<IMessage>
   del: (id: number) => Promise<IMessage>
-  getAll: () => Promise<IMessage>
+  getAll: (Dto: { sectionId: number }) => Promise<IMessage>
   search: (name: string, limit: number, page: number) => Promise<IMessage>
 }
 

@@ -1,3 +1,4 @@
+import CategoryService from '@/category/category.service'
 import { IProduct, IProductFilesArray, IProductService } from './products.interface'
 import { IMessage } from '@/interface'
 import path from 'path'
@@ -417,7 +418,7 @@ class ProductsService implements IProductService {
     return groupByQuery()
   }
 
-  getCharacteristicsForProducts (
+  getGeneralCharacteristicsForProducts (
     productsIds: number[]
   ): QueryBuilder<CharacteristicsSetValueModel, CharacteristicsSetValueModel[]> {
     return CharacteristicsService.getCharacteristicValue()
@@ -431,7 +432,7 @@ class ProductsService implements IProductService {
   ): Promise<Page<ProductsModel>> {
     const newProducts = products
     const characteristics =
-        await this.getCharacteristicsForProducts(
+        await this.getGeneralCharacteristicsForProducts(
           products.results.map(product => product.id)
         )
     const productsIdsAdded: number[] = []
@@ -459,9 +460,12 @@ class ProductsService implements IProductService {
     limit: number = 20,
     page: number = 1
   ): Promise<IMessage> {
+    const section = await CategoryService.getAll({ sectionId: id })
+    const ids: number[] = section.result[0].category.map((cat: { categoryId: number }) => cat.categoryId)
+    ids.push(id)
     const query = () => {
       return this.getAllProductsWithFilter(limit, page, filter, price, sortBy)
-        .where('products.categoryId', '=', id)
+        .whereIn('products.categoryId', ids)
     }
 
     let result = await query()

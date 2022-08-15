@@ -12,7 +12,7 @@ export interface ICategoryOut {
   categoryCountProducts: number
 }
 
-export interface ISection {
+export interface ICategorySection {
   sectionId: number
   sectionName: string
   sectionNameEng: string

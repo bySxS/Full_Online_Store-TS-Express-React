@@ -2,7 +2,7 @@ import { IMessage } from '@/interface'
 import CategoryModel from './category.model'
 import ApiError from '@/apiError'
 import { ICategory, ICategoryOut, ICategoryService, ISectionOut } from './category.interface'
-import { raw } from 'objection'
+import { QueryBuilder, raw } from 'objection'
 
 class CategoryService implements ICategoryService {
   private static instance = new CategoryService()
@@ -107,18 +107,30 @@ class CategoryService implements ICategoryService {
     }
   }
 
-  async getAll (): Promise<IMessage> {
-    const categoryNotSort = await CategoryModel.query()
-      .joinRelated('parent')
-      .leftOuterJoinRelated('products')
-      .select('category.id',
-        'category.parentId',
-        'category.name as categoryName',
-        'category.nameEng as categoryNameEng',
-        raw('count(DISTINCT products.id) as categoryCountProducts'),
-        'parent.name as sectionName',
-        'parent.nameEng as sectionNameEng')
-      .groupBy('category.id')
+  async getAll (Dto: { sectionId?: number }): Promise<IMessage> {
+    const { sectionId } = Dto
+    const query = () => {
+      return CategoryModel.query()
+        .joinRelated('parent')
+        .leftOuterJoinRelated('products')
+        .select('category.id',
+          'category.parentId',
+          'category.name as categoryName',
+          'category.nameEng as categoryNameEng',
+          raw('count(DISTINCT products.id) as categoryCountProducts'),
+          'parent.name as sectionName',
+          'parent.nameEng as sectionNameEng')
+        .groupBy('category.id')
+    }
+
+    let categoryNotSort: CategoryModel[]
+    if (sectionId && sectionId > 0) {
+      categoryNotSort = await query()
+        .where('parent.id', '=', sectionId)
+    } else {
+      categoryNotSort = await query()
+    }
+
     if (!categoryNotSort) {
       throw ApiError.badRequest(
         'Категорий не найдено',

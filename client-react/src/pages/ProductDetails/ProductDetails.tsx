@@ -7,13 +7,13 @@ import { useAppActions, useAppSelector } from 'hooks/useStore'
 import { useLazyGetProductByIdQuery } from 'store/myStore/myStoreProduct.api'
 import selectBasket from 'store/basket/basket.selector'
 
-export interface ProductDetailsParams {
+export interface IDParams {
   [id: string]: string
 }
 
 const ProductDetails = () => {
-  const { id: idParam } = useParams<ProductDetailsParams>()
-  const id = Number(idParam || '')
+  const { id: idParam } = useParams<IDParams>()
+  const id = +(idParam || '')
   const navigate = useNavigate()
   const {
     addToBasket, delFromBasket, addToAlertStack

@@ -88,7 +88,7 @@ export interface IProductService {
                        sortBy: string,
                        limit: number, page: number) =>
     Promise<IMessage>
-  getCharacteristicsForProducts: (
+  getGeneralCharacteristicsForProducts: (
       productsIds: number[]
   ) => QueryBuilder<CharacteristicsSetValueModel, CharacteristicsSetValueModel[]>
   sortAndAddCharacteristicsToProducts: (

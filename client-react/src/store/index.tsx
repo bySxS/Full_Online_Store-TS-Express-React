@@ -1,12 +1,8 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { SUBSCRIBE_STORE } from 'constants/constant'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { basketReducer } from './basket/basket.slice'
-import { alertReducer } from './alert/alert.slice'
-import { userReducer } from './user/user.slice'
 import { alertListenerMiddleware } from './alert/alert.listener'
 import { logoutListenerMiddleware } from './user/user.listener'
-import { productReducer } from './product/product.slice'
 import myStoreUserApi from './myStore/myStoreUser.api'
 import myStoreProductApi from './myStore/myStoreProduct.api'
 import myStoreBasketApi from 'store/myStore/myStoreBasket.api'
@@ -14,12 +10,18 @@ import myStoreCategoryApi from 'store/myStore/myStoreCategory.api'
 import myStoreCharacteristicsApi from 'store/myStore/myStoreCharacteristics.api'
 import myStorePriceApi from 'store/myStore/myStorePrice.api'
 import myStoreReviewApi from 'store/myStore/myStoreReview.api'
+import { categoryReducer } from './category/category.slice'
+import { basketReducer } from './basket/basket.slice'
+import { alertReducer } from './alert/alert.slice'
+import { userReducer } from './user/user.slice'
+import { productReducer } from './product/product.slice'
 
 const reducers = {
   user: userReducer,
   basket: basketReducer,
   alert: alertReducer,
   product: productReducer,
+  category: categoryReducer,
   [myStoreUserApi.reducerPath]: myStoreUserApi.reducer,
   [myStoreProductApi.reducerPath]: myStoreProductApi.reducer,
   [myStoreBasketApi.reducerPath]: myStoreBasketApi.reducer,

@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { IMessage, IResultList } from 'store/myStore/myStore.interface'
 import baseQueryWithRefreshToken from 'store/myStore/customFetch'
-import { ICategory, ICategorySearch, ISection } from 'store/myStore/myStoreCategory.interface'
+import { ICategory, ICategorySearch, ICategorySection } from 'store/myStore/myStoreCategory.interface'
 
 const myStoreCategoryApi = createApi({
   reducerPath: 'storeCategory/api',
@@ -34,7 +34,7 @@ const myStoreCategoryApi = createApi({
         })
       }),
 
-    getAllCategory: build.query<IMessage<ISection>,
+    getAllCategory: build.query<IMessage<ICategorySection[]>,
       string>({
         query: () => ({
           url: 'category'
