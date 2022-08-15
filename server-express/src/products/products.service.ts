@@ -425,6 +425,7 @@ class ProductsService implements IProductService {
       .whereIn('characteristicsSetValue.productId', productsIds)
       .andWhere('characteristicsName:parent.name', '=', 'Общие характеристики')
       .select('characteristicsSetValue.productId')
+      .groupBy('characteristicsSetValue.productId')
   }
 
   async sortAndAddCharacteristicsToProducts (
@@ -461,8 +462,13 @@ class ProductsService implements IProductService {
     page: number = 1
   ): Promise<IMessage> {
     const section = await CategoryService.getAll({ sectionId: id })
-    const ids: number[] = section.result[0].category.map((cat: { categoryId: number }) => cat.categoryId)
-    ids.push(id)
+    let ids: number[] = []
+    if (section.result.length > 0) {
+      ids = section.result[0].category
+        .map((cat: { categoryId: number }) => cat.categoryId)
+    } else {
+      ids.push(id)
+    }
     const query = () => {
       return this.getAllProductsWithFilter(limit, page, filter, price, sortBy)
         .whereIn('products.categoryId', ids)
