@@ -17,6 +17,7 @@ export interface ICharacteristicValue {
 export interface ICharValue {
   characteristicValueId: number
   characteristicValue: string
+  characteristicCountProducts: number
 }
 
 export interface ICharName {
