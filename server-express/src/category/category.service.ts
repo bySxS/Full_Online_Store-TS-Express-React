@@ -107,39 +107,19 @@ class CategoryService implements ICategoryService {
     }
   }
 
-  async getAll (Dto: { sectionId?: number }): Promise<IMessage> {
-    const { sectionId } = Dto
-    const query = () => {
-      return CategoryModel.query()
-        .joinRelated('parent')
-        .leftOuterJoinRelated('products')
-        .select('category.id',
-          'category.parentId',
-          'category.name as categoryName',
-          'category.nameEng as categoryNameEng',
-          'category.iconClass as categoryIconClass',
-          raw('count(DISTINCT products.id) as categoryCountProducts'),
-          'parent.name as sectionName',
-          'parent.nameEng as sectionNameEng',
-          'parent.iconClass as sectionIconClass')
-        .groupBy('category.id')
-    }
-
-    let categoryNotSort: CategoryModel[]
-    if (sectionId && sectionId > 0) {
-      categoryNotSort = await query()
-        .where('parent.id', '=', sectionId)
-    } else {
-      categoryNotSort = await query()
-    }
-
-    if (!categoryNotSort) {
-      throw ApiError.badRequest(
-        'Категорий не найдено',
-        'CategoryService getAll')
-    }
-
+  sortCategoryTree (category: CategoryModel[]): ISectionOut[] {
     const section: ISectionOut[] = []
+    const categoryNotSort = category as unknown as {
+      id: number
+      parentId: number
+      categoryName: string
+      categoryNameEng: string
+      categoryIconClass: string
+      sectionName: string
+      sectionNameEng: string
+      sectionIconClass: string
+      categoryCountProducts: number
+    }[]
     categoryNotSort.forEach((all) => {
       const ids = new Set(section.map(section => section.sectionId)) // добавленные
       if (!ids.has(all.parentId)) {
@@ -180,8 +160,41 @@ class CategoryService implements ICategoryService {
           })
         })
     })
-    const result = section
-      .filter((sect) => sect.sectionName !== 'delete')
+    return section.filter((sect) => sect.sectionName !== 'delete')
+  }
+
+  async getAll (Dto: { sectionId?: number }): Promise<IMessage> {
+    const { sectionId } = Dto
+    const query = () => {
+      return CategoryModel.query()
+        .joinRelated('parent')
+        .leftOuterJoinRelated('products')
+        .select('category.id',
+          'category.parentId',
+          'category.name as categoryName',
+          'category.nameEng as categoryNameEng',
+          'category.iconClass as categoryIconClass',
+          raw('count(DISTINCT products.id) as categoryCountProducts'),
+          'parent.name as sectionName',
+          'parent.nameEng as sectionNameEng',
+          'parent.iconClass as sectionIconClass')
+        .groupBy('category.id')
+    }
+
+    let categoryNotSort: CategoryModel[]
+    if (sectionId && sectionId > 0) {
+      categoryNotSort = await query()
+        .where('parent.id', '=', sectionId)
+    } else {
+      categoryNotSort = await query()
+    }
+
+    if (!categoryNotSort) {
+      throw ApiError.badRequest(
+        'Категорий не найдено',
+        'CategoryService getAll')
+    }
+    const result = this.sortCategoryTree(categoryNotSort)
     return {
       success: true,
       result,

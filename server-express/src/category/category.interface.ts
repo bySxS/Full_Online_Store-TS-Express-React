@@ -1,3 +1,4 @@
+import CategoryModel from '@/category/category.model'
 import { IMessage } from '@/interface'
 import { NextFunction, Request, Response } from 'express'
 
@@ -33,6 +34,7 @@ export interface ICategoryService {
   del: (id: number) => Promise<IMessage>
   getAll: (Dto: { sectionId: number }) => Promise<IMessage>
   search: (name: string, limit: number, page: number) => Promise<IMessage>
+  sortCategoryTree: (category: CategoryModel[]) => ISectionOut[]
 }
 
 export interface ICategoryController {
