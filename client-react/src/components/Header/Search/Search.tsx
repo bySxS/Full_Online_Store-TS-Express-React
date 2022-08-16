@@ -1,23 +1,48 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Form, InputGroup } from 'react-bootstrap'
 import { useDebounce } from 'hooks/useDebounce'
 import { useNavigate } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
 import { useInfoLoading } from 'hooks/useInfoLoading'
+import { IProduct } from 'store/myStore/myStoreProduct.interface'
+import { addDomainToImgProducts } from 'utils'
+import { ICategorySearch } from 'store/myStore/myStoreCategory.interface'
 import style from './Search.module.scss'
+import { useSearchCategoryQuery } from 'store/myStore/myStoreCategory.api'
 import { useSearchProductsQuery } from 'store/myStore/myStoreProduct.api'
 
 const Search = () => {
   const navigate = useNavigate()
+  const [products, setProducts] = useState<IProduct[]>()
+  const [category, setCategory] = useState<ICategorySearch[]>()
   const [search, setSearch] = useState('')
   const debounced = useDebounce(search)
   const refInput = useRef<HTMLInputElement>(null)
-  const { isLoading, isError, isSuccess, data: products, error } =
+  const { isLoading, isError, isSuccess, data: searchProducts, error } =
     useSearchProductsQuery({ value: debounced, limit: 50, page: 1 }, {
       skip: debounced.length < 3,
       refetchOnFocus: true
     })
-  useInfoLoading({ isLoading, isSuccess, isError, data: products, error })
+  useInfoLoading({ isLoading, isSuccess, isError, data: searchProducts, error })
+  const { data: searchCategory, isLoading: isLoadingCat, isError: isErrorCat, isSuccess: isSuccessCat, error: errorCat } =
+  useSearchCategoryQuery({ value: debounced, limit: 50, page: 1 }, {
+    skip: debounced.length < 3,
+    refetchOnFocus: true
+  })
+  useInfoLoading({ data: searchCategory, isLoading: isLoadingCat, isError: isErrorCat, isSuccess: isSuccessCat, error: errorCat })
+
+  useEffect(() => {
+    if (isSuccess) {
+      setProducts(
+        addDomainToImgProducts(
+          searchProducts.result?.results as IProduct[]
+        )
+      )
+    }
+    if (isSuccessCat) {
+      setCategory(searchCategory.result?.results as ICategorySearch[])
+    }
+  }, [searchProducts, searchCategory])
 
   const inputSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation()
@@ -31,10 +56,20 @@ const Search = () => {
       setSearch(text + ' ' || '')
     }
   }
-  const clickLiHandler = (id: number) => {
+  const clickLiProductHandler = (id: number) => {
     setSearch('')
     const path = `${RoutePath.PRODUCTS}/${id}`
     navigate(path)
+    setProducts([])
+    setCategory([])
+  }
+
+  const clickLiCategoryHandler = (id: number) => {
+    setSearch('')
+    const path = `${RoutePath.PRODUCTS}/category/${id}`
+    navigate(path)
+    setProducts([])
+    setCategory([])
   }
 
   return (
@@ -61,13 +96,27 @@ const Search = () => {
       </Form>
     </InputGroup>
       <div className={`${style.result_search} min-w-[360px] max-w-full`}>
-      <ul className={'list-none position-absolute top-[15px] left-0 right-0 max-h-[200px] overflow-y-auto shadow-md bg-white'}>
-        {isSuccess && products?.result?.results.map(product => (
+      <ul className={style.ul_item}>
+        {products && products.map(product => (
           <li key={product.id}
-              className={`py-1 px-4 hover:bg-gray-500 hover:text-white transition-colors cursor-pointer ${style.li_item}`}
-              onClick={() => clickLiHandler(product.id)}
+              className={style.li_item}
+              onClick={() => clickLiProductHandler(product.id)}
           >
-            { product.title }
+            {product.screen &&
+            <img src={product.screen}
+                 alt={product.title}
+                 className={style.screen}/>
+            } {product.title}
+          </li>
+        ))}
+        {category && category.map(cat => (
+          <li key={cat.categoryNameEng}
+              className={style.li_item}
+              onClick={() => clickLiCategoryHandler(cat.id)}
+          >
+            {cat.categoryIconClass &&
+             <i className={`${cat.categoryIconClass} ${style.screen}`}/>
+            } {cat.categoryName}
           </li>
         ))}
       </ul>

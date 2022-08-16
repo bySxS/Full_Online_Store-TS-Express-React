@@ -62,7 +62,7 @@ export const {
   useAddCategoryMutation,
   useDeleteCategoryMutation,
   useUpdateCategoryMutation,
-  useLazySearchCategoryQuery,
+  useSearchCategoryQuery,
   useGetAllCategoryQuery,
   endpoints: myStoreCategoryEndpoint
 } = myStoreCategoryApi

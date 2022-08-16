@@ -28,8 +28,10 @@ export interface ICategorySearch {
   id: number
   categoryName: string
   categoryNameEng: string
+  categoryIconClass: string
   categoryCountProducts: number
   sectionName: string
   sectionNameEng: string
+  sectionIconClass: string
   parentId: number
 }

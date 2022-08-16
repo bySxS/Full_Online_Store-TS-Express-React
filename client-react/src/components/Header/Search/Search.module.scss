@@ -1,6 +1,19 @@
 .result_search {
   @apply relative
 }
+
+.ul_item {
+  @apply list-none absolute top-[15px]
+  left-0 right-0 max-h-[200px] overflow-y-auto
+  shadow-md bg-white;
+}
+
 .li_item {
+  @apply py-1 px-4 flex items-center hover:bg-gray-500
+  hover:text-white transition-colors cursor-pointer;
   border: 1px dotted #766ed32e;
+}
+
+.screen {
+  @apply pr-2 w-[23px];
 }
