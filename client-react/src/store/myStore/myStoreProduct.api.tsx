@@ -71,7 +71,18 @@ const myStoreProductApi = createApi({
           limit: args.limit || 10,
           page: args.page
         }
-      })
+      })// ,
+      // onQueryStarted (args: IGetProductsWithFilter, api) {
+      //   try {
+      //     const state = (api.getState() as RootState)
+      //     if (state.product.prevCategory !== String(args.categoryId)) {
+      //       api.dispatch(clearProducts())
+      //     }
+      //     api.dispatch(setPrevCategory(String(args.categoryId)))
+      //   } catch (e) {
+      //     console.log(e)
+      //   }
+      // }
     }),
 
     getProductById: build.query<IMessage<IProduct>,

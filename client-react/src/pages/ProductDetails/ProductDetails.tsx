@@ -16,15 +16,15 @@ const ProductDetails = () => {
   const id = +(idParam || '')
   const navigate = useNavigate()
   const {
-    addToBasket, delFromBasket, addToAlertStack
+    addToBasket, delFromBasket
   } = useAppActions()
   useEffect(() => {
     if (!id || isNaN(+id)) {
       navigate(RoutePath.PRODUCTS)
-      addToAlertStack({
-        message: 'ID должен быть с цифр',
-        status: 'error'
-      })
+      // addToAlertStack({
+      //   message: 'ID должен быть с цифр',
+      //   status: 'error'
+      // })
     }
   }, [])
 

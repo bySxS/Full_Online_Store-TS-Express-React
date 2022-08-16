@@ -1,44 +1,8 @@
 .body {
-  @apply flex items-center;
+  @apply flex;
 }
 
 .head {
-  @apply flex justify-center ml-[-915px];
+  @apply pl-5;
   flex: 0 0 40px;
-}
-
-@media only screen and (max-width: 1305px) {
-  .head {
-    @apply ml-[-815px];
-  }
-}
-
-@media only screen and (max-width: 1205px) {
-  .head {
-    @apply ml-[-715px];
-  }
-}
-
-@media only screen and (max-width: 1105px) {
-  .head {
-    @apply ml-[-615px];
-  }
-}
-
-@media only screen and (max-width: 1005px) {
-  .head {
-    @apply ml-[-515px];
-  }
-}
-
-@media only screen and (max-width: 905px) {
-  .head {
-    @apply ml-[-415px];
-  }
-}
-
-@media only screen and (max-width: 805px) {
-  .head {
-    @apply ml-[-385px];
-  }
 }

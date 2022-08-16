@@ -49,7 +49,9 @@ const Login: FC = () => {
         </InputGroup>
         <Form.Label>Пароль</Form.Label>
         <InputGroup className="mb-3">
-          <InputGroup.Text id="basic-addon1"><i className="bi bi-pass"/></InputGroup.Text>
+          <InputGroup.Text id="basic-addon1">
+            <i className="bi bi-pass"/>
+          </InputGroup.Text>
           <Form.Control
             onChange={handleChange}
             className={'pr-[4.5rem] md'}
@@ -61,7 +63,11 @@ const Login: FC = () => {
           </Button>
         </InputGroup>
         </div>
-        <Button variant="primary" className={'bg-emerald-600 w-full'} onClick={btnLogin}>Войти</Button>
+        <Button variant="primary"
+                className={'bg-emerald-600 w-full'}
+                onClick={btnLogin}>
+          Войти
+        </Button>
         <div className={'legend'}>
          <hr className={'flex-auto'}/>
           <div className={'flex-1'}>Нет аккаунта?</div>

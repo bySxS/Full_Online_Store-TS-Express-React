@@ -15,6 +15,7 @@ const pageProduct = (state: RootState) => state.product.pageProduct
 const pageFavProduct = (state: RootState) => state.product.pageFavProduct
 const totalProduct = (state: RootState) => state.product.totalProduct
 const totalFavProduct = (state: RootState) => state.product.totalFavProduct
+const prevCategory = (state: RootState) => state.product.prevCategory
 
 const selectProduct = {
   allProducts,
@@ -26,7 +27,8 @@ const selectProduct = {
   pageProduct,
   pageFavProduct,
   totalProduct,
-  totalFavProduct
+  totalFavProduct,
+  prevCategory
 }
 
 export default selectProduct

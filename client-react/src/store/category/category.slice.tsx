@@ -7,10 +7,18 @@ const LS_CATEGORY_KEY = 'rCatK'
 
 interface ICategoryState {
   category: ICategorySection[]
+  showCategory: number[]
 }
 
 const initialState: ICategoryState = {
+  showCategory: [],
   category: JSON.parse(localStorage.getItem(LS_CATEGORY_KEY) ?? '[]')
+}
+
+const setShowCategory = (state: ICategoryState, action: PayloadAction<number[]>) => {
+  const { payload } = action
+  state.showCategory = payload
+  // localStorage.setItem(LS_CATEGORY_KEY, JSON.stringify(state.category))
 }
 
 const setCategory = (state: ICategoryState, action: PayloadAction<IMessage<ICategorySection[]>>) => {
@@ -22,7 +30,9 @@ const setCategory = (state: ICategoryState, action: PayloadAction<IMessage<ICate
 export const CategorySlice = createSlice({
   name: 'category',
   initialState,
-  reducers: {},
+  reducers: {
+    setShowCategory
+  },
   extraReducers: (builder) => {
     builder.addMatcher(
       myStoreCategoryEndpoint.getAllCategory.matchFulfilled,

@@ -21,6 +21,7 @@ interface IProductState {
   totalProduct: number
   pageFavProduct: number
   totalFavProduct: number
+  prevCategory: string
 }
 
 const initialState: IProductState = {
@@ -31,7 +32,8 @@ const initialState: IProductState = {
   pageProduct: 1,
   totalProduct: 10,
   pageFavProduct: 1,
-  totalFavProduct: 10
+  totalFavProduct: 10,
+  prevCategory: ''
 }
 
 const addProducts =
@@ -40,15 +42,17 @@ const addProducts =
     action: PayloadAction<IMessage<IResultList<IProduct>>>
   ) => {
     const { payload } = action
-    const prevProducts = state.products ?? []
-    const ids = new Set(prevProducts.map(o => o.id))
-    const products = payload.result.results
-    const productsChanged = addDomainToImgProducts(products)
-    state.products = [
-      ...prevProducts,
-      ...productsChanged.filter(o => !ids.has(o.id))
-    ]
-    state.totalProduct = payload.result.total
+    if (payload.success) {
+      const prevProducts = state.products ?? []
+      const ids = new Set(prevProducts.map(o => o.id))
+      const products = payload.result.results
+      const productsChanged = addDomainToImgProducts(products)
+      state.products = [
+        ...prevProducts,
+        ...productsChanged.filter(o => !ids.has(o.id))
+      ]
+      state.totalProduct = payload.result.total
+    }
   }
 
 const addFavProducts =
@@ -57,15 +61,17 @@ const addFavProducts =
     action: PayloadAction<IMessage<IResultList<IProduct>>>
   ) => {
     const { payload } = action
-    const prevProducts = state.favoriteProducts ?? []
-    const ids = new Set(prevProducts.map(o => o.id))
-    const products = payload.result.results
-    const productsChanged = addDomainToImgProducts(products)
-    state.favoriteProducts = [
-      ...prevProducts,
-      ...productsChanged.filter(o => !ids.has(o.id))
-    ]
-    state.totalFavProduct = payload.result.total
+    if (payload.success) {
+      const prevProducts = state.favoriteProducts ?? []
+      const ids = new Set(prevProducts.map(o => o.id))
+      const products = payload.result.results
+      const productsChanged = addDomainToImgProducts(products)
+      state.favoriteProducts = [
+        ...prevProducts,
+        ...productsChanged.filter(o => !ids.has(o.id))
+      ]
+      state.totalFavProduct = payload.result.total
+    }
     // localStorage.setItem(LS_FAV_PRODUCT_KEY,
     //   JSON.stringify(state.favoriteProducts))
   }
@@ -108,6 +114,17 @@ export const ProductSlice = createSlice({
   initialState,
   reducers: {
     addProducts,
+    clearProducts (state) {
+      state.products = []
+      state.favoriteProducts = [] // очищаем при изменении фильтра
+      state.pageProduct = 1 // ставим начальные страницы для paginator
+      state.pageFavProduct = 1
+      state.totalProduct = 10
+      state.totalFavProduct = 10
+    },
+    setPrevCategory (state, action: PayloadAction<string>) {
+      state.prevCategory = action.payload
+    },
     incPageProduct (state) {
       state.pageProduct = state.pageProduct + 1
     },
@@ -131,7 +148,15 @@ export const ProductSlice = createSlice({
   extraReducers: (builder) => {
     builder.addMatcher(
       myStoreProductEndpoint.allProducts.matchFulfilled,
-      (state,
+      (state: IProductState,
+        action: PayloadAction<IMessage<IResultList<IProduct>>>) => {
+        state.prevCategory = 'all'
+        addProducts(state, action)
+      }
+    )
+    builder.addMatcher(
+      myStoreProductEndpoint.getAllProductsByCategoryId.matchFulfilled,
+      (state: IProductState,
         action: PayloadAction<IMessage<IResultList<IProduct>>>) => {
         addProducts(state, action)
       }
@@ -166,5 +191,10 @@ export const ProductSlice = createSlice({
   }
 })
 
+export const {
+  addProducts: AddProductsCategory,
+  clearProducts,
+  setPrevCategory
+} = ProductSlice.actions
 export const productAction = ProductSlice.actions
 export const productReducer = ProductSlice.reducer

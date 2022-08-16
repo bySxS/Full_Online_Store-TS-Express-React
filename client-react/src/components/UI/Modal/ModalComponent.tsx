@@ -19,7 +19,9 @@ export function ModalComponent (
   return (
     <>
       <Modal show={show} onHide={onClose}>
-        <Modal.Header closeButton={true}>
+        <Modal.Header
+          closeButton={true}
+          closeVariant={'white'}>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>

@@ -1,0 +1,12 @@
+.autoPagination {
+  height: 1px;
+  width: 100%;
+  bottom: 20px;
+  position: relative;
+  display: flex;
+}
+
+.productsView {
+  @apply flex flex-col items-center;
+  // justify-evenly flex-wrap content-center;
+}

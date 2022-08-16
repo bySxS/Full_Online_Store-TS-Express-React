@@ -1,9 +1,9 @@
 import React from 'react'
 import { Navbar } from 'react-bootstrap'
+import BasketIcon from './BasketIcon/BasketIcon'
 import Search from './Search/Search'
 import Profile from 'components/Header/Profile/Profile'
 import style from './Header.module.scss'
-import Basket from './Basket/Basket'
 
 const Header = () => {
   return (
@@ -16,7 +16,7 @@ const Header = () => {
 
           <Search />
           <div className={'flex'}>
-            <Basket />
+            <BasketIcon />
             <Profile />
           </div>
       </Navbar>

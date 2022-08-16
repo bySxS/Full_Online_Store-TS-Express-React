@@ -1,8 +1,10 @@
-import React, { FC } from 'react'
-import { OverlayTrigger, Popover } from 'react-bootstrap'
+import React, { FC, useRef } from 'react'
 import { NavLink } from 'react-router-dom'
 import { ICategorySection } from 'store/myStore/myStoreCategory.interface'
-import { RoutePath } from '../../../AppRouter'
+import { RoutePath } from 'AppRouter'
+import { useAppActions, useAppSelector } from 'hooks/useStore'
+import selectCategory from 'store/category/category.selector'
+import MyOverlay from 'components/UI/MyOverlay/MyOverlay'
 import st from '../SideBar.module.scss'
 import Category from './Category/Category'
 
@@ -11,31 +13,47 @@ interface ICategoryProps {
 }
 
 const CategorySection: FC<ICategoryProps> = ({ categorySection }) => {
+  const showCategory = useAppSelector(selectCategory.showCategory)
+  const { setShowCategory } = useAppActions()
+  const ref = useRef<HTMLLIElement>(null)
+
+  const handleFocus = () => {
+    setShowCategory([categorySection.sectionId])
+  }
+
+  // const handleClick = () => { // (event: React.MouseEvent<HTMLAnchorElement>) => {
+  //   setShowCategory([])
+  //   // setTarget(event.target)
+  // }
+
   return (
-    <OverlayTrigger
-      trigger="focus"
-      key="right"
-      placement="right"
-      overlay={
-        <Popover id={'popover-positioned-right'}>
-          <Popover.Header as="h3">{`Раздел ${categorySection.sectionName}`}</Popover.Header>
-          <Popover.Body>
-            {categorySection.category.map(cat =>
-              <Category category={cat} key={cat.categoryId}/>
-            )}
-          </Popover.Body>
-        </Popover>
-      }
-    >
-    <li key={categorySection.sectionId}>
-      <NavLink to={RoutePath.PRODUCTS + '/category/' + categorySection.sectionId} className="sideBarLink">
-        <i className={`bi bi-grid-fill ${st.icon}`}/>
-        <span className={st.name_page}>
+    <>
+      <li ref={ref}>
+        <NavLink
+          to={RoutePath.PRODUCTS + '/category/' + categorySection.sectionId}
+          onMouseEnter={handleFocus}
+          // onClick={handleClick}
+          className="sideBarLink"
+        >
+          <i className={`${categorySection.sectionIconClass} ${st.icon}`}/>
+          <span className={st.name_page}>
           {categorySection.sectionName} ({categorySection.sectionCountProducts})
         </span>
-      </NavLink>
-    </li>
-    </OverlayTrigger>
+        </NavLink>
+      </li>
+      <MyOverlay
+        show={showCategory.includes(categorySection.sectionId)}
+        target={ref.current}
+        title={`Раздел ${categorySection.sectionName}`}
+        tabIndex={categorySection.sectionId}
+      >
+        <ul>
+          {categorySection.category.map(cat =>
+            <Category category={cat} key={cat.categoryId}/>
+          )}
+        </ul>
+      </MyOverlay>
+    </>
   )
 }
 

@@ -1,35 +1,48 @@
 import React from 'react'
 import { Accordion } from 'react-bootstrap'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
 import CategorySection from './CategorySection/CategorySection'
 import st from './SideBar.module.scss'
 import { useAuth } from 'hooks/useAuth'
-import { useAppSelector } from '../../hooks/useStore'
-import selectCategory from '../../store/category/category.selector'
-import { useGetAllCategoryQuery } from '../../store/myStore/myStoreCategory.api'
-import { useInfoLoading } from '../../hooks/useInfoLoading'
-import Toggle from './toggle/toggle'
+import { useAppActions, useAppSelector } from 'hooks/useStore'
+import selectCategory from 'store/category/category.selector'
+import { useGetAllCategoryQuery } from 'store/myStore/myStoreCategory.api'
+import { useInfoLoading } from 'hooks/useInfoLoading'
+import Toggle from '../UI/Toggle/Toggle'
 
 const SideBar = () => {
   const { isAuth } = useAuth()
+  const { pathname } = useLocation()
   const { isLoading, isSuccess, isError, data, error } = useGetAllCategoryQuery('')
   useInfoLoading({ isLoading, isSuccess, isError, data, error })
   const allCategory = useAppSelector(selectCategory.allCategory)
+  const { setShowCategory } = useAppActions()
+  const handleFocus = () => {
+    setShowCategory([])
+  }
 
   return (
     <div className={st.sideMenuHead}>
       <div className={st.sideMenuBody}>
       <ul>
         <li>
-          <NavLink to={RoutePath.HOME} className="sideBarLink">
+          <NavLink
+            to={RoutePath.HOME}
+            className="sideBarLink"
+            onMouseEnter={handleFocus}
+          >
               <i className={`bi bi-house-fill ${st.icon}`}/>
               <span className={st.name_page}>Главная</span>
           </NavLink>
         </li>
         {isAuth &&
           <li>
-            <NavLink to={RoutePath.FAVORITES_PRODUCT} className="sideBarLink">
+            <NavLink
+              to={RoutePath.FAVORITES_PRODUCT}
+              className="sideBarLink"
+              onMouseEnter={handleFocus}
+            >
                 <i className={`bi bi-bookmark-fill ${st.icon}`}/>
                 <span className={st.name_page}>Избранные товары</span>
             </NavLink>
@@ -37,20 +50,43 @@ const SideBar = () => {
         }
         {allCategory.length === 0
           ? <li>
-          <NavLink to={RoutePath.PRODUCTS} className="sideBarLink">
+          <NavLink
+            to={RoutePath.PRODUCTS}
+            className="sideBarLink"
+            onMouseEnter={handleFocus}
+          >
               <i className={`bi bi-grid-fill ${st.icon}`}/>
               <span className={st.name_page}>Товары</span>
           </NavLink>
           </li>
           : <Accordion>
            <li>
-            <Toggle eventKey="0">
+            <Toggle
+              eventKey="0"
+              className={'sideBarLink'}
+              onMouseEnter={handleFocus}
+            >
               <i className={`bi bi-grid-fill ${st.icon}`}/>
               <span className={st.name_page}>Категории</span>
             </Toggle>
            </li>
             <Accordion.Collapse eventKey="0">
               <div className={'pl-3'}>
+                <li>
+                  <NavLink
+                    to={RoutePath.PRODUCTS}
+                    className={({ isActive }) => (
+                      isActive &&
+                      pathname === RoutePath.PRODUCTS
+                        ? 'sideBarLink active'
+                        : 'sideBarLink'
+                    )}
+                    onMouseEnter={handleFocus}
+                  >
+                    <i className={`bi bi-grid-fill ${st.icon}`}/>
+                    <span className={st.name_page}>Все товары</span>
+                  </NavLink>
+                </li>
               {allCategory.map(category =>
                 <CategorySection categorySection={category} key={category.sectionId}/>
               )}

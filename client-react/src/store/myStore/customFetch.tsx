@@ -2,7 +2,7 @@ import { Mutex } from 'async-mutex'
 import {
   BaseQueryFn, FetchArgs, fetchBaseQuery, retry
 } from '@reduxjs/toolkit/dist/query/react'
-import { RootState } from 'store/index'
+import { RootState } from '../index'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { IMessage } from 'store/myStore/myStore.interface'
 import { addToAlertStack } from 'store/alert/alert.slice'

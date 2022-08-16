@@ -4,18 +4,23 @@ import style from 'pages/Products/Products.module.scss'
 import { useObserver } from 'hooks/useObserver'
 import ProductItems from 'components/ProductItems/ProductItems'
 import { useInfoLoading } from 'hooks/useInfoLoading'
+import { useParams } from 'react-router-dom'
 import {
-  useLazyAllProductsQuery
+  useLazyGetAllProductsByCategoryIdQuery
 } from 'store/myStore/myStoreProduct.api'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
 import selectProduct from 'store/product/product.selector'
 import ProductsPanelSetting from 'components/ProductsPanelSetting/ProductsPanelSetting'
 
+import { IDParams } from '../ProductDetails/ProductDetails'
+
 interface ProductProps {
   name: string
 }
 
-const Products: FC<ProductProps> = ({ name }) => {
+const ProductsCategory: FC<ProductProps> = ({ name }) => {
+  const { id: idParam } = useParams<IDParams>()
+  const id = +(idParam || '')
   const pagination = useRef<HTMLHeadingElement>(null)
   const products = useAppSelector(selectProduct.allProducts)
   const countProducts = useAppSelector(selectProduct.countProducts)
@@ -28,10 +33,10 @@ const Products: FC<ProductProps> = ({ name }) => {
   const [totalPage, setTotalPage] = useState(Math.round((totalProduct ?? limit) / limit) + 1)
   const [fetchProducts,
     { isLoading, isSuccess, isError, data, error }] =
-    useLazyAllProductsQuery()
+    useLazyGetAllProductsByCategoryIdQuery()
   useInfoLoading({ isLoading, isSuccess, isError, data, error })
   const getProducts = () => {
-    fetchProducts({ page: pageProduct, limit, ...filterState })
+    fetchProducts({ categoryId: id, page: pageProduct, limit, ...filterState })
     incPageProduct()
   }
   useObserver(pagination, pageProduct, totalPage, isLoading, prevCategory, getProducts)
@@ -46,8 +51,8 @@ const Products: FC<ProductProps> = ({ name }) => {
 
   useEffect(() => {
     clearProducts()
-    setPrevCategory('all')
-  }, [prevCategory])
+    setPrevCategory(String(id))
+  }, [id])
 
   return (
     <>
@@ -71,4 +76,4 @@ const Products: FC<ProductProps> = ({ name }) => {
   )
 }
 
-export default Products
+export default ProductsCategory

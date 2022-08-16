@@ -5,6 +5,7 @@ export const useObserver = (
   page: number,
   totalPages: number,
   isLoading: boolean,
+  category: string,
   getNewItem: () => any) => {
   const [load, setLoad] = useState<boolean>(false)
   const observer = useRef<IntersectionObserver>()
@@ -29,5 +30,5 @@ export const useObserver = (
     if (lastItem.current) {
       observer.current.observe(lastItem.current)
     }
-  }, [load, totalPages])
+  }, [load, totalPages, category])
 }
