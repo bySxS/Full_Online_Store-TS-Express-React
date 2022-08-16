@@ -207,15 +207,17 @@ class CategoryService implements ICategoryService {
       .page(page - 1, limit)
       .where('category.name', 'like', `%${name}%`)
       .orWhere('category.nameEng', 'like', `%${name}%`)
-      .joinRelated('parent')
+      .leftOuterJoinRelated('parent')
       .leftOuterJoinRelated('products')
       .select('category.id',
         'category.parentId',
         'category.name as categoryName',
         'category.nameEng as categoryNameEng',
+        'category.iconClass as categoryIconClass',
         raw('count(DISTINCT products.id) as categoryCountProducts'),
         'parent.name as sectionName',
-        'parent.nameEng as sectionNameEng')
+        'parent.nameEng as sectionNameEng',
+        'parent.iconClass as sectionIconClass')
       .groupBy('category.id')
     if (!result) {
       return {
