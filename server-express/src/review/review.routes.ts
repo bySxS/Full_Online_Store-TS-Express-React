@@ -3,7 +3,7 @@ import { RoleMiddleware } from '@/middleware/role'
 import { AuthMiddleware } from '@/middleware/auth'
 import ApiError from '@/apiError'
 import ReviewController from '@/review/review.controller'
-import { validateReview } from '@/review/review.validator'
+import { validateReview, validateUpdRating } from '@/review/review.validator'
 import { validateId, validateLimitPage } from '@/validator'
 import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
 
@@ -15,6 +15,11 @@ try {
     validateReview(), ValidatorResultMiddleware,
     AuthMiddleware,
     ReviewController.addReview)
+  // success
+  router.put('/',
+    validateUpdRating(), ValidatorResultMiddleware,
+    AuthMiddleware,
+    ReviewController.updRating)
   // success
   router.get('/',
     validateLimitPage(), ValidatorResultMiddleware,

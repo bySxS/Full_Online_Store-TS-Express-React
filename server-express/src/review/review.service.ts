@@ -3,6 +3,7 @@ import { IMessage } from '@/interface'
 import ApiError from '@/apiError'
 import BasketService from '@/basket/basket.service'
 import ReviewModel from '@/review/review.model'
+import { ref } from 'objection'
 
 class ReviewService implements IReviewService {
   private static instance = new ReviewService()
@@ -19,6 +20,25 @@ class ReviewService implements IReviewService {
       productId, userId, comment,
       flaws, rating, parentId, advantages
     } = Dto
+    if (rating) {
+      const findReview = await ReviewModel.query()
+        .where({
+          productId,
+          userId
+        })
+        .andWhere(ref('rating'), '>=', 0)
+        .select('rating', 'id')
+        .first()
+      if (findReview) {
+        throw ApiError.badRequest(
+          'Ошибка при добавлении ' +
+          (parentId ? 'комментария' : 'отзыва'
+          ) + ' к продукту ' +
+          `с id${productId}, вы уже голосовали, ` +
+          `измените свой отзыв с id${findReview.id}`,
+          'ReviewService addReview')
+      }
+    }
     const bought =
       await BasketService.isUserBoughtProduct(userId, productId)
     const result = await ReviewModel.query()
@@ -26,11 +46,11 @@ class ReviewService implements IReviewService {
         productId,
         userId,
         comment,
-        flaws,
-        rating,
+        flaws: !parentId ? flaws : undefined,
+        rating: !parentId ? rating : undefined,
         bought,
         parentId,
-        advantages
+        advantages: !parentId ? advantages : undefined
       })
       .select('*')
     if (!result) {
@@ -45,6 +65,62 @@ class ReviewService implements IReviewService {
       result,
       message: (parentId ? 'Комментарий' : 'Отзыв') +
         ' успешно добавлен'
+    }
+  }
+
+  async updRating (Dto: IReview): Promise<IMessage> {
+    const {
+      productId, userId, comment,
+      flaws, rating, advantages
+    } = Dto
+    const findReview = await ReviewModel.query()
+      .where({
+        productId,
+        userId
+      })
+      .andWhere(ref('rating'), '>=', 0)
+      .select('rating', 'id')
+      .first()
+    if (!findReview) {
+      throw ApiError.badRequest(
+        'Ошибка при изменении ' +
+        `рейтинга продукта с id${productId}, ` +
+        'вы ещё не голосовали',
+        'ReviewService updRating')
+    }
+    const bought =
+      await BasketService.isUserBoughtProduct(userId, productId)
+    const result = await ReviewModel.query()
+      .findById(findReview.id)
+      .update({
+        productId,
+        userId,
+        comment,
+        flaws,
+        rating,
+        bought,
+        advantages
+      })
+      .select('*')
+    if (!result) {
+      throw ApiError.badRequest(
+        'Ошибка при изменении ' +
+        `рейтинга продукта с id${productId}`,
+        'ReviewService updRating')
+    }
+    return {
+      success: true,
+      result: {
+        id: findReview.id,
+        productId,
+        userId,
+        comment,
+        flaws,
+        rating,
+        advantages
+      },
+      message: `Рейтинг продукта с id${productId}` +
+               ' успешно изменен'
     }
   }
 

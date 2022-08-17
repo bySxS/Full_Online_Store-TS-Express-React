@@ -26,6 +26,19 @@ class ReviewController implements IReviewController {
     }
   }
 
+  async updRating (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const authUser = req.user as IJwt
+      req.body.userId = authUser.id
+      const result = await ReviewService.updRating(req.body)
+      return res.status(201).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
+
   async delReview (
     req: Request, res: Response, next: NextFunction
   ) {
