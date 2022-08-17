@@ -1,11 +1,11 @@
 import React, { FC } from 'react'
 import { IUsers } from 'store/myStore/myStoreUser.interface'
 
-interface UserItemProps {
+interface UserProfileProps {
   user: IUsers
 }
 
-const UserItems: FC<UserItemProps> = ({ user }) => {
+const UserProfile: FC<UserProfileProps> = ({ user }) => {
   return (
     <div>
       {user.nickname}
@@ -13,4 +13,4 @@ const UserItems: FC<UserItemProps> = ({ user }) => {
   )
 }
 
-export default UserItems
+export default UserProfile

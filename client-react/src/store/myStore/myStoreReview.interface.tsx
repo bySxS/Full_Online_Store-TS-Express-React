@@ -1,4 +1,5 @@
 export interface IReview {
+  id: number
   productId: number
   comment: string
   // недостатки
@@ -8,6 +9,17 @@ export interface IReview {
   rating: number
   // ответить кому-то
   parentId: number
+}
+
+export interface IUpdRating {
+  id?: number
+  productId: number
+  comment: string
+  // недостатки
+  flaws: string
+  // плюсы
+  advantages: string
+  rating: number
 }
 
 export interface IReviewOut {

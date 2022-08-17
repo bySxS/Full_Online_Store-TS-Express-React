@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import UserItems from 'components/UserItems/UserItems'
+import UserProfile from 'components/UserProfile/UserProfile'
 import { useFetchAllUsersQuery } from 'store/myStore/myStoreUser.api'
 import { Helmet } from 'react-helmet'
 import { useInfoLoading } from 'hooks/useInfoLoading'
@@ -24,7 +24,7 @@ const Users: FC<UsersProps> = ({ name }) => {
       <Breadcrumbs className={style.breadcrumbs} />
       <div className="font-bold text-center">{name}</div>
       {isSuccess && users && <div>{users.result?.results.map(user =>
-        <UserItems user={user}
+        <UserProfile user={user}
                    key={user.id}
         />
       )}</div>}

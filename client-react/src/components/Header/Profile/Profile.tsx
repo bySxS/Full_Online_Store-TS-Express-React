@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useState } from 'react'
 import { Dropdown } from 'react-bootstrap'
 import st from 'components/Header/Header.module.scss'
 import { useAuth } from 'hooks/useAuth'
@@ -6,16 +6,21 @@ import { RoutePath } from 'AppRouter'
 import { NavLink } from 'react-router-dom'
 import { useLazyLogoutQuery } from 'store/myStore/myStoreUser.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
-import { ModalContext } from 'components/UI/Modal/ModalContext'
-import UserItems from 'components/UserItems/UserItems'
+import UserProfile from 'components/UserProfile/UserProfile'
 import { ModalComponent } from 'components/UI/Modal/ModalComponent'
+import UserProfileEdit from '../../UserProfileEdit/UserProfileEdit'
 import style from './Profile.module.scss'
 
 const Profile = () => {
   const { isAuth, nickname, avatarUrl, roles, isAdmin, user } = useAuth()
   const [logout, { isLoading, isSuccess, isError, error, data }] = useLazyLogoutQuery()
   useInfoLoading({ isLoading, isSuccess, isError, error, data })
-  const { modal, openModal, closeModal } = useContext(ModalContext)
+  const [showProfile, setShowProfile] = useState(false)
+  const handleCloseProfile = () => setShowProfile(false)
+  const handleShowProfile = () => setShowProfile(true)
+  const [showProfileEdit, setShowProfileEdit] = useState(false)
+  const handleCloseProfileEdit = () => setShowProfileEdit(false)
+  const handleShowProfileEdit = () => setShowProfileEdit(true)
 
   return (
     <div>
@@ -36,20 +41,38 @@ const Profile = () => {
 
           {isAuth &&
           <>
-            <Dropdown.Item className="dropdown-item d-flex align-items-center" onClick={openModal}>
+            <Dropdown.Item
+              className="dropdown-item d-flex align-items-center"
+              onClick={handleShowProfile}>
               <i className="bi bi-person pr-1.5"></i>
               <span>My Profile</span>
             </Dropdown.Item>
-            {modal && user &&
-              <ModalComponent show={modal} title={'Ваш профиль'} onClose={closeModal}>
-                <UserItems user={user}/>
+            {showProfile && user &&
+              <ModalComponent
+                show={showProfile}
+                title={'Ваш профиль'}
+                onClose={handleCloseProfile}
+              >
+                <UserProfile user={user}/>
               </ModalComponent>
             }
             <Dropdown.Divider />
-            <Dropdown.Item className="dropdown-item d-flex align-items-center" href="#">
+            <Dropdown.Item
+              className="dropdown-item flex items-center"
+              onClick={handleShowProfileEdit}
+            >
               <i className="bi bi-gear pr-1.5"></i>
               <span>Account Settings</span>
             </Dropdown.Item>
+            {showProfileEdit && user &&
+             <ModalComponent
+               show={showProfileEdit}
+               title={'Редактировать ваш профиль'}
+               onClose={handleCloseProfileEdit}
+             >
+               <UserProfileEdit user={user}/>
+             </ModalComponent>
+            }
             <Dropdown.Divider />
           </>
           }

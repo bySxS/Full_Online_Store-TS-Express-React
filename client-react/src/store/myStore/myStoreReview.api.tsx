@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { IMessage, IResultList } from 'store/myStore/myStore.interface'
 import baseQueryWithRefreshToken from 'store/myStore/customFetch'
-import { IReview, IReviewOut } from 'store/myStore/myStoreReview.interface'
+import { IReview, IReviewOut, IUpdRating } from 'store/myStore/myStoreReview.interface'
 
 const myStoreReviewApi = createApi({
   reducerPath: 'storeReview/api',
@@ -13,6 +13,15 @@ const myStoreReviewApi = createApi({
         query: (body) => ({
           url: 'review',
           method: 'POST',
+          body
+        })
+      }),
+
+    updReview: build.mutation<IMessage<IUpdRating>,
+      IUpdRating>({
+        query: (body) => ({
+          url: 'review',
+          method: 'PUT',
           body
         })
       }),

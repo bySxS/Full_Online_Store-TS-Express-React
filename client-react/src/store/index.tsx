@@ -2,6 +2,7 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { SUBSCRIBE_STORE } from 'constants/constant'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { alertListenerMiddleware } from './alert/alert.listener'
+import myStoreFavProductApi from './myStore/myStoreFavProduct.api'
 import { logoutListenerMiddleware } from './user/user.listener'
 import myStoreUserApi from './myStore/myStoreUser.api'
 import myStoreProductApi from './myStore/myStoreProduct.api'
@@ -24,6 +25,7 @@ const reducers = {
   category: categoryReducer,
   [myStoreUserApi.reducerPath]: myStoreUserApi.reducer,
   [myStoreProductApi.reducerPath]: myStoreProductApi.reducer,
+  [myStoreFavProductApi.reducerPath]: myStoreFavProductApi.reducer,
   [myStoreBasketApi.reducerPath]: myStoreBasketApi.reducer,
   [myStoreCategoryApi.reducerPath]: myStoreCategoryApi.reducer,
   [myStoreCharacteristicsApi.reducerPath]: myStoreCharacteristicsApi.reducer,
@@ -42,6 +44,7 @@ export const store = configureStore({
       .concat([
         myStoreUserApi.middleware,
         myStoreProductApi.middleware,
+        myStoreFavProductApi.middleware,
         myStoreBasketApi.middleware,
         myStoreCategoryApi.middleware,
         myStoreCharacteristicsApi.middleware,

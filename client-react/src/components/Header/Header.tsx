@@ -12,15 +12,19 @@ const Header = () => {
     <header className={style.header}>
       <Navbar fixed={'top'} bg="light" variant="light"
               className={style.navbar}>
-        <NavLink
-          onClick={() => changeShowMenu()}
-          className={style.toggleMenu}
-        >
-        <i className="bi bi-list text-4xl"/>
-        </NavLink>
-        <Navbar.Brand className={style.hide_logo}>
+        <div className={style.hide_logo}>
+          <div className={'pr-4'}>
+          <NavLink
+            onClick={() => changeShowMenu()}
+            className={style.toggleMenu}
+          >
+            <i className="bi bi-list text-4xl"/>
+          </NavLink>
+          </div>
+        <div>
             <i className="bi bi-shop text-4xl"></i>
-          </Navbar.Brand>
+        </div>
+        </div>
 
           <Search />
           <div className={'flex'}>

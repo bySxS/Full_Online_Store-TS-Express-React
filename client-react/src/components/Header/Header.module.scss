@@ -2,8 +2,12 @@
   @apply flex items-center fixed top-0 left-0 right-0 z-50;
 
   .navbar {
-    @apply flex items-center justify-between pl-8;
+    @apply flex items-center justify-between pl-4;
   }
+}
+
+.hide_logo {
+  @apply flex flex-row;
 }
 
 @media only screen and (max-width: 775px) {

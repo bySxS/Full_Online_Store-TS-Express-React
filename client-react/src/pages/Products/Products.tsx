@@ -18,11 +18,11 @@ interface ProductProps {
 const Products: FC<ProductProps> = ({ name }) => {
   const pagination = useRef<HTMLHeadingElement>(null)
   const products = useAppSelector(selectProduct.allProducts)
-  const countProducts = useAppSelector(selectProduct.countProducts)
   const filterState = useAppSelector(selectProduct.filterState)
   const pageProduct = useAppSelector(selectProduct.pageProduct)
   const totalProduct = useAppSelector(selectProduct.totalProduct)
   const prevCategory = useAppSelector(selectProduct.prevCategory)
+  const viewProducts = useAppSelector(selectProduct.viewProducts)
   const { incPageProduct, clearProducts, setPrevCategory } = useAppActions()
   const [limit] = useState(10)
   const [totalPage, setTotalPage] = useState(Math.round((totalProduct ?? limit) / limit) + 1)
@@ -35,10 +35,6 @@ const Products: FC<ProductProps> = ({ name }) => {
     incPageProduct()
   }
   useObserver(pagination, pageProduct, totalPage, isLoading, prevCategory, getProducts)
-  const { setShowCategory } = useAppActions()
-  const handleClick = () => {
-    setShowCategory([])
-  }
 
   useEffect(() => {
     setTotalPage(Math.round((totalProduct ?? limit) / limit) + 1)
@@ -56,9 +52,12 @@ const Products: FC<ProductProps> = ({ name }) => {
         <meta name="description" content={name}/>
       </Helmet>
       <ProductsPanelSetting />
-      продукты {countProducts}
       {products &&
-        <div className={style.productsView} onClick={handleClick}>
+        <div className={
+          viewProducts === 'Row'
+            ? style.productsViewRow
+            : style.productsViewCol
+        }>
             {products.map(product =>
             <ProductItems key={product.id} product={product} />
             )}

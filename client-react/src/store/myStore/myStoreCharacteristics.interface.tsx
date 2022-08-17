@@ -34,7 +34,7 @@ export interface ICharValue {
 export interface ICharName {
   characteristicNameId: number
   characteristicName: string
-  value: ICharValue[]
+  values: ICharValue[]
 }
 
 export interface ICharacteristicSection {

@@ -27,8 +27,10 @@ export interface IProduct {
   updatedAt: Date
   view: number
   priceId: number
-  rating: number
-  ratingCount: number
+  rating?: number
+  reviewCount: number
+  ratingPlus: number
+  ratingMinus: number
   countInFavorites: number
   price: number
   priceCurrency: string

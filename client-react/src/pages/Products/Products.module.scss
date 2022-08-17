@@ -6,7 +6,12 @@
   display: flex;
 }
 
-.productsView {
+.productsViewRow {
   @apply flex flex-col items-center;
+  // justify-evenly flex-wrap content-center;
+}
+
+.productsViewCol {
+  @apply flex flex-wrap justify-center;
   // justify-evenly flex-wrap content-center;
 }

@@ -18,10 +18,17 @@ export function ModalComponent (
   }: ModalProps) {
   return (
     <>
-      <Modal show={show} onHide={onClose}>
+      <Modal
+        show={show}
+        onHide={onClose}
+        onExit={() => {
+          children = null
+        }}
+      >
         <Modal.Header
           closeButton={true}
-          closeVariant={'white'}>
+          closeVariant={'white'}
+        >
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>

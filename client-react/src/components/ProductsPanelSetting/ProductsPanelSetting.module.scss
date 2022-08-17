@@ -1,5 +1,14 @@
 .panel {
-  @apply flex justify-center flex-row;
+  @apply flex flex-row py-2 bg-white m-auto w-[90%];
+  border-radius: 5px;
+}
+
+.viewProducts {
+  @apply text-indigo-600 pl-4 hover:text-indigo-500;
+}
+
+.iconView {
+  @apply text-3xl;
 }
 
 //@media only screen and (max-width: 2005px) {
