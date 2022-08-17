@@ -33,6 +33,7 @@ export interface ICharacteristicSetValue {
 export interface ICharacteristicValue {
   characteristicValueId: number
   characteristicValue: string
+  characteristicCountProducts: number
 }
 
 export interface ICharacteristic {
