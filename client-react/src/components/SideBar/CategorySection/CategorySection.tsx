@@ -38,7 +38,7 @@ const CategorySection: FC<ICategoryProps> = ({ categorySection }) => {
           <i className={`${categorySection.sectionIconClass} ${st.icon}`}/>
           <span className={st.name_page}>
           {categorySection.sectionName} ({categorySection.sectionCountProducts})
-        </span>
+          </span>
         </NavLink>
       </li>
       <MyOverlay

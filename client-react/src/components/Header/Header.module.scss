@@ -1,3 +1,17 @@
+.header {
+  @apply flex items-center fixed top-0 left-0 right-0 z-50;
+
+  .navbar {
+    @apply flex items-center justify-between pl-8;
+  }
+}
+
+@media only screen and (max-width: 775px) {
+ .toggleMenu {
+   display: none;
+ }
+}
+
 @media only screen and (max-width: 510px) {
   .hide_logo {
     display: none;

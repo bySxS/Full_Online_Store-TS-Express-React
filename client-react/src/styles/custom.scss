@@ -1,7 +1,15 @@
 // Override default variables before the import
 
 .body {
-  @apply flex flex-col pt-[68px] w-full pl-[210px];
+  @apply flex flex-col pt-[68px] w-full;
+}
+
+.paddingLeftShowMenu {
+  @apply pl-[210px];
+}
+
+.paddingLeftHideMenu {
+ padding-left: 0!important;
 }
 
 @media only screen and (max-width: 775px) {

@@ -6,36 +6,20 @@ import { addHostServerToFileLink } from 'utils'
 const LS_TOKEN_KEY = 'rtk'
 const LS_USER_KEY = 'ruk'
 const LS_IS_AUTH_KEY = 'risAk'
+const LS_MENU_KEY = 'rMenuk'
 
 interface IUserState {
   token: string
   isAuth: boolean
   user: IUser | undefined
-}
-
-const tokenString = localStorage.getItem(LS_TOKEN_KEY) || ''
-let token = ''
-if (tokenString) {
-  try {
-    token = JSON.parse(tokenString)
-  } catch (e) {
-    token = ''
-  }
-}
-const isAuthString = localStorage.getItem(LS_IS_AUTH_KEY) || ''
-let isAuth = false
-if (isAuthString) {
-  try {
-    isAuth = JSON.parse(isAuthString)
-  } catch (e) {
-    isAuth = false
-  }
+  menuShow: boolean
 }
 
 const initialState: IUserState = {
-  token,
-  isAuth,
-  user: JSON.parse(localStorage.getItem(LS_USER_KEY) ?? '[]')
+  token: localStorage.getItem(LS_TOKEN_KEY) ?? '',
+  isAuth: localStorage.getItem(LS_IS_AUTH_KEY) === '1',
+  user: JSON.parse(localStorage.getItem(LS_USER_KEY) ?? '[]'),
+  menuShow: localStorage.getItem(LS_MENU_KEY) === '1'
 }
 
 const setLogin = (state: IUserState, action: PayloadAction<IMessage<ILoginResult>>) => {
@@ -46,7 +30,7 @@ const setLogin = (state: IUserState, action: PayloadAction<IMessage<ILoginResult
   state.user = { ...user, avatar }
   state.isAuth = true
   localStorage.setItem(LS_TOKEN_KEY, JSON.stringify(state.token))
-  localStorage.setItem(LS_IS_AUTH_KEY, JSON.stringify(state.isAuth))
+  localStorage.setItem(LS_IS_AUTH_KEY, '1')
   localStorage.setItem(LS_USER_KEY, JSON.stringify(state.user))
 }
 
@@ -68,6 +52,14 @@ export const UserSlice = createSlice({
     },
     logout (state) {
       setLogout(state)
+    },
+    changeShowMenu (state) {
+      state.menuShow = !state.menuShow
+      if (state.menuShow) {
+        localStorage.setItem(LS_MENU_KEY, '1')
+      } else {
+        localStorage.removeItem(LS_MENU_KEY)
+      }
     }
   }
   // extraReducers: (builder) => {

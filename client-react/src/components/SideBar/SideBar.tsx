@@ -2,6 +2,7 @@ import React from 'react'
 import { Accordion } from 'react-bootstrap'
 import { NavLink, useLocation } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
+import selectUser from 'store/user/user.selector'
 import CategorySection from './CategorySection/CategorySection'
 import st from './SideBar.module.scss'
 import { useAuth } from 'hooks/useAuth'
@@ -14,6 +15,7 @@ import Toggle from '../UI/Toggle/Toggle'
 const SideBar = () => {
   const { isAuth } = useAuth()
   const { pathname } = useLocation()
+  const menuShow = useAppSelector(selectUser.menuShow)
   const { isLoading, isSuccess, isError, data, error } = useGetAllCategoryQuery('')
   useInfoLoading({ isLoading, isSuccess, isError, data, error })
   const allCategory = useAppSelector(selectCategory.allCategory)
@@ -23,7 +25,8 @@ const SideBar = () => {
   }
 
   return (
-    <div className={st.sideMenuHead}>
+    menuShow
+      ? <div className={st.sideMenuHead}>
       <div className={st.sideMenuBody}>
       <ul>
         <li>
@@ -32,8 +35,8 @@ const SideBar = () => {
             className="sideBarLink"
             onMouseEnter={handleFocus}
           >
-              <i className={`bi bi-house-fill ${st.icon}`}/>
-              <span className={st.name_page}>Главная</span>
+            <i className={`bi bi-house-fill ${st.icon}`}/>
+            <span className={st.name_page}>Главная</span>
           </NavLink>
         </li>
         {isAuth &&
@@ -43,8 +46,8 @@ const SideBar = () => {
               className="sideBarLink"
               onMouseEnter={handleFocus}
             >
-                <i className={`bi bi-bookmark-fill ${st.icon}`}/>
-                <span className={st.name_page}>Избранные товары</span>
+              <i className={`bi bi-bookmark-fill ${st.icon}`}/>
+              <span className={st.name_page}>Избранные товары</span>
             </NavLink>
           </li>
         }
@@ -55,8 +58,8 @@ const SideBar = () => {
             className="sideBarLink"
             onMouseEnter={handleFocus}
           >
-              <i className={`bi bi-grid-fill ${st.icon}`}/>
-              <span className={st.name_page}>Товары</span>
+            <i className={`bi bi-grid-fill ${st.icon}`}/>
+            <span className={st.name_page}>Товары</span>
           </NavLink>
           </li>
           : <Accordion>
@@ -83,7 +86,7 @@ const SideBar = () => {
                     )}
                     onMouseEnter={handleFocus}
                   >
-                    <i className={`bi bi-grid-fill ${st.icon}`}/>
+                    <i className={`bi bi-grid-3x3-gap-fill ${st.icon}`}/>
                     <span className={st.name_page}>Все товары</span>
                   </NavLink>
                 </li>
@@ -97,6 +100,7 @@ const SideBar = () => {
       </ul>
       </div>
     </div>
+      : <></>
   )
 }
 
