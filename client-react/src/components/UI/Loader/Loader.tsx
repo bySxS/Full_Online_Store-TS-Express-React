@@ -10,7 +10,7 @@ interface ILoaderProps {
 const Loader: FC<ILoaderProps> = ({ alwaysShow = false }) => {
   const Loading = useAppSelector(isLoading)
   return (
-    <div>
+    <div style={{ zIndex: 1000 }}>
       {(Loading || (alwaysShow !== undefined && alwaysShow)) &&
       <section>
         <div className={cl.loader}>

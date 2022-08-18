@@ -2,13 +2,12 @@ import { RootState } from '../index'
 
 const allFavProducts = (state: RootState) => state.product.favoriteProducts
 const productIsInFavorite = (id: number) => (state: RootState): boolean => {
-  const products = state.product.favoriteProducts || []
-  const ids = new Set(products.map(o => o.id))
-  return ids.has(id)
+  const products = state.product.listIdFavProducts || []
+  return products.includes(id)
 }
-
 const filterState = (state: RootState) => state.product.filterState
 const countProducts = (state: RootState) => state.product.products?.length || 0
+const countFavProducts = (state: RootState) => state.product.listIdFavProducts?.length || 0
 const allProducts = (state: RootState) => state.product.products
 const viewProducts = (state: RootState) => state.product.ViewProducts
 const pageProduct = (state: RootState) => state.product.pageProduct
@@ -23,6 +22,7 @@ const selectProduct = {
   productIsInFavorite,
   allFavProducts,
   countProducts,
+  countFavProducts,
   filterState,
   pageProduct,
   pageFavProduct,

@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Accordion } from 'react-bootstrap'
 import { NavLink, useLocation } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
 import selectUser from 'store/user/user.selector'
+import { useLazyGetFavProductsListQuery } from '../../store/myStore/myStoreFavProduct.api'
+import selectProduct from '../../store/product/product.selector'
 import CategorySection from './CategorySection/CategorySection'
 import st from './SideBar.module.scss'
 import { useAuth } from 'hooks/useAuth'
@@ -18,6 +20,27 @@ const SideBar = () => {
   const menuShow = useAppSelector(selectUser.menuShow)
   const { isLoading, isSuccess, isError, data, error } = useGetAllCategoryQuery('')
   useInfoLoading({ isLoading, isSuccess, isError, data, error })
+  const [fetchListFavProducts, {
+    isLoading: isLoadingListFav,
+    isSuccess: isSuccessListFav,
+    isError: isErrorListFav,
+    data: listFav,
+    error: errorListFav
+  }] =
+    useLazyGetFavProductsListQuery()
+  useInfoLoading({
+    isLoading: isLoadingListFav,
+    isSuccess: isSuccessListFav,
+    isError: isErrorListFav,
+    data: listFav,
+    error: errorListFav
+  })
+
+  useEffect(() => {
+    fetchListFavProducts('')
+  }, [])
+
+  const countFavProduct = useAppSelector(selectProduct.countFavProducts)
   const allCategory = useAppSelector(selectCategory.allCategory)
   const { setShowCategory } = useAppActions()
   const handleFocus = () => {
@@ -47,7 +70,7 @@ const SideBar = () => {
               onMouseEnter={handleFocus}
             >
               <i className={`bi bi-bookmark-fill ${st.icon}`}/>
-              <span className={st.name_page}>Избранные товары</span>
+              <span className={st.name_page}>Избранные товары ({countFavProduct})</span>
             </NavLink>
           </li>
         }

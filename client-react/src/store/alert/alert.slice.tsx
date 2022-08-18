@@ -69,7 +69,11 @@ export const AlertSlice = createSlice({
       }
     },
     delFromAlertStack (state, action: PayloadAction<number>) {
-      state.alertSt = state.alertSt.filter(a => a.id !== action.payload)
+      state.alertSt =
+        state.alertSt.filter(a => a.id !== action.payload)
+      if (state.alertSt.length === 0) {
+        state.isLoading = false
+      }
       // localStorage.setItem(LS_ALERT_KEY, JSON.stringify(state.alertSt))
     }
   }

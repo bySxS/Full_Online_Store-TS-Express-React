@@ -1,7 +1,6 @@
 import React, { FC } from 'react'
 import { IProduct } from 'store/myStore/myStoreProduct.interface'
-import { useAppSelector } from 'hooks/useStore'
-import selectProduct from 'store/product/product.selector'
+import FavIcon from 'components/FavIcon/FavIcon'
 import style from './ProductViewRow.module.scss'
 
 interface IProductViewRowProps {
@@ -9,17 +8,11 @@ interface IProductViewRowProps {
 }
 
 const ProductViewRow: FC<IProductViewRowProps> = ({ product }) => {
-  const isInFav = useAppSelector(
-    selectProduct.productIsInFavorite(product.id)
-  )
   return (
     <>
       <div className={style.productItem}>
       <div className={style.sectionFav}>
-        {isInFav
-          ? <i className="bi bi-star-fill text-yellow-400"/>
-          : <i className="bi bi-star"/>
-        }
+        <FavIcon productId={product.id} />
       </div>
       <div className={style.sectionScreen}>
         <div className={style.screen}>
@@ -46,10 +39,18 @@ const ProductViewRow: FC<IProductViewRowProps> = ({ product }) => {
         </div>
       </div>
       <div className={style.sectionViews}>
-        <div className={style.sectionViewsBlock}><i className="bi bi-eye"/> {product.view}</div>
-        <div className={style.sectionViewsBlock}><i className="bi bi-star-fill text-yellow-400"/> {product.countInFavorites}</div>
-        <div className={style.sectionViewsBlock}><i className="bi bi-hand-thumbs-up-fill text-green-500"/> {product.ratingPlus}</div>
-        <div className={style.sectionViewsBlock}><i className="bi bi-hand-thumbs-down-fill text-red-500"/> {product.ratingMinus}</div>
+        <div className={style.sectionViewsBlock}>
+          <i className="bi bi-eye"/> {product.view}
+        </div>
+        <div className={style.sectionViewsBlock}>
+          <i className="bi bi-star-fill text-yellow-400"/> {product.countInFavorites}
+        </div>
+        <div className={style.sectionViewsBlock}>
+          <i className="bi bi-hand-thumbs-up-fill text-green-500"/> {product.ratingPlus}
+        </div>
+        <div className={style.sectionViewsBlock}>
+          <i className="bi bi-hand-thumbs-down-fill text-red-500"/> {product.ratingMinus}
+        </div>
       </div>
       </div>
     </>

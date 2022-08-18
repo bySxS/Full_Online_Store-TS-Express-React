@@ -1,9 +1,7 @@
 import React, { FC } from 'react'
 import { Helmet } from 'react-helmet'
 import { CardComponent } from 'components/UI/Card/CardComponent'
-// import Login from 'components/Login/Login'
-// import { useLocation } from 'react-router-dom'
-// import Registration from 'components/Registration/Registration'
+import style from './LoginReg.module.scss'
 
 interface LoginRegProps {
   name: string
@@ -14,7 +12,7 @@ const LoginReg: FC<LoginRegProps> = ({ name, children }) => {
   // const location = useLocation()
 
   return (
-    <div>
+    <div className={style.head}>
       <Helmet>
         <title>{name}</title>
         <meta name="description" content="{name}" />

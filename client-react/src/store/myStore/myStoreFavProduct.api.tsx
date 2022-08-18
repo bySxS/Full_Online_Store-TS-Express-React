@@ -2,12 +2,13 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { IMessage, IResultList } from 'store/myStore/myStore.interface'
 import { IGetProductsWithFilter, IProduct } from 'store/myStore/myStoreProduct.interface'
 import baseQueryWithRefreshToken from 'store/myStore/customFetch'
-import { IFavProduct } from 'store/myStore/myStoreFavProduct.interface'
+import { IFavProduct, IFavProductList } from 'store/myStore/myStoreFavProduct.interface'
 
 const myStoreFavProductApi = createApi({
   reducerPath: 'storeFavProduct/api',
   baseQuery: baseQueryWithRefreshToken,
   refetchOnFocus: true,
+  tagTypes: ['FavProducts'],
   endpoints: build => ({
     addToFavProduct: build.mutation<IMessage<IFavProduct>,
       { productId: number }>({
@@ -15,7 +16,8 @@ const myStoreFavProductApi = createApi({
           url: 'favorites_products/',
           method: 'POST',
           body
-        })
+        }),
+        invalidatesTags: ['FavProducts']
       }),
     delFromFavProduct: build.mutation<IMessage<IFavProduct>,
       { productId: number }>({
@@ -23,7 +25,8 @@ const myStoreFavProductApi = createApi({
           url: 'favorites_products/',
           method: 'DELETE',
           body
-        })
+        }),
+        invalidatesTags: ['FavProducts']
       }),
     getFavProducts: build.query<IMessage<IResultList<IProduct>>,
       IGetProductsWithFilter>({
@@ -36,7 +39,16 @@ const myStoreFavProductApi = createApi({
             limit: args.limit || 10,
             page: args.page
           }
+        }),
+        providesTags: ['FavProducts']
+      }),
+
+    getFavProductsList: build.query<IMessage<IFavProductList[]>,
+      string>({
+        query: () => ({
+          url: 'favorites_products/list'
         })
+        // providesTags: ['FavProducts']
       })
   })
 })
@@ -46,6 +58,7 @@ export default myStoreFavProductApi
 export const {
   useAddToFavProductMutation,
   useDelFromFavProductMutation,
+  useLazyGetFavProductsListQuery,
   useLazyGetFavProductsQuery,
   endpoints: myStoreFavProductEndpoint
 } = myStoreFavProductApi

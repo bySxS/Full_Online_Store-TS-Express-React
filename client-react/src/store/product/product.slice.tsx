@@ -4,7 +4,7 @@ import { IFilterState, IProduct } from 'store/myStore/myStoreProduct.interface'
 import { myStoreProductEndpoint } from 'store/myStore/myStoreProduct.api'
 import { addDomainToImgProducts } from 'utils'
 import { myStoreFavProductEndpoint } from 'store/myStore/myStoreFavProduct.api'
-import { IFavProduct } from 'store/myStore/myStoreFavProduct.interface'
+import { IFavProduct, IFavProductList } from 'store/myStore/myStoreFavProduct.interface'
 
 // const LS_PRODUCT_KEY = 'rpk'
 const LS_VIEW_PRODUCT_KEY = 'rViewPk'
@@ -14,8 +14,9 @@ export type TypeMaterial = 'Col' | 'Row'
 
 interface IProductState {
   ViewProducts: TypeMaterial
-  products: IProduct[] | undefined
-  favoriteProducts: IProduct[] | undefined
+  products: IProduct[]
+  favoriteProducts: IProduct[]
+  listIdFavProducts: number[]
   filterState: IFilterState
   pageProduct: number
   totalProduct: number
@@ -27,6 +28,7 @@ interface IProductState {
 const initialState: IProductState = {
   ViewProducts: localStorage.getItem(LS_VIEW_PRODUCT_KEY) as TypeMaterial || 'Row',
   favoriteProducts: [], // JSON.parse(localStorage.getItem(LS_FAV_PRODUCT_KEY) ?? '[]'),
+  listIdFavProducts: [],
   products: [], // JSON.parse(localStorage.getItem(LS_PRODUCT_KEY) ?? '[]'),
   filterState: {},
   pageProduct: 1,
@@ -72,41 +74,39 @@ const addFavProducts =
       ]
       state.totalFavProduct = payload.result.total
     }
-    // localStorage.setItem(LS_FAV_PRODUCT_KEY,
-    //   JSON.stringify(state.favoriteProducts))
   }
 
-const addOneFavProduct =
+const addFavProductToList =
   (
     state: IProductState,
     action: PayloadAction<IMessage<IFavProduct>>
   ) => {
     const { productId } = action.payload.result
-    if (state.products) {
-      const needProduct = [state.products[productId]]
-      const prevProducts = state.favoriteProducts as IProduct[] ?? []
-      const ids = new Set(prevProducts.map(o => o.id))
-      state.favoriteProducts = [
-        ...prevProducts,
-        ...needProduct.filter(o => !ids.has(o.id))
-      ]
-      // localStorage.setItem(LS_FAV_PRODUCT_KEY,
-      //   JSON.stringify(state.favoriteProducts))
+    if (!state.listIdFavProducts.includes(productId)) {
+      state.listIdFavProducts.push(productId)
+    }
+    if (!state.favoriteProducts
+      .map(product => product.id)
+      .includes(productId)) {
+      state.favoriteProducts.push(
+        state.products
+          .filter(product => product.id === productId)[0]
+      )
+      state.pageFavProduct = 1
+      state.totalFavProduct = 10
     }
   }
 
-const delOneFavProduct =
+const delFavProductFromList =
   (
     state: IProductState,
     action: PayloadAction<IMessage<IFavProduct>>
   ) => {
     const { productId } = action.payload.result
-    const prevProducts = state.favoriteProducts ?? []
-    state.favoriteProducts = [
-      ...prevProducts.filter(o => o.id !== productId)
-    ]
-    // localStorage.setItem(LS_FAV_PRODUCT_KEY,
-    //   JSON.stringify(state.favoriteProducts))
+    if (state.listIdFavProducts.includes(productId)) {
+      state.listIdFavProducts =
+        state.listIdFavProducts.filter(id => id !== productId)
+    }
   }
 
 export const ProductSlice = createSlice({
@@ -114,13 +114,19 @@ export const ProductSlice = createSlice({
   initialState,
   reducers: {
     addProducts,
+    delOneFavProduct (state,
+      action: PayloadAction<number>) {
+      const productId = action.payload
+      state.favoriteProducts =
+          state.favoriteProducts
+            .filter(product => product.id !== productId)
+      state.pageFavProduct = 1
+      state.totalFavProduct = 10
+    },
     clearProducts (state) {
       state.products = []
-      state.favoriteProducts = [] // очищаем при изменении фильтра
       state.pageProduct = 1 // ставим начальные страницы для paginator
-      state.pageFavProduct = 1
       state.totalProduct = 10
-      state.totalFavProduct = 10
     },
     setPrevCategory (state, action: PayloadAction<string>) {
       state.prevCategory = action.payload
@@ -171,12 +177,22 @@ export const ProductSlice = createSlice({
       }
     )
     builder.addMatcher(
+      myStoreFavProductEndpoint.getFavProductsList.matchFulfilled,
+      (
+        state: IProductState,
+        action: PayloadAction<IMessage<IFavProductList[]>>
+      ) => {
+        state.listIdFavProducts =
+          action.payload.result?.map(product => product.productId)
+      }
+    )
+    builder.addMatcher(
       myStoreFavProductEndpoint.addToFavProduct.matchFulfilled,
       (
         state,
         action: PayloadAction<IMessage<IFavProduct>>
       ) => {
-        addOneFavProduct(state, action)
+        addFavProductToList(state, action)
       }
     )
     builder.addMatcher(
@@ -185,16 +201,11 @@ export const ProductSlice = createSlice({
         state,
         action: PayloadAction<IMessage<IFavProduct>>
       ) => {
-        delOneFavProduct(state, action)
+        delFavProductFromList(state, action)
       }
     )
   }
 })
 
-export const {
-  addProducts: AddProductsCategory,
-  clearProducts,
-  setPrevCategory
-} = ProductSlice.actions
 export const productAction = ProductSlice.actions
 export const productReducer = ProductSlice.reducer

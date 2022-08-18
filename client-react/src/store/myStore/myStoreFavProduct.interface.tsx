@@ -4,3 +4,7 @@ export interface IFavProduct {
   createdAt: Date
   id: number
 }
+
+export interface IFavProductList {
+  productId: number
+}

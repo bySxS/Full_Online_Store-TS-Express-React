@@ -23,13 +23,16 @@ const Products: FC<ProductProps> = ({ name }) => {
   const totalProduct = useAppSelector(selectProduct.totalProduct)
   const prevCategory = useAppSelector(selectProduct.prevCategory)
   const viewProducts = useAppSelector(selectProduct.viewProducts)
-  const { incPageProduct, clearProducts, setPrevCategory } = useAppActions()
+  const {
+    incPageProduct, clearProducts, setPrevCategory
+  } = useAppActions()
   const [limit] = useState(10)
   const [totalPage, setTotalPage] = useState(Math.round((totalProduct ?? limit) / limit) + 1)
   const [fetchProducts,
     { isLoading, isSuccess, isError, data, error }] =
     useLazyAllProductsQuery()
   useInfoLoading({ isLoading, isSuccess, isError, data, error })
+
   const getProducts = () => {
     fetchProducts({ page: pageProduct, limit, ...filterState })
     incPageProduct()

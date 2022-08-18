@@ -1,10 +1,8 @@
 import { useEffect } from 'react'
 import { IMessage } from 'store/myStore/myStore.interface'
-// import { SerializedError } from '@reduxjs/toolkit'
-// import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { useAppActions } from 'hooks/useStore'
 
-interface IInfoLoading {
+interface IInfoLoadingProps {
      isLoading: boolean
      isSuccess: boolean
      isError: boolean
@@ -12,31 +10,27 @@ interface IInfoLoading {
      error: any
 }
 
-export function useInfoLoading (arg: IInfoLoading) {
+export function useInfoLoading ({
+  data, error, isLoading, isError, isSuccess
+}: IInfoLoadingProps) {
   const { addToAlertStack, setLoading } = useAppActions()
 
   useEffect(() => {
-    if ((arg.isError) && (arg.error && 'status' in arg.error)) {
-      const err = arg.error.data as IMessage<string>
+    if (isSuccess && data) {
+      addToAlertStack({
+        message: data.message
+      })
+    }
+    if ((isError) && (error && 'status' in error)) {
+      const err = error.data as IMessage<string>
       if (err.message !==
-        'Пользователь не авторизован или время сессии истекло') {
+          'Пользователь не авторизован или время сессии истекло') {
         addToAlertStack({
           message: err.message,
           status: 'error'
         })
       }
     }
-  }, [arg.isError])
-
-  useEffect(() => {
-    setLoading(arg.isLoading)
-  }, [arg.isLoading])
-
-  useEffect(() => {
-    if (arg.isSuccess && arg.data) {
-      addToAlertStack({
-        message: arg.data.message
-      })
-    }
-  }, [arg.isSuccess])
+    setLoading(isLoading)
+  }, [isSuccess, isError, isLoading])
 }

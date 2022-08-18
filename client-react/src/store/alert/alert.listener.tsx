@@ -23,13 +23,13 @@ alertListenerMiddleware.startListening({
       }, delay)
 
       // Pause until action dispatched or state changed
-      if (await listenerApi.condition(() => delAlert, 25000)) {
+      if (await listenerApi.condition(() => delAlert, 10000)) {
         // Use the listener API methods to dispatch, get state,
         // unsubscribe the listener, start child tasks, and more
         // listenerApi.dispatch(todoAdded('Buy pet food'))
         clearTimeout(timer)
 
-        await listenerApi.dispatch(setLoading(false))
+        listenerApi.dispatch(setLoading(false))
         // Spawn "child tasks" that can do more work and return results
         // const task = listenerApi.fork(async (forkApi) => {
         // Can pause execution
