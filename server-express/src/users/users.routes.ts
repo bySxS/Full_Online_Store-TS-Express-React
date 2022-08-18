@@ -25,38 +25,39 @@ try {
   // success
   router.get('/activate/:link',
     validateLink(), ValidatorResultMiddleware,
+    AuthMiddleware,
     UsersController.activate)
   // success
   router.get('/refresh',
     UsersController.refresh)
   // success
-  router.delete('/delete/:id',
-    validateId(), ValidatorResultMiddleware,
-    RoleMiddleware(['admin']),
-    UsersController.deleteUserById)
-  // success
-  router.put('/update/:id',
-    validateId(), validateRegistration(), ValidatorResultMiddleware,
-    AuthMiddleware,
-    UsersController.updateUserById)
-  // success
   router.get('/search',
     validateLimitPage(), validateSearch(), ValidatorResultMiddleware,
     UsersController.searchUsers)
   // success
-  router.get('/my',
-    AuthMiddleware,
-    UsersController.getAuthUser)
+  router.get('/all',
+    validateLimitPage(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    UsersController.getUsers)
   // success
   router.get('/:id',
     validateId(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     UsersController.getUserById)
   // success
-  router.get('/',
-    validateLimitPage(), ValidatorResultMiddleware,
+  router.delete('/:id',
+    validateId(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
-    UsersController.getUsers)
+    UsersController.deleteUserById)
+  // success
+  router.put('/:id',
+    validateId(), validateRegistration(), ValidatorResultMiddleware,
+    AuthMiddleware,
+    UsersController.updateUserById)
+  // success
+  router.get('/',
+    AuthMiddleware,
+    UsersController.getAuthUser)
 } catch (e) {
   throw ApiError.internalRequest(
     'Ошибка в Users routers', 'UsersRouter'
