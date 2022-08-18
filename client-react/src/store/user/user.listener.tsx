@@ -1,6 +1,7 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit'
-import { logout } from './user.slice'
+import { userAction } from './user.slice'
 import myStoreUserApi from 'store/myStore/myStoreUser.api'
+const { logout } = userAction
 
 export const logoutListenerMiddleware = createListenerMiddleware()
 

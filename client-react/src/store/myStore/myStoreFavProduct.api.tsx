@@ -7,7 +7,7 @@ import { IFavProduct, IFavProductList } from 'store/myStore/myStoreFavProduct.in
 const myStoreFavProductApi = createApi({
   reducerPath: 'storeFavProduct/api',
   baseQuery: baseQueryWithRefreshToken,
-  refetchOnFocus: true,
+  // refetchOnFocus: true,
   tagTypes: ['FavProducts'],
   endpoints: build => ({
     addToFavProduct: build.mutation<IMessage<IFavProduct>,
@@ -58,7 +58,7 @@ export default myStoreFavProductApi
 export const {
   useAddToFavProductMutation,
   useDelFromFavProductMutation,
-  useLazyGetFavProductsListQuery,
+  useGetFavProductsListQuery,
   useLazyGetFavProductsQuery,
   endpoints: myStoreFavProductEndpoint
 } = myStoreFavProductApi

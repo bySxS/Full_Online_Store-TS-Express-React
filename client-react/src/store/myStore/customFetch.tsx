@@ -5,9 +5,11 @@ import {
 import { RootState } from '../index'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { IMessage } from 'store/myStore/myStore.interface'
-import { addToAlertStack } from 'store/alert/alert.slice'
-import { login, logout } from 'store/user/user.slice'
+import { alertAction } from 'store/alert/alert.slice'
+import { userAction } from 'store/user/user.slice'
 import { ILoginResult } from 'store/myStore/myStoreUser.interface'
+const { login, logout } = userAction
+const { addToAlertStack } = alertAction
 
 const baseUrl =
   process.env.REACT_APP_API_URL_SERVER

@@ -78,7 +78,7 @@ const Search = () => {
         <InputGroup.Text id="basic-addon1">
           <i className="bi bi-search"></i>
         </InputGroup.Text>
-        <Form className="d-flex w-[300px]"
+        <Form className={style.search_form}
               onSubmit={searchSubmitHandler}>
         <Form.Control
           type="search"
@@ -95,7 +95,7 @@ const Search = () => {
         {/* </Button> */}
       </Form>
     </InputGroup>
-      <div className={`${style.result_search} min-w-[360px] max-w-full`}>
+      <div className={`${style.result_search}`}>
       <ul className={style.ul_item}>
         {products && products.map(product => (
           <li key={product.id}

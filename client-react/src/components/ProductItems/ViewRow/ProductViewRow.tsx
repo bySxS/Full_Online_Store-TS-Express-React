@@ -1,6 +1,8 @@
 import React, { FC } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { IProduct } from 'store/myStore/myStoreProduct.interface'
 import FavIcon from 'components/FavIcon/FavIcon'
+import { RoutePath } from 'AppRouter'
 import style from './ProductViewRow.module.scss'
 
 interface IProductViewRowProps {
@@ -8,9 +10,16 @@ interface IProductViewRowProps {
 }
 
 const ProductViewRow: FC<IProductViewRowProps> = ({ product }) => {
+  const navigate = useNavigate()
+  const clickLiProductHandler = (id: number) => {
+    const path = `${RoutePath.PRODUCTS}/${id}`
+    navigate(path)
+  }
+
   return (
     <>
-      <div className={style.productItem}>
+      <div className={style.productItem}
+           onClick={() => { clickLiProductHandler(product.id) }}>
       <div className={style.sectionFav}>
         <FavIcon productId={product.id} />
       </div>

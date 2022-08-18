@@ -60,24 +60,12 @@ export const UserSlice = createSlice({
       } else {
         localStorage.removeItem(LS_MENU_KEY)
       }
+    },
+    activatedUserEmail (state) {
+      state.user = { ...state.user, isActivated: 1 } as IUser
     }
   }
-  // extraReducers: (builder) => {
-  //   builder.addMatcher(
-  //     myStoreUserEndpoints.login.matchFulfilled,
-  //     (state, action: PayloadAction<IMessage<ILoginResult>>) => {
-  //       setLogin(state, action)
-  //     }
-  //   )
-  // builder.addMatcher(
-  //   myStoreUserEndpoints.logout.matchFulfilled,
-  //   (state) => {
-  //     setLogout(state)
-  //   }
-  // )
-  // }
 })
 
-export const { logout, login } = UserSlice.actions
 export const userAction = UserSlice.actions
 export const userReducer = UserSlice.reducer

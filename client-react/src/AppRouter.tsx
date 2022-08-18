@@ -1,7 +1,6 @@
 import React, { ReactNode, Suspense, lazy, FC } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import Home from 'pages/Home/Home'
-import LoginReg from 'pages/LoginReg/LoginReg'
 import Products from 'pages/Products/Products'
 import Favorites from 'pages/Favorites/Favorites'
 import Users from 'pages/Users/Users'
@@ -10,9 +9,9 @@ import ProductDetails from 'pages/ProductDetails/ProductDetails'
 import UserDetails from 'pages/UserDetails/UserDetails'
 import AccessMiddleware, { IRequireUser } from 'components/AccessMiddleware/AccessMiddleware'
 import Loader from 'components/UI/Loader/Loader'
-import Login from 'components/Login/Login'
-import Registration from 'components/Registration/Registration'
-import ProductsCategory from './pages/ProductsCategory/ProductsCategory'
+import ActivateEmail from 'pages/ActivateEmail/ActivateEmail'
+import Error404 from 'pages/Error404/Error404'
+import ProductsCategory from 'pages/ProductsCategory/ProductsCategory'
 
 // test динамической подгрузки
 const AdminPanel = lazy(() => import('pages/AdminPanel/AdminPanel'))
@@ -38,8 +37,8 @@ export interface IRoute {
 
 export enum RoutePath {
   HOME = '/',
-  LOGIN = '/login',
-  REGISTRATION = '/registration',
+  // LOGIN = '/login',
+  ACTIVATE_EMAIL = '/activate/:link',
   ADMIN_PANEL = '/admin_panel',
   PRODUCTS = '/products',
   PRODUCTS_CATEGORY = '/products/category/:id',
@@ -48,20 +47,22 @@ export enum RoutePath {
   USERS = '/admin_panel/users',
   USERS_ID = '/users/:id',
   BASKET = '/basket',
-  ALL_ORDERS = '/all_orders'
+  ALL_ORDERS = '/all_orders',
+  ERROR_404 = '/404'
 }
 
 export enum RouteName {
   HOME = 'Главная',
-  LOGIN = 'Вход',
-  REGISTRATION = 'Регистрация',
+  // LOGIN = 'Вход',
+  ACTIVATE_EMAIL = 'Активация e-mail',
   ADMIN_PANEL = 'Админ панель',
   PRODUCTS = 'Товары',
   PRODUCTS_CATEGORY = 'Товары категории',
   FAVORITES_PRODUCT = 'Избранные товары',
   USERS = 'Пользователи',
   BASKET = 'Корзина',
-  ALL_ORDERS = 'Все заказы'
+  ALL_ORDERS = 'Все заказы',
+  ERROR_404 = 'Ошибка 404'
 }
 
 interface IBreadcrumbParams {
@@ -103,17 +104,17 @@ export const routes: IRoute[] = [
     element: <Home name={RouteName.HOME} />,
     breadcrumb: () => (<i className="bi bi-house-door-fill"/>)
   },
+  // {
+  //   path: RoutePath.LOGIN,
+  //   allowAuth: false,
+  //   element: <LoginReg name={RouteName.LOGIN}><Login/></LoginReg>,
+  //   breadcrumb: RouteName.LOGIN
+  // },
   {
-    path: RoutePath.LOGIN,
-    allowAuth: false,
-    element: <LoginReg name={RouteName.LOGIN}><Login/></LoginReg>,
-    breadcrumb: RouteName.LOGIN
-  },
-  {
-    path: RoutePath.REGISTRATION,
-    allowAuth: false,
-    element: <LoginReg name={RouteName.REGISTRATION}><Registration/></LoginReg>,
-    breadcrumb: RouteName.REGISTRATION
+    path: RoutePath.ACTIVATE_EMAIL,
+    allowAuth: true,
+    element: <ActivateEmail name={RouteName.ACTIVATE_EMAIL} />,
+    breadcrumb: RouteName.ACTIVATE_EMAIL
   },
   {
     path: RoutePath.PRODUCTS,
@@ -165,6 +166,17 @@ export const routes: IRoute[] = [
     allowRoles: [RolesName.admin],
     element: <AdminPanel name={RouteName.ADMIN_PANEL} />,
     breadcrumb: RouteName.ADMIN_PANEL
+  },
+  {
+    path: RoutePath.ERROR_404,
+    lazy: true,
+    element: <Error404 />,
+    breadcrumb: RouteName.ERROR_404
+  },
+  {
+    path: '*',
+    element: <Navigate replace to="/404" />,
+    breadcrumb: RouteName.ERROR_404
   }
 ]
 

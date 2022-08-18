@@ -8,16 +8,19 @@ import { useLazyLogoutQuery } from 'store/myStore/myStoreUser.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import UserProfile from 'components/UserProfile/UserProfile'
 import { ModalComponent } from 'components/UI/Modal/ModalComponent'
-import UserProfileEdit from '../../UserProfileEdit/UserProfileEdit'
+import UserProfileEdit from 'components/UserProfileEdit/UserProfileEdit'
+import LoginReg from 'components/LoginReg/LoginReg'
 import style from './Profile.module.scss'
 
 const Profile = () => {
   const { isAuth, nickname, avatarUrl, roles, isAdmin, user } = useAuth()
   const [logout, { isLoading, isSuccess, isError, error, data }] = useLazyLogoutQuery()
   useInfoLoading({ isLoading, isSuccess, isError, error, data })
+
   const [showProfile, setShowProfile] = useState(false)
   const handleCloseProfile = () => setShowProfile(false)
   const handleShowProfile = () => setShowProfile(true)
+
   const [showProfileEdit, setShowProfileEdit] = useState(false)
   const handleCloseProfileEdit = () => setShowProfileEdit(false)
   const handleShowProfileEdit = () => setShowProfileEdit(true)
@@ -45,7 +48,7 @@ const Profile = () => {
               className="dropdown-item d-flex align-items-center"
               onClick={handleShowProfile}>
               <i className="bi bi-person pr-1.5"></i>
-              <span>My Profile</span>
+              <span>Мой профиль</span>
             </Dropdown.Item>
             {showProfile && user &&
               <ModalComponent
@@ -62,13 +65,14 @@ const Profile = () => {
               onClick={handleShowProfileEdit}
             >
               <i className="bi bi-gear pr-1.5"></i>
-              <span>Account Settings</span>
+              <span>Редакт. профиль</span>
             </Dropdown.Item>
             {showProfileEdit && user &&
              <ModalComponent
                show={showProfileEdit}
                title={'Редактировать ваш профиль'}
                onClose={handleCloseProfileEdit}
+               className={'w-[750px]'}
              >
                <UserProfileEdit user={user}/>
              </ModalComponent>
@@ -95,13 +99,7 @@ const Profile = () => {
           </>
           }
           {!isAuth
-            ? <>
-            <NavLink className="dropdown-item d-flex align-items-center"
-                     to={RoutePath.LOGIN}>
-            <i className="bi bi-box-arrow-in-right pr-1.5"></i>
-            <span>Вход</span>
-            </NavLink>
-            </>
+            ? <LoginReg />
             : <>
             <Dropdown.Item className="dropdown-item d-flex align-items-center"
                            onClick={() => logout('')}>

@@ -1,5 +1,6 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit'
-import { addToAlertStack, delFromAlertStack, setLoading } from 'store/alert/alert.slice'
+import { alertAction } from 'store/alert/alert.slice'
+const { addToAlertStack, delFromAlertStack, setLoading } = alertAction
 
 // Create the middleware instance and methods
 export const alertListenerMiddleware = createListenerMiddleware()

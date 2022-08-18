@@ -59,6 +59,7 @@ export interface IRegistrationIn {
   deliveryAddress?: string
   phoneNumber?: string
   isSubscribeToNews?: boolean
+  delAvatar?: boolean
   avatar?: File | null
 }
 

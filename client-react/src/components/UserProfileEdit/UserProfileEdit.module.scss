@@ -1,0 +1,21 @@
+.viewProfile {
+  @apply flex;
+}
+
+.sectionAvatar {
+  @apply px-10 pt-20 justify-center flex;
+}
+
+.sectionInfo {
+  @apply w-[400px] flex justify-center;
+}
+
+.avatar {
+  @apply w-[200px] h-[200px];
+}
+
+@media only screen and (max-width: 992px) {
+  .viewProfile {
+    @apply flex-col;
+  }
+}

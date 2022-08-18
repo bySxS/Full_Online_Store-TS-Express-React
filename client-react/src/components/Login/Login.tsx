@@ -2,12 +2,17 @@ import React, { FC, useEffect, useState } from 'react'
 import { InputGroup, Form, Button } from 'react-bootstrap'
 import { useLoginMutation } from 'store/myStore/myStoreUser.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
-import { NavLink, useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 import { ILoginIn } from 'store/myStore/myStoreUser.interface'
-import { RoutePath } from 'AppRouter'
+// import { RoutePath } from 'AppRouter'
 
-const Login: FC = () => {
-  const navigate = useNavigate()
+interface ILoginProps {
+  onCloseLogin: () => void
+  onShowReg: () => void
+}
+
+const Login: FC<ILoginProps> = ({ onCloseLogin, onShowReg }) => {
+  // const navigate = useNavigate()
   const [login, { isLoading, isSuccess, isError, data: user, error }] = useLoginMutation()
   useInfoLoading({ isLoading, isSuccess, isError, data: user, error })
 
@@ -24,7 +29,8 @@ const Login: FC = () => {
 
   useEffect(() => {
     if (isSuccess && user) {
-      navigate('/')
+      // navigate('/')
+      onCloseLogin()
     }
   }, [isSuccess])
 
@@ -73,11 +79,17 @@ const Login: FC = () => {
           <div className={'flex-1'}>Нет аккаунта?</div>
          <hr className={'flex-auto'}/>
         </div>
-        <NavLink to={RoutePath.REGISTRATION}>
-          <Button variant="primary" className={'bg-emerald-600 w-full'}>
+        {/* <NavLink to={RoutePath.REGISTRATION}> */}
+          <Button
+            onClick={() => {
+              onShowReg()
+              onCloseLogin()
+            }}
+            variant="primary"
+            className={'bg-emerald-600 w-full'}>
             Зарегистрируйся!
           </Button>
-        </NavLink>
+        {/* </NavLink> */}
   </div>
   )
 }

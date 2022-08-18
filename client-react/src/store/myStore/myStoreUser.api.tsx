@@ -1,8 +1,11 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { IMessage, IResultList } from 'store/myStore/myStore.interface'
 import { ILoginIn, ILoginResult, IUsers } from 'store/myStore/myStoreUser.interface'
-import { login, logout } from 'store/user/user.slice'
+import { userAction } from 'store/user/user.slice'
 import { baseQueryWithRefreshToken } from 'store/myStore/customFetch'
+import { productAction } from 'store/product/product.slice'
+const { activatedUserEmail, login, logout } = userAction
+const { clearFavProducts } = productAction
 
 const myStoreUserApi = createApi({
   reducerPath: 'storeUser/api',
@@ -47,16 +50,41 @@ const myStoreUserApi = createApi({
       async onQueryStarted (args, api) {
         try {
           await api.queryFulfilled
-          await api.dispatch(logout())
+          api.dispatch(logout())
+          api.dispatch(clearFavProducts())
         } catch (e) {}
       }
       // invalidatesTags: ['Users']
     }), // logout
 
-    fetchAllUsers: build.query<IMessage<IResultList<IUsers>>,
+    activateEmail: build.query<IMessage<null>, string>({
+      query: (link: string) => ({
+        url: 'activate/' + link
+      }),
+      async onQueryStarted (args, api) {
+        try {
+          await api.queryFulfilled
+          api.dispatch(activatedUserEmail())
+        } catch (e) {}
+      }
+    }),
+
+    searchUsers: build.query<IMessage<IResultList<IUsers>>,
+      {value: string, limit?: number, page: number}>({
+        query: (args) => ({
+          url: 'user/search',
+          params: {
+            value: args.value,
+            limit: args.limit || 20,
+            page: args.page
+          }
+        })
+      }),
+
+    allUsers: build.query<IMessage<IResultList<IUsers>>,
       {limit?: number, page: number}>({
         query: (args) => ({
-          url: 'user',
+          url: 'user/all',
           params: {
             limit: args.limit || 10,
             page: args.page
@@ -64,16 +92,52 @@ const myStoreUserApi = createApi({
         })
         // providesTags: ['Users']
       // transformResponse: (response: IMessage<IResultList<IUsers>>) => response.result
-      }) // /fetchAllUsers
+      }), // /fetchAllUsers
+
+    getUserById: build.query<IMessage<IUsers>,
+      number>({
+        query: (id: number) => ({
+          url: 'user/' + id
+        })
+      }),
+
+    getMyAuthUser: build.query<IMessage<IUsers>,
+      string>({
+        query: () => ({
+          url: 'user'
+        })
+      }),
+
+    deleteUser: build.mutation<IMessage<null>, number>({
+      query: (id: number) => ({
+        url: 'user/' + id,
+        method: 'DELETE'
+      })
+    }),
+
+    updateUserById: build.mutation<IMessage<ILoginResult>,
+    {id: number, body: FormData}>({
+      query: ({ id, body }) => ({
+        url: 'user/' + id,
+        method: 'PUT',
+        body
+      })
+    })
+
   })
 })
 
 export default myStoreUserApi
 
 export const {
-  useFetchAllUsersQuery,
+  useAllUsersQuery,
   useLoginMutation,
   useRegistrationMutation,
+  useDeleteUserMutation,
+  useUpdateUserByIdMutation,
+  useLazySearchUsersQuery,
+  useGetMyAuthUserQuery,
+  useLazyGetUserByIdQuery,
   useLazyLogoutQuery,
-  endpoints: myStoreUserEndpoints
+  useLazyActivateEmailQuery
 } = myStoreUserApi

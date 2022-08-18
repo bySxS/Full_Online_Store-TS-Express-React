@@ -1,5 +1,9 @@
+.search_form {
+  @apply flex w-[300px];
+}
+
 .result_search {
-  @apply relative
+  @apply relative min-w-[360px] max-w-full;
 }
 
 .ul_item {
@@ -16,4 +20,13 @@
 
 .screen {
   @apply pr-2 w-[23px];
+}
+
+@media only screen and (max-width: 775px) {
+  .search_form {
+    @apply w-[200px];
+  }
+  .result_search {
+    @apply min-w-[260px];
+  }
 }

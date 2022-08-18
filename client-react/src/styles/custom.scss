@@ -48,6 +48,14 @@
   }
 }
 
+@media only screen and (max-width: 575px) {
+  .modal-dialog {
+    max-width: 450px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
 .sideBarLink:hover {
   background: #dedede;
 }

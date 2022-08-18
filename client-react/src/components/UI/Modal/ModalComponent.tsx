@@ -2,28 +2,28 @@ import React from 'react'
 import Modal from 'react-bootstrap/Modal'
 import { Button } from 'react-bootstrap'
 
-interface ModalProps {
+interface IModalProps {
   children: React.ReactNode
   title: string
   onClose: () => void
   show: boolean
   onSend?: () => void
   onSendName?: string
+  className?: string
 }
 
 export function ModalComponent (
   {
-    children, title, show,
+    children, title, show, className,
     onClose, onSend, onSendName
-  }: ModalProps) {
+  }: IModalProps) {
   return (
     <>
       <Modal
         show={show}
         onHide={onClose}
-        onExit={() => {
-          children = null
-        }}
+        size={'lg'}
+        dialogClassName={className || 'w-[500px]'}
       >
         <Modal.Header
           closeButton={true}

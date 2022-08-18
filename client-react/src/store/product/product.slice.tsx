@@ -128,6 +128,12 @@ export const ProductSlice = createSlice({
       state.pageProduct = 1 // ставим начальные страницы для paginator
       state.totalProduct = 10
     },
+    clearFavProducts (state) {
+      state.listIdFavProducts = []
+      state.favoriteProducts = []
+      state.pageFavProduct = 1 // ставим начальные страницы для paginator
+      state.totalFavProduct = 10
+    },
     setPrevCategory (state, action: PayloadAction<string>) {
       state.prevCategory = action.payload
     },

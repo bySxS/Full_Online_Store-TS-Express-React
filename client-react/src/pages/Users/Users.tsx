@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import UserProfile from 'components/UserProfile/UserProfile'
-import { useFetchAllUsersQuery } from 'store/myStore/myStoreUser.api'
+import { useAllUsersQuery } from 'store/myStore/myStoreUser.api'
 import { Helmet } from 'react-helmet'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { Breadcrumbs } from 'components/Breadcrumb/Breadcrumb'
@@ -12,7 +12,7 @@ interface UsersProps {
 
 const Users: FC<UsersProps> = ({ name }) => {
   const { isLoading, isSuccess, isError, data: users, error } =
-    useFetchAllUsersQuery({ limit: 10, page: 1 })
+    useAllUsersQuery({ limit: 10, page: 1 })
   useInfoLoading({ isLoading, isSuccess, isError, data: users, error })
 
   return (

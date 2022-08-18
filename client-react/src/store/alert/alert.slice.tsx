@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 // const LS_ALERT_KEY = 'rak'
 
+type AlertStatus = 'success' | 'warning' | 'error'
+
 export interface IAlertStack {
   id?: number
   title?: string
@@ -9,7 +11,7 @@ export interface IAlertStack {
   time?: string
   delay?: number
   color?: string
-  status?: string
+  status?: AlertStatus
 }
 
 interface IAlertState {
@@ -79,6 +81,5 @@ export const AlertSlice = createSlice({
   }
 })
 
-export const { addToAlertStack, delFromAlertStack, setLoading } = AlertSlice.actions
 export const alertAction = AlertSlice.actions
 export const alertReducer = AlertSlice.reducer

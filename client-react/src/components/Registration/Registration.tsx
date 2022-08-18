@@ -2,12 +2,24 @@ import React, { FC, useEffect, useState } from 'react'
 import { InputGroup, Form, Button } from 'react-bootstrap'
 import { useRegistrationMutation } from 'store/myStore/myStoreUser.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
-import { NavLink, useNavigate } from 'react-router-dom'
-import { IRegistrationIn } from 'store/myStore/myStoreUser.interface'
-import { RoutePath } from 'AppRouter'
+// import { useNavigate } from 'react-router-dom'
+import { IRegistrationIn, IUsers } from 'store/myStore/myStoreUser.interface'
+// import { RoutePath } from 'AppRouter'
 
-const Registration: FC = () => {
-  const navigate = useNavigate()
+interface IRegProps {
+  onCloseReg?: () => void
+  onShowLogin?: () => void
+  changeProfile?: boolean
+  defaultInfoUser?: IUsers
+}
+
+const Registration: FC<IRegProps> = ({
+  changeProfile,
+  onCloseReg,
+  onShowLogin,
+  defaultInfoUser
+}) => {
+  // const navigate = useNavigate()
   const [registration, { isLoading, isSuccess, isError, data: user, error }] =
     useRegistrationMutation()
   useInfoLoading({ isLoading, isSuccess, isError, data: user, error })
@@ -62,8 +74,9 @@ const Registration: FC = () => {
   }
 
   useEffect(() => {
-    if (isSuccess && user) {
-      navigate('/')
+    if (isSuccess && user && onCloseReg) {
+      // navigate('/')
+      onCloseReg()
     }
   }, [isSuccess])
 
@@ -92,7 +105,8 @@ const Registration: FC = () => {
   return (
     <div>
       <div className={'text-left'}>
-        <Form noValidate validated={true} onChange={handleChange}>
+        <Form noValidate validated={true}
+              onChange={handleChange}>
         <Form.Label>Никнейм</Form.Label>
         <InputGroup hasValidation className="mb-2">
           <InputGroup.Text id="basic-addon1">
@@ -103,6 +117,10 @@ const Registration: FC = () => {
             onChange={handleChangeString}
             name={'nickname'}
             placeholder="Введите ник"
+            defaultValue={defaultInfoUser &&
+                          defaultInfoUser.nickname
+              ? defaultInfoUser.nickname
+              : ''}
             aria-label="nickname"
             aria-describedby="basic-addon1"
           />
@@ -119,6 +137,10 @@ const Registration: FC = () => {
             onChange={handleChangeString}
             name={'email'}
             placeholder="Введите E-mail"
+            defaultValue={defaultInfoUser &&
+                          defaultInfoUser.email
+              ? defaultInfoUser.email
+              : ''}
             aria-label="email"
             aria-describedby="basic-addon1"
           />
@@ -138,10 +160,12 @@ const Registration: FC = () => {
             onChange={handleChangeString}
             className={'pr-[4.5rem] md'}
             type={showPass ? 'text' : 'password'}
+            defaultValue={''}
             placeholder="Введите пароль"
             name={'password'}
           />
-          <Button className={'bg-emerald-600'} onClick={handleClick}>
+          <Button className={'bg-emerald-600'}
+                  onClick={handleClick}>
             {showPass ? 'Hide' : 'Show'}
           </Button>
           {/* <Form.Control.Feedback>Отлично!</Form.Control.Feedback> */}
@@ -159,6 +183,10 @@ const Registration: FC = () => {
             onChange={handleChangeString}
             name={'fullName'}
             placeholder="Введите ФИО"
+            defaultValue={defaultInfoUser &&
+                          defaultInfoUser.fullName
+              ? defaultInfoUser.fullName
+              : ''}
             aria-label="fullName"
             aria-describedby="basic-addon1"
           />
@@ -174,6 +202,10 @@ const Registration: FC = () => {
             name={'city'}
             placeholder="Введите Город"
             aria-label="city"
+            defaultValue={defaultInfoUser &&
+                          defaultInfoUser.city
+              ? defaultInfoUser.city
+              : ''}
             aria-describedby="basic-addon1"
           />
         </InputGroup>
@@ -188,6 +220,10 @@ const Registration: FC = () => {
             name={'address'}
             placeholder="Введите Адрес"
             aria-label="address"
+            defaultValue={defaultInfoUser &&
+                          defaultInfoUser.address
+              ? defaultInfoUser.address
+              : ''}
             aria-describedby="basic-addon1"
           />
         </InputGroup>
@@ -201,6 +237,10 @@ const Registration: FC = () => {
             onChange={handleChangeString}
             name={'deliveryAddress'}
             placeholder="Введите Адрес доставки"
+            defaultValue={defaultInfoUser &&
+                          defaultInfoUser.deliveryAddress
+              ? defaultInfoUser.deliveryAddress
+              : ''}
             aria-label="deliveryAddress"
             aria-describedby="basic-addon1"
           />
@@ -215,11 +255,16 @@ const Registration: FC = () => {
             onChange={handleChangeString}
             name={'phoneNumber'}
             placeholder="Введите Номер телефона"
+            defaultValue={defaultInfoUser &&
+                          defaultInfoUser.phoneNumber
+              ? defaultInfoUser.phoneNumber
+              : ''}
             aria-label="phoneNumber"
             aria-describedby="basic-addon1"
           />
         </InputGroup>
-         <Form.Group controlId="formFileMultiple" className="mb-3">
+         <Form.Group controlId="formFileMultiple"
+                     className="mb-3">
           <Form.Label>Аватар</Form.Label>
           <Form.Control
             onChange={handleChangeFile}
@@ -231,6 +276,10 @@ const Registration: FC = () => {
           <Form.Check
             onChange={handleChangeCheckbox}
             name={'isSubscribeToNews'}
+            defaultValue={defaultInfoUser &&
+                          defaultInfoUser.isSubscribeToNews
+              ? defaultInfoUser.isSubscribeToNews
+              : ''}
             label="Получать новости магазина"
           />
          </Form.Group>
@@ -241,18 +290,29 @@ const Registration: FC = () => {
               onClick={btnLogin}
               type={'submit'}
       >
-        Создать аккаунт
+        {changeProfile
+          ? 'Сохранить изменения'
+          : 'Создать аккаунт'
+        }
       </Button>
+      {onShowLogin && onCloseReg &&
+       <>
       <div className={'legend'}>
         <hr className={'flex-auto'}/>
         <div className={'flex-1'}>Есть аккаунт?</div>
         <hr className={'flex-auto'}/>
       </div>
-      <NavLink to={RoutePath.LOGIN}>
-        <Button variant="primary" className={'bg-emerald-600 w-full'}>
-          Войдите!
-        </Button>
-      </NavLink>
+      <Button
+        onClick={() => {
+          onShowLogin()
+          onCloseReg()
+        }}
+        variant="primary"
+        className={'bg-emerald-600 w-full'}>
+        Войдите!
+      </Button>
+       </>
+      }
     </div>
   )
 }

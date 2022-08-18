@@ -45,11 +45,13 @@ const FavIcon: FC<IFavIconProps> = ({ productId }) => {
   })
   const { delOneFavProduct } = useAppActions()
 
-  const addClick = () => {
+  const addClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
     addToFav({ productId })
   }
 
-  const delClick = () => {
+  const delClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
     delToFav({ productId })
     setTimeout(() => {
       delOneFavProduct(productId)
