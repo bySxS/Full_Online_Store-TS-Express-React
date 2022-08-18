@@ -29,7 +29,7 @@ const setLogin = (state: IUserState, action: PayloadAction<IMessage<ILoginResult
   const avatar = addHostServerToFileLink(user.avatar, user.id, 'user_avatar')
   state.user = { ...user, avatar }
   state.isAuth = true
-  localStorage.setItem(LS_TOKEN_KEY, JSON.stringify(state.token))
+  localStorage.setItem(LS_TOKEN_KEY, state.token)
   localStorage.setItem(LS_IS_AUTH_KEY, '1')
   localStorage.setItem(LS_USER_KEY, JSON.stringify(state.user))
 }
