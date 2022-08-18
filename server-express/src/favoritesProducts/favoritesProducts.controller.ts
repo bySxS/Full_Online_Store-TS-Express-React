@@ -13,7 +13,9 @@ class FavoritesProductController implements IFavoritesProductController {
     return FavoritesProductController.instance
   }
 
-  async add (req: Request, res: Response, next: NextFunction) {
+  async add (
+    req: Request, res: Response, next: NextFunction
+  ) {
     try {
       const authUser = req.user as IJwt
       req.body.userId = authUser.id
@@ -24,7 +26,9 @@ class FavoritesProductController implements IFavoritesProductController {
     }
   }
 
-  async del (req: Request, res: Response, next: NextFunction) {
+  async del (
+    req: Request, res: Response, next: NextFunction
+  ) {
     try {
       const authUser = req.user as IJwt
       req.body.userId = authUser.id
@@ -35,7 +39,9 @@ class FavoritesProductController implements IFavoritesProductController {
     }
   }
 
-  async getAllByAuthUser (req: Request, res: Response, next: NextFunction) {
+  async getAllByAuthUser (
+    req: Request, res: Response, next: NextFunction
+  ) {
     try {
       const filterText = String(req.query.filter || '')
       const filter = filterText.split(',')
@@ -48,6 +54,20 @@ class FavoritesProductController implements IFavoritesProductController {
       const products =
         await FavoritesProductsService
           .getAllByUserId(authUser.id, filter, price, sort, limit, page)
+      return res.status(200).json(products)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async getAllListIdByAuthUser (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const authUser = req.user as IJwt
+      const products =
+        await FavoritesProductsService
+          .getAllListIdByUserId(authUser.id)
       return res.status(200).json(products)
     } catch (err) {
       next(err)

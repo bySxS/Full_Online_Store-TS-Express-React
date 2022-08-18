@@ -16,10 +16,12 @@ export interface IFavoritesProductService {
                    sortBy: string,
                    limit: number, page: number) =>
     Promise<IMessage>
+  getAllListIdByUserId: (userId: number) => Promise<IMessage>
 }
 
 export interface IFavoritesProductController {
   add: (req: Request, res: Response, next: NextFunction) => void
   del: (req: Request, res: Response, next: NextFunction) => void
   getAllByAuthUser: (req: Request, res: Response, next: NextFunction) => void
+  getAllListIdByAuthUser: (req: Request, res: Response, next: NextFunction) => void
 }

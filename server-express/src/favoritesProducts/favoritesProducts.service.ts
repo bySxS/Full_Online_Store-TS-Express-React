@@ -115,6 +115,29 @@ class FavoritesProductsService implements IFavoritesProductService {
         'успешно загружена'
     }
   }
+
+  async getAllListIdByUserId (
+    userId: number
+  ): Promise<IMessage> {
+    const result = await FavoritesProductsModel.query()
+      .where({ userId })
+      .select('productId')
+    if (!result) {
+      return {
+        success: false,
+        message: 'Избранных продуктов' +
+                 `, у пользователя с ID${userId}, ` +
+                 'не найдено'
+      }
+    }
+    return {
+      success: true,
+      result,
+      message: 'Лист избранных продуктов, ' +
+               `пользователя с ID${userId}, ` +
+               'успешно загружен'
+    }
+  }
 }
 
 export default FavoritesProductsService.getInstance()

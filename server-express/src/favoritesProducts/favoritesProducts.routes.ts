@@ -25,6 +25,10 @@ try {
     validateLimitPage(), ValidatorResultMiddleware,
     AuthMiddleware,
     FavoritesProductsController.getAllByAuthUser)
+  // success
+  router.get('/list',
+    AuthMiddleware,
+    FavoritesProductsController.getAllListIdByAuthUser)
 } catch (e) {
   throw ApiError.internalRequest(
     'Ошибка в FavoritesProducts routers',
