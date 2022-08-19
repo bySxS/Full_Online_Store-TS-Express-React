@@ -25,6 +25,26 @@ export const validateRegistration = () => {
   ]
 }
 
+export const validateUpdUser = () => {
+  return [
+    body('nickname',
+      'Имя пользователя (nickname) не может быть пустым')
+      .notEmpty(),
+    body('email',
+      'E-mail (email) не указан')
+      .notEmpty(),
+    body('email',
+      'Некорректный адрес e-mail (email)')
+      .isEmail({}),
+    body('password', 'Длина пароля должена быть от 5 до 20 символов')
+      .if(body('password').notEmpty())
+      .isLength({ min: 5, max: 20 }),
+    body('password', 'Пароль должен быть на латинице с цифрами')
+      .if(body('password').notEmpty())
+      .matches('^[a-zA-Z0-9]+$')
+  ]
+}
+
 export const validateLogin = () => {
   return [
     body('nickname',

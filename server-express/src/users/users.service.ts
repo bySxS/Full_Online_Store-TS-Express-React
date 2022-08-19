@@ -103,7 +103,7 @@ class UsersService implements IUserService {
         'UsersService registration')
     }
 
-    const hashPassword = hashSync(password, 7)
+    const hashPassword = hashSync(password || '', 7)
     const activateLink = v4().toString()
     const user = await UsersModel.query()
       .insert({
@@ -171,7 +171,7 @@ class UsersService implements IUserService {
         user.message,
         'UsersService getUserByNickname')
     }
-    const validPassword = compareSync(password, user.result.password)
+    const validPassword = compareSync(password || '', user.result.password)
     if (!validPassword) {
       throw ApiError.badRequest(
         'Введен неверный пароль или логин',
@@ -352,7 +352,8 @@ class UsersService implements IUserService {
         deliveryAddress,
         phoneNumber,
         rolesId,
-        isSubscribeToNews: Boolean(isSubscribeToNews),
+        updatedAt: new Date().toUTCString(),
+        isSubscribeToNews: isSubscribeToNews ? 1 : 0,
         ...avatarInfo.result
       },
       message: `Данные пользователя с ID${id} изменены; ${avatarInfo.message}`

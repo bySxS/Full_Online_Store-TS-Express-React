@@ -15,7 +15,7 @@ export interface IUsers {
     isSubscribeToNews?: boolean
     delAvatar?: boolean
     email: string,
-    password: string
+    password?: string
 }
 
 export interface IUsersFilesArray extends FileArray {

@@ -2,9 +2,18 @@ import { Router } from 'express'
 import UsersController from './users.controller'
 import { RoleMiddleware } from '@/middleware/role'
 import { AuthMiddleware } from '@/middleware/auth'
-import { validateLink, validateLogin, validateRegistration } from './users.validator'
+import {
+  validateLink,
+  validateLogin,
+  validateRegistration,
+  validateUpdUser
+} from './users.validator'
 import ApiError from '@/apiError'
-import { validateId, validateLimitPage, validateSearch } from '@/validator'
+import {
+  validateId,
+  validateLimitPage,
+  validateSearch
+} from '@/validator'
 import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
 
 const router = Router()
@@ -51,7 +60,7 @@ try {
     UsersController.deleteUserById)
   // success
   router.put('/:id',
-    validateId(), validateRegistration(), ValidatorResultMiddleware,
+    validateId(), validateUpdUser(), ValidatorResultMiddleware,
     AuthMiddleware,
     UsersController.updateUserById)
   // success
