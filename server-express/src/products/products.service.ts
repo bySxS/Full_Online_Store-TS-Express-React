@@ -518,7 +518,7 @@ class ProductsService implements IProductService {
     const product = await query(id)
     if (!product) {
       throw ApiError.notFound(
-        `Продукта с id ${id} не существует`,
+        `Продукта с id${id} не существует`,
         'ProductsService getById')
     }
     if (incView) {
@@ -537,7 +537,31 @@ class ProductsService implements IProductService {
     return {
       success: true,
       result,
-      message: `Продукт с id ${id} успешно получен`
+      message: `Продукт с id${id} успешно получен`
+    }
+  }
+
+  async getDynamicPriceByProductId (productId: number): Promise<IMessage> {
+    const price = await ProductsModel.query()
+      .where({ productId })
+      .leftOuterJoinRelated('basketProducts')
+      .select(
+        'basketProducts.currentPrice as price',
+        'basketProducts.updatedAt')
+      .groupBy('basketProducts.currentPrice',
+        'basketProducts.updatedAt')
+      .orderBy('basketProducts.updatedAt', 'DESC')
+      .limit(10)
+    if (price.length === 0) {
+      return {
+        success: false,
+        message: `Динамики цены для продукта с id${productId} нет, товар не был куплен`
+      }
+    }
+    return {
+      success: true,
+      result: price,
+      message: `Динамика цены для продукта с id${productId} успешно получена`
     }
   }
 

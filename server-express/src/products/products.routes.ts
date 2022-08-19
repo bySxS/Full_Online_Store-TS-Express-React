@@ -24,6 +24,10 @@ try {
     validateId(), validateLimitPage(), ValidatorResultMiddleware,
     ProductsController.getAllByCategoryIdAndFilter)
   // success
+  router.get('/dynamic_price/:id',
+    validateId(), ValidatorResultMiddleware,
+    ProductsController.getDynamicPriceByProductId)
+  // success
   router.get('/search',
     validateSearch(), validateLimitPage(), ValidatorResultMiddleware,
     ProductsController.search)

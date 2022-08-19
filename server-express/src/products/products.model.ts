@@ -9,6 +9,8 @@ import ProductsViews from './views/productsViews.model'
 import ProductsPriceType from './prices/productsPriceType.model'
 import CharacteristicsSetValue from '@/characteristics/characteristicsSetValue.model'
 import FavoritesProducts from '@/favoritesProducts/favoritesProducts.model'
+import BasketProducts from '@/basket/basketProducts.model'
+
 import { ICharacteristicProduct } from '@/characteristics/characteristics.interface'
 Model.knex(dbKnex)
 
@@ -158,6 +160,14 @@ export default class ProductsModel extends Model {
         join: {
           from: this.tableName + '.id',
           to: ProductsViews.tableName + '.productId'
+        }
+      },
+      basketProducts: {
+        relation: Model.HasManyRelation,
+        modelClass: BasketProducts,
+        join: {
+          from: this.tableName + '.id',
+          to: BasketProducts.tableName + '.productId'
         }
       }
     }

@@ -94,6 +94,7 @@ export interface IProductService {
   sortAndAddCharacteristicsToProducts: (
       products: Page<ProductsModel>
   ) => Promise<Page<ProductsModel>>
+  getDynamicPriceByProductId: (productId: number) => Promise<IMessage>
 }
 
 export interface IProductController {
@@ -111,4 +112,6 @@ export interface IProductController {
            next: NextFunction) => void
   search: (req: Request, res: Response,
         next: NextFunction) => void
+  getDynamicPriceByProductId: (req: Request, res: Response,
+                               next: NextFunction) => void
 }

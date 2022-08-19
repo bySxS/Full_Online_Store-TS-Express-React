@@ -3,6 +3,7 @@ import { dbKnex } from '@/db'
 
 import Products from '../products.model'
 import PricesTypes from './productsPriceType.model'
+import BasketProducts from '@/basket/basketProducts.model'
 
 Model.knex(dbKnex)
 
@@ -57,6 +58,14 @@ export default class ProductsPriceModel extends Model {
         join: {
           from: this.tableName + '.productId',
           to: Products.tableName + '.id'
+        }
+      },
+      basketProducts: {
+        relation: Model.HasManyRelation,
+        modelClass: BasketProducts,
+        join: {
+          from: this.tableName + '.id',
+          to: BasketProducts.tableName + '.productPriceId'
         }
       }
     }

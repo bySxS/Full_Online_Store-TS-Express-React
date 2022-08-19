@@ -136,6 +136,17 @@ class ProductsController implements IProductController {
       next(err)
     }
   }
+
+  async getDynamicPriceByProductId (req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = +req.params.id
+      const products =
+        await ProductsService.getDynamicPriceByProductId(id)
+      return res.status(200).json(products)
+    } catch (err) {
+      next(err)
+    }
+  }
 }
 
 export default ProductsController.getInstance()
