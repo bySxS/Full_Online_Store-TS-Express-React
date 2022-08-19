@@ -3,7 +3,11 @@
 }
 
 .sectionAvatar {
-  @apply px-10 pt-20 justify-center flex;
+  @apply px-10 pt-20 justify-start flex flex-col items-center;
+}
+
+.button {
+  @apply pt-3 w-[190px];
 }
 
 .sectionInfo {
