@@ -41,7 +41,7 @@ const Login: FC<ILoginProps> = ({ onCloseLogin, onShowReg }) => {
 
   return (
   <div>
-        <div className={'text-left'}>
+        <div className={'text-left w-[400px]'}>
         <Form.Label>Никнейм</Form.Label>
         <InputGroup className="mb-2">
           <InputGroup.Text id="basic-addon1">@</InputGroup.Text>

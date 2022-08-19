@@ -23,7 +23,11 @@ export const staggeredBaseQuery = retry(fetchBaseQuery({
     if (token) {
       headers.set('Authorization', `Bearer ${token}`)
     }
-    const UPLOAD_ENDPOINTS = ['registration']
+    const UPLOAD_ENDPOINTS =
+      ['registration',
+        'updateUserById',
+        'addProduct',
+        'updateProduct']
     if (!UPLOAD_ENDPOINTS.includes(endpoint)) {
       headers.set('content-type', 'application/json; charset=UTF-8')
     }

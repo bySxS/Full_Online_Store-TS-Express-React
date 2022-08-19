@@ -30,6 +30,7 @@ const SideBar = () => {
   } =
     useGetFavProductsListQuery('', {
       refetchOnFocus: true,
+      refetchOnMountOrArgChange: true,
       skip: !isAuth
     })
   useInfoLoading({

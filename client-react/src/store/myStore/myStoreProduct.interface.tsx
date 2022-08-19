@@ -23,8 +23,8 @@ export interface IProduct {
   videoYoutubeUrl: string
   parentId?: number
   url: string
-  createdAt: Date
-  updatedAt: Date
+  createdAt: Date | string
+  updatedAt: Date | string
   view: number
   priceId: number
   rating?: number
@@ -88,6 +88,11 @@ export interface IProductIn {
   videoYoutubeUrl?: string
   parentId?: number
   url?: string
+}
+
+export interface IDynamicPrice {
+  price: number
+  updatedAt: Date | string
 }
 
 export interface IFilterState {

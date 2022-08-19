@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { IMessage, IResultList } from 'store/myStore/myStore.interface'
-import { IGetProductsWithFilter, IProduct, IProductIn } from 'store/myStore/myStoreProduct.interface'
+import { IDynamicPrice, IGetProductsWithFilter, IProduct, IProductIn } from 'store/myStore/myStoreProduct.interface'
 import baseQueryWithRefreshToken from 'store/myStore/customFetch'
 
 const myStoreProductApi = createApi({
@@ -90,6 +90,13 @@ const myStoreProductApi = createApi({
         query: (id: number) => ({
           url: 'product/' + id
         })
+      }),
+
+    getDynamicPriceByProductId: build.query<IMessage<IDynamicPrice[]>,
+      number>({
+        query: (id: number) => ({
+          url: 'product/dynamic_price/' + id
+        })
       })
 
   })
@@ -104,6 +111,7 @@ export const {
   useAddProductMutation,
   useDelProductMutation,
   useUpdateProductMutation,
+  useLazyGetDynamicPriceByProductIdQuery,
   useLazyGetAllProductsByCategoryIdQuery,
   endpoints: myStoreProductEndpoint
 } = myStoreProductApi

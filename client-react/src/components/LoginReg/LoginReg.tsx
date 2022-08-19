@@ -26,7 +26,7 @@ const LoginReg: FC = () => {
          show={showLoginPage}
          title={'Вход'}
          onClose={handleCloseLoginPage}
-         className={'w-[400px]'}
+         className={'w-[435px]'}
        >
          <Login onCloseLogin={handleCloseLoginPage} onShowReg={handleShowRegPage}/>
        </ModalComponent>
@@ -36,7 +36,7 @@ const LoginReg: FC = () => {
          show={showRegPage}
          title={'Регистрация'}
          onClose={handleCloseRegPage}
-         className={'w-[400px]'}
+         className={'w-[435px]'}
        >
          <Registration onCloseReg={handleCloseRegPage} onShowLogin={handleShowLoginPage} />
        </ModalComponent>

@@ -1,10 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { IMessage, IResultList } from 'store/myStore/myStore.interface'
-import { ILoginIn, ILoginResult, IUsers } from 'store/myStore/myStoreUser.interface'
+import { ILoginIn, ILoginResult, IUser, IUsers } from 'store/myStore/myStoreUser.interface'
 import { userAction } from 'store/user/user.slice'
 import { baseQueryWithRefreshToken } from 'store/myStore/customFetch'
 import { productAction } from 'store/product/product.slice'
-const { activatedUserEmail, login, logout } = userAction
+const { activatedUserEmail, login, logout, updUser } = userAction
 const { clearFavProducts } = productAction
 
 const myStoreUserApi = createApi({
@@ -115,13 +115,19 @@ const myStoreUserApi = createApi({
       })
     }),
 
-    updateUserById: build.mutation<IMessage<ILoginResult>,
+    updateUserById: build.mutation<IMessage<IUser>,
     {id: number, body: FormData}>({
       query: ({ id, body }) => ({
         url: 'user/' + id,
         method: 'PUT',
         body
-      })
+      }),
+      async onQueryStarted (args, api) {
+        try {
+          const reason = await api.queryFulfilled
+          api.dispatch(updUser(reason.data))
+        } catch (e) {}
+      }
     })
 
   })

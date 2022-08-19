@@ -15,7 +15,7 @@ export const calcSizeFile = (size: number) => {
 */
 export const addHostServerToFileLink =
   (fileName: string = '', id: number = 0, additionalPath: string = '') => {
-    if (fileName === '') {
+    if (fileName === '' || id === 0) {
       return ''
     }
     const urlServer =

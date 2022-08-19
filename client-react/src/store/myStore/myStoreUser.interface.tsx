@@ -14,8 +14,8 @@ export interface IUsers {
   avatar: string
   activateLink: string
   registrationIp: string
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
 }
 
 export interface IUser {
@@ -34,8 +34,8 @@ export interface IUser {
   avatar: string
   activateLink: string
   registrationIp: string
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
   rolesName: string
 }
 
@@ -51,7 +51,7 @@ export interface ILoginIn {
 
 export interface IRegistrationIn {
   nickname: string
-  password: string
+  password?: string
   email: string
   fullName?: string
   city?: string
