@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { InputGroup, Form, Button } from 'react-bootstrap'
-import { useRegistrationMutation } from 'store/myStore/myStoreUser.api'
+import { useRegistrationMutation, useUpdateUserByIdMutation } from 'store/myStore/myStoreUser.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 // import { useNavigate } from 'react-router-dom'
 import { IRegistrationIn, IUsers } from 'store/myStore/myStoreUser.interface'
@@ -11,18 +11,29 @@ interface IRegProps {
   onShowLogin?: () => void
   changeProfile?: boolean
   defaultInfoUser?: IUsers
+  showDelAvatar?: boolean
+  showEditPass?: boolean
+  showEditAvatar?: boolean
 }
 
 const Registration: FC<IRegProps> = ({
   changeProfile,
   onCloseReg,
   onShowLogin,
-  defaultInfoUser
+  defaultInfoUser,
+  showDelAvatar = false,
+  showEditPass = true,
+  showEditAvatar = true
 }) => {
   // const navigate = useNavigate()
-  const [registration, { isLoading, isSuccess, isError, data: user, error }] =
+  const [registration,
+    { isLoading: isLoadingReg, isSuccess: isSuccessReg, isError: isErrorReg, data: user, error: errorReg }] =
     useRegistrationMutation()
-  useInfoLoading({ isLoading, isSuccess, isError, data: user, error })
+  const [updProfile,
+    { isLoading: isLoadingUpd, isSuccess: isSuccessUpd, isError: isErrorUpd, data: userUpd, error: errorUpd }] =
+    useUpdateUserByIdMutation()
+  useInfoLoading({ isLoading: isLoadingReg, isSuccess: isSuccessReg, isError: isErrorReg, data: user, error: errorReg })
+  useInfoLoading({ isLoading: isLoadingUpd, isSuccess: isSuccessUpd, isError: isErrorUpd, data: userUpd, error: errorUpd })
   const [validated, setValidated] = useState(false)
   const [formState, setFormState] = useState<IRegistrationIn>({
     nickname: '',
@@ -44,7 +55,9 @@ const Registration: FC<IRegProps> = ({
     e.stopPropagation()
     const formData = new FormData()
     formData.append('nickname', formState.nickname)
-    formData.append('password', formState.password)
+    if ((showEditPass || !changeProfile) && formState.password) {
+      formData.append('password', formState.password)
+    }
     formData.append('email', formState.email)
     if (formState.address) {
       formData.append('address', formState.address)
@@ -65,20 +78,50 @@ const Registration: FC<IRegProps> = ({
       formData.append('isSubscribeToNews',
         formState.isSubscribeToNews ? 'True' : 'False')
     }
-    if (formState.avatar) {
+
+    if (formState.delAvatar && showDelAvatar) {
+      formData.append('delAvatar',
+        formState.delAvatar ? 'True' : 'False')
+    }
+
+    if (formState.avatar && showEditAvatar) {
       formData.append('avatar', formState.avatar)
     }
     if (validated) {
-      registration(formData)
+      if (!changeProfile) {
+        registration(formData)
+      } else if (defaultInfoUser && defaultInfoUser.id) {
+        updProfile({
+          id: defaultInfoUser.id,
+          body: formData
+        })
+      }
     }
   }
 
   useEffect(() => {
-    if (isSuccess && user && onCloseReg) {
+    if (onCloseReg &&
+        ((isSuccessReg && user) ||
+         (isSuccessUpd && userUpd))) {
       // navigate('/')
       onCloseReg()
     }
-  }, [isSuccess])
+  }, [isSuccessReg, isSuccessUpd])
+
+  useEffect(() => {
+    if (defaultInfoUser) {
+      setFormState({
+        nickname: defaultInfoUser.nickname,
+        email: defaultInfoUser.email,
+        fullName: defaultInfoUser.fullName,
+        city: defaultInfoUser.city,
+        address: defaultInfoUser.address,
+        deliveryAddress: defaultInfoUser.deliveryAddress,
+        phoneNumber: defaultInfoUser.phoneNumber,
+        isSubscribeToNews: defaultInfoUser.isSubscribeToNews === 1
+      })
+    }
+  }, [])
 
   const handleClick = () => setShowPass(!showPass)
 
@@ -104,7 +147,7 @@ const Registration: FC<IRegProps> = ({
 
   return (
     <div>
-      <div className={'text-left'}>
+      <div className={'text-left w-[400px]'}>
         <Form noValidate validated={true}
               onChange={handleChange}>
         <Form.Label>Никнейм</Form.Label>
@@ -150,6 +193,8 @@ const Registration: FC<IRegProps> = ({
             </Form.Control.Feedback>
         </InputGroup>
 
+        {showEditPass &&
+         <>
         <Form.Label>Пароль</Form.Label>
         <InputGroup hasValidation className="mb-3">
           <InputGroup.Text id="basic-addon1">
@@ -173,6 +218,8 @@ const Registration: FC<IRegProps> = ({
             Пожалуйста, введите пароль
             </Form.Control.Feedback>
         </InputGroup>
+         </>
+        }
 
         <Form.Label>ФИО</Form.Label>
         <InputGroup className="mb-2">
@@ -263,6 +310,7 @@ const Registration: FC<IRegProps> = ({
             aria-describedby="basic-addon1"
           />
         </InputGroup>
+        {showEditAvatar &&
          <Form.Group controlId="formFileMultiple"
                      className="mb-3">
           <Form.Label>Аватар</Form.Label>
@@ -272,14 +320,22 @@ const Registration: FC<IRegProps> = ({
             type="file"
             size="sm" />
          </Form.Group>
-         <Form.Group className="mb-3">
+         }
+          {showDelAvatar && showEditAvatar && changeProfile &&
+          <Form.Group className="mb-3">
+            <Form.Check
+              onChange={handleChangeCheckbox}
+              name={'delAvatar'}
+              label="Удалить аватар?"
+            />
+          </Form.Group>
+          }
+          <Form.Group className="mb-3">
           <Form.Check
             onChange={handleChangeCheckbox}
             name={'isSubscribeToNews'}
-            defaultValue={defaultInfoUser &&
-                          defaultInfoUser.isSubscribeToNews
-              ? defaultInfoUser.isSubscribeToNews
-              : ''}
+            defaultChecked={defaultInfoUser &&
+                            defaultInfoUser.isSubscribeToNews === 1}
             label="Получать новости магазина"
           />
          </Form.Group>
