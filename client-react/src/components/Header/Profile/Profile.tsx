@@ -55,6 +55,7 @@ const Profile = () => {
                 show={showProfile}
                 title={'Ваш профиль'}
                 onClose={handleCloseProfile}
+                className={'w-[750px]'}
               >
                 <UserProfile user={user}/>
               </ModalComponent>

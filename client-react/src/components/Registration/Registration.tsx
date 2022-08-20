@@ -2,14 +2,14 @@ import React, { FC, useEffect, useState } from 'react'
 import { InputGroup, Form, Button } from 'react-bootstrap'
 import { useRegistrationMutation, useUpdateUserByIdMutation } from 'store/myStore/myStoreUser.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
-// import { useNavigate } from 'react-router-dom'
 import { IRegistrationIn, IUsers } from 'store/myStore/myStoreUser.interface'
-// import { RoutePath } from 'AppRouter'
+import { useAuth } from 'hooks/useAuth'
 
 interface IRegProps {
   onCloseReg?: () => void
   onShowLogin?: () => void
   changeProfile?: boolean
+  onlyShowInfo?: boolean
   defaultInfoUser?: IUsers
   showDelAvatar?: boolean
   showEditPass?: boolean
@@ -17,7 +17,8 @@ interface IRegProps {
 }
 
 const Registration: FC<IRegProps> = ({
-  changeProfile,
+  changeProfile = false,
+  onlyShowInfo = false,
   onCloseReg,
   onShowLogin,
   defaultInfoUser,
@@ -36,11 +37,17 @@ const Registration: FC<IRegProps> = ({
   useInfoLoading({ isLoading: isLoadingUpd, isSuccess: isSuccessUpd, isError: isErrorUpd, data: userUpd, error: errorUpd })
   const [validated, setValidated] = useState(false)
   const [formState, setFormState] = useState<IRegistrationIn>({
-    nickname: '',
-    email: '',
-    password: ''
+    nickname: (defaultInfoUser && defaultInfoUser.nickname ? defaultInfoUser.nickname : ''),
+    email: (defaultInfoUser && defaultInfoUser.email ? defaultInfoUser.email : ''),
+    fullName: (defaultInfoUser && defaultInfoUser.fullName ? defaultInfoUser.fullName : ''),
+    city: (defaultInfoUser && defaultInfoUser.city ? defaultInfoUser.city : ''),
+    address: (defaultInfoUser && defaultInfoUser.address ? defaultInfoUser.address : ''),
+    deliveryAddress: (defaultInfoUser && defaultInfoUser.deliveryAddress ? defaultInfoUser.deliveryAddress : ''),
+    phoneNumber: (defaultInfoUser && defaultInfoUser.phoneNumber ? defaultInfoUser.phoneNumber : ''),
+    isSubscribeToNews: (defaultInfoUser && defaultInfoUser.isSubscribeToNews ? (defaultInfoUser.isSubscribeToNews === 1) : false)
   })
   const [showPass, setShowPass] = useState(false)
+  const { isAdmin } = useAuth()
 
   const handleChange = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget
@@ -64,6 +71,9 @@ const Registration: FC<IRegProps> = ({
     }
     if (formState.city) {
       formData.append('city', formState.city)
+    }
+    if (formState.rolesId && isAdmin) {
+      formData.append('rolesId', String(formState.rolesId))
     }
     if (formState.fullName) {
       formData.append('fullName', formState.fullName)
@@ -108,21 +118,6 @@ const Registration: FC<IRegProps> = ({
     }
   }, [isSuccessReg, isSuccessUpd])
 
-  useEffect(() => {
-    if (defaultInfoUser) {
-      setFormState({
-        nickname: defaultInfoUser.nickname,
-        email: defaultInfoUser.email,
-        fullName: defaultInfoUser.fullName,
-        city: defaultInfoUser.city,
-        address: defaultInfoUser.address,
-        deliveryAddress: defaultInfoUser.deliveryAddress,
-        phoneNumber: defaultInfoUser.phoneNumber,
-        isSubscribeToNews: defaultInfoUser.isSubscribeToNews === 1
-      })
-    }
-  }, [])
-
   const handleClick = () => setShowPass(!showPass)
 
   const handleChangeFile =
@@ -139,8 +134,14 @@ const Registration: FC<IRegProps> = ({
       setFormState((prev) => ({ ...prev, [name]: checked }))
     }
 
-  const handleChangeString =
+  const handleChangeInput =
     ({ target: { name, value }, currentTarget }: React.ChangeEvent<HTMLInputElement>) => {
+      setFormState((prev) => ({ ...prev, [name]: value }))
+      currentTarget.checkValidity()
+    }
+
+  const handleChangeSelect =
+    ({ target: { name, value }, currentTarget }: React.ChangeEvent<HTMLSelectElement>) => {
       setFormState((prev) => ({ ...prev, [name]: value }))
       currentTarget.checkValidity()
     }
@@ -148,8 +149,13 @@ const Registration: FC<IRegProps> = ({
   return (
     <div>
       <div className={'text-left w-[400px]'}>
-        <Form noValidate validated={true}
+        <Form noValidate validated={!onlyShowInfo}
               onChange={handleChange}>
+
+        {(!onlyShowInfo ||
+          (defaultInfoUser &&
+           defaultInfoUser.nickname)) &&
+        <>
         <Form.Label>Никнейм</Form.Label>
         <InputGroup hasValidation className="mb-2">
           <InputGroup.Text id="basic-addon1">
@@ -157,8 +163,9 @@ const Registration: FC<IRegProps> = ({
           </InputGroup.Text>
           <Form.Control
             required
-            onChange={handleChangeString}
+            onChange={handleChangeInput}
             name={'nickname'}
+            disabled={onlyShowInfo}
             placeholder="Введите ник"
             defaultValue={defaultInfoUser &&
                           defaultInfoUser.nickname
@@ -171,14 +178,21 @@ const Registration: FC<IRegProps> = ({
             Пожалуйста, введите никнейм
           </Form.Control.Feedback>
         </InputGroup>
+        </>
+        }
 
+        {(!onlyShowInfo ||
+         (defaultInfoUser &&
+          defaultInfoUser.email)) &&
+        <>
         <Form.Label>E-mail</Form.Label>
         <InputGroup hasValidation className="mb-2">
           <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
           <Form.Control
             required
-            onChange={handleChangeString}
+            onChange={handleChangeInput}
             name={'email'}
+            disabled={onlyShowInfo}
             placeholder="Введите E-mail"
             defaultValue={defaultInfoUser &&
                           defaultInfoUser.email
@@ -192,8 +206,10 @@ const Registration: FC<IRegProps> = ({
             Пожалуйста, введите e-mail
             </Form.Control.Feedback>
         </InputGroup>
+        </>
+        }
 
-        {showEditPass &&
+        {showEditPass && !onlyShowInfo &&
          <>
         <Form.Label>Пароль</Form.Label>
         <InputGroup hasValidation className="mb-3">
@@ -202,10 +218,11 @@ const Registration: FC<IRegProps> = ({
           </InputGroup.Text>
           <Form.Control
             required
-            onChange={handleChangeString}
+            onChange={handleChangeInput}
             className={'pr-[4.5rem] md'}
             type={showPass ? 'text' : 'password'}
             defaultValue={''}
+            disabled={onlyShowInfo}
             placeholder="Введите пароль"
             name={'password'}
           />
@@ -221,14 +238,45 @@ const Registration: FC<IRegProps> = ({
          </>
         }
 
+        {(onlyShowInfo ||
+            (defaultInfoUser && changeProfile &&
+             defaultInfoUser.rolesId && isAdmin)) &&
+        <>
+          <Form.Label>Группа</Form.Label>
+          <InputGroup className="mb-2">
+            <InputGroup.Text id="basic-addon1">
+              <i className="bi bi-people-fill"/>
+            </InputGroup.Text>
+          <Form.Select
+            disabled={onlyShowInfo}
+            name={'rolesId'}
+            onChange={handleChangeSelect}
+            defaultValue={defaultInfoUser &&
+                          defaultInfoUser.rolesId
+              ? defaultInfoUser.rolesId
+              : 3}
+          >
+            <option value={3}>Пользователь</option>
+            <option value={2}>Модератор</option>
+            <option value={1}>Админ</option>
+          </Form.Select>
+          </InputGroup>
+        </>
+        }
+
+        {(!onlyShowInfo ||
+         (defaultInfoUser &&
+          defaultInfoUser.fullName)) &&
+         <>
         <Form.Label>ФИО</Form.Label>
         <InputGroup className="mb-2">
           <InputGroup.Text id="basic-addon1">
             <i className="bi bi-file-person"/>
           </InputGroup.Text>
           <Form.Control
-            onChange={handleChangeString}
+            onChange={handleChangeInput}
             name={'fullName'}
+            disabled={onlyShowInfo}
             placeholder="Введите ФИО"
             defaultValue={defaultInfoUser &&
                           defaultInfoUser.fullName
@@ -238,17 +286,24 @@ const Registration: FC<IRegProps> = ({
             aria-describedby="basic-addon1"
           />
         </InputGroup>
+        </>
+        }
 
+        {(!onlyShowInfo ||
+          (defaultInfoUser &&
+           defaultInfoUser.city)) &&
+         <>
         <Form.Label>Город</Form.Label>
         <InputGroup className="mb-2">
           <InputGroup.Text id="basic-addon1">
             <i className="bi bi-bank"/>
           </InputGroup.Text>
           <Form.Control
-            onChange={handleChangeString}
+            onChange={handleChangeInput}
             name={'city'}
             placeholder="Введите Город"
             aria-label="city"
+            disabled={onlyShowInfo}
             defaultValue={defaultInfoUser &&
                           defaultInfoUser.city
               ? defaultInfoUser.city
@@ -256,15 +311,22 @@ const Registration: FC<IRegProps> = ({
             aria-describedby="basic-addon1"
           />
         </InputGroup>
+         </>
+        }
 
+        {(!onlyShowInfo ||
+          (defaultInfoUser &&
+           defaultInfoUser.address)) &&
+        <>
         <Form.Label>Адрес</Form.Label>
         <InputGroup className="mb-2">
           <InputGroup.Text id="basic-addon1">
             <i className="bi bi-house" />
           </InputGroup.Text>
           <Form.Control
-            onChange={handleChangeString}
+            onChange={handleChangeInput}
             name={'address'}
+            disabled={onlyShowInfo}
             placeholder="Введите Адрес"
             aria-label="address"
             defaultValue={defaultInfoUser &&
@@ -274,15 +336,21 @@ const Registration: FC<IRegProps> = ({
             aria-describedby="basic-addon1"
           />
         </InputGroup>
+        </>
+        }
 
+        {(!onlyShowInfo || (defaultInfoUser &&
+         defaultInfoUser.deliveryAddress)) &&
+         <>
         <Form.Label>Адрес доставки</Form.Label>
         <InputGroup className="mb-2">
           <InputGroup.Text id="basic-addon1">
             <i className="bi bi-truck"/>
           </InputGroup.Text>
           <Form.Control
-            onChange={handleChangeString}
+            onChange={handleChangeInput}
             name={'deliveryAddress'}
+            disabled={onlyShowInfo}
             placeholder="Введите Адрес доставки"
             defaultValue={defaultInfoUser &&
                           defaultInfoUser.deliveryAddress
@@ -292,15 +360,21 @@ const Registration: FC<IRegProps> = ({
             aria-describedby="basic-addon1"
           />
         </InputGroup>
-
+         </>
+        }
+        {(!onlyShowInfo ||
+          (defaultInfoUser &&
+           defaultInfoUser.phoneNumber)) &&
+        <>
         <Form.Label>Номер телефона</Form.Label>
         <InputGroup className="mb-2">
           <InputGroup.Text id="basic-addon1">
             <i className="bi bi-telephone"/>
           </InputGroup.Text>
           <Form.Control
-            onChange={handleChangeString}
+            onChange={handleChangeInput}
             name={'phoneNumber'}
+            disabled={onlyShowInfo}
             placeholder="Введите Номер телефона"
             defaultValue={defaultInfoUser &&
                           defaultInfoUser.phoneNumber
@@ -310,7 +384,9 @@ const Registration: FC<IRegProps> = ({
             aria-describedby="basic-addon1"
           />
         </InputGroup>
-        {showEditAvatar &&
+        </>
+        }
+        {showEditAvatar && !onlyShowInfo &&
          <Form.Group controlId="formFileMultiple"
                      className="mb-3">
           <Form.Label>Аватар</Form.Label>
@@ -321,7 +397,10 @@ const Registration: FC<IRegProps> = ({
             size="sm" />
          </Form.Group>
          }
-          {showDelAvatar && showEditAvatar && changeProfile &&
+          {showDelAvatar &&
+           !onlyShowInfo &&
+           showEditAvatar &&
+           changeProfile &&
           <Form.Group className="mb-3">
             <Form.Check
               onChange={handleChangeCheckbox}
@@ -330,6 +409,7 @@ const Registration: FC<IRegProps> = ({
             />
           </Form.Group>
           }
+          {!onlyShowInfo &&
           <Form.Group className="mb-3">
           <Form.Check
             onChange={handleChangeCheckbox}
@@ -339,8 +419,10 @@ const Registration: FC<IRegProps> = ({
             label="Получать новости магазина"
           />
          </Form.Group>
+          }
         </Form>
       </div>
+      {!onlyShowInfo &&
       <Button variant="primary"
               className={'bg-emerald-600 w-full'}
               onClick={btnLogin}
@@ -351,7 +433,8 @@ const Registration: FC<IRegProps> = ({
           : 'Создать аккаунт'
         }
       </Button>
-      {onShowLogin && onCloseReg &&
+      }
+      {onShowLogin && !onlyShowInfo && onCloseReg &&
        <>
       <div className={'legend'}>
         <hr className={'flex-auto'}/>

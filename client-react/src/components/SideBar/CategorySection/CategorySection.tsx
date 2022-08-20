@@ -21,19 +21,13 @@ const CategorySection: FC<ICategoryProps> = ({ categorySection }) => {
     setShowCategory([categorySection.sectionId])
   }
 
-  // const handleClick = () => { // (event: React.MouseEvent<HTMLAnchorElement>) => {
-  //   setShowCategory([])
-  //   // setTarget(event.target)
-  // }
-
   return (
     <>
       <li ref={ref}>
         <NavLink
           to={RoutePath.PRODUCTS + '/category/' + categorySection.sectionId}
           onMouseEnter={handleFocus}
-          // onClick={handleClick}
-          className="sideBarLink"
+          className="sideBarLink pl-[10px]"
         >
           <i className={`${categorySection.sectionIconClass} ${st.icon}`}/>
           <span className={st.name_page}>

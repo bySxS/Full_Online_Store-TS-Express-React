@@ -54,6 +54,7 @@ export interface IRegistrationIn {
   password?: string
   email: string
   fullName?: string
+  rolesId?: number
   city?: string
   address?: string
   deliveryAddress?: string

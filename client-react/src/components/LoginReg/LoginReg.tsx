@@ -28,7 +28,9 @@ const LoginReg: FC = () => {
          onClose={handleCloseLoginPage}
          className={'w-[435px]'}
        >
-         <Login onCloseLogin={handleCloseLoginPage} onShowReg={handleShowRegPage}/>
+         <Login
+           onCloseLogin={handleCloseLoginPage}
+           onShowReg={handleShowRegPage}/>
        </ModalComponent>
       }
       {showRegPage &&
@@ -38,7 +40,9 @@ const LoginReg: FC = () => {
          onClose={handleCloseRegPage}
          className={'w-[435px]'}
        >
-         <Registration onCloseReg={handleCloseRegPage} onShowLogin={handleShowLoginPage} />
+         <Registration
+           onCloseReg={handleCloseRegPage}
+           onShowLogin={handleShowLoginPage} />
        </ModalComponent>
       }
     </>

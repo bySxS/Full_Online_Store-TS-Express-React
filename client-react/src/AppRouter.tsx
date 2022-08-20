@@ -1,4 +1,6 @@
-import React, { ReactNode, Suspense, lazy, FC } from 'react'
+import React, {
+  ReactNode, Suspense, lazy, FC
+} from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Home from 'pages/Home/Home'
 import Products from 'pages/Products/Products'
@@ -11,7 +13,8 @@ import AccessMiddleware, { IRequireUser } from 'components/AccessMiddleware/Acce
 import Loader from 'components/UI/Loader/Loader'
 import ActivateEmail from 'pages/ActivateEmail/ActivateEmail'
 import Error404 from 'pages/Error404/Error404'
-import ProductsCategory from 'pages/ProductsCategory/ProductsCategory'
+import { useAppSelector } from 'hooks/useStore'
+import selectCategory from 'store/category/category.selector'
 
 // test динамической подгрузки
 const AdminPanel = lazy(() => import('pages/AdminPanel/AdminPanel'))
@@ -65,7 +68,7 @@ export enum RouteName {
   ERROR_404 = 'Ошибка 404'
 }
 
-interface IBreadcrumbParams {
+export interface IBreadcrumbParams {
   match: {
     params: {
       id: number
@@ -89,11 +92,13 @@ const UserIDBreadcrumb: FC<IBreadcrumbParams> = ({ match }) => {
   )
 }
 
-// мини компонент получения данных о пользователе для breadcrumbs
+// мини компонент получения данных о category для breadcrumbs
 const ProductsCategoryIDBreadcrumb: FC<IBreadcrumbParams> = ({ match }) => {
   const { id } = match.params
+  const categoryName =
+    useAppSelector(selectCategory.categoryNameById(+id))
   return (
-    <span>Товары категории {id}</span>
+    <span>{categoryName}</span>
   )
 }
 
@@ -123,7 +128,7 @@ export const routes: IRoute[] = [
   },
   {
     path: RoutePath.PRODUCTS_CATEGORY,
-    element: <ProductsCategory name={RouteName.PRODUCTS_CATEGORY} />,
+    element: <Products name={RouteName.PRODUCTS_CATEGORY} />,
     breadcrumb: ProductsCategoryIDBreadcrumb
   },
   {

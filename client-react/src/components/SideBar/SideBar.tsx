@@ -105,8 +105,8 @@ const SideBar = () => {
                     className={({ isActive }) => (
                       isActive &&
                       pathname === RoutePath.PRODUCTS
-                        ? 'sideBarLink active'
-                        : 'sideBarLink'
+                        ? 'sideBarLink active pl-[10px]'
+                        : 'sideBarLink pl-[10px]'
                     )}
                     onMouseEnter={handleFocus}
                   >

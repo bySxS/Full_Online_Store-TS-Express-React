@@ -10,7 +10,9 @@ interface IBreadcrumbsProps {
 
 const BreadcrumbsComponent: FC<IBreadcrumbsProps> = ({ className }) => {
   const [rout] = useState<IRoute[]>(routes)
-  const breadcrumbs = useBreadcrumbs(rout)
+  const breadcrumbs = useBreadcrumbs(rout, {
+    excludePaths: ['/products/category']
+  })
 
   return (
     <div className={breadcrumbs.length !== 1

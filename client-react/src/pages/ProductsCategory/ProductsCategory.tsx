@@ -1,4 +1,6 @@
-import React, { FC, useEffect, useRef, useState } from 'react'
+import React, {
+  FC, useEffect, useRef, useState
+} from 'react'
 import { Helmet } from 'react-helmet'
 import style from 'pages/Products/Products.module.scss'
 import { useObserver } from 'hooks/useObserver'
@@ -27,22 +29,32 @@ const ProductsCategory: FC<ProductProps> = ({ name }) => {
   const filterState = useAppSelector(selectProduct.filterState)
   const pageProduct = useAppSelector(selectProduct.pageProduct)
   const totalProduct = useAppSelector(selectProduct.totalProduct)
-  const prevCategory = useAppSelector(selectProduct.prevCategory)
+  // const prevCategory = useAppSelector(selectProduct.prevCategory)
   const { incPageProduct, clearProducts, setPrevCategory } = useAppActions()
   const [limit] = useState(10)
   const [totalPage, setTotalPage] = useState(Math.round((totalProduct ?? limit) / limit) + 1)
-  const [fetchProducts,
-    { isLoading, isSuccess, isError, data, error }] =
-    useLazyGetAllProductsByCategoryIdQuery()
-  useInfoLoading({ isLoading, isSuccess, isError, data, error })
+  const [fetchProductsCat, {
+    isLoading: isLoadingCat,
+    isSuccess: isSuccessCat,
+    isError: isErrorCat,
+    data: dataCat,
+    error: errorCat
+  }] = useLazyGetAllProductsByCategoryIdQuery()
+  useInfoLoading({
+    isLoading: isLoadingCat,
+    isSuccess: isSuccessCat,
+    isError: isErrorCat,
+    data: dataCat,
+    error: errorCat
+  })
   const getProducts = () => {
-    fetchProducts({ categoryId: id, page: pageProduct, limit, ...filterState })
+    fetchProductsCat({ categoryId: id, page: pageProduct, limit, ...filterState })
     incPageProduct()
   }
-  useObserver(pagination, pageProduct, totalPage, isLoading, prevCategory, getProducts)
+  useObserver(pagination, pageProduct, totalPage, isLoadingCat, location.pathname, getProducts)
 
   useEffect(() => {
-    setTotalPage(Math.round((totalProduct ?? limit) / limit) + 1)
+    setTotalPage(Math.round((totalProduct || limit) / limit) + 1)
   }, [totalProduct])
 
   useEffect(() => {
@@ -70,7 +82,7 @@ const ProductsCategory: FC<ProductProps> = ({ name }) => {
       }
       <div ref={pagination}
            className={style.autoPagination}/>
-      {!products && <div>Нет продуктов :(</div>}
+      {products.length === 0 && <div>Нет продуктов :(</div>}
     </>
   )
 }

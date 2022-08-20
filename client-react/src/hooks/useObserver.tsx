@@ -1,25 +1,27 @@
 import { RefObject, useEffect, useRef, useState } from 'react'
+// import { useLocation } from 'react-router-dom'
 
 export const useObserver = (
   lastItem: RefObject<HTMLHeadingElement>,
   page: number,
   totalPages: number,
   isLoading: boolean,
-  category: string,
+  lastPage: string,
   getNewItem: () => any) => {
   const [load, setLoad] = useState<boolean>(false)
   const observer = useRef<IntersectionObserver>()
   const canLoad: boolean = (page <= totalPages)
 
-  const callback = async (entries: IntersectionObserverEntry[]) => {
-    if (entries[0].isIntersecting && canLoad) {
-      setLoad(true)
-      await getNewItem()
-      setTimeout(() => {
-        setLoad(false)
-      }, 500)
+  const callback =
+    async (entries: IntersectionObserverEntry[]) => {
+      if (entries[0].isIntersecting && canLoad) {
+        setLoad(true)
+        await getNewItem()
+        setTimeout(() => {
+          setLoad(false)
+        }, 500)
+      }
     }
-  }
 
   useEffect(() => {
     if (load || isLoading) return
@@ -30,5 +32,5 @@ export const useObserver = (
     if (lastItem.current) {
       observer.current.observe(lastItem.current)
     }
-  }, [load, totalPages, category])
+  }, [load, totalPages, lastPage])
 }

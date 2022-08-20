@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useObserver } from 'hooks/useObserver'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
+import { useLocation } from 'react-router-dom'
 import { useLazyGetFavProductsQuery } from 'store/myStore/myStoreFavProduct.api'
 import selectProduct from 'store/product/product.selector'
 import ProductItems from '../../components/ProductItems/ProductItems'
@@ -14,6 +15,7 @@ interface FavoritesProps {
 }
 
 const Favorites: FC<FavoritesProps> = ({ name }) => {
+  const location = useLocation()
   const pagination = useRef<HTMLHeadingElement>(null)
   const products = useAppSelector(selectProduct.allFavProducts)
   const filterState = useAppSelector(selectProduct.filterState)
@@ -22,6 +24,7 @@ const Favorites: FC<FavoritesProps> = ({ name }) => {
   const viewProducts = useAppSelector(selectProduct.viewProducts)
   const { incPageFavProduct } = useAppActions()
   const [limit] = useState(10)
+  const [prevPageLoad] = useState(location.pathname)
   const [totalPage, setTotalPage] = useState(Math.round((totalProduct ?? limit) / limit) + 1)
   const [fetchProducts,
     { isLoading, isSuccess, isError, data, error }] =
@@ -31,10 +34,10 @@ const Favorites: FC<FavoritesProps> = ({ name }) => {
     fetchProducts({ page: pageProduct, limit, ...filterState })
     incPageFavProduct()
   }
-  useObserver(pagination, pageProduct, totalPage, isLoading, '', getProducts)
+  useObserver(pagination, pageProduct, totalPage, isLoading, prevPageLoad, getProducts)
 
   useEffect(() => {
-    setTotalPage(Math.round((totalProduct ?? limit) / limit) + 1)
+    setTotalPage(Math.round((totalProduct || limit) / limit) + 1)
   }, [totalProduct])
 
   return (

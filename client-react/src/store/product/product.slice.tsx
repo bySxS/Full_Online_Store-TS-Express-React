@@ -10,10 +10,10 @@ import { IFavProduct, IFavProductList } from 'store/myStore/myStoreFavProduct.in
 const LS_VIEW_PRODUCT_KEY = 'rViewPk'
 // const LS_FAV_PRODUCT_KEY = 'rFavPk'
 
-export type TypeMaterial = 'Col' | 'Row'
+export type TViewMaterial = 'Col' | 'Row'
 
 interface IProductState {
-  ViewProducts: TypeMaterial
+  ViewProducts: TViewMaterial
   products: IProduct[]
   favoriteProducts: IProduct[]
   listIdFavProducts: number[]
@@ -26,7 +26,7 @@ interface IProductState {
 }
 
 const initialState: IProductState = {
-  ViewProducts: localStorage.getItem(LS_VIEW_PRODUCT_KEY) as TypeMaterial || 'Row',
+  ViewProducts: localStorage.getItem(LS_VIEW_PRODUCT_KEY) as TViewMaterial || 'Row',
   favoriteProducts: [], // JSON.parse(localStorage.getItem(LS_FAV_PRODUCT_KEY) ?? '[]'),
   listIdFavProducts: [],
   products: [], // JSON.parse(localStorage.getItem(LS_PRODUCT_KEY) ?? '[]'),
@@ -162,7 +162,7 @@ export const ProductSlice = createSlice({
       myStoreProductEndpoint.allProducts.matchFulfilled,
       (state: IProductState,
         action: PayloadAction<IMessage<IResultList<IProduct>>>) => {
-        state.prevCategory = 'all'
+        // state.prevCategory = ''
         addProducts(state, action)
       }
     )

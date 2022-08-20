@@ -1,4 +1,5 @@
 import { IProduct } from 'store/myStore/myStoreProduct.interface'
+import { ICategory, ICategorySection } from '../store/myStore/myStoreCategory.interface'
 
 function div (val: number, by: number): number {
   return (val - val % by) / by
@@ -45,4 +46,34 @@ export const addDomainToImgProducts = (products: IProduct[]): IProduct[] => {
     image9: addHostServerToFileLink(product.image9, product.id, 'products_pic'),
     image10: addHostServerToFileLink(product.image10, product.id, 'products_pic')
   }))
+}
+
+export const CategoryTreeToList = (categoryTree: ICategorySection[]): ICategory[] => {
+  let listCat: ICategory[] = []
+  let listSubCat: ICategory[] = []
+  let listSec: ICategory[] = categoryTree.map(section => {
+    listCat = listCat.concat(section.category?.map(cat => {
+      if (cat.subcategory) {
+        listSubCat = listSubCat.concat(cat.subcategory?.map(subCat => ({
+          id: subCat.categoryId,
+          name: subCat.categoryName,
+          nameEng: subCat.categoryNameEng
+        })))
+      }
+      // cat
+      return {
+        id: cat.categoryId,
+        name: cat.categoryName,
+        nameEng: cat.categoryNameEng
+      }
+    }))
+    // sect
+    return {
+      id: section.sectionId,
+      name: section.sectionName,
+      nameEng: section.sectionNameEng
+    }
+  })
+  listSec = listSec.concat(listCat, listSubCat)
+  return listSec
 }

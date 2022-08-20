@@ -6,7 +6,7 @@ import { addHostServerToFileLink } from 'utils'
 const LS_TOKEN_KEY = 'rtk'
 const LS_USER_KEY = 'ruk'
 const LS_IS_AUTH_KEY = 'risAk'
-const LS_MENU_KEY = 'rMenuk'
+const LS_MENU_KEY = 'rMenuK'
 
 interface IUserState {
   token: string
@@ -57,13 +57,22 @@ export const UserSlice = createSlice({
     updUser (state, action: PayloadAction<IMessage<IUser>>) {
       const { payload } = action
       const user = payload.result
-      let avatar =
-        addHostServerToFileLink(user.avatar, user.id || state.user?.id, 'user_avatar')
-      if (avatar) {
-        avatar = avatar + `?${new Date().getTime().toString()}`
+      if (user.id === state.user?.id) {
+        const rolesName = (user.rolesId === 1)
+          ? 'admin'
+          : (user.rolesId === 2)
+              ? 'moder'
+              : (user.rolesId === 3)
+                  ? 'user'
+                  : 'Гость'
+        let avatar =
+          addHostServerToFileLink(user.avatar, user.id || state.user?.id, 'user_avatar')
+        if (avatar) {
+          avatar = avatar + `?${new Date().getTime().toString()}`
+        }
+        state.user = { ...state.user, ...user, avatar, rolesName }
+        localStorage.setItem(LS_USER_KEY, JSON.stringify(state.user))
       }
-      state.user = { ...state.user, ...user, avatar }
-      localStorage.setItem(LS_USER_KEY, JSON.stringify(state.user))
     },
     logout (state) {
       setLogout(state)
