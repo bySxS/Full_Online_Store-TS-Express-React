@@ -10,7 +10,7 @@ const { clearFavProducts } = productAction
 const myStoreUserApi = createApi({
   reducerPath: 'storeUser/api',
   baseQuery: baseQueryWithRefreshToken,
-  // tagTypes: ['Users'],
+  tagTypes: ['Users'],
   endpoints: build => ({ // query - get, mutation - post, put
     //
     registration: build.mutation<IMessage<ILoginResult>, FormData>({
@@ -89,9 +89,25 @@ const myStoreUserApi = createApi({
             limit: args.limit || 10,
             page: args.page
           }
-        })
-        // providesTags: ['Users']
-      // transformResponse: (response: IMessage<IResultList<IUsers>>) => response.result
+        }),
+        transformResponse: (response: IMessage<IResultList<IUsers>>) => {
+          if (response.result.results) {
+            const users = response.result?.results?.map(user => ({
+              ...user,
+              avatar: user.avatar + `?${new Date().getTime().toString()}`
+            }))
+            return {
+              ...response,
+              result: {
+                ...response.result,
+                results: users
+              }
+            }
+          } else {
+            return response
+          }
+        },
+        providesTags: ['Users']
       }), // /fetchAllUsers
 
     getUserById: build.query<IMessage<IUsers>,
@@ -127,7 +143,8 @@ const myStoreUserApi = createApi({
           const reason = await api.queryFulfilled
           api.dispatch(updUser(reason.data))
         } catch (e) {}
-      }
+      },
+      invalidatesTags: ['Users']
     })
 
   })

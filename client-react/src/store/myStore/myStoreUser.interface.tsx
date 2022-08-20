@@ -52,6 +52,7 @@ export interface ILoginIn {
 export interface IRegistrationIn {
   nickname: string
   password?: string
+  rePassword?: string
   email: string
   fullName?: string
   rolesId?: number

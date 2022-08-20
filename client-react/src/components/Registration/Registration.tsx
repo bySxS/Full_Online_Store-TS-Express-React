@@ -4,6 +4,7 @@ import { useRegistrationMutation, useUpdateUserByIdMutation } from 'store/myStor
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { IRegistrationIn, IUsers } from 'store/myStore/myStoreUser.interface'
 import { useAuth } from 'hooks/useAuth'
+import { useDebounce } from '../../hooks/useDebounce'
 
 interface IRegProps {
   onCloseReg?: () => void
@@ -35,7 +36,6 @@ const Registration: FC<IRegProps> = ({
     useUpdateUserByIdMutation()
   useInfoLoading({ isLoading: isLoadingReg, isSuccess: isSuccessReg, isError: isErrorReg, data: user, error: errorReg })
   useInfoLoading({ isLoading: isLoadingUpd, isSuccess: isSuccessUpd, isError: isErrorUpd, data: userUpd, error: errorUpd })
-  const [validated, setValidated] = useState(false)
   const [formState, setFormState] = useState<IRegistrationIn>({
     nickname: (defaultInfoUser && defaultInfoUser.nickname ? defaultInfoUser.nickname : ''),
     email: (defaultInfoUser && defaultInfoUser.email ? defaultInfoUser.email : ''),
@@ -46,20 +46,73 @@ const Registration: FC<IRegProps> = ({
     phoneNumber: (defaultInfoUser && defaultInfoUser.phoneNumber ? defaultInfoUser.phoneNumber : ''),
     isSubscribeToNews: (defaultInfoUser && defaultInfoUser.isSubscribeToNews ? (defaultInfoUser.isSubscribeToNews === 1) : false)
   })
+  const formStateDebounce = useDebounce(formState)
   const [showPass, setShowPass] = useState(false)
-  const { isAdmin } = useAuth()
+  const { isAdmin, nickname } = useAuth()
+  const [validated, setValidated] = useState(false)
+  const [errors, setErrors] = useState<{
+    email?: string
+    password?: string
+    rePassword?: string
+    nickname?: string
+    fullName?: string
+  }>({})
 
-  const handleChange = (event: React.FormEvent<HTMLFormElement>) => {
-    const form = event.currentTarget
-    if (!form.checkValidity()) {
-      event.preventDefault()
-      event.stopPropagation()
+  const validate = (): boolean => {
+    let isValid = true
+    let nickname
+    if (!formState.nickname || formState.nickname.trim() === '') {
+      nickname = 'Пожалуйста, введите никнейм'
+      isValid = false
     }
-    setValidated(form.checkValidity())
+    let email
+    if (!formState.email || formState.email.trim() === '') {
+      email = 'Пожалуйста, введите e-mail'
+      isValid = false
+    } else if (!formState.email.includes('@')) {
+      email = 'Пожалуйста, введите корректный e-mail'
+      isValid = false
+    }
+
+    let password
+    let rePassword
+    if (showEditPass) {
+      if (!formState.password || formState.password.trim() === '') {
+        password = 'Пожалуйста, введите пароль'
+        isValid = false
+      } else if (formState.password.length <= 6) {
+        password = 'Пароль должен быть больше 6 символов'
+        isValid = false
+      }
+
+      if ((formState.rePassword !== formState.password)) {
+        rePassword = 'Пароль не совпадает'
+        isValid = false
+      }
+    }
+
+    let fullName
+    if (!formState.fullName || formState.fullName.trim() === '') {
+      fullName = 'Пожалуйста, введите ФИО'
+      isValid = false
+    }
+
+    setErrors({
+      nickname,
+      email,
+      password,
+      rePassword,
+      fullName
+    })
+    setValidated(isValid)
+    return isValid
   }
 
   const btnLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
+    if (!validated) {
+      return false
+    }
     const formData = new FormData()
     formData.append('nickname', formState.nickname)
     if ((showEditPass || !changeProfile) && formState.password) {
@@ -97,17 +150,22 @@ const Registration: FC<IRegProps> = ({
     if (formState.avatar && showEditAvatar) {
       formData.append('avatar', formState.avatar)
     }
-    if (validated) {
-      if (!changeProfile) {
-        registration(formData)
-      } else if (defaultInfoUser && defaultInfoUser.id) {
-        updProfile({
-          id: defaultInfoUser.id,
-          body: formData
-        })
-      }
+
+    if (!changeProfile) {
+      registration(formData)
+    } else if (defaultInfoUser && defaultInfoUser.id) {
+      updProfile({
+        id: defaultInfoUser.id,
+        body: formData
+      })
     }
   }
+
+  useEffect(() => {
+    if (!onlyShowInfo) {
+      validate()
+    }
+  }, [formStateDebounce, showEditPass])
 
   useEffect(() => {
     if (onCloseReg &&
@@ -140,6 +198,24 @@ const Registration: FC<IRegProps> = ({
       currentTarget.checkValidity()
     }
 
+  const confirmRoles = (event: React.ChangeEvent<HTMLSelectElement>, prevValue: number) => {
+    const { target: { name, value } } = event
+    let result = isAdmin
+    if (name === 'rolesId' &&
+      (+(value) > 1) &&
+      isAdmin && defaultInfoUser &&
+      nickname === defaultInfoUser.nickname) {
+      result = confirm('Вы уверены что хотите понизить себе группу? вы потеряете доступ админа!')
+    }
+    if (!result) {
+      event.target.value = String(prevValue)
+      event.preventDefault()
+      event.stopPropagation()
+    } else {
+      handleChangeSelect(event)
+    }
+  }
+
   const handleChangeSelect =
     ({ target: { name, value }, currentTarget }: React.ChangeEvent<HTMLSelectElement>) => {
       setFormState((prev) => ({ ...prev, [name]: value }))
@@ -149,8 +225,9 @@ const Registration: FC<IRegProps> = ({
   return (
     <div>
       <div className={'text-left w-[400px]'}>
-        <Form noValidate validated={!onlyShowInfo}
-              onChange={handleChange}>
+        <Form
+          noValidate
+        >
 
         {(!onlyShowInfo ||
           (defaultInfoUser &&
@@ -166,6 +243,8 @@ const Registration: FC<IRegProps> = ({
             onChange={handleChangeInput}
             name={'nickname'}
             disabled={onlyShowInfo}
+            isValid={!errors.nickname && !onlyShowInfo}
+            isInvalid={!!errors.nickname}
             placeholder="Введите ник"
             defaultValue={defaultInfoUser &&
                           defaultInfoUser.nickname
@@ -175,7 +254,7 @@ const Registration: FC<IRegProps> = ({
             aria-describedby="basic-addon1"
           />
           <Form.Control.Feedback type="invalid">
-            Пожалуйста, введите никнейм
+            {errors.nickname}
           </Form.Control.Feedback>
         </InputGroup>
         </>
@@ -185,13 +264,15 @@ const Registration: FC<IRegProps> = ({
          (defaultInfoUser &&
           defaultInfoUser.email)) &&
         <>
-        <Form.Label>E-mail</Form.Label>
+          <Form.Label>E-mail{onlyShowInfo && defaultInfoUser && !defaultInfoUser.isActivated ? <span className={'text-red-600'}> Не подтверждён!</span> : ''}</Form.Label>
         <InputGroup hasValidation className="mb-2">
           <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
           <Form.Control
             required
             onChange={handleChangeInput}
             name={'email'}
+            isValid={!errors.email && !onlyShowInfo}
+            isInvalid={!!errors.email}
             disabled={onlyShowInfo}
             placeholder="Введите E-mail"
             defaultValue={defaultInfoUser &&
@@ -203,7 +284,7 @@ const Registration: FC<IRegProps> = ({
           />
            {/* <Form.Control.Feedback>Отлично!</Form.Control.Feedback> */}
             <Form.Control.Feedback type="invalid">
-            Пожалуйста, введите e-mail
+              {errors.email}
             </Form.Control.Feedback>
         </InputGroup>
         </>
@@ -222,8 +303,10 @@ const Registration: FC<IRegProps> = ({
             className={'pr-[4.5rem] md'}
             type={showPass ? 'text' : 'password'}
             defaultValue={''}
+            isValid={!errors.password}
+            isInvalid={!!errors.password}
             disabled={onlyShowInfo}
-            placeholder="Введите пароль"
+            placeholder={changeProfile ? 'Введите новый пароль' : 'Введите пароль'}
             name={'password'}
           />
           <Button className={'bg-emerald-600'}
@@ -232,10 +315,41 @@ const Registration: FC<IRegProps> = ({
           </Button>
           {/* <Form.Control.Feedback>Отлично!</Form.Control.Feedback> */}
             <Form.Control.Feedback type="invalid">
-            Пожалуйста, введите пароль
+              {errors.password}
             </Form.Control.Feedback>
         </InputGroup>
          </>
+        }
+
+        {showEditPass && !onlyShowInfo && formState.password &&
+            <>
+              <Form.Label>Подтвердите пароль</Form.Label>
+              <InputGroup hasValidation className="mb-3">
+                <InputGroup.Text id="basic-addon1">
+                  <i className="bi bi-pass"/>
+                </InputGroup.Text>
+                <Form.Control
+                  required
+                  onChange={handleChangeInput}
+                  className={'pr-[4.5rem] md'}
+                  type={showPass ? 'text' : 'password'}
+                  defaultValue={''}
+                  isValid={!errors.rePassword}
+                  isInvalid={!!errors.rePassword}
+                  disabled={onlyShowInfo}
+                  placeholder={'Введите пароль ещё раз'}
+                  name={'rePassword'}
+                />
+                <Button className={'bg-emerald-600'}
+                        onClick={handleClick}>
+                  {showPass ? 'Hide' : 'Show'}
+                </Button>
+                {/* <Form.Control.Feedback>Отлично!</Form.Control.Feedback> */}
+                <Form.Control.Feedback type="invalid">
+                  {errors.rePassword}
+                </Form.Control.Feedback>
+              </InputGroup>
+            </>
         }
 
         {(onlyShowInfo ||
@@ -250,7 +364,11 @@ const Registration: FC<IRegProps> = ({
           <Form.Select
             disabled={onlyShowInfo}
             name={'rolesId'}
-            onChange={handleChangeSelect}
+            onChange={(event) => confirmRoles(event,
+              defaultInfoUser &&
+                      defaultInfoUser.rolesId
+                ? defaultInfoUser.rolesId
+                : 3)}
             defaultValue={defaultInfoUser &&
                           defaultInfoUser.rolesId
               ? defaultInfoUser.rolesId
@@ -269,7 +387,7 @@ const Registration: FC<IRegProps> = ({
           defaultInfoUser.fullName)) &&
          <>
         <Form.Label>ФИО</Form.Label>
-        <InputGroup className="mb-2">
+        <InputGroup hasValidation className="mb-2">
           <InputGroup.Text id="basic-addon1">
             <i className="bi bi-file-person"/>
           </InputGroup.Text>
@@ -278,6 +396,8 @@ const Registration: FC<IRegProps> = ({
             name={'fullName'}
             disabled={onlyShowInfo}
             placeholder="Введите ФИО"
+            isValid={!errors.fullName && !onlyShowInfo}
+            isInvalid={!!errors.fullName}
             defaultValue={defaultInfoUser &&
                           defaultInfoUser.fullName
               ? defaultInfoUser.fullName
@@ -285,6 +405,9 @@ const Registration: FC<IRegProps> = ({
             aria-label="fullName"
             aria-describedby="basic-addon1"
           />
+          <Form.Control.Feedback type="invalid">
+            {errors.fullName}
+          </Form.Control.Feedback>
         </InputGroup>
         </>
         }
