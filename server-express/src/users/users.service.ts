@@ -335,7 +335,7 @@ class UsersService implements IUserService {
         address,
         deliveryAddress,
         phoneNumber,
-        rolesId,
+        rolesId: (rolesId && +rolesId),
         isSubscribeToNews: Boolean(isSubscribeToNews)
       })
     const avatarInfo =
