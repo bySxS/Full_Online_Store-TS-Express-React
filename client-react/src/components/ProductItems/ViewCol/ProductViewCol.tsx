@@ -2,7 +2,8 @@ import React, { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IProduct } from 'store/myStore/myStoreProduct.interface'
 import FavIcon from 'components/FavIcon/FavIcon'
-import { RoutePath } from '../../../AppRouter'
+import { RoutePath } from 'AppRouter'
+import ProductPrice from 'components/ProductPrice/ProductPrice'
 import style from './ProductViewCol.module.scss'
 
 interface IProductViewColProps {
@@ -19,16 +20,13 @@ const ProductViewCol: FC<IProductViewColProps> = ({ product }) => {
   return (
     <>
       <div className={style.productItem}
-           onClick={() => { clickLiProductHandler(product.id) }}>
+           onMouseUp={() => { clickLiProductHandler(product.id) }}>
       <div className={style.sectionFav}>
         <FavIcon productId={product.id} />
       </div>
         <div className={style.sectionInfo}>
           <div className={style.title}>{product.title}</div>
-          <div className={style.price}>
-            <i className="bi bi-tag-fill text-green-500"/>
-            {product.price}{product.priceCurrency}
-          </div>
+          <ProductPrice product={product} />
         </div>
         <div className={style.sectionScreen}>
           <div className={style.screen}>

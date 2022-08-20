@@ -1,5 +1,6 @@
 .productItem {
-  @apply flex items-center my-4 bg-gray-50 w-[90%] min-w-[490px];
+  @apply flex items-center my-4 bg-gray-50
+  w-[90%] min-w-[490px] cursor-pointer;
 }
 
 .sectionFav {
@@ -19,10 +20,6 @@
 .sectionInfo {
   @apply flex flex-col h-[273px] w-full items-start
   content-start justify-evenly pt-2 text-left flex-auto;
-}
-
-.price {
-  @apply text-xl;
 }
 
 .title {

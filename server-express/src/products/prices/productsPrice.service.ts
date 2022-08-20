@@ -113,10 +113,10 @@ class ProductsPriceService implements IProductPriceService {
       .findOne({ priceTypeId: typePriceId, productId })
       .select('*')
     if (!result) {
-      throw ApiError.badRequest(
-        `Нет цены для продукта с id${productId}`,
-        'ProductsPriceService ' +
-        'getProductPriceByTypesPricesId')
+      return {
+        success: false,
+        message: `Нет цены для продукта с id${productId}`
+      }
     }
     return {
       success: true,

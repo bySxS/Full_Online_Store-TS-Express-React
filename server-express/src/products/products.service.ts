@@ -273,13 +273,24 @@ class ProductsService implements IProductService {
     const getPrice =
       await ProductsPriceService
         .getProductPriceByTypesPricesId(+priceTypeId, id)
-    const prices =
-      await ProductsPriceService
-        .updProductPrice(getPrice.result.id, {
-          productId: id,
-          priceTypeId: +priceTypeId,
-          price: +price
-        })
+    let prices
+    if (getPrice.success) {
+      prices =
+        await ProductsPriceService
+          .updProductPrice(getPrice.result.id, {
+            productId: id,
+            priceTypeId: +priceTypeId,
+            price: +price
+          })
+    } else {
+      prices =
+        await ProductsPriceService
+          .addPriceForProduct({
+            productId: id,
+            priceTypeId: +priceTypeId,
+            price: +price
+          })
+    }
     await cacheRedisDB.del('product:' + id) // удаляем кеш
 
     const result = {
@@ -299,7 +310,7 @@ class ProductsService implements IProductService {
     return {
       success: true,
       result,
-      message: `Продукт с id ${id} успешно обновлён; ${imgResult.message}; ${prices.message}`
+      message: `Продукт с id${id} успешно обновлён; ${imgResult.message}; ${prices.message}`
     }
   }
 
@@ -347,32 +358,41 @@ class ProductsService implements IProductService {
       > {
     const query = () => {
       return ProductsModel.query()
-        .andWhere('priceType.id', '=',
-          raw('products.priceTypeId'))
+        // .andWhere('priceType.id', '=',
+        //   raw('products.priceTypeId'))
         .andWhere('price.priceTypeId', '=',
           raw('products.priceTypeId'))
+        .andWhere('priceFirst.priceTypeId', '1')
+        // .whereIn('priceTypeFirst.id', [1])
         .leftOuterJoinRelated('views')
-        .leftOuterJoinRelated('priceType')
+        // .leftOuterJoinRelated('priceType')
         .leftOuterJoinRelated('price')
+        .leftOuterJoinRelated('price.priceType')
+        .leftOuterJoinRelated('price', { alias: 'priceFirst' })
         .leftOuterJoinRelated('category')
         .leftOuterJoinRelated('category.parent', { alias: 'section' })
         .leftOuterJoinRelated('reviews')
         .leftOuterJoinRelated('favorites')
         .select('products.*',
           'views.views as view',
-          'price.id as priceId',
           raw('avg(DISTINCT reviews.rating) as rating'),
           raw('count(DISTINCT reviews.id) as reviewCount'),
           raw('count(if(reviews.rating > 2,1,NULL)) `ratingPlus`'),
           raw('count(if(reviews.rating < 3,1,NULL)) `ratingMinus`'),
           raw('count(DISTINCT favorites.id) as countInFavorites'),
+          'price.id as priceId',
           'price.price as price',
           'price.currency as priceCurrency',
-          'priceType.name as priceType',
+          'price:priceType.name as priceType',
+          'priceFirst.id as priceFirstId',
+          'priceFirst.price as priceFirst',
+          'priceFirst.currency as priceFirstCurrency',
           'category.name as categoryName',
           'section.name as sectionName')
         .groupBy('products.id',
-          'price.id')
+          'price.id',
+          'priceFirst.id'
+        )
     }
     const priceQuery = () => {
       if (price.length === 1) {

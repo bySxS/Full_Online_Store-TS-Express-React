@@ -26,15 +26,18 @@ export interface IProduct {
   createdAt: Date | string
   updatedAt: Date | string
   view: number
-  priceId: number
   rating?: number
   reviewCount: number
   ratingPlus: number
   ratingMinus: number
   countInFavorites: number
+  priceId: number
   price: number
   priceCurrency: string
   priceType: string
+  priceFirstId: number
+  priceFirst: number
+  priceFirstCurrency: string
   categoryName: string
   sectionName: string
   characteristics?: ICharacteristicSection[]
