@@ -42,10 +42,13 @@ class ProductsController implements IProductController {
       const id = +req.params.id
       const authUser = req.user as IJwt
       req.body.userId = authUser.id
-      const product = await ProductsService.getAllProductsWithFilter()
+      const product = await ProductsService
+        .getAllProductsWithFilter()
         .where('products.id', '=', id)
       if (authUser.rolesId !== 1 &&
-        (product && 'userId' in product && product.userId !== authUser.id)) {
+        (product &&
+          'userId' in product &&
+          product.userId !== authUser.id)) {
         return next(ApiError.forbidden(
           'У вас нет доступа для изменения этого продукта',
           'ProductsController updateById'))
