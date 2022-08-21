@@ -28,7 +28,9 @@ const Profile = () => {
   return (
     <div>
       <Dropdown className={'pr-2'}>
-        <Dropdown.Toggle className={`${st.btn} ${style.btnAvatar}`}>
+        <Dropdown.Toggle
+          className={`${st.btn} ${style.btnAvatar}`}
+        style={{ backgroundColor: 'transparent' }}>
           {isAuth && avatarUrl
             ? <img src={avatarUrl} alt={nickname} className={style.avatar} />
             : <i className="bi bi-person-circle text-5xl text-gray-700"/>

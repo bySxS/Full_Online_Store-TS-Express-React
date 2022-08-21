@@ -12,25 +12,26 @@ export const useObserver = (
   const observer = useRef<IntersectionObserver>()
   const canLoad: boolean = (page <= totalPages)
 
-  const callback =
-    async (entries: IntersectionObserverEntry[]) => {
-      if (entries[0].isIntersecting && canLoad) {
-        setLoad(true)
-        await getNewItem()
-        setTimeout(() => {
-          setLoad(false)
-        }, 500)
-      }
-    }
-
   useEffect(() => {
     if (load || isLoading) return
     if (observer.current) {
       observer.current.disconnect()
     }
+
+    const callback =
+      async (entries: IntersectionObserverEntry[]) => {
+        if (entries[0].isIntersecting && canLoad) {
+          setLoad(true)
+          await getNewItem()
+          setTimeout(() => {
+            setLoad(false)
+          }, 500)
+        }
+      }
+
     observer.current = new IntersectionObserver(callback)
     if (lastItem.current) {
       observer.current.observe(lastItem.current)
     }
-  }, [load, totalPages, lastPage])
+  }, [totalPages, lastPage, load])
 }

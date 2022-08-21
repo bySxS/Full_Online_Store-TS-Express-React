@@ -144,12 +144,15 @@ export const ProductSlice = createSlice({
       state.pageFavProduct = state.pageFavProduct + 1
     },
     changeFilterState (state, action: PayloadAction<IFilterState>) {
-      state.filterState = action.payload
+      state.filterState = {
+        ...state.filterState,
+        ...action.payload
+      }
       state.products = [] // очищаем при изменении фильтра
       state.favoriteProducts = [] // очищаем при изменении фильтра
       state.pageProduct = 1 // ставим начальные страницы для paginator
-      state.pageFavProduct = 1
       state.totalProduct = 10
+      state.pageFavProduct = 1
       state.totalFavProduct = 10
     },
     changeViewProducts (state) {

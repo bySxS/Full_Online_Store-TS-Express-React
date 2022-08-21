@@ -6,16 +6,24 @@ interface IProductPrice {
   product: IProduct
 }
 
-const ProductPrice: FC<IProductPrice> = ({ product }) => {
+const ProductPrice: FC<IProductPrice> = ({
+  product: {
+    priceCurrency, priceType, price,
+    priceFirst, priceFirstCurrency
+  }
+}) => {
   return (
     <div className={style.price}>
       <i className="bi bi-tag-fill text-green-500"/>
-      <span title={product.priceType !== 'Основная' ? product.priceType : ''} className={product.priceType !== 'Основная' ? 'text-red-600' : ''}>
-            {product.price}{product.priceCurrency}
-          </span>
-      {product.priceType !== 'Основная' &&
+      <span
+        title={priceType !== 'Основная' ? priceType : ''}
+        className={priceType !== 'Основная' ? 'text-red-600' : ''}
+      >
+        {price}{priceCurrency}
+      </span>
+      {priceType !== 'Основная' &&
         <s className={'pl-2 text-lg text-sm text-gray-600'}>
-          {product.priceFirst}{product.priceFirstCurrency}
+          {priceFirst}{priceFirstCurrency}
         </s>
       }
     </div>

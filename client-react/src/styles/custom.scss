@@ -36,7 +36,8 @@
 }
 
 .sideBarLink {
-  @apply py-3 pl-3 border-b px-4 text-black flex flex-row items-center m-1;
+  @apply py-3 pl-3 border-b px-4 text-black
+  flex flex-row items-center m-1;
   border-radius: 10px;
   text-decoration: none;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;

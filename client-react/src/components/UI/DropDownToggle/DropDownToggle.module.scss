@@ -1,0 +1,5 @@
+.buttonToggle {
+  @apply bg-indigo-500 hover:bg-indigo-400 hover:text-white
+  px-2 text-white h-[27px] flex items-center;
+  border-radius: 6px;
+}

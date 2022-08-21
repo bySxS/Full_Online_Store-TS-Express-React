@@ -4,7 +4,7 @@ import { useRegistrationMutation, useUpdateUserByIdMutation } from 'store/myStor
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { IRegistrationIn, IUsers } from 'store/myStore/myStoreUser.interface'
 import { useAuth } from 'hooks/useAuth'
-import { useDebounce } from '../../hooks/useDebounce'
+import { useDebounce } from 'hooks/useDebounce'
 
 interface IRegProps {
   onCloseReg?: () => void
