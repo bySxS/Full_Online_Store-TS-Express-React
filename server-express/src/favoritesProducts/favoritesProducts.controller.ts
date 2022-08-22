@@ -43,6 +43,7 @@ class FavoritesProductController implements IFavoritesProductController {
     req: Request, res: Response, next: NextFunction
   ) {
     try {
+      const categoryId = +(req.query.category_id || 0)
       const filterText = String(req.query.filter || '')
       const filter = filterText.split(',')
       const priceText = String(req.query.price || '0')
@@ -53,7 +54,15 @@ class FavoritesProductController implements IFavoritesProductController {
       const page = +(req.query.page || 1)
       const products =
         await FavoritesProductsService
-          .getAllByUserId(authUser.id, filter, price, sort, limit, page)
+          .getAllByUserId({
+            userId: authUser.id,
+            filter,
+            price,
+            sort,
+            limit,
+            page,
+            categoryId
+          })
       return res.status(200).json(products)
     } catch (err) {
       next(err)

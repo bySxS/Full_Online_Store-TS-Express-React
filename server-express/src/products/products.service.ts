@@ -1,5 +1,5 @@
 import CategoryService from '@/category/category.service'
-import { IProduct, IProductFilesArray, IProductService } from './products.interface'
+import { IGetProducts, IProduct, IProductFilesArray, IProductService } from './products.interface'
 import { IMessage } from '@/interface'
 import path from 'path'
 import ProductsModel from './products.model'
@@ -7,7 +7,6 @@ import ApiError from '../apiError'
 import fs from 'fs-extra'
 import ProductsViewsService from './views/productsViews.service'
 import ProductsPriceService from './prices/productsPrice.service'
-import { cacheRedisDB } from '@/cache'
 import { Page, QueryBuilder, raw } from 'objection'
 import { div } from '@/service/math.service'
 import { delFile, saveFile } from '@/service/file.service'
@@ -291,7 +290,7 @@ class ProductsService implements IProductService {
             price: +price
           })
     }
-    await cacheRedisDB.del('product:' + id) // удаляем кеш
+    // await cacheRedisDB.del('product:' + id) // удаляем кеш
 
     const result = {
       title,
@@ -347,13 +346,19 @@ class ProductsService implements IProductService {
   }
 
   // universal - чтобы не дублировать код
-  getAllProductsWithFilter (
-    limit: number = 1,
-    page: number = 1,
-    filter: string[] = [''],
-    price: number[] = [0],
-    sortBy: string = ''
-  ): QueryBuilder<ProductsModel, ProductsModel | undefined> |
+  getAllProductsWithFilter ({
+    limit = 1,
+    page = 1,
+    filter = [''],
+    price = [0],
+    sort = ''
+  }: {
+    limit?: number,
+    page?: number,
+    filter?: string[],
+    price?: number[],
+    sort?: string
+  }): QueryBuilder<ProductsModel, ProductsModel | undefined> |
     QueryBuilder<ProductsModel, Page<ProductsModel>
       > {
     const query = () => {
@@ -427,7 +432,7 @@ class ProductsService implements IProductService {
     }
 
     const groupByQuery = () => {
-      switch (sortBy) {
+      switch (sort) {
         case 'price_asc': return PageOrFirst().orderBy('price.price', 'asc')
         case 'price_desc': return PageOrFirst().orderBy('price.price', 'desc')
         case 'id_desc': return PageOrFirst().orderBy('products.id', 'desc')
@@ -467,55 +472,13 @@ class ProductsService implements IProductService {
         newProducts.results.forEach(product => {
           if (product.id === char.productId) {
             product.characteristics =
-                CharacteristicsService.sortCharacteristicsTree(characteristicForProduct)
+                CharacteristicsService
+                  .sortCharacteristicsTree(characteristicForProduct)
           }
         })
       }
     })
     return newProducts
-  }
-
-  async getAllByCategoryId (
-    id: number,
-    filter: string[],
-    price: number[],
-    sortBy: string,
-    limit: number = 20,
-    page: number = 1
-  ): Promise<IMessage> {
-    const section = await CategoryService.getAll({ sectionId: id })
-    let ids: number[] = []
-    if (section.result.length > 0) {
-      ids = section.result[0].category
-        .map((cat: { categoryId: number }) => cat.categoryId)
-    } else {
-      ids.push(id)
-    }
-    const query = () => {
-      return this.getAllProductsWithFilter(limit, page, filter, price, sortBy)
-        .whereIn('products.categoryId', ids)
-    }
-
-    let result = await query()
-
-    if (!result || (result && 'total' in result && result.total === 0)) {
-      return {
-        success: false,
-        message: `Продуктов на странице ${page}, ID${id} категории, ` +
-          filterMessage(filter, price, sortBy) +
-          'не найдено'
-      }
-    }
-    if ('results' in result) {
-      result = await this.sortAndAddCharacteristicsToProducts(result)
-    }
-    return {
-      success: true,
-      result: { ...result, page, limit },
-      message: `Страница ${page} продуктов, ID${id} категории, ` +
-        filterMessage(filter, price, sortBy) +
-        'успешно загружена'
-    }
   }
 
   async getById (id: number, incView: boolean = true): Promise<IMessage> {
@@ -532,7 +495,7 @@ class ProductsService implements IProductService {
     //   }
     // }
     const query = (id: number) => {
-      return this.getAllProductsWithFilter()
+      return this.getAllProductsWithFilter({})
         .where('products.id', '=', id)
     }
     const product = await query(id)
@@ -585,33 +548,54 @@ class ProductsService implements IProductService {
     }
   }
 
-  async getAll (
-    filter: string[],
-    price: number[],
-    sortBy: string,
-    limit: number = 20, page: number = 1
-  ): Promise<IMessage> {
+  async getAll ({
+    categoryId,
+    filter,
+    price,
+    sort,
+    limit = 20,
+    page = 1
+  }: IGetProducts): Promise<IMessage> {
+    const ids = await CategoryService
+      .getAllCategoryBySectionWithCache(categoryId)
     const query = () => {
-      return this.getAllProductsWithFilter(limit, page, filter, price, sortBy)
-        .where('products.title', 'like', '%%')
+      if (ids && ids.length > 0) {
+        return this.getAllProductsWithFilter({
+          limit, page, filter, price, sort
+        })
+          .whereIn('products.categoryId', ids)
+      }
+      return this.getAllProductsWithFilter({
+        limit, page, filter, price, sort
+      })
+      // .where('products.title', 'like', '%%')
     }
+
     let result = await query()
-    if (!result || (result && 'total' in result && result.total === 0)) {
+    if (!result ||
+      (result &&
+        'total' in result &&
+        result.total === 0)) {
       return {
         success: false,
         message: `Продуктов на странице ${page}, ` +
-            filterMessage(filter, price, sortBy) +
+            filterMessage({
+              filter, price, sort, categoryId
+            }) +
             'не найдено'
       }
     }
     if ('results' in result) {
-      result = await this.sortAndAddCharacteristicsToProducts(result)
+      result =
+        await this.sortAndAddCharacteristicsToProducts(result)
     }
     return {
       success: true,
       result: { ...result, page, limit },
       message: `Страница ${page} продуктов, ` +
-        filterMessage(filter, price, sortBy) +
+        filterMessage({
+          filter, price, sort, categoryId
+        }) +
         'успешно загружена'
     }
   }
@@ -620,8 +604,9 @@ class ProductsService implements IProductService {
     title: string = '', limit: number = 20, page: number = 1
   ): Promise<IMessage> {
     const query = () => {
-      return this.getAllProductsWithFilter(limit, page)
-        .where('products.title', 'like', `%${title}%`)
+      return this.getAllProductsWithFilter({
+        limit, page
+      }).where('products.title', 'like', `%${title}%`)
     }
     const result = await query()
     if (!result) {

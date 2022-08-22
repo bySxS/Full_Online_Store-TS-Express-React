@@ -1,4 +1,6 @@
+import CategoryService from '@/category/category.service'
 import { IMessage } from '@/interface'
+import { IGetProducts } from '@/products/products.interface'
 import FavoritesProductsModel from './favoritesProducts.model'
 import ApiError from '@/apiError'
 import {
@@ -79,18 +81,32 @@ class FavoritesProductsService implements IFavoritesProductService {
     }
   }
 
-  async getAllByUserId (
-    userId: number,
-    filter: string[],
-    price: number[],
-    sortBy: string,
-    limit: number = 20,
-    page: number = 1
-  ): Promise<IMessage> {
-    const query = () => {
+  async getAllByUserId ({
+    userId,
+    categoryId,
+    filter,
+    price,
+    sort,
+    limit = 20,
+    page = 1
+  }: IGetProducts): Promise<IMessage> {
+    const ids = await CategoryService
+      .getAllCategoryBySectionWithCache(categoryId)
+    const queryWithCategory = () => {
+      if (ids && ids.length > 0) {
+        return ProductsService
+          .getAllProductsWithFilter({
+            limit, page, filter, price, sort
+          }).whereIn('products.categoryId', ids)
+      }
       return ProductsService
-        .getAllProductsWithFilter(limit, page, filter, price, sortBy)
-        .where('favorites.userId', '=', userId)
+        .getAllProductsWithFilter({
+          limit, page, filter, price, sort
+        })
+    }
+    const query = () => {
+      return queryWithCategory()
+        .where('favorites.userId', '=', userId || '0')
     }
     let result = await query()
     if (!result || (result &&
@@ -99,19 +115,24 @@ class FavoritesProductsService implements IFavoritesProductService {
         success: false,
         message: `Избранных продуктов на странице ${page}` +
           `, у пользователя с ID${userId}, ` +
-          filterMessage(filter, price, sortBy) +
+          filterMessage({
+            filter, price, sort, categoryId
+          }) +
           'не найдено'
       }
     }
     if ('results' in result) {
-      result = await ProductsService.sortAndAddCharacteristicsToProducts(result)
+      result = await ProductsService
+        .sortAndAddCharacteristicsToProducts(result)
     }
     return {
       success: true,
       result: { ...result, page, limit },
       message: `Страница ${page} с избранными продуктами, ` +
         `у пользователя с ID${userId}, ` +
-        filterMessage(filter, price, sortBy) +
+        filterMessage({
+          filter, price, sort, categoryId
+        }) +
         'успешно загружена'
     }
   }

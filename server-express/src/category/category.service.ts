@@ -1,3 +1,4 @@
+import { cacheRedisDB } from '@/cache'
 import { IMessage } from '@/interface'
 import CategoryModel from './category.model'
 import ApiError from '@/apiError'
@@ -46,6 +47,7 @@ class CategoryService implements ICategoryService {
         `Категория ${name} не добавлена`,
         'CategoryService add')
     }
+    await cacheRedisDB.del('categoryAll') // удаляем кеш
     return {
       success: true,
       result,
@@ -85,6 +87,7 @@ class CategoryService implements ICategoryService {
         `Категория ${findCategory.name} не изменена, возможно`,
         'CategoryService upd')
     }
+    await cacheRedisDB.del('categoryAll') // удаляем кеш
     return {
       success: true,
       result: { name, nameEng, parentId },
@@ -100,6 +103,7 @@ class CategoryService implements ICategoryService {
         `Категорию с id${id} не удалось удалить, возможно её не существует`,
         'CategoryService del')
     }
+    await cacheRedisDB.del('categoryAll') // удаляем кеш
     return {
       success: true,
       result,
@@ -163,8 +167,18 @@ class CategoryService implements ICategoryService {
     return section.filter((sect) => sect.sectionName !== 'delete')
   }
 
-  async getAll (Dto: { sectionId?: number }): Promise<IMessage> {
-    const { sectionId } = Dto
+  async getAll ({ sectionId }: { sectionId?: number }): Promise<IMessage> {
+    if (!sectionId) {
+      const cache = await cacheRedisDB.get('categoryAll')
+      if (cache) {
+        await cacheRedisDB.expire('categoryAll', 360000)
+        return {
+          success: true,
+          result: JSON.parse(cache),
+          message: 'Все категории загружены'
+        }
+      }
+    }
     const query = () => {
       return CategoryModel.query()
         .joinRelated('parent')
@@ -195,11 +209,40 @@ class CategoryService implements ICategoryService {
         'CategoryService getAll')
     }
     const result = this.sortCategoryTree(categoryNotSort)
+    if (!sectionId) {
+      await cacheRedisDB.set('categoryAll', JSON.stringify(result))
+      await cacheRedisDB.expire('categoryAll', 360000)
+    }
     return {
       success: true,
       result,
       message: 'Все категории загружены'
     }
+  }
+
+  async getAllCategoryBySectionWithCache (sectionId?: number): Promise<number[]> {
+    if (!sectionId ||
+        (sectionId && sectionId === 0)) return []
+    const cache = await cacheRedisDB.get('section:' + sectionId)
+    if (cache) {
+      // await cacheRedisDB.expire('section:' + sectionId, 360000)
+      return JSON.parse(cache)
+    }
+    const section =
+        await this.getAll({
+          sectionId
+        })
+    let categoryList
+    if (section.result.length > 0) {
+      categoryList = section.result[0].category
+        .map((cat: { categoryId: number }) => cat.categoryId)
+    } else {
+      categoryList = [sectionId]
+    }
+    await cacheRedisDB.set('section:' + sectionId, JSON.stringify(categoryList))
+    await cacheRedisDB.expire('section:' + sectionId, 18000)
+    // 5 часов после добавления новой категории нужно ждать
+    return categoryList
   }
 
   async search (name: string, limit: number = 10, page: number = 1): Promise<IMessage> {

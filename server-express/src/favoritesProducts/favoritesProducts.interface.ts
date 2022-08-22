@@ -1,4 +1,5 @@
 import { IMessage } from '@/interface'
+import { IGetProducts } from '@/products/products.interface'
 import { NextFunction, Request, Response } from 'express'
 
 export interface IFavoritesProduct {
@@ -10,12 +11,7 @@ export interface IFavoritesProduct {
 export interface IFavoritesProductService {
   add: (Dto: IFavoritesProduct) => Promise<IMessage>
   del: (Dto: IFavoritesProduct) => Promise<IMessage>
-  getAllByUserId: (userId: number,
-                   filter: string[],
-                   price: number[],
-                   sortBy: string,
-                   limit: number, page: number) =>
-    Promise<IMessage>
+  getAllByUserId: (args: IGetProducts) => Promise<IMessage>
   getAllListIdByUserId: (userId: number) => Promise<IMessage>
 }
 

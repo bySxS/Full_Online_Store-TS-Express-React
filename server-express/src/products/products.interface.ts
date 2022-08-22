@@ -5,6 +5,16 @@ import ProductsModel from './products.model'
 import { Page, QueryBuilder } from 'objection'
 import CharacteristicsSetValueModel from '@/characteristics/characteristicsSetValue.model'
 
+export interface IGetProducts {
+  filter?: string[],
+  price?: number[],
+  sort?: string,
+  limit?: number,
+  page?: number
+  categoryId?: number
+  userId?: number
+}
+
 export interface IProduct {
   id: number,
   title: string,
@@ -67,27 +77,24 @@ export interface IProductService {
   ) => Promise<IMessage>
   deleteById: (id: number) => Promise<IMessage>
   getById: (id: number, incView: boolean) => Promise<IMessage>
-  getAll: (filter: string[],
-           price: number[],
-           sortBy: string,
-           limit: number, page: number) => Promise<IMessage>
+  getAll: (args: IGetProducts) => Promise<IMessage>
   search: (title: string, limit: number,
            page: number) => Promise<IMessage>
-  getAllProductsWithFilter: (
-    limit: number,
-    page: number,
-    filter: string[],
-    price: number[],
-    sortBy: string
-  ) =>
+  getAllProductsWithFilter: (args: {
+    limit?: number,
+    page?: number,
+    filter?: string[],
+    price?: number[],
+    sort?: string
+}) =>
     QueryBuilder<ProductsModel, ProductsModel | undefined> |
     QueryBuilder<ProductsModel, Page<ProductsModel>>
-  getAllByCategoryId: (id: number,
-                       filter: string[],
-                       price: number[],
-                       sortBy: string,
-                       limit: number, page: number) =>
-    Promise<IMessage>
+  // getAllByCategoryId: (id: number,
+  //                      filter: string[],
+  //                      price: number[],
+  //                      sortBy: string,
+  //                      limit: number, page: number) =>
+  //   Promise<IMessage>
   getGeneralCharacteristicsForProducts: (
       productsIds: number[]
   ) => QueryBuilder<CharacteristicsSetValueModel, CharacteristicsSetValueModel[]>
@@ -108,8 +115,6 @@ export interface IProductController {
         next: NextFunction) => void
   getAll: (req: Request, res: Response,
         next: NextFunction) => void
-  getAllByCategoryIdAndFilter: (req: Request, res: Response,
-           next: NextFunction) => void
   search: (req: Request, res: Response,
         next: NextFunction) => void
   getDynamicPriceByProductId: (req: Request, res: Response,

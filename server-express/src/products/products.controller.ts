@@ -43,7 +43,7 @@ class ProductsController implements IProductController {
       const authUser = req.user as IJwt
       req.body.userId = authUser.id
       const product = await ProductsService
-        .getAllProductsWithFilter()
+        .getAllProductsWithFilter({})
         .where('products.id', '=', id)
       if (authUser.rolesId !== 1 &&
         (product &&
@@ -104,6 +104,7 @@ class ProductsController implements IProductController {
 
   async getAll (req: Request, res: Response, next: NextFunction) {
     try {
+      const categoryId = +(req.query.category_id || 0)
       const limit = +(req.query.limit || 10)
       const page = +(req.query.page || 1)
       const filterText = String(req.query.filter || '')
@@ -111,29 +112,10 @@ class ProductsController implements IProductController {
       const filter = filterText.split(',')
       const price = priceText.split('_').map(price => +price)
       const sort = String(req.query.sort || '')
-      const products = await ProductsService.getAll(
-        filter, price, sort, limit, page
-      )
-      return res.status(200).json(products)
-    } catch (err) {
-      next(err)
-    }
-  }
-
-  async getAllByCategoryIdAndFilter (req: Request, res: Response, next: NextFunction) {
-    try {
-      const id = +req.params.id
-      const filterText = String(req.query.filter || '')
-      const filter = filterText.split(',')
-      const priceText = String(req.query.price || '0')
-      const price = priceText.split('_').map(price => +price)
-      const sort = String(req.query.sort || '')
-      const limit = +(req.query.limit || 10)
-      const page = +(req.query.page || 1)
-      const products =
-        await ProductsService.getAllByCategoryId(
-          id, filter, price, sort, limit, page
-        )
+      const products = await ProductsService
+        .getAll({
+          filter, price, sort, limit, page, categoryId
+        })
       return res.status(200).json(products)
     } catch (err) {
       next(err)

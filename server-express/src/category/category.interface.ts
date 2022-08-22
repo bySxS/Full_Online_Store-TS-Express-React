@@ -32,7 +32,8 @@ export interface ICategoryService {
   add: (Dto: ICategory) => Promise<IMessage>
   upd: (id: number, Dto: ICategory) => Promise<IMessage>
   del: (id: number) => Promise<IMessage>
-  getAll: (Dto: { sectionId: number }) => Promise<IMessage>
+  getAll: ({ sectionId }: { sectionId?: number }) => Promise<IMessage>
+  getAllCategoryBySectionWithCache: (sectionId?: number) => Promise<number[]>
   search: (name: string, limit: number, page: number) => Promise<IMessage>
   sortCategoryTree: (category: CategoryModel[]) => ISectionOut[]
 }
