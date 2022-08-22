@@ -4,7 +4,7 @@
 }
 
 .viewProducts {
-  @apply text-indigo-600 pl-4 hover:text-indigo-500;
+  @apply text-indigo-500 pl-4 hover:text-indigo-400;
 }
 
 .buttonSort {
@@ -12,8 +12,29 @@
   margin: auto 0;
 }
 
+.sectionButtonChar {
+  margin: auto 0;
+}
+
+.buttonChar {
+  @apply bg-indigo-500 hover:bg-indigo-400 hover:text-white
+  px-2 text-white h-[27px] flex items-center;
+  border-radius: 6px;
+}
+
 .iconView {
   @apply text-3xl;
+}
+
+.panelFilter {
+  @apply h-[70%] m-auto;
+  border-radius: 15px 0 0 15px;
+  box-shadow: 0 0 20px 0 #000000b8;
+}
+
+.backdrop {
+  @apply bg-none overflow-auto;
+  opacity: 0!important;
 }
 
 //@media only screen and (max-width: 2005px) {

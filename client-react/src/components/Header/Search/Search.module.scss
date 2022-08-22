@@ -1,18 +1,18 @@
-.search_form {
+.searchForm {
   @apply flex w-[300px];
 }
 
-.result_search {
+.resultSearch {
   @apply relative min-w-[360px] max-w-full;
 }
 
-.ul_item {
+.ul {
   @apply list-none absolute top-[15px]
   left-0 right-0 max-h-[200px] overflow-y-auto
   shadow-md bg-white;
 }
 
-.li_item {
+.li {
   @apply py-1 px-4 flex items-center hover:bg-gray-500
   hover:text-white transition-colors cursor-pointer;
   border: 1px dotted #766ed32e;

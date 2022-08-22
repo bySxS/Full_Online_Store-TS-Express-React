@@ -6,11 +6,13 @@ const categoryNameById = (id: number) => (state: RootState): string => {
   return state.category.categoryList?.filter(cat => cat.id === id)
     .map(cat => cat.name)[0]
 }
+const categoryList = (state: RootState) => state.category.categoryList
 
 const selectCategory = {
   allCategory,
   showCategory,
-  categoryNameById
+  categoryNameById,
+  categoryList
 }
 
 export default selectCategory

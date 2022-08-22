@@ -546,7 +546,7 @@ const Registration: FC<IRegProps> = ({
         </Form>
       </div>
       {!onlyShowInfo &&
-      <Button variant="primary"
+      <Button variant="success"
               className={'bg-emerald-600 w-full'}
               onClick={btnLogin}
               type={'submit'}
@@ -569,7 +569,7 @@ const Registration: FC<IRegProps> = ({
           onShowLogin()
           onCloseReg()
         }}
-        variant="primary"
+        variant="success"
         className={'bg-emerald-600 w-full'}>
         Войдите!
       </Button>

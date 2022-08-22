@@ -18,18 +18,40 @@ const Search = () => {
   const [search, setSearch] = useState('')
   const debounced = useDebounce(search)
   const refInput = useRef<HTMLInputElement>(null)
-  const { isLoading, isError, isSuccess, data: searchProducts, error } =
-    useSearchProductsQuery({ value: debounced, limit: 50, page: 1 }, {
-      skip: debounced.length < 3,
-      refetchOnFocus: true
-    })
-  useInfoLoading({ isLoading, isSuccess, isError, data: searchProducts, error })
-  const { data: searchCategory, isLoading: isLoadingCat, isError: isErrorCat, isSuccess: isSuccessCat, error: errorCat } =
-  useSearchCategoryQuery({ value: debounced, limit: 50, page: 1 }, {
+  const {
+    isLoading,
+    isError,
+    isSuccess,
+    data: searchProducts,
+    error
+  } = useSearchProductsQuery({ value: debounced, limit: 50, page: 1 }, {
     skip: debounced.length < 3,
     refetchOnFocus: true
   })
-  useInfoLoading({ data: searchCategory, isLoading: isLoadingCat, isError: isErrorCat, isSuccess: isSuccessCat, error: errorCat })
+  useInfoLoading({
+    isLoading,
+    isSuccess,
+    isError,
+    data: searchProducts,
+    error
+  })
+  const {
+    data: searchCategory,
+    isLoading: isLoadingCat,
+    isError: isErrorCat,
+    isSuccess: isSuccessCat,
+    error: errorCat
+  } = useSearchCategoryQuery({ value: debounced, limit: 50, page: 1 }, {
+    skip: debounced.length < 3,
+    refetchOnFocus: true
+  })
+  useInfoLoading({
+    data: searchCategory,
+    isLoading: isLoadingCat,
+    isError: isErrorCat,
+    isSuccess: isSuccessCat,
+    error: errorCat
+  })
 
   useEffect(() => {
     if (debounced.length < 3) {
@@ -83,7 +105,7 @@ const Search = () => {
         <InputGroup.Text id="basic-addon1">
           <i className="bi bi-search"></i>
         </InputGroup.Text>
-        <Form className={style.search_form}
+        <Form className={style.searchForm}
               onSubmit={searchSubmitHandler}>
         <Form.Control
           type="search"
@@ -101,11 +123,11 @@ const Search = () => {
       </Form>
     </InputGroup>
       {((products && products?.length > 0) || (category && category?.length > 0)) &&
-        <div className={`${style.result_search}`}>
-      <ul className={style.ul_item}>
+        <div className={`${style.resultSearch}`}>
+      <ul className={style.ul}>
         {products && products.map(product => (
           <li key={product.id}
-              className={style.li_item}
+              className={style.li}
               onClick={() => clickLiProductHandler(product.id)}
           >
             {product.screen &&
@@ -117,7 +139,7 @@ const Search = () => {
         ))}
         {category && category.map(cat => (
           <li key={cat.categoryNameEng}
-              className={style.li_item}
+              className={style.li}
               onClick={() => clickLiCategoryHandler(cat.id)}
           >
             {cat.categoryIconClass &&

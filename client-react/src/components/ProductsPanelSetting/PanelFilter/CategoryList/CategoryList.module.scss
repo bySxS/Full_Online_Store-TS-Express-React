@@ -1,0 +1,18 @@
+.linkOpenContainer {
+  @apply px-2 w-[90%] m-auto flex;
+}
+
+.container {
+  @apply relative w-[90%] m-auto;
+}
+
+.ul {
+  @apply list-none absolute top-[5px]
+  left-0 right-0 pl-2 max-h-[178px] overflow-y-auto
+  bg-white;
+}
+
+.item {
+  @apply py-1 px-8 items-center transition-colors;
+  border: 0px #766ed32e;
+}

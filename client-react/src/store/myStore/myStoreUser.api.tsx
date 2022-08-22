@@ -90,6 +90,7 @@ const myStoreUserApi = createApi({
             page: args.page
           }
         }),
+        providesTags: ['Users'],
         transformResponse: (response: IMessage<IResultList<IUsers>>) => {
           if (response.result.results) {
             const users = response.result?.results?.map(user => ({
@@ -106,8 +107,7 @@ const myStoreUserApi = createApi({
           } else {
             return response
           }
-        },
-        providesTags: ['Users']
+        }
       }), // /fetchAllUsers
 
     getUserById: build.query<IMessage<IUsers>,
@@ -128,7 +128,8 @@ const myStoreUserApi = createApi({
       query: (id: number) => ({
         url: 'user/' + id,
         method: 'DELETE'
-      })
+      }),
+      invalidatesTags: ['Users']
     }),
 
     updateUserById: build.mutation<IMessage<IUser>,
@@ -138,13 +139,13 @@ const myStoreUserApi = createApi({
         method: 'PUT',
         body
       }),
+      invalidatesTags: ['Users'],
       async onQueryStarted (args, api) {
         try {
           const reason = await api.queryFulfilled
           api.dispatch(updUser(reason.data))
         } catch (e) {}
-      },
-      invalidatesTags: ['Users']
+      }
     })
 
   })

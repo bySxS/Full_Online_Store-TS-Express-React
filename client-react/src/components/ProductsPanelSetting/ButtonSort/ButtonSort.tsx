@@ -4,7 +4,6 @@ import { MyDropDownMenu, MyDropDownToggle } from 'components/UI/DropDownToggle/D
 import { useAppActions, useAppSelector } from 'hooks/useStore'
 import { TSortProduct } from 'store/myStore/myStoreProduct.interface'
 import selectProduct from 'store/product/product.selector'
-// import style from './ButtonSort.nodule.scss'
 
 const sortDefault = [
   { id: 1, value: 'price_asc', name: 'Цена по возрастанию' },

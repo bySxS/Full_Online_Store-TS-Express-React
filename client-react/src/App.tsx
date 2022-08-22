@@ -9,7 +9,7 @@ import Alarm from 'components/UI/Alarm/Alarm'
 import Loader from 'components/UI/Loader/Loader'
 import { ALERT_CONNECTION } from 'constants/constant'
 import Body from 'components/Body/Body'
-// import { ModalState } from 'components/UI/Modal/ModalContext'
+import { ModalState } from 'context/ModalContext'
 import Footer from 'components/Footer/Footer'
 
 function App () {
@@ -20,14 +20,14 @@ function App () {
       </Helmet>
     <BrowserRouter>
       <div className="App">
-        {/* <ModalState>  /!* контекст модального окна *!/ */}
+        <ModalState>  {/* контекст модального окна */}
           <Header />
           <SideBar />
           <Body />
           <Footer />
           {ALERT_CONNECTION && <Alarm/>}
           <Loader/>
-          {/* </ModalState> */}
+          </ModalState>
       </div>
     </BrowserRouter>
     </Provider>

@@ -1,6 +1,9 @@
 import React, { FC, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { IUser, IUsers } from 'store/myStore/myStoreUser.interface'
+import { useAuth } from 'hooks/useAuth'
+import { useInfoLoading } from '../../hooks/useInfoLoading'
+import { useDeleteUserMutation } from '../../store/myStore/myStoreUser.api'
 import Registration from '../Registration/Registration'
 import style from './UserProfileEdit.module.scss'
 
@@ -13,6 +16,13 @@ const UserProfileEdit: FC<UserProfileProps> = ({
   user,
   edit = true
 }) => {
+  const { isAdmin, nickname } = useAuth()
+  const [deleteUser, {
+    isSuccess, isError, isLoading, error, data
+  }] = useDeleteUserMutation()
+  useInfoLoading({
+    isLoading, isSuccess, isError, data, error
+  })
   const [editProfile, setEditProfile] = useState<boolean>(edit)
   const [showEditPass, setShowEditPass] = useState<boolean>(false)
   const [showEditAvatar, setShowEditAvatar] = useState<boolean>(false)
@@ -29,6 +39,14 @@ const UserProfileEdit: FC<UserProfileProps> = ({
     setShowEditPass(prev => !prev)
   }
 
+  const clickDeleteProfile = () => {
+    let result = false
+    result = confirm('Вы уверены что хотите удалить пользователя ' + user.nickname + '?')
+    if (result) {
+      deleteUser(user.id)
+    }
+  }
+
   return (
     <div className={style.viewProfile}>
       <div className={style.sectionAvatar}>
@@ -43,7 +61,7 @@ const UserProfileEdit: FC<UserProfileProps> = ({
          <div className={style.button}>
            <Button
              onClick={clickChangeProfile}
-             variant="primary"
+             variant="success"
              className={'bg-emerald-600 w-full'}>
              {!editProfile ? 'Изменить профиль' : 'Не изменять профиль'}
            </Button>
@@ -53,7 +71,7 @@ const UserProfileEdit: FC<UserProfileProps> = ({
          <div className={style.button}>
            <Button
              onClick={clickChangeAvatar}
-             variant="primary"
+             variant="success"
              className={'bg-emerald-600 w-full'}>
              {!showEditAvatar ? 'Изменить аватар' : 'Не изменять аватар'}
            </Button>
@@ -63,11 +81,23 @@ const UserProfileEdit: FC<UserProfileProps> = ({
          <div className={style.button}>
            <Button
              onClick={clickChangePass}
-             variant="primary"
+             variant="success"
              className={'bg-emerald-600 w-full'}>
              {!showEditPass ? 'Изменить пароль' : 'Не изменять пароль'}
            </Button>
          </div>
+        }
+        {editProfile &&
+          isAdmin &&
+          nickname !== user.nickname &&
+          <div className={style.button}>
+            <Button
+              onClick={clickDeleteProfile}
+              variant="danger"
+              className={'bg-red-800 w-full'}>
+              Удалить пользователя
+            </Button>
+          </div>
         }
       </div>
       <div className={style.sectionInfo}>
