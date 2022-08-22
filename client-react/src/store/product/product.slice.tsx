@@ -22,7 +22,7 @@ interface IProductState {
   totalProduct: number
   pageFavProduct: number
   totalFavProduct: number
-  prevCategory: string
+  prevPage: string
 }
 
 const initialState: IProductState = {
@@ -30,12 +30,14 @@ const initialState: IProductState = {
   favoriteProducts: [], // JSON.parse(localStorage.getItem(LS_FAV_PRODUCT_KEY) ?? '[]'),
   listIdFavProducts: [],
   products: [], // JSON.parse(localStorage.getItem(LS_PRODUCT_KEY) ?? '[]'),
-  filterState: {},
+  filterState: {
+    sort: 'views_desc'
+  },
   pageProduct: 1,
-  totalProduct: 10,
+  totalProduct: 1,
   pageFavProduct: 1,
-  totalFavProduct: 10,
-  prevCategory: ''
+  totalFavProduct: 1,
+  prevPage: ''
 }
 
 const addProducts =
@@ -93,7 +95,7 @@ const addFavProductToList =
           .filter(product => product.id === productId)[0]
       )
       state.pageFavProduct = 1
-      state.totalFavProduct = 10
+      state.totalFavProduct = 1
     }
   }
 
@@ -109,6 +111,14 @@ const delFavProductFromList =
     }
   }
 
+const incPageProduct = (state: IProductState) => {
+  state.pageProduct = state.pageProduct + 1
+}
+
+const incPageFavProduct = (state: IProductState) => {
+  state.pageFavProduct = state.pageFavProduct + 1
+}
+
 export const ProductSlice = createSlice({
   name: 'product',
   initialState,
@@ -121,39 +131,35 @@ export const ProductSlice = createSlice({
           state.favoriteProducts
             .filter(product => product.id !== productId)
       state.pageFavProduct = 1
-      state.totalFavProduct = 10
+      state.totalFavProduct = 1
     },
     clearProducts (state) {
       state.products = []
       state.pageProduct = 1 // ставим начальные страницы для paginator
-      state.totalProduct = 10
+      state.totalProduct = 1
     },
     clearFavProducts (state) {
       state.listIdFavProducts = []
       state.favoriteProducts = []
       state.pageFavProduct = 1 // ставим начальные страницы для paginator
-      state.totalFavProduct = 10
+      state.totalFavProduct = 1
     },
-    setPrevCategory (state, action: PayloadAction<string>) {
-      state.prevCategory = action.payload
+    setPrevPage (state, action: PayloadAction<string>) {
+      state.prevPage = action.payload
     },
-    incPageProduct (state) {
-      state.pageProduct = state.pageProduct + 1
-    },
-    incPageFavProduct (state) {
-      state.pageFavProduct = state.pageFavProduct + 1
-    },
+    incPageProduct,
+    incPageFavProduct,
     changeFilterState (state, action: PayloadAction<IFilterState>) {
+      state.products = [] // очищаем при изменении фильтра
+      state.favoriteProducts = [] // очищаем при изменении фильтра
+      state.pageProduct = 1 // ставим начальные страницы для paginator
+      state.totalProduct = 1
+      state.pageFavProduct = 1
+      state.totalFavProduct = 1
       state.filterState = {
         ...state.filterState,
         ...action.payload
       }
-      state.products = [] // очищаем при изменении фильтра
-      state.favoriteProducts = [] // очищаем при изменении фильтра
-      state.pageProduct = 1 // ставим начальные страницы для paginator
-      state.totalProduct = 10
-      state.pageFavProduct = 1
-      state.totalFavProduct = 10
     },
     changeViewProducts (state) {
       state.ViewProducts = state.ViewProducts === 'Col' ? 'Row' : 'Col'
@@ -162,20 +168,22 @@ export const ProductSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addMatcher(
-      myStoreProductEndpoint.allProducts.matchFulfilled,
-      (state: IProductState,
-        action: PayloadAction<IMessage<IResultList<IProduct>>>) => {
-        // state.prevCategory = ''
-        addProducts(state, action)
-      }
-    )
-    builder.addMatcher(
-      myStoreProductEndpoint.getAllProductsByCategoryId.matchFulfilled,
+      myStoreProductEndpoint.getAllProducts.matchFulfilled,
       (state: IProductState,
         action: PayloadAction<IMessage<IResultList<IProduct>>>) => {
         addProducts(state, action)
+        if (action.payload.message) {
+          incPageProduct(state)
+        }
       }
     )
+    // builder.addMatcher(
+    //   myStoreProductEndpoint.getAllProductsByCategoryId.matchFulfilled,
+    //   (state: IProductState,
+    //     action: PayloadAction<IMessage<IResultList<IProduct>>>) => {
+    //     addProducts(state, action)
+    //   }
+    // )
     builder.addMatcher(
       myStoreFavProductEndpoint.getFavProducts.matchFulfilled,
       (

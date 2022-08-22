@@ -46,11 +46,12 @@ const myStoreProductApi = createApi({
         })
       }),
 
-    allProducts: build.query<IMessage<IResultList<IProduct>>,
+    getAllProducts: build.query<IMessage<IResultList<IProduct>>,
       IGetProductsWithFilter>({
         query: (args) => ({
           url: 'product',
           params: {
+            category_id: args.categoryId,
             filter: args.filter,
             price: args.price,
             sort: args.sort,
@@ -60,30 +61,30 @@ const myStoreProductApi = createApi({
         })
       }),
 
-    getAllProductsByCategoryId: build.query<IMessage<IResultList<IProduct>>,
-    IGetProductsWithFilter>({
-      query: (args) => ({
-        url: 'product/category/' + args.categoryId,
-        params: {
-          filter: args.filter,
-          price: args.price,
-          sort: args.sort,
-          limit: args.limit || 10,
-          page: args.page
-        }
-      })// ,
-      // onQueryStarted (args: IGetProductsWithFilter, api) {
-      //   try {
-      //     const state = (api.getState() as RootState)
-      //     if (state.product.prevCategory !== String(args.categoryId)) {
-      //       api.dispatch(clearProducts())
-      //     }
-      //     api.dispatch(setPrevCategory(String(args.categoryId)))
-      //   } catch (e) {
-      //     console.log(e)
-      //   }
-      // }
-    }),
+    // getAllProductsByCategoryId: build.query<IMessage<IResultList<IProduct>>,
+    // IGetProductsWithFilter>({
+    //   query: (args) => ({
+    //     url: 'product/category/' + args.categoryId,
+    //     params: {
+    //       filter: args.filter,
+    //       price: args.price,
+    //       sort: args.sort,
+    //       limit: args.limit || 10,
+    //       page: args.page
+    //     }
+    //   })// ,
+    // onQueryStarted (args: IGetProductsWithFilter, api) {
+    //   try {
+    //     const state = (api.getState() as RootState)
+    //     if (state.product.prevCategory !== String(args.categoryId)) {
+    //       api.dispatch(clearProducts())
+    //     }
+    //     api.dispatch(setPrevCategory(String(args.categoryId)))
+    //   } catch (e) {
+    //     console.log(e)
+    //   }
+    // }
+    // }),
 
     getProductById: build.query<IMessage<IProduct>,
       number>({
@@ -106,12 +107,11 @@ export default myStoreProductApi
 
 export const {
   useSearchProductsQuery,
-  useLazyAllProductsQuery,
+  useLazyGetAllProductsQuery,
   useLazyGetProductByIdQuery,
   useAddProductMutation,
   useDelProductMutation,
   useUpdateProductMutation,
   useLazyGetDynamicPriceByProductIdQuery,
-  useLazyGetAllProductsByCategoryIdQuery,
   endpoints: myStoreProductEndpoint
 } = myStoreProductApi

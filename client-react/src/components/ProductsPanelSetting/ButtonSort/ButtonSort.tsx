@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { Dropdown } from 'react-bootstrap'
 import { MyDropDownMenu, MyDropDownToggle } from 'components/UI/DropDownToggle/DropDownToggle'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
-import { TSortProduct } from '../../../store/myStore/myStoreProduct.interface'
-import selectProduct from '../../../store/product/product.selector'
+import { TSortProduct } from 'store/myStore/myStoreProduct.interface'
+import selectProduct from 'store/product/product.selector'
 // import style from './ButtonSort.nodule.scss'
 
 const sortDefault = [

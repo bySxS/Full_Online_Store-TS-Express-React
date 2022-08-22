@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IMessage } from 'store/myStore/myStore.interface'
 import { CategoryTreeToList } from '../../utils'
-import { ICategory, ICategorySection } from '../myStore/myStoreCategory.interface'
 import { myStoreCategoryEndpoint } from '../myStore/myStoreCategory.api'
+import { ICategory, ICategorySection } from '../myStore/myStoreCategory.interface'
 
 const LS_CATEGORY_KEY = 'rCatK'
 const LS_CATEGORY_LIST_KEY = 'rCatLK'
@@ -28,10 +28,9 @@ const setShowCategory = (state: ICategoryState, action: PayloadAction<number[]>)
 const setCategory = (state: ICategoryState, action: PayloadAction<IMessage<ICategorySection[]>>) => {
   const { payload } = action
   state.category = payload.result
-  const listCategory = CategoryTreeToList(state.category)
-  state.categoryList = listCategory
-  localStorage.setItem(LS_CATEGORY_KEY, JSON.stringify(state.category))
-  localStorage.setItem(LS_CATEGORY_LIST_KEY, JSON.stringify(state.categoryList))
+  state.categoryList = CategoryTreeToList(state.category || [])
+  localStorage.setItem(LS_CATEGORY_KEY, JSON.stringify(state.category || []))
+  localStorage.setItem(LS_CATEGORY_LIST_KEY, JSON.stringify(state.categoryList || []))
 }
 
 export const CategorySlice = createSlice({

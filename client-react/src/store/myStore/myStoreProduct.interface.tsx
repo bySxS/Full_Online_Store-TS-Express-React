@@ -102,4 +102,5 @@ export interface IFilterState {
   filter?: string
   price?: string
   sort?: TSortProduct
+  categoryId?: number
 }

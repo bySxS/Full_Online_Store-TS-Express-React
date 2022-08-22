@@ -2,10 +2,7 @@ import React, { FC, useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useLocation, useParams } from 'react-router-dom'
-import {
-  useLazyAllProductsQuery,
-  useLazyGetAllProductsByCategoryIdQuery
-} from 'store/myStore/myStoreProduct.api'
+import { useLazyGetAllProductsQuery } from 'store/myStore/myStoreProduct.api'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
 import selectProduct from 'store/product/product.selector'
 import ProductList from 'components/ProductList/ProductList'
@@ -21,66 +18,43 @@ const Products: FC<ProductProps> = ({ name }) => {
   const pagination = useRef<HTMLHeadingElement>(null)
   const location = useLocation()
   const { id: idParam } = useParams<IDParams>()
-  const id = +(idParam || '')
+  const categoryId = +(idParam || '')
   const filterState = useAppSelector(selectProduct.filterState)
   const pageProduct = useAppSelector(selectProduct.pageProduct)
   const totalProduct = useAppSelector(selectProduct.totalProduct)
+  const prevPage = useAppSelector(selectProduct.prevPage)
   const {
-    incPageProduct, clearProducts
+    changeFilterState,
+    setPrevPage
   } = useAppActions()
   const [limit] = useState(10)
-  const [prevPageLoad, setPrevPageLoad] = useState(location.pathname)
-  const [totalPage, setTotalPage] = useState(Math.round((totalProduct || limit) / limit) + 1)
+  const [totalPage, setTotalPage] = useState(Math.round(10 / limit))
 
   const [fetchProducts, {
     isLoading, isSuccess, isError, data, error
-  }] = useLazyAllProductsQuery()
+  }] = useLazyGetAllProductsQuery()
   useInfoLoading({
     isLoading, isSuccess, isError, data, error
   })
-
-  const [fetchProductsCat, {
-    isLoading: isLoadingCat,
-    isSuccess: isSuccessCat,
-    isError: isErrorCat,
-    data: dataCat,
-    error: errorCat
-  }] = useLazyGetAllProductsByCategoryIdQuery()
-  useInfoLoading({
-    isLoading: isLoadingCat,
-    isSuccess: isSuccessCat,
-    isError: isErrorCat,
-    data: dataCat,
-    error: errorCat
-  })
   const getProducts = () => {
-    if (location.pathname !== '/products' && id > 0) {
-      fetchProductsCat({ categoryId: id, page: pageProduct, limit, ...filterState })
-    } else {
-      fetchProducts({ page: pageProduct, limit, ...filterState })
-    }
-    incPageProduct()
+    fetchProducts({ page: pageProduct, limit, ...filterState })
   }
 
-  useObserver(pagination,
-    pageProduct,
-    totalPage,
-    (location.pathname !== '/products' && id > 0)
-      ? isLoadingCat
-      : isLoading,
-    prevPageLoad,
-    getProducts)
+  useObserver(pagination, pageProduct,
+    totalPage, isLoading, prevPage, getProducts)
 
   useEffect(() => {
     setTotalPage(Math.round((totalProduct || limit) / limit) + 1)
   }, [totalProduct])
 
   useEffect(() => {
-    clearProducts()
-    if (prevPageLoad !== location.pathname) {
-      setPrevPageLoad(location.pathname)
+    setPrevPage(location.pathname)
+    if (categoryId && categoryId > 0) {
+      changeFilterState({ categoryId })
+    } else {
+      changeFilterState({ categoryId: undefined })
     }
-  }, [location.pathname, id, prevPageLoad])
+  }, [location.pathname, categoryId, prevPage])
 
   return (
     <>

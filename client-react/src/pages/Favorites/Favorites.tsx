@@ -6,8 +6,8 @@ import { useAppActions, useAppSelector } from 'hooks/useStore'
 import { useLocation } from 'react-router-dom'
 import { useLazyGetFavProductsQuery } from 'store/myStore/myStoreFavProduct.api'
 import selectProduct from 'store/product/product.selector'
-import ProductItems from '../../components/ProductItems/ProductItems'
-import ProductsPanelSetting from '../../components/ProductsPanelSetting/ProductsPanelSetting'
+import ProductItems from 'components/ProductItems/ProductItems'
+import ProductsPanelSetting from 'components/ProductsPanelSetting/ProductsPanelSetting'
 import style from '../Products/Products.module.scss'
 
 interface FavoritesProps {
@@ -25,7 +25,7 @@ const Favorites: FC<FavoritesProps> = ({ name }) => {
   const { incPageFavProduct } = useAppActions()
   const [limit] = useState(10)
   const [prevPageLoad] = useState(location.pathname)
-  const [totalPage, setTotalPage] = useState(Math.round((totalProduct ?? limit) / limit) + 1)
+  const [totalPage, setTotalPage] = useState(Math.round(10 / limit) + 1)
   const [fetchProducts,
     { isLoading, isSuccess, isError, data, error }] =
     useLazyGetFavProductsQuery()

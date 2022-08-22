@@ -16,15 +16,11 @@ const ProductDetails = () => {
   const id = +(idParam || '')
   const navigate = useNavigate()
   const {
-    addToBasket, delFromBasket
+    addToBasket, delFromBasket, setPrevPage
   } = useAppActions()
   useEffect(() => {
     if (!id || isNaN(+id)) {
       navigate(RoutePath.PRODUCTS)
-      // addToAlertStack({
-      //   message: 'ID должен быть с цифр',
-      //   status: 'error'
-      // })
     }
   }, [])
 
@@ -46,6 +42,7 @@ const ProductDetails = () => {
   useEffect(() => {
     if (id && !isNaN(id)) {
       fetchProductById(id)
+      setPrevPage('productDetails')
     }
   }, [id])
 

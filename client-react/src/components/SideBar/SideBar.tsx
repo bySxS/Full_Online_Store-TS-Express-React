@@ -75,7 +75,7 @@ const SideBar = () => {
             </NavLink>
           </li>
         }
-        {allCategory.length === 0
+        {allCategory && allCategory.length === 0
           ? <li>
           <NavLink
             to={RoutePath.PRODUCTS}
@@ -114,7 +114,7 @@ const SideBar = () => {
                     <span className={st.name_page}>Все товары</span>
                   </NavLink>
                 </li>
-              {allCategory.map(category =>
+              {allCategory?.map(category =>
                 <CategorySection categorySection={category} key={category.sectionId}/>
               )}
               </div>
