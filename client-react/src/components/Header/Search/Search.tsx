@@ -32,17 +32,22 @@ const Search = () => {
   useInfoLoading({ data: searchCategory, isLoading: isLoadingCat, isError: isErrorCat, isSuccess: isSuccessCat, error: errorCat })
 
   useEffect(() => {
-    if (isSuccess) {
-      setProducts(
-        addDomainToImgProducts(
-          searchProducts.result?.results as IProduct[]
+    if (debounced.length < 3) {
+      setProducts([])
+      setCategory([])
+    } else {
+      if (isSuccess) {
+        setProducts(
+          addDomainToImgProducts(
+            searchProducts.result?.results as IProduct[]
+          )
         )
-      )
+      }
+      if (isSuccessCat) {
+        setCategory(searchCategory.result?.results as ICategorySearch[])
+      }
     }
-    if (isSuccessCat) {
-      setCategory(searchCategory.result?.results as ICategorySearch[])
-    }
-  }, [searchProducts, searchCategory])
+  }, [searchProducts, searchCategory, debounced])
 
   const inputSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation()
@@ -95,7 +100,8 @@ const Search = () => {
         {/* </Button> */}
       </Form>
     </InputGroup>
-      <div className={`${style.result_search}`}>
+      {((products && products?.length > 0) || (category && category?.length > 0)) &&
+        <div className={`${style.result_search}`}>
       <ul className={style.ul_item}>
         {products && products.map(product => (
           <li key={product.id}
@@ -121,6 +127,7 @@ const Search = () => {
         ))}
       </ul>
       </div>
+      }
     </div>
   )
 }
