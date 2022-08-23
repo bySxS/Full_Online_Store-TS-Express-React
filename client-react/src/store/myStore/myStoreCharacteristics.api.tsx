@@ -65,7 +65,7 @@ const myStoreCharacteristicsApi = createApi({
         })
       }),
 
-    getCharacteristicProductById: build.query<IMessage<ICharacteristicSection>,
+    getCharacteristicProductById: build.query<IMessage<ICharacteristicSection[]>,
       number>({
         query: (productId: number) => ({
           url: 'characteristics/product/' + productId
@@ -79,7 +79,7 @@ const myStoreCharacteristicsApi = createApi({
         })
       }),
 
-    getAllCharacteristics: build.query<IMessage<ICharacteristicSection>,
+    getAllCharacteristics: build.query<IMessage<ICharacteristicSection[]>,
       { sectionId?: number }>({
         query: (args) => ({
           url: 'characteristics',

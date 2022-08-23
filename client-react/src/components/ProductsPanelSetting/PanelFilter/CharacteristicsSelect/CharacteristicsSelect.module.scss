@@ -1,0 +1,25 @@
+.block {
+  @apply my-2 flex flex-col w-[90%]
+  m-auto overflow-y-auto;
+  flex: 1 0 auto;
+}
+
+.linkOpenContainer {
+  @apply px-2 py-2 flex;
+}
+
+.nameChar {
+  @apply pl-4 pb-1 flex font-bold;
+}
+
+.valueChar {
+  padding-left: 50px!important;
+}
+
+.containerSection {
+  @apply flex flex-col flex-auto;
+}
+
+.containerCategory {
+  @apply flex flex-col flex-auto pb-2;
+}
