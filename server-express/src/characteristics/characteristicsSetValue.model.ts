@@ -44,7 +44,7 @@ export default class CharacteristicsSetValueModel extends Model {
         }
       },
       characteristicsName: {
-        relation: Model.HasOneRelation,
+        relation: Model.HasManyRelation,
         modelClass: CharacteristicsName,
         join: {
           from: this.tableName + '.characteristicsNameId',
@@ -52,7 +52,7 @@ export default class CharacteristicsSetValueModel extends Model {
         }
       },
       characteristicsValues: {
-        relation: Model.HasOneRelation,
+        relation: Model.HasManyRelation,
         modelClass: CharacteristicsValues,
         join: {
           from: this.tableName + '.characteristicsValueId',
