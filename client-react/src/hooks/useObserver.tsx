@@ -1,13 +1,13 @@
 import { RefObject, useEffect, useRef, useState } from 'react'
 // import { useLocation } from 'react-router-dom'
 
-export const useObserver = (
+export function useObserver<T> (
   lastItem: RefObject<HTMLHeadingElement>,
   page: number,
   totalPages: number,
   isLoading: boolean,
-  lastPage: string,
-  getNewItem: () => any) => {
+  refreshObserver: T,
+  getNewItem: () => any) {
   const [load, setLoad] = useState<boolean>(false)
   const observer = useRef<IntersectionObserver>()
   const canLoad: boolean = (page <= totalPages)
@@ -33,5 +33,5 @@ export const useObserver = (
     if (lastItem.current) {
       observer.current.observe(lastItem.current)
     }
-  }, [totalPages, lastPage, load])
+  }, [totalPages, refreshObserver, load])
 }

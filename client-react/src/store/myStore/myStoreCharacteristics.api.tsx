@@ -4,7 +4,7 @@ import baseQueryWithRefreshToken from 'store/myStore/customFetch'
 import {
   ICharacteristicName,
   ICharacteristicSection,
-  ICharacteristicValue, ICharacteristicValueDelete, ICharacteristicValueUpdate
+  ICharacteristicValue, ICharacteristicValueDelete, ICharacteristicValueUpdate, ICharNameList
 } from 'store/myStore/myStoreCharacteristics.interface'
 
 const myStoreCharacteristicsApi = createApi({
@@ -70,6 +70,23 @@ const myStoreCharacteristicsApi = createApi({
         query: (productId: number) => ({
           url: 'characteristics/product/' + productId
         })
+      }),
+
+    getAllCharacteristicsNameByCategoryId: build.query<IMessage<ICharNameList>,
+      number>({
+        query: (categoryId: number) => ({
+          url: 'characteristics/category/' + categoryId
+        })
+      }),
+
+    getAllCharacteristics: build.query<IMessage<ICharacteristicSection>,
+      { sectionId?: number }>({
+        query: (args) => ({
+          url: 'characteristics',
+          params: {
+            section_id: args.sectionId
+          }
+        })
       })
 
   })
@@ -84,6 +101,8 @@ export const {
   useDeleteCharacteristicValueMutation,
   useUpdateCharacteristicNameMutation,
   useUpdateCharacteristicValueMutation,
+  useGetAllCharacteristicsQuery,
+  useLazyGetAllCharacteristicsNameByCategoryIdQuery,
   useLazyGetCharacteristicProductByIdQuery,
   endpoints: myStoreCharacteristicEndpoint
 } = myStoreCharacteristicsApi

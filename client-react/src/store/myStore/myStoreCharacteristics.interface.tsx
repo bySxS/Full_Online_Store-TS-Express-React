@@ -42,3 +42,11 @@ export interface ICharacteristicSection {
   sectionId: number
   characteristics: ICharName[]
 }
+
+export interface ICharNameList {
+  parentId: number
+  propertyNameId: number
+  propertyName: string
+  sectionName: string
+  sectionId: number
+}

@@ -1,3 +1,7 @@
+.block {
+  @apply pb-2;
+}
+
 .linkOpenContainer {
   @apply px-2 w-[90%] m-auto flex;
 }
@@ -14,5 +18,5 @@
 
 .item {
   @apply py-1 px-8 items-center transition-colors;
-  border: 0px #766ed32e;
+  border: 0 #766ed32e;
 }

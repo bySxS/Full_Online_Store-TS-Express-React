@@ -33,6 +33,7 @@ const myStoreFavProductApi = createApi({
         query: (args) => ({
           url: 'favorites_products',
           params: {
+            category_id: args.categoryId,
             filter: args.filter,
             price: args.price,
             sort: args.sort,

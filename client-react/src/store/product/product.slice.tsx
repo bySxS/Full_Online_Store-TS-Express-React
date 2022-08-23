@@ -144,22 +144,19 @@ export const ProductSlice = createSlice({
       state.pageFavProduct = 1 // ставим начальные страницы для paginator
       state.totalFavProduct = 1
     },
-    setPrevPage (state, action: PayloadAction<string>) {
-      state.prevPage = action.payload
-    },
     incPageProduct,
     incPageFavProduct,
     changeFilterState (state, action: PayloadAction<IFilterState>) {
+      state.filterState = {
+        ...state.filterState,
+        ...action.payload
+      }
       state.products = [] // очищаем при изменении фильтра
       state.favoriteProducts = [] // очищаем при изменении фильтра
       state.pageProduct = 1 // ставим начальные страницы для paginator
       state.totalProduct = 1
       state.pageFavProduct = 1
       state.totalFavProduct = 1
-      state.filterState = {
-        ...state.filterState,
-        ...action.payload
-      }
     },
     changeViewProducts (state) {
       state.ViewProducts = state.ViewProducts === 'Col' ? 'Row' : 'Col'

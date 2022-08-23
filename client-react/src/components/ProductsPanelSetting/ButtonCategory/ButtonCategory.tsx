@@ -21,7 +21,7 @@ const ButtonCategory = () => {
   return (
     <>
       <MyDropDownToggle onClick={clickOpenCharModal}>
-        Category{categoryName && `: ${categoryName}`}
+        Категория{categoryName && `: ${categoryName}`}
       </MyDropDownToggle>
     </>
   )

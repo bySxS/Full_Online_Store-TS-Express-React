@@ -1,3 +1,7 @@
 .panel {
   @apply flex flex-col;
 }
+
+.hr {
+  @apply w-[90%] m-auto;
+}

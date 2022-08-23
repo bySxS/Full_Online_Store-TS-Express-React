@@ -16,6 +16,7 @@ const Search = () => {
   const [products, setProducts] = useState<IProduct[]>()
   const [category, setCategory] = useState<ICategorySearch[]>()
   const [search, setSearch] = useState('')
+  const [searchInput, setSearchInput] = useState('')
   const debounced = useDebounce(search)
   const refInput = useRef<HTMLInputElement>(null)
   const {
@@ -73,14 +74,16 @@ const Search = () => {
 
   const inputSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation()
-    setSearch(e.target.value)
+    setSearch(e.target.value.trim())
+    setSearchInput(e.target.value)
   }
 
   const searchSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (refInput) {
       const text = refInput.current?.value
-      setSearch(text + ' ' || '')
+      setSearch(text?.trim() || '')
+      setSearchInput(text || '')
     }
   }
   const clickLiProductHandler = (id: number) => {
@@ -111,7 +114,7 @@ const Search = () => {
           type="search"
           placeholder="Search"
           className="me-2"
-          value={search}
+          value={searchInput}
           onChange={inputSearch}
           aria-label="Search"
           ref={refInput}

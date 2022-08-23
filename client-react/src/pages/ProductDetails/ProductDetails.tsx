@@ -16,7 +16,7 @@ const ProductDetails = () => {
   const id = +(idParam || '')
   const navigate = useNavigate()
   const {
-    addToBasket, delFromBasket, setPrevPage
+    addToBasket, delFromBasket
   } = useAppActions()
   useEffect(() => {
     if (!id || isNaN(+id)) {
@@ -42,7 +42,6 @@ const ProductDetails = () => {
   useEffect(() => {
     if (id && !isNaN(id)) {
       fetchProductById(id)
-      setPrevPage('productDetails')
     }
   }, [id])
 
