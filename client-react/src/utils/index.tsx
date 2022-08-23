@@ -57,14 +57,16 @@ export const CategoryTreeToList = (categoryTree: ICategorySection[]): ICategory[
         listSubCat = listSubCat.concat(cat.subcategory?.map(subCat => ({
           id: subCat.categoryId,
           name: subCat.categoryName,
-          nameEng: subCat.categoryNameEng
+          nameEng: subCat.categoryNameEng,
+          parentId: cat.categoryId
         })))
       }
       // cat
       return {
         id: cat.categoryId,
         name: cat.categoryName,
-        nameEng: cat.categoryNameEng
+        nameEng: cat.categoryNameEng,
+        parentId: section.sectionId
       }
     }))
     // sect

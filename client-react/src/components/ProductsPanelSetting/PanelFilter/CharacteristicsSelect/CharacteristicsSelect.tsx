@@ -5,6 +5,7 @@ import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
 import selectProduct from 'store/product/product.selector'
 import { useDebounce } from 'hooks/useDebounce'
+import selectCategory from '../../../../store/category/category.selector'
 import style from './CharacteristicsSelect.module.scss'
 
 interface IShowCharacteristic {
@@ -13,13 +14,24 @@ interface IShowCharacteristic {
 }
 
 const CharacteristicsSelect = () => {
+  const filterState = useAppSelector(selectProduct.filterState)
+  const categoryList = useAppSelector(selectCategory.categoryList)
   const {
     isLoading, isSuccess, isError, data, error
-  } = useGetAllCharacteristicsQuery({})
+  } = useGetAllCharacteristicsQuery({
+    sectionId: (categoryList
+      .filter(cat => cat.id === filterState.categoryId)
+      .map(cat => {
+        if (cat.parentId) {
+          return cat.parentId
+        } else {
+          return cat.id
+        }
+      })[0] || undefined)
+  })
   useInfoLoading({ isLoading, isSuccess, isError, data, error })
   const [showSection, setShowSection] =
     useState<IShowCharacteristic[]>([{}])
-  const filterState = useAppSelector(selectProduct.filterState)
   const [checkedValue, setCheckedValue] = useState<string[]>(filterState.filter?.split(',') || [])
   const checkedDelay = useDebounce(checkedValue, 1000)
   const { changeFilterState } = useAppActions()
@@ -73,8 +85,8 @@ const CharacteristicsSelect = () => {
       className={style.block}
     >
       {isSuccess && data.result?.map((sect) =>
-        <>
-        <div key={sect.sectionId}>
+        <span key={sect.sectionId}>
+        <div>
         <a
           href=""
           className={style.linkOpenContainer}
@@ -112,7 +124,7 @@ const CharacteristicsSelect = () => {
         }
       </div>
       <hr />
-      </>
+      </span>
       )}
   </div>
   )
