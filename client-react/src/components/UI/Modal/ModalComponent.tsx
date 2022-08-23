@@ -11,13 +11,17 @@ interface IModalProps {
   onSend?: () => void
   onSendName?: string
   className?: string
+  size?: 'sm' | 'lg' | 'xl'
+  fullscreen?: true | 'sm-down' | 'md-down' | 'lg-down' | 'xl-down' | 'xxl-down'
 }
 
 export function ModalComponent (
   {
     children, title, show, className,
     onClose, onSend, onSendName,
-    center = false
+    center = false,
+    size = 'lg',
+    fullscreen
   }: IModalProps) {
   return (
     <>
@@ -26,8 +30,9 @@ export function ModalComponent (
         onHide={onClose}
         keyboard={true}
         restoreFocus={true}
+        fullscreen={fullscreen}
         centered={center}
-        size={'lg'}
+        size={size}
         dialogClassName={className || 'w-[500px]'}
       >
         {title &&

@@ -5,7 +5,7 @@ import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
 import selectProduct from 'store/product/product.selector'
 import { useDebounce } from 'hooks/useDebounce'
-import selectCategory from '../../../../store/category/category.selector'
+import selectCategory from 'store/category/category.selector'
 import style from './CharacteristicsSelect.module.scss'
 
 interface IShowCharacteristic {

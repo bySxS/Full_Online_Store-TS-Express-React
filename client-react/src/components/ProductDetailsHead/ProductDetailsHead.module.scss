@@ -1,0 +1,42 @@
+.block {
+  @apply flex flex-row w-full;
+}
+
+.blockScreen {
+  @apply flex justify-start pt-4;
+  flex: 1 0 35%;
+}
+
+.blockInfo {
+  flex: 1 0 60%;
+}
+
+.blockStat {
+  @apply flex justify-evenly py-2;
+}
+
+.sectionViews {
+  @apply m-0;
+}
+
+.blockTitle {
+  @apply pt-4 flex w-[72%] m-auto
+  text-xl font-bold;
+}
+
+.blockGeneralCharacteristics {
+  @apply pt-4 flex flex-col m-auto w-[72%];
+}
+
+.characteristics {
+  @apply py-2;
+  font-size: 10pt;
+}
+
+.nameCharacteristics {
+  @apply font-bold;
+}
+
+.blockPrice {
+  @apply pt-4 flex m-auto w-[72%];
+}

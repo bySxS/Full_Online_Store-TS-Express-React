@@ -99,8 +99,8 @@ export interface IProductService {
       productsIds: number[]
   ) => QueryBuilder<CharacteristicsSetValueModel, CharacteristicsSetValueModel[]>
   sortAndAddCharacteristicsToProducts: (
-      products: Page<ProductsModel>
-  ) => Promise<Page<ProductsModel>>
+    products: ProductsModel | Page<ProductsModel>
+  ) => Promise<ProductsModel | Page<ProductsModel>>
   getDynamicPriceByProductId: (productId: number) => Promise<IMessage>
 }
 

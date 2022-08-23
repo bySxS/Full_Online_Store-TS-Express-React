@@ -1,0 +1,32 @@
+.block {
+  @apply flex flex-col;
+}
+
+.sectionTop {
+  @apply flex justify-center h-[75%];
+  flex: 1 0 75%;
+}
+
+.sectionBottom {
+  @apply flex flex-row justify-center items-center pt-3;
+}
+
+.generalScreen {
+  @apply h-full;
+}
+
+.screenSmallDiv {
+  @apply h-full flex justify-center w-[80px];
+}
+
+.screenSmall {
+  @apply h-[100px] mx-1 px-2 border border-white;
+}
+
+.arrowDiv {
+  @apply flex items-center h-full hover:text-red-600;
+}
+
+.arrowImg {
+  @apply text-2xl;
+}

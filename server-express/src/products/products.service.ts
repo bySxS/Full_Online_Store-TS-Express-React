@@ -456,26 +456,38 @@ class ProductsService implements IProductService {
   }
 
   async sortAndAddCharacteristicsToProducts (
-    products: Page<ProductsModel>
-  ): Promise<Page<ProductsModel>> {
+    products: ProductsModel | Page<ProductsModel>
+  ): Promise<ProductsModel | Page<ProductsModel>> {
     const newProducts = products
-    const characteristics =
-        await this.getGeneralCharacteristicsForProducts(
-          products.results.map(product => product.id)
-        )
+    let characteristics: CharacteristicsSetValueModel[]
+    if ('results' in products) {
+      characteristics = await this.getGeneralCharacteristicsForProducts(
+        products.results.map(product => product.id)
+      )
+    } else {
+      characteristics = await this.getGeneralCharacteristicsForProducts([products.id])
+    }
     const productsIdsAdded: number[] = []
     characteristics.forEach(char => {
       if (!productsIdsAdded.includes(char.productId)) {
         productsIdsAdded.push(char.productId)
         const characteristicForProduct =
             characteristics.filter(character => character.productId === char.productId)
-        newProducts.results.forEach(product => {
-          if (product.id === char.productId) {
-            product.characteristics =
+        if ('results' in newProducts) {
+          newProducts.results.forEach(product => {
+            if (product.id === char.productId) {
+              product.characteristics =
                 CharacteristicsService
                   .sortCharacteristicsTree(characteristicForProduct)
+            }
+          })
+        } else {
+          if (newProducts.id === char.productId) {
+            newProducts.characteristics =
+                  CharacteristicsService
+                    .sortCharacteristicsTree(characteristicForProduct)
           }
-        })
+        }
       }
     })
     return newProducts
@@ -511,12 +523,14 @@ class ProductsService implements IProductService {
     if ('parentId' in product && product.parentId !== null && !isNaN(product.parentId)) {
       parentProduct = await query(product.parentId)
     }
-    const result = {
-      ...product,
-      parentProduct
-    }
+    const resultWithChar =
+      await this.sortAndAddCharacteristicsToProducts(product)
     // await cacheRedisDB.set('product:' + id, JSON.stringify(result))
     // await cacheRedisDB.expire('product:' + id, 3600) // удалять через час
+    const result = {
+      ...resultWithChar,
+      parentProduct
+    }
     return {
       success: true,
       result,
@@ -585,10 +599,8 @@ class ProductsService implements IProductService {
             'не найдено'
       }
     }
-    if ('results' in result) {
-      result =
+    result =
         await this.sortAndAddCharacteristicsToProducts(result)
-    }
     return {
       success: true,
       result: { ...result, page, limit },
