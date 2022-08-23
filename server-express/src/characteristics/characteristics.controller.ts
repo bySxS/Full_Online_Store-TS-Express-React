@@ -69,9 +69,12 @@ class CharacteristicsController implements ICharacteristicController {
     req: Request, res: Response, next: NextFunction
   ) {
     try {
+      const sectionId = +(req.query.section_id || 0)
       const result =
         await CharacteristicsService
-          .getAllCharacteristics(req.body)
+          .getAllCharacteristics({
+            sectionId
+          })
       return res.status(200).json(result)
     } catch (err) {
       next(err)
@@ -85,7 +88,9 @@ class CharacteristicsController implements ICharacteristicController {
       const id = +req.params.id
       const result =
         await CharacteristicsService
-          .getAllCharacteristicsNameByCategoryId(id)
+          .getAllCharacteristicsNameByCategoryId({
+            categoryId: id
+          })
       return res.status(200).json(result)
     } catch (err) {
       next(err)

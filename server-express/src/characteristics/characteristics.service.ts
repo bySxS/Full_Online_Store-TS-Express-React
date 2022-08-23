@@ -1,3 +1,4 @@
+import CategoryService from '@/category/category.service'
 import { IMessage } from '@/interface'
 import CharacteristicsSetValueModel from './characteristicsSetValue.model'
 import CharacteristicsNameModel from './characteristicsName.model'
@@ -154,10 +155,13 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
-  async getAllCharacteristicsNameByCategoryId (categoryId: number) {
+  async getAllCharacteristicsNameByCategoryId ({ categoryId, sort = false }: { categoryId: number, sort?: boolean }) {
+    const allCategory = await CategoryService
+      .getAllCategoryBySectionWithCache(categoryId)
+    allCategory.push(categoryId)
     const characteristics = await CharacteristicsNameModel.query()
-      .where('characteristicsName.categoryId', '=', categoryId)
-      .leftJoinRelated('parent')
+      .whereIn('characteristicsName.categoryId', allCategory)
+      .leftOuterJoinRelated('parent')
       .select('characteristicsName.parentId',
         'characteristicsName.id as propertyNameId',
         'characteristicsName.name as propertyName',
@@ -172,20 +176,25 @@ class CharacteristicsService implements ICharacteristicService {
           `для категории с id${categoryId} нет`
       }
     }
-    const section = this.sortCharacteristicsTree(characteristics)
+    let result
+    if (sort) {
+      result = this.sortCharacteristicsTree(characteristics)
+    } else {
+      result = characteristics
+    }
     return {
       success: true,
-      result: section,
+      result,
       message: 'Характеристики ' +
         `для категории с id${categoryId} загружены`
     }
   }
 
-  async getAllCharacteristics ({ categoryId = 0 }: { categoryId: number }): Promise<IMessage> {
+  async getAllCharacteristics ({ sectionId = 0 }: { sectionId?: number }): Promise<IMessage> {
     let characteristics
-    if (categoryId > 0) {
+    if (sectionId > 0) {
       characteristics = await this.getCharacteristicValue()
-        .where('characteristicsName.categoryId', '=', categoryId)
+        .where('characteristicsName.categoryId', '=', sectionId)
     } else {
       characteristics = await this.getCharacteristicValue()
     }
@@ -194,8 +203,8 @@ class CharacteristicsService implements ICharacteristicService {
       return {
         success: true,
         message: 'Характеристик ' +
-          (categoryId > 0
-            ? `для категории с id${categoryId} `
+          (sectionId > 0
+            ? `для категории с id${sectionId} `
             : '') +
           'нет'
       }
@@ -205,8 +214,8 @@ class CharacteristicsService implements ICharacteristicService {
       success: true,
       result: section,
       message: 'Характеристики ' +
-        (categoryId > 0
-          ? `для категории с id${categoryId} `
+        (sectionId > 0
+          ? `для категории с id${sectionId} `
           : '') +
         'загружены'
     }

@@ -57,8 +57,8 @@ export interface ICharacteristicService {
   updCharacteristicValueProduct: (Dto: ICharacteristicValueUpdate) => Promise<IMessage>
   delCharacteristicValueProduct: (Dto: ICharacteristicValueDelete) => Promise<IMessage>
   getCharacteristicValueProductById: (id: number) => Promise<IMessage>
-  getAllCharacteristics: ({ categoryId }: { categoryId: number }) => Promise<IMessage>
-  getAllCharacteristicsNameByCategoryId: (categoryId: number) => Promise<IMessage>
+  getAllCharacteristics: ({ sectionId }: { sectionId?: number }) => Promise<IMessage>
+  getAllCharacteristicsNameByCategoryId: ({ categoryId, sort }: { categoryId: number, sort: boolean }) => Promise<IMessage>
 
   getCharacteristicValue: () =>
     QueryBuilder<CharacteristicsSetValueModel, CharacteristicsSetValueModel[]>

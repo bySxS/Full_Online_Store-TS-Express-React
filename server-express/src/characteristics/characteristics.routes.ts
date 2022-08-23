@@ -14,7 +14,7 @@ const router = Router()
 
 try {
   // success
-  router.post('/',
+  router.get('/',
     CharacteristicsController.getAllCharacteristics)
   // success
   router.post('/name',
