@@ -393,7 +393,8 @@ class ProductsService implements IProductService {
           'priceFirst.price as priceFirst',
           'priceFirst.currency as priceFirstCurrency',
           'category.name as categoryName',
-          'section.name as sectionName')
+          'section:parent.id as sectionId',
+          'section:parent.name as sectionName')
         .groupBy('products.id',
           'price.id',
           'priceFirst.id'

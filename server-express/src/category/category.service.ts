@@ -154,24 +154,34 @@ class CategoryService implements ICategoryService {
     section.forEach((sect) => {
       section
         .filter((sect2) => sect2.sectionId !== sect.sectionId)
-        .map((sect2) => sect2.category)
-        .forEach((category) => {
+        .forEach((sect2) => {
+          const { category } = sect2
           category.forEach((cat) => {
             if (sect.sectionId === cat.categoryId) {
               cat.subcategory = sect.category
               sect.sectionName = 'delete'
+              cat.categoryCountProducts = sect.sectionCountProducts
             }
           })
         })
+      section
+        .forEach((sect3) => {
+          let sectionCountProducts = 0
+          sect3.category.forEach((cat) => {
+            sectionCountProducts += cat.categoryCountProducts
+          })
+          sect3.sectionCountProducts = sectionCountProducts
+        })
     })
-    return section.filter((sect) => sect.sectionName !== 'delete')
+    return section
+      .filter((sect) => sect.sectionName !== 'delete')
   }
 
   async getAll ({ sectionId }: { sectionId?: number }): Promise<IMessage> {
     if (!sectionId) {
       const cache = await cacheRedisDB.get('categoryAll')
       if (cache) {
-        await cacheRedisDB.expire('categoryAll', 360000)
+        // await cacheRedisDB.expire('categoryAll', 360000)
         return {
           success: true,
           result: JSON.parse(cache),
@@ -225,19 +235,35 @@ class CategoryService implements ICategoryService {
         (sectionId && sectionId === 0)) return []
     const cache = await cacheRedisDB.get('section:' + sectionId)
     if (cache) {
-      // await cacheRedisDB.expire('section:' + sectionId, 360000)
       return JSON.parse(cache)
     }
-    const section =
-        await this.getAll({
-          sectionId
-        })
-    let categoryList
+    const section = await this.getAll({})
+    const categoryList: number[] = []
     if (section.result.length > 0) {
-      categoryList = section.result[0].category
-        .map((cat: { categoryId: number }) => cat.categoryId)
+      const categoryAll = section.result as ISectionOut[]
+      for (const sect of categoryAll) {
+        let findInSection = false
+        if (sect.sectionId === sectionId) {
+          categoryList.push(sect.sectionId)
+          findInSection = true
+        }
+        for (const cat of sect.category) {
+          let findInCategory = false
+          if (cat.categoryId === sectionId || findInSection) {
+            categoryList.push(cat.categoryId)
+            findInCategory = true
+          }
+          if (cat.subcategory) {
+            for (const sub of cat.subcategory) {
+              if (sub.categoryId === sectionId || findInCategory) {
+                categoryList.push(sub.categoryId)
+              }
+            }
+          }
+        }
+      }
     } else {
-      categoryList = [sectionId]
+      categoryList.push(sectionId)
     }
     await cacheRedisDB.set('section:' + sectionId, JSON.stringify(categoryList))
     await cacheRedisDB.expire('section:' + sectionId, 18000)

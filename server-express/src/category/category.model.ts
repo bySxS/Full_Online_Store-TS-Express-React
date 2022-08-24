@@ -15,14 +15,6 @@ export default class CategoryModel extends Model {
 
   products?: Products[]
 
-  categoryName!: string
-  categoryNameEng!: string
-  categoryIconClass!: string
-  sectionName!: string
-  sectionNameEng!: string
-  sectionIconClass!: string
-  categoryCountProducts!: number
-
   static get tableName () {
     return 'category'
   }
@@ -52,7 +44,7 @@ export default class CategoryModel extends Model {
         }
       },
       parent: {
-        relation: Model.HasOneRelation,
+        relation: Model.BelongsToOneRelation,
         modelClass: this,
         join: {
           from: this.tableName + '.parentId',
