@@ -15,7 +15,6 @@ export const userQueueDB = new Queue('user-db-queue', REDIS_URL)// db0 redis
 userQueueDB.process('deleteUser', async (job, done) => {
   // job.progress(0)
   try {
-    console.log('тут1', job.data)
     await UsersModel.query().deleteById(job.data.id)
     done(null, { message: `Пользователь с ID ${job.data.id} успешно удалён` })
     logger.info(`Пользователь ${job.data.id} успешно удалён`)
