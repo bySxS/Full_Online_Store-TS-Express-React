@@ -1,15 +1,3 @@
 .commonContainer {
   @apply flex flex-col w-[90%] m-auto;
 }
-
-.firstContainer {
-  @apply flex w-full m-auto h-[495px]
-  p-2 border shadow-md my-3 bg-white;
-  border-radius: 10px;
-}
-
-.secondContainer {
-  @apply flex w-full m-auto p-2
-  border shadow-md my-3 bg-white;
-  border-radius: 10px;
-}

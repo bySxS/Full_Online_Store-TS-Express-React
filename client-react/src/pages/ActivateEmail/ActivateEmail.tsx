@@ -25,7 +25,6 @@ const ActivateEmail: FC<ActivateEmailProps> = ({ name }) => {
   useInfoLoading({ isLoading, isSuccess, isError, data, error })
 
   useEffect(() => {
-    console.log(userIsActivated, link)
     if (userIsActivated) {
       addToAlertStack({
         message: 'У вас уже активирована учетная запись',
@@ -48,7 +47,6 @@ const ActivateEmail: FC<ActivateEmailProps> = ({ name }) => {
   }, [])
 
   useEffect(() => {
-    console.log(isSuccess)
     if (isSuccess) {
       setTimeout(() => {
         navigate('/')

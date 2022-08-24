@@ -23,10 +23,10 @@
 }
 
 @media only screen and (max-width: 775px) {
-  .search_form {
+  .searchForm {
     @apply w-[200px];
   }
-  .result_search {
+  .resultSearch {
     @apply min-w-[260px];
   }
 }

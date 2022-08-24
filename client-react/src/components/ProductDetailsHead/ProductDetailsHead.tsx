@@ -9,6 +9,7 @@ interface IProductDetailsHead {
 
 const ProductDetailsHead: FC<IProductDetailsHead> = ({ product }) => {
   return (
+    <div className={style.firstContainer}>
     <div className={style.block}>
       <div className={style.blockScreen}>
         <ProductImagesCarousel product={product} />
@@ -46,6 +47,7 @@ const ProductDetailsHead: FC<IProductDetailsHead> = ({ product }) => {
             ))}
         </div>
       </div>
+    </div>
     </div>
   )
 }

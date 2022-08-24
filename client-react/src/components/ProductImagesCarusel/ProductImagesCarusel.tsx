@@ -68,10 +68,13 @@ const ProductImagesCarousel: FC<IProductImagesCarousel> = ({
   return (
     <>
     <div className={style.block}>
-      <div className={style.sectionTop}>
+      <div
+        onClick={() => setOpenFullModal(!openFullModal)}
+        className={`${style.sectionTop} ${(!onModal
+          ? 'hover:opacity-80'
+          : '')}`}>
         {currImage &&
           <img
-            onClick={() => setOpenFullModal(!openFullModal)}
             alt={product.title}
             src={currImage}
             className={style.generalScreen}
@@ -89,11 +92,10 @@ const ProductImagesCarousel: FC<IProductImagesCarousel> = ({
           .filter((img, i) => i < (!showAllImg ? 4 : 11))
           .map((img, i) =>
           <div
-            className={style.screenSmallDiv}
+            className={`${style.screenSmallDiv} hover:opacity-80`}
             style={checkCurrImage(img)
               ? { border: '1px solid #9999ff' }
               : {}}
-            itemProp={img}
             key={i}
             onClick={(event) => clickChangeImage(event, i)}
           >

@@ -1,4 +1,40 @@
 .footer {
-  @apply flex flex-row content-center justify-center
-  items-center w-full h-[100px] z-20 bg-gray-50;
+  @apply flex flex-row content-center justify-evenly
+  items-start pt-3 w-[80%] ml-auto h-[100px] z-10;
+}
+
+.footerBg {
+  @apply bg-gray-50 w-full h-[100px] m-auto;
+}
+
+.blockInfo {
+  @apply flex flex-col;
+  flex: 0 0 16%;
+}
+
+@media only screen and (max-width: 1090px) {
+  .footer {
+    @apply flex-col w-[78%] h-[200px] flex-wrap;
+  }
+  .footerBg {
+    @apply h-[200px];
+  }
+  .blockInfo {
+    @apply px-7 pb-4 h-[90px];
+  }
+}
+
+@media only screen and (max-width: 775px) {
+  .footer {
+    @apply w-[100%];
+  }
+}
+
+@media only screen and (max-width: 660px) {
+  .footer {
+    @apply h-[400px];
+  }
+  .footerBg {
+    @apply h-[400px];
+  }
 }

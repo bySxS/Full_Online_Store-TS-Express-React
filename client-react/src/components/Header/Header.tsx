@@ -22,7 +22,7 @@ const Header = () => {
           </NavLink>
           </div>
         <div>
-            <i className="bi bi-shop text-4xl"></i>
+            <i className="bi bi-shop text-4xl"/>
         </div>
         </div>
 

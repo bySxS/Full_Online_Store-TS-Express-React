@@ -30,3 +30,9 @@
 .arrowImg {
   @apply text-2xl;
 }
+
+@media only screen and (max-width: 1050px) {
+  .sectionTop {
+    @apply h-[75%] flex-none;
+  }
+}

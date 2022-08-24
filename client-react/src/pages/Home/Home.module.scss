@@ -1,0 +1,34 @@
+.block {
+  @apply flex flex-col py-10;
+}
+
+.containerFirst {
+  @apply flex w-[90%] m-auto;
+}
+
+.containerSecond {
+  @apply flex flex-row w-[90%]
+  m-auto pt-10;
+}
+
+.leftBlock {
+  @apply hover:opacity-80 pr-4;
+  flex: 1 0 40%
+}
+
+.rightBlock {
+  @apply hover:opacity-80;
+  flex: 1 0 55%
+}
+
+.imgFirst {
+  width: 100%;
+}
+
+.imgSecond {
+  width: 100%;
+}
+
+.imgThird {
+  width: 100%;
+}

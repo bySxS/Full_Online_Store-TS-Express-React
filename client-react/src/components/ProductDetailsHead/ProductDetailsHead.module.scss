@@ -1,18 +1,24 @@
+.firstContainer {
+  @apply flex w-full m-auto h-[495px]
+  p-2 border shadow-md my-3 bg-white;
+  border-radius: 10px;
+}
+
 .block {
   @apply flex flex-row w-full;
 }
 
 .blockScreen {
   @apply flex justify-start pt-4;
-  flex: 1 0 35%;
+  flex: 1 0 28%;
 }
 
 .blockInfo {
-  flex: 1 0 60%;
+  flex: 1 0 50%;
 }
 
 .blockStat {
-  @apply flex justify-evenly py-2;
+  @apply flex justify-evenly py-2 w-[100%] m-auto;
 }
 
 .sectionViews {
@@ -20,12 +26,12 @@
 }
 
 .blockTitle {
-  @apply pt-4 flex w-[72%] m-auto
+  @apply pt-4 flex w-[90%] m-auto
   text-xl font-bold;
 }
 
 .blockGeneralCharacteristics {
-  @apply pt-4 flex flex-col m-auto w-[72%];
+  @apply pt-4 flex flex-col m-auto w-[90%];
 }
 
 .characteristics {
@@ -38,5 +44,17 @@
 }
 
 .blockPrice {
-  @apply pt-4 flex m-auto w-[72%];
+  @apply pt-4 flex m-auto w-[90%];
+}
+
+@media only screen and (max-width: 1050px) {
+  .firstContainer {
+    @apply h-[1000px]
+  }
+  .block {
+   @apply flex-col;
+  }
+  .blockScreen {
+    @apply justify-center flex-none h-[50%];
+  }
 }

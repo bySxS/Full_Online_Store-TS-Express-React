@@ -62,12 +62,8 @@ const ProductDetails = () => {
           <meta name="description" content={product.title}/>
         </Helmet>
         <div className={style.commonContainer}>
-            <div className={style.firstContainer}>
-              <ProductDetailsHead product={product} />
-            </div>
-            <div className={style.secondContainer}>
-              <ProductDetailsDown product={product} />
-            </div>
+          <ProductDetailsHead product={product} />
+          <ProductDetailsDown product={product} />
         </div>
         </>
       }

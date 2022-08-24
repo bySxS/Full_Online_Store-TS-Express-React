@@ -47,7 +47,9 @@ const CharacteristicsSelect = () => {
 
   useEffect(() => {
     changeFilterState({
-      filter: checkedDelay.join(',')
+      filter: checkedDelay
+        .filter(value => value !== '')
+        .join(',')
     })
   }, [checkedDelay])
 
@@ -110,7 +112,7 @@ const CharacteristicsSelect = () => {
               <Form.Check
                 key={charValue.characteristicValueId}
                 className={style.valueChar}
-                label={charValue.characteristicValue}
+                label={`${charValue.characteristicValue} (${charValue.characteristicCountProducts})`}
                 onChange={changeCheckbox}
                 defaultChecked={checkedValue.includes(charValue.characteristicValue)}
                 name={charValue.characteristicValue}
