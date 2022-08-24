@@ -22,7 +22,6 @@ interface IProductState {
   totalProduct: number
   pageFavProduct: number
   totalFavProduct: number
-  prevPage: string
 }
 
 const initialState: IProductState = {
@@ -36,8 +35,7 @@ const initialState: IProductState = {
   pageProduct: 1,
   totalProduct: 1,
   pageFavProduct: 1,
-  totalFavProduct: 1,
-  prevPage: ''
+  totalFavProduct: 1
 }
 
 const addProducts =
