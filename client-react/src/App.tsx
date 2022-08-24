@@ -11,6 +11,7 @@ import { ALERT_CONNECTION } from 'constants/constant'
 import Body from 'components/Body/Body'
 import { ModalState } from 'context/ModalContext'
 import Footer from 'components/Footer/Footer'
+import { CategoryState } from './context/CategoryProductContext'
 
 function App () {
   return (
@@ -21,13 +22,15 @@ function App () {
     <BrowserRouter>
       <div className="App">
         <ModalState>  {/* контекст модального окна */}
+        <CategoryState> {/* контекст категории текущего продукта */}
           <Header />
           <SideBar />
           <Body />
           <Footer />
           {ALERT_CONNECTION && <Alarm/>}
           <Loader/>
-          </ModalState>
+        </CategoryState>
+        </ModalState>
       </div>
     </BrowserRouter>
     </Provider>

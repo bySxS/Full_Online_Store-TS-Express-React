@@ -9,6 +9,7 @@ import ProductDetailsDown from 'components/ProductDetailsDown/ProductDetailsDown
 import ProductDetailsHead from 'components/ProductDetailsHead/ProductDetailsHead'
 import { IProduct } from 'store/myStore/myStoreProduct.interface'
 import { addDomainToImgProducts } from 'utils'
+import { useCategory } from 'context/CategoryProductContext'
 // import selectBasket from 'store/basket/basket.selector'
 import style from './ProductDetails.module.scss'
 
@@ -17,7 +18,8 @@ export interface IDParams {
 }
 
 const ProductDetails = () => {
-  const [product, SetProduct] = useState<IProduct>()
+  const [product, setProduct] = useState<IProduct>()
+  const { setCategory } = useCategory()
   const { id: idParam } = useParams<IDParams>()
   const id = +(idParam || '')
   const navigate = useNavigate()
@@ -36,7 +38,13 @@ const ProductDetails = () => {
   }, [id])
   useEffect(() => {
     if (isSuccess && data && data.result) {
-      SetProduct(addDomainToImgProducts([data.result])[0])
+      setProduct(addDomainToImgProducts([data.result])[0])
+      setCategory({
+        categoryName: data.result.categoryName,
+        categoryId: data.result.categoryId,
+        sectionName: data.result.sectionName,
+        sectionId: data.result.sectionId
+      })
     }
   }, [isSuccess])
   // const {

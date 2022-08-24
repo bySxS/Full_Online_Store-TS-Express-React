@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
 import selectProduct from 'store/product/product.selector'
-import { ModalContext } from '../../context/ModalContext'
+import { useModal } from 'context/ModalContext'
 import OffCanvas from '../UI/OffCanvas/OffCanvas'
 import ButtonCategory from './ButtonCategory/ButtonCategory'
 import ButtonChar from './ButtonChar/ButtonChar'
@@ -10,7 +10,7 @@ import PanelFilter from './PanelFilter/PanelFilter'
 import style from './ProductsPanelSetting.module.scss'
 
 const ProductsPanelSetting = () => {
-  const { modal, closeModal } = useContext(ModalContext)
+  const { modal, closeModal } = useModal()
   const { changeViewProducts } = useAppActions()
   const viewProducts = useAppSelector(selectProduct.viewProducts)
   const handleClick = () => changeViewProducts()

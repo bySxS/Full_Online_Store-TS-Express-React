@@ -1,12 +1,12 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useAppSelector } from 'hooks/useStore'
 import selectCategory from 'store/category/category.selector'
 import selectProduct from 'store/product/product.selector'
 import { MyDropDownToggle } from 'components/UI/DropDownToggle/DropDownToggle'
-import { ModalContext } from 'context/ModalContext'
+import { useModal } from 'context/ModalContext'
 
 const ButtonCategory = () => {
-  const { modal, openModal, closeModal } = useContext(ModalContext)
+  const { modal, openModal, closeModal } = useModal()
 
   const clickOpenCharModal = () => {
     if (modal) {

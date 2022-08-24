@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Accordion } from 'react-bootstrap'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useParams } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
 import selectUser from 'store/user/user.selector'
 import { useGetFavProductsListQuery } from 'store/myStore/myStoreFavProduct.api'
 import selectProduct from 'store/product/product.selector'
+import { useCategory } from 'context/CategoryProductContext'
 import CategorySection from './CategorySection/CategorySection'
 import st from './SideBar.module.scss'
 import { useAuth } from 'hooks/useAuth'
@@ -17,6 +18,8 @@ import Toggle from '../UI/Toggle/Toggle'
 const SideBar = () => {
   const { isAuth } = useAuth()
   const { pathname } = useLocation()
+  const params = useParams()
+  const { setCategory } = useCategory()
   const menuShow = useAppSelector(selectUser.menuShow)
   const { isLoading, isSuccess, isError, data, error } =
     useGetAllCategoryQuery('')
@@ -40,6 +43,12 @@ const SideBar = () => {
     data: listFav,
     error: errorListFav
   })
+  useEffect(() => {
+    console.log(params)
+    // if (isNaN(+id)) {
+    setCategory({})
+    // }
+  }, [pathname])
 
   const countFavProduct = useAppSelector(selectProduct.countFavProducts)
   const allCategory = useAppSelector(selectCategory.allCategory)

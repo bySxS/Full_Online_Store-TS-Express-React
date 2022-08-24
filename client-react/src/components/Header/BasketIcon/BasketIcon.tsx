@@ -7,7 +7,6 @@ import style from './BasketIcon.module.scss'
 // import { ModalContext } from 'components/UI/Modal/ModalContext'
 
 const BasketIcon = () => {
-  // const { modal, openModal, closeModal } = useContext(ModalContext)
   const [show, setShow] = useState(false)
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)

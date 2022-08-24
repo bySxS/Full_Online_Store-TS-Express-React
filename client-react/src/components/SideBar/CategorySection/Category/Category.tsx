@@ -9,6 +9,8 @@ import SubCategory from './SubCategory/SubCategory'
 
 interface ICategoryProps {
   category: ICategoryOut
+  sectionId?: number
+  sectionName?: string
 }
 
 const Category: FC<ICategoryProps> = ({ category }) => {

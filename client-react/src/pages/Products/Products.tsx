@@ -24,10 +24,8 @@ const Products: FC<ProductProps> = ({ name }) => {
   const filterState = useAppSelector(selectProduct.filterState)
   const pageProduct = useAppSelector(selectProduct.pageProduct)
   const totalProduct = useAppSelector(selectProduct.totalProduct)
-  // const prevPage = useAppSelector(selectProduct.prevPage)
   const {
     changeFilterState
-    // setPrevPage
   } = useAppActions()
   const [limit] = useState(10)
   const [totalPage, setTotalPage] = useState(Math.round(10 / limit))

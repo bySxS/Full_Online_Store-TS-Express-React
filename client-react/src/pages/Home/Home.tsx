@@ -11,10 +11,7 @@ interface HomeProps {
 
 const Home: FC<HomeProps> = ({ name }) => {
   const navigate = useNavigate()
-  const {
-    changeFilterState
-    // setPrevPage
-  } = useAppActions()
+  const { changeFilterState } = useAppActions()
   return (
     <>
       <Helmet>
