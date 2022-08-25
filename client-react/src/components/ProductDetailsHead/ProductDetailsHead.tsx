@@ -1,8 +1,9 @@
 import React, { FC } from 'react'
+import { Button } from 'react-bootstrap'
 import { IProduct } from 'store/myStore/myStoreProduct.interface'
-import { useAppSelector } from '../../hooks/useStore'
-import selectBasket from '../../store/basket/basket.selector'
-import selectProduct from '../../store/product/product.selector'
+import { useAppSelector } from 'hooks/useStore'
+import selectBasket from 'store/basket/basket.selector'
+import FavIcon from '../FavIcon/FavIcon'
 import ProductGeneralCharacteristics from '../ProductGeneralCharacteristics/ProductGeneralCharacteristics'
 import ProductImagesCarousel from '../ProductImagesCarusel/ProductImagesCarusel'
 import ProductPrice from '../ProductPrice/ProductPrice'
@@ -16,7 +17,6 @@ const ProductDetailsHead: FC<IProductDetailsHead> = ({ product }) => {
   // const {
   //   addToBasket, delFromBasket
   // } = useAppActions()
-  const isInFav = useAppSelector(selectProduct.productIsInFavorite(product.id))
   const isInBasket = useAppSelector(selectBasket.productIsInBasket(product.id))
   // const clickAddToBasket = (event: React.MouseEvent<HTMLButtonElement>) => {
   //   event.preventDefault()
@@ -59,8 +59,19 @@ const ProductDetailsHead: FC<IProductDetailsHead> = ({ product }) => {
 
         <div className={style.blockPrice}>
           <ProductPrice product={product} />
+          <div className={style.blockButton}>
+            {!isInBasket &&
+              <div className={style.buttonSection}>
+              <Button className={'bg-success hover:opacity-80'} variant={'success'}>
+              Купить
+            </Button>
+              </div>
+            }
+            <div className={style.buttonSection}>
+            <FavIcon productId={product.id} />
+            </div>
+          </div>
         </div>
-
       </div>
     </div>
     </div>

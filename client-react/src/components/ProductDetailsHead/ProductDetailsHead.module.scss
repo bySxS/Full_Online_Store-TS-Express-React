@@ -45,7 +45,15 @@
 }
 
 .blockPrice {
-  @apply pt-4 flex m-auto w-[90%];
+  @apply pt-4 flex flex-col m-auto w-[90%];
+}
+
+.blockButton {
+  @apply flex pt-2 items-center;
+}
+
+.buttonSection {
+  @apply px-1;
 }
 
 @media only screen and (max-width: 1050px) {
