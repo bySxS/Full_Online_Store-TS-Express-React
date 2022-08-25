@@ -51,7 +51,7 @@ const Favorites: FC<FavoritesProps> = ({ name }) => {
         <meta name="description" content="{name}" />
       </Helmet>
       <ProductsPanelSetting />
-      {products &&
+      {isSuccess && products &&
        <div className={
          viewProducts === 'Row'
            ? style.productsViewRow
