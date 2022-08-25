@@ -6,37 +6,41 @@
   }
 }
 
-.hide_logo {
+.toggleMenu {
+  @apply hover:text-indigo-700;
+}
+
+.hideLogo {
   @apply flex flex-row;
 }
 
 @media only screen and (max-width: 775px) {
- .toggleMenu {
-   display: none;
- }
+  .toggleMenu {
+      display: none;
+  }
 }
 
 @media only screen and (max-width: 510px) {
-  .hide_logo {
+  .hideLogo {
     display: none;
   }
 }
 
-.menu_text {
+.menuText {
   color: #ffcd39;
 }
 
-.menu_item {
+.menuItem {
   color: #fff;
   padding: 0 5px 0 10px;
   text-decoration: none;
 }
 
-.menu_item:hover {
+.menuItem:hover {
   color: #ffcd39;
 }
 
-.drop_menu {
+.dropMenu {
   position: absolute;
   transform: translate(-125px, 5px);
 }

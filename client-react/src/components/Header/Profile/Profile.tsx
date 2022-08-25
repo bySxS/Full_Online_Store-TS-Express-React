@@ -37,7 +37,7 @@ const Profile = () => {
           }
         </Dropdown.Toggle>
 
-        <Dropdown.Menu className={st.drop_menu}>
+        <Dropdown.Menu className={st.dropMenu}>
 
           <Dropdown.Item className="dropdown-header">
             <h6>Ник: {nickname}</h6>
@@ -47,7 +47,7 @@ const Profile = () => {
           {isAuth &&
           <>
             <Dropdown.Item
-              className="dropdown-item d-flex align-items-center"
+              className="dropdown-item flex items-center"
               onClick={handleShowProfile}>
               <i className="bi bi-person pr-1.5"></i>
               <span>Мой профиль</span>
@@ -85,8 +85,11 @@ const Profile = () => {
           }
           {isAuth &&
             <>
-              <NavLink className="dropdown-item d-flex align-items-center" to={RoutePath.ALL_ORDERS}>
-                <i className="bi bi-card-list pr-1.5"></i>
+              <NavLink
+                className="dropdown-item flex items-center"
+                to={RoutePath.ALL_ORDERS}
+              >
+                <i className="bi bi-card-list pr-1.5"/>
                 <span>Все заказы</span>
               </NavLink>
               <Dropdown.Divider />
@@ -94,8 +97,11 @@ const Profile = () => {
           }
           {isAdmin &&
           <>
-            <NavLink className="dropdown-item d-flex align-items-center" to={RoutePath.ADMIN_PANEL}>
-            <i className="bi bi-pc-display-horizontal pr-1.5"></i>
+            <NavLink
+              className="dropdown-item flex items-center"
+              to={RoutePath.ADMIN_PANEL}
+            >
+            <i className="bi bi-pc-display-horizontal pr-1.5"/>
             <span>Админ-панель</span>
             </NavLink>
             <Dropdown.Divider />
@@ -104,8 +110,10 @@ const Profile = () => {
           {!isAuth
             ? <LoginReg />
             : <>
-            <Dropdown.Item className="dropdown-item d-flex align-items-center"
-                           onClick={() => logout('')}>
+            <Dropdown.Item
+              className="dropdown-item flex items-center"
+              onClick={() => logout('')}
+            >
             <i className="bi bi-box-arrow-in-left pr-1.5"></i>
             <span>Выйти</span>
             </Dropdown.Item>

@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
 import st from 'components/SideBar/SideBar.module.scss'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
+import { useAppActions } from 'hooks/useStore'
 
 interface AdminPanelProps {
   name: string
@@ -11,8 +12,10 @@ interface AdminPanelProps {
 
 const AdminPanel: FC<AdminPanelProps> = ({ name }) => {
   const { setBreadcrumb } = useBreadcrumb()
+  const { changeFilterState } = useAppActions()
   useEffect(() => {
     setBreadcrumb({})
+    changeFilterState({})
   }, [])
   return (
     <div>

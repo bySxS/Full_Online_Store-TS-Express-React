@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
 import selectProduct from 'store/product/product.selector'
 import { useModal } from 'context/ModalContext'
@@ -31,8 +31,8 @@ const ProductsPanelSetting = () => {
       </div>
       {modal &&
       <OffCanvas
-        show={modal}
-        onClose={closeModal}
+        show={modal[1]}
+        onClose={() => closeModal(1)}
         className={style.panelFilter}
         backdrop={true}
         backdropClassName={style.backdrop}

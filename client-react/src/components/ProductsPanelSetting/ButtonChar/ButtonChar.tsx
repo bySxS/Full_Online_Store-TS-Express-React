@@ -6,10 +6,10 @@ const ButtonChar = () => {
   const { modal, openModal, closeModal } = useModal()
 
   const clickOpenCharModal = () => {
-    if (modal) {
-      closeModal()
+    if (modal[1]) {
+      closeModal(1)
     } else {
-      openModal()
+      openModal(1)
     }
   }
   return (

@@ -6,7 +6,7 @@ import Home from 'pages/Home/Home'
 import Products from 'pages/Products/Products'
 import Favorites from 'pages/Favorites/Favorites'
 import Users from 'pages/Users/Users'
-import Basket from 'pages/Basket/Basket'
+// import Basket from 'pages/Basket/Basket'
 import ProductDetails from 'pages/ProductDetails/ProductDetails'
 import AccessMiddleware, { IRequireUser } from 'components/AccessMiddleware/AccessMiddleware'
 import Loader from 'components/UI/Loader/Loader'
@@ -47,7 +47,7 @@ export enum RoutePath {
   PRODUCTS_ID = '/products/:id',
   FAVORITES_PRODUCT = '/favorites_products',
   USERS = '/admin_panel/users',
-  BASKET = '/basket',
+  // BASKET = '/basket',
   ALL_ORDERS = '/all_orders',
   ERROR_404 = '/404'
 }
@@ -146,11 +146,11 @@ export const routes: IRoute[] = [
     element: <Users name={RouteName.USERS} />,
     breadcrumb: () => (<>{RouteName.USERS}</>)
   },
-  {
-    path: RoutePath.BASKET,
-    element: <Basket name={RouteName.BASKET} />,
-    breadcrumb: RouteName.BASKET
-  },
+  // {
+  //   path: RoutePath.BASKET,
+  //   element: <Basket name={RouteName.BASKET} />,
+  //   breadcrumb: RouteName.BASKET
+  // },
   {
     path: RoutePath.ALL_ORDERS,
     lazy: true,

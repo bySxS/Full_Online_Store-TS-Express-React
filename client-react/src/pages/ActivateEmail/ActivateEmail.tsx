@@ -18,10 +18,11 @@ interface ActivateEmailProps {
 const ActivateEmail: FC<ActivateEmailProps> = ({ name }) => {
   const { link } = useParams<ILinkParams>()
   const navigate = useNavigate()
-  const { addToAlertStack } = useAppActions()
+  const { addToAlertStack, changeFilterState } = useAppActions()
   const { setBreadcrumb } = useBreadcrumb()
   useEffect(() => {
     setBreadcrumb({})
+    changeFilterState({})
   }, [])
   const userIsActivated = useAppSelector(selectUser.userIsActivated)
   const [activateEmail,

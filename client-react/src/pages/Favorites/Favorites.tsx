@@ -17,8 +17,10 @@ interface FavoritesProps {
 const Favorites: FC<FavoritesProps> = ({ name }) => {
   // const location = useLocation()
   const { setBreadcrumb } = useBreadcrumb()
+  const { changeFilterState } = useAppActions()
   useEffect(() => {
     setBreadcrumb({})
+    changeFilterState({})
   }, [])
   const pagination = useRef<HTMLHeadingElement>(null)
   const products = useAppSelector(selectProduct.allFavProducts)

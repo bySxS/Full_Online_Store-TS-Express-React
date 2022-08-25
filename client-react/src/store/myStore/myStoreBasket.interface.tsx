@@ -7,11 +7,13 @@ export interface IBasketToOrderIn {
 }
 
 export interface IBasketProductIn {
-  basketId: number
   productId: number
-  productPriceId: number
-  currentPrice: number
   productCount: number
+  productPriceId?: number
+  currentPrice?: number
+  basketId?: number
+  createdAt?: Date | string
+  id?: number
 }
 
 export interface IBasketProductOut {
@@ -21,8 +23,8 @@ export interface IBasketProductOut {
   productPriceId: number
   currentPrice: number
   productCount: number
-  createdAt: Date
-  updatedAt: Date
+  createdAt: Date | string
+  updatedAt: Date | string
   productTitle: string
   productCategory: string
   productCategoryId: number
@@ -43,8 +45,8 @@ export interface IBasket {
   phoneNumber: string
   dateProcessing?: string
   deliveryDate?: string
-  createdAt: Date
-  updatedAt: Date
+  createdAt: Date | string
+  updatedAt: Date | string
   BasketProducts: IBasketProductOut[]
 }
 

@@ -1,6 +1,14 @@
-import React from 'react'
+import React, { FC } from 'react'
+import { useLazyGetAllReviewByProductIdQuery } from 'store/myStore/myStoreReview.api'
 
-const Review = () => {
+interface IReview {
+  productId: number
+}
+
+const Review: FC<IReview> = ({ productId }) => {
+  const [getReview, {
+  
+  }] = useLazyGetAllReviewByProductIdQuery()
   return (
     <div>
      Комментарии

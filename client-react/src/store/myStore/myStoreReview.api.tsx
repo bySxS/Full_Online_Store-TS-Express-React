@@ -76,7 +76,7 @@ export const {
   useAddReviewMutation,
   useDeleteReviewMutation,
   useGetAllMyReviewQuery,
-  useGetAllReviewByProductIdQuery,
+  useLazyGetAllReviewByProductIdQuery,
   useGetAllReviewByUserIdQuery,
   endpoints: myStorePriceEndpoint
 } = myStoreReviewApi

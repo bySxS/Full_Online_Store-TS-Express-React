@@ -9,6 +9,7 @@ import ProductDetailsHead from 'components/ProductDetailsHead/ProductDetailsHead
 import { IProduct } from 'store/myStore/myStoreProduct.interface'
 import { addDomainToImgProducts } from 'utils'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
+import { useAppActions } from '../../hooks/useStore'
 import style from './ProductDetails.module.scss'
 
 export interface IDParams {
@@ -18,6 +19,7 @@ export interface IDParams {
 const ProductDetails = () => {
   const [product, setProduct] = useState<IProduct>()
   const { setBreadcrumb } = useBreadcrumb()
+  const { changeFilterState } = useAppActions()
   const { id: idParam } = useParams<IDParams>()
   const id = +(idParam || '')
   const navigate = useNavigate()
@@ -45,6 +47,7 @@ const ProductDetails = () => {
         subCategoryName: data.result.categoryName,
         subCategoryId: data.result.categoryId
       })
+      changeFilterState({})
     }
   }, [isSuccess])
 

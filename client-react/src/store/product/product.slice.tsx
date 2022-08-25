@@ -65,7 +65,7 @@ const addFavProducts =
     const { payload } = action
     if (payload.success) {
       const prevProducts = state.favoriteProducts ?? []
-      const ids = new Set(prevProducts.map(o => o.id))
+      const ids = new Set(prevProducts.map(o => o && o.id))
       const products = payload.result.results
       const productsChanged = addDomainToImgProducts(products)
       state.favoriteProducts = [
@@ -86,12 +86,14 @@ const addFavProductToList =
       state.listIdFavProducts.push(productId)
     }
     if (!state.favoriteProducts
-      .map(product => product.id)
+      .map(product => product && product.id)
       .includes(productId)) {
-      state.favoriteProducts.push(
-        state.products
-          .filter(product => product.id === productId)[0]
-      )
+      state.favoriteProducts.push(state.products
+        .filter(p => p.id === productId)
+        .map(p => {
+          p.countInFavorites += 1
+          return p
+        })[0])
       state.pageFavProduct = 1
       state.totalFavProduct = 1
     }
@@ -103,9 +105,16 @@ const delFavProductFromList =
     action: PayloadAction<IMessage<IFavProduct>>
   ) => {
     const { productId } = action.payload.result
-    if (state.listIdFavProducts.includes(productId)) {
+    if (state.listIdFavProducts
+      .includes(productId)) {
       state.listIdFavProducts =
         state.listIdFavProducts.filter(id => id !== productId)
+      state.products
+        .filter(p => p.id === productId)
+        .map(p => {
+          p.countInFavorites -= 1
+          return p
+        })
     }
   }
 
@@ -127,7 +136,7 @@ export const ProductSlice = createSlice({
       const productId = action.payload
       state.favoriteProducts =
           state.favoriteProducts
-            .filter(product => product.id !== productId)
+            .filter(product => product && product.id && product.id !== productId) || []
       state.pageFavProduct = 1
       state.totalFavProduct = 1
     },

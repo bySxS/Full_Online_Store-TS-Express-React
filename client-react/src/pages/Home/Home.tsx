@@ -12,11 +12,12 @@ interface HomeProps {
 
 const Home: FC<HomeProps> = ({ name }) => {
   const { setBreadcrumb } = useBreadcrumb()
+  const { changeFilterState } = useAppActions()
   useEffect(() => {
     setBreadcrumb({})
+    changeFilterState({})
   }, [])
   const navigate = useNavigate()
-  const { changeFilterState } = useAppActions()
   return (
     <>
       <Helmet>

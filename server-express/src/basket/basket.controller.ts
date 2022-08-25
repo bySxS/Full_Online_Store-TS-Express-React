@@ -19,7 +19,8 @@ class BasketController implements IBasketController {
     try {
       const authUser = req.user as IJwt
       const result =
-        await BasketService.addProductToBasket(authUser.id, req.body)
+        await BasketService
+          .addProductToBasket(authUser.id, req.body)
       return res.status(201).json(result)
     } catch (err) {
       next(err)

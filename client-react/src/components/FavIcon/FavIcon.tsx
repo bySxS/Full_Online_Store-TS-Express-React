@@ -61,8 +61,8 @@ const FavIcon: FC<IFavIconProps> = ({ productId }) => {
   return (
     <>
       {isInFav
-        ? <i className="bi bi-star-fill text-yellow-400 hover:text-white" onMouseUp={delClick}/>
-        : <i className="bi bi-star hover:text-yellow-400" onMouseUp={addClick}/>
+        ? <i className="bi bi-star-fill text-yellow-400 hover:opacity-80" onClick={delClick}/>
+        : <i className="bi bi-star hover:text-yellow-400" onClick={addClick}/>
       }
     </>
   )

@@ -1,4 +1,21 @@
 import { RootState } from '../index'
+// import { createSelector } from '@reduxjs/toolkit'
+
+// const selectSubtotal = createSelector(selectShopItems, items =>
+//   items.reduce((subtotal, item) => subtotal + item.value, 0)
+// )
+//
+// const selectTax = createSelector(
+//   selectSubtotal,
+//   selectTaxPercent,
+//   (subtotal, taxPercent) => subtotal * (taxPercent / 100)
+// )
+//
+// const selectTotal = createSelector(
+//   selectSubtotal,
+//   selectTax,
+//   (subtotal, tax) => ({ total: subtotal + tax })
+// )
 
 const allCategory = (state: RootState) => state.category.category
 const showCategory = (state: RootState): number[] => state.category.showCategory

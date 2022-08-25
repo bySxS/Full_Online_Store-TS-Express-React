@@ -1,10 +1,11 @@
 import { RootState } from '../index'
+import { createSelector } from '@reduxjs/toolkit'
 
 const allFavProducts = (state: RootState) => state.product.favoriteProducts
-const productIsInFavorite = (id: number) => (state: RootState): boolean => {
-  const products = state.product.listIdFavProducts || []
-  return products.includes(id)
-}
+const listIdFavProducts = (state: RootState) => state.product.listIdFavProducts || []
+const productIsInFavorite = (id: number) => createSelector(listIdFavProducts, items =>
+  items.includes(id)
+)
 const filterState = (state: RootState) => state.product.filterState
 const countProducts = (state: RootState) => state.product.products?.length || 0
 const countFavProducts = (state: RootState) => state.product.listIdFavProducts?.length || 0
