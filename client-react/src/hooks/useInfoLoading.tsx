@@ -16,12 +16,14 @@ export function useInfoLoading ({
   const { addToAlertStack, setLoading } = useAppActions()
 
   useEffect(() => {
-    if (isSuccess && data) {
+    if (isSuccess && data && 'message' in data) {
       addToAlertStack({
         message: data.message
       })
     }
-    if ((isError) && (error && 'status' in error)) {
+    if ((isError) &&
+      (error && 'status' in error &&
+        'data' in error)) {
       const err = error.data as IMessage<string>
       if (err.message !==
           'Пользователь не авторизован или время сессии истекло') {
