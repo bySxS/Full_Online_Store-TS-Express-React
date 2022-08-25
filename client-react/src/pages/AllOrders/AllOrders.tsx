@@ -1,11 +1,16 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
+import { useBreadcrumb } from 'context/BreadcrumbContext'
 
 interface AllOrdersProps {
   name: string
 }
 
 const AllOrders: FC<AllOrdersProps> = ({ name }) => {
+  const { setBreadcrumb } = useBreadcrumb()
+  useEffect(() => {
+    setBreadcrumb({})
+  }, [])
   return (
     <div>
       <Helmet>

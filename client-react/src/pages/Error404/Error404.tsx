@@ -1,9 +1,13 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useBreadcrumb } from 'context/BreadcrumbContext'
 
 const Error404 = () => {
   const navigate = useNavigate()
-
+  const { setBreadcrumb } = useBreadcrumb()
+  useEffect(() => {
+    setBreadcrumb({})
+  }, [])
   useEffect(() => {
     setTimeout(() => {
       navigate('/')

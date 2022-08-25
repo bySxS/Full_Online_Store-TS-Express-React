@@ -4,6 +4,7 @@ import { IProduct } from 'store/myStore/myStoreProduct.interface'
 import FavIcon from 'components/FavIcon/FavIcon'
 import { RoutePath } from 'AppRouter'
 import ProductPrice from 'components/ProductPrice/ProductPrice'
+import ProductGeneralCharacteristics from 'components/ProductGeneralCharacteristics/ProductGeneralCharacteristics'
 import style from './ProductViewRow.module.scss'
 
 interface IProductViewRowProps {
@@ -20,7 +21,7 @@ const ProductViewRow: FC<IProductViewRowProps> = ({ product }) => {
   return (
     <>
       <div className={style.productItem}
-           onMouseUp={() => { clickLiProductHandler(product.id) }}>
+           onClick={() => { clickLiProductHandler(product.id) }}>
       <div className={style.sectionFav}>
         <FavIcon productId={product.id} />
       </div>
@@ -31,18 +32,19 @@ const ProductViewRow: FC<IProductViewRowProps> = ({ product }) => {
       </div>
       <div className={style.sectionInfo}>
         <div className={style.title}>{product.title}</div>
-        {product.characteristics && product.characteristics[0] &&
-         product.characteristics[0].characteristics.map(char => (
-           <div className={style.characteristics}
-                key={char.characteristicNameId}>
-          <span className={style.nameCharacteristics}>
-            {char.characteristicName}:
-          </span> {char.values &&
-                   char.values
-                     .map(val => val.characteristicValue)
-                     .join(', ')}
-           </div>
-         ))}
+        {/* {product.characteristics && product.characteristics[0] && */}
+        {/*  product.characteristics[0].characteristics.map(char => ( */}
+        {/*    <div className={style.characteristics} */}
+        {/*         key={char.characteristicNameId}> */}
+        {/*   <span className={style.nameCharacteristics}> */}
+        {/*     {char.characteristicName}: */}
+        {/*   </span> {char.values && */}
+        {/*            char.values */}
+        {/*              .map(val => val.characteristicValue) */}
+        {/*              .join(', ')} */}
+        {/*    </div> */}
+        {/*  ))} */}
+        <ProductGeneralCharacteristics product={product} />
         <ProductPrice product={product} />
       </div>
       <div className={style.sectionViews}>

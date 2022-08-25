@@ -20,7 +20,7 @@ const ProductViewCol: FC<IProductViewColProps> = ({ product }) => {
   return (
     <>
       <div className={style.productItem}
-           onMouseUp={() => { clickLiProductHandler(product.id) }}>
+           onClick={() => { clickLiProductHandler(product.id) }}>
       <div className={style.sectionFav}>
         <FavIcon productId={product.id} />
       </div>

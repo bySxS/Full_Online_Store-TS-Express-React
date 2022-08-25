@@ -1,8 +1,9 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import UserProfile from 'components/UserProfile/UserProfile'
 import { useAllUsersQuery } from 'store/myStore/myStoreUser.api'
 import { Helmet } from 'react-helmet'
 import { useInfoLoading } from 'hooks/useInfoLoading'
+import { useBreadcrumb } from 'context/BreadcrumbContext'
 import style from './Users.module.scss'
 
 interface UsersProps {
@@ -10,6 +11,10 @@ interface UsersProps {
 }
 
 const Users: FC<UsersProps> = ({ name }) => {
+  const { setBreadcrumb } = useBreadcrumb()
+  useEffect(() => {
+    setBreadcrumb({})
+  }, [])
   const { isLoading, isSuccess, isError, data: users, error } =
     useAllUsersQuery({ limit: 10, page: 1 })
   useInfoLoading({ isLoading, isSuccess, isError, data: users, error })

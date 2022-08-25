@@ -7,6 +7,7 @@ import { useAppActions, useAppSelector } from 'hooks/useStore'
 import selectProduct from 'store/product/product.selector'
 import ProductList from 'components/ProductList/ProductList'
 import { RoutePath } from 'AppRouter'
+import { useBreadcrumb } from 'context/BreadcrumbContext'
 import style from './Products.module.scss'
 import { useObserver } from 'hooks/useObserver'
 import { IDParams } from '../ProductDetails/ProductDetails'
@@ -24,9 +25,8 @@ const Products: FC<ProductProps> = ({ name }) => {
   const filterState = useAppSelector(selectProduct.filterState)
   const pageProduct = useAppSelector(selectProduct.pageProduct)
   const totalProduct = useAppSelector(selectProduct.totalProduct)
-  const {
-    changeFilterState
-  } = useAppActions()
+  const { changeFilterState } = useAppActions()
+  const { setBreadcrumb } = useBreadcrumb()
   const [limit] = useState(10)
   const [totalPage, setTotalPage] = useState(Math.round(10 / limit))
 
@@ -62,6 +62,7 @@ const Products: FC<ProductProps> = ({ name }) => {
     if (categoryId && categoryId > 0) {
       changeFilterState({ categoryId })
     } else if (location.pathname === RoutePath.PRODUCTS) {
+      setBreadcrumb({})
       changeFilterState({ categoryId: undefined })
     }
   }, [location.pathname, categoryId])

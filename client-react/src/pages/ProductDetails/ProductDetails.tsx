@@ -3,14 +3,12 @@ import { Helmet } from 'react-helmet'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { RoutePath } from 'AppRouter'
-// import { useAppSelector } from 'hooks/useStore'
 import { useLazyGetProductByIdQuery } from 'store/myStore/myStoreProduct.api'
 import ProductDetailsDown from 'components/ProductDetailsDown/ProductDetailsDown'
 import ProductDetailsHead from 'components/ProductDetailsHead/ProductDetailsHead'
 import { IProduct } from 'store/myStore/myStoreProduct.interface'
 import { addDomainToImgProducts } from 'utils'
-import { useCategory } from 'context/CategoryProductContext'
-// import selectBasket from 'store/basket/basket.selector'
+import { useBreadcrumb } from 'context/BreadcrumbContext'
 import style from './ProductDetails.module.scss'
 
 export interface IDParams {
@@ -19,7 +17,7 @@ export interface IDParams {
 
 const ProductDetails = () => {
   const [product, setProduct] = useState<IProduct>()
-  const { setCategory } = useCategory()
+  const { setBreadcrumb } = useBreadcrumb()
   const { id: idParam } = useParams<IDParams>()
   const id = +(idParam || '')
   const navigate = useNavigate()
@@ -39,28 +37,17 @@ const ProductDetails = () => {
   useEffect(() => {
     if (isSuccess && data && data.result) {
       setProduct(addDomainToImgProducts([data.result])[0])
-      setCategory({
-        categoryName: data.result.categoryName,
-        categoryId: data.result.categoryId,
-        sectionName: data.result.sectionName,
-        sectionId: data.result.sectionId
+      setBreadcrumb({
+        moduleName: 'Товары',
+        moduleLink: '/products',
+        categoryName: data.result.sectionName,
+        categoryId: data.result.sectionId,
+        subCategoryName: data.result.categoryName,
+        subCategoryId: data.result.categoryId
       })
     }
   }, [isSuccess])
-  // const {
-  //   addToBasket, delFromBasket
-  // } = useAppActions()
-  // const isFav = useAppSelector(selectBasket.productIsInBasket(id))
 
-  // const clickAddToBasket = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   event.preventDefault()
-  //   addToBasket(id)
-  // }
-  //
-  // const removeFromBasket = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   event.preventDefault()
-  //   delFromBasket(id)
-  // }
   return (
     <>
       {isSuccess && product &&

@@ -14,6 +14,7 @@
 }
 
 .blockInfo {
+  @apply flex flex-col;
   flex: 1 0 50%;
 }
 
@@ -31,11 +32,11 @@
 }
 
 .blockGeneralCharacteristics {
-  @apply pt-4 flex flex-col m-auto w-[90%];
+  @apply pt-4 flex flex-col m-auto
+  w-[90%] h-[155px] justify-between;
 }
 
 .characteristics {
-  @apply py-2;
   font-size: 10pt;
 }
 

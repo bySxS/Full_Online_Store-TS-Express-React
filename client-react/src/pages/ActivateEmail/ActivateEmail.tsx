@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import selectUser from 'store/user/user.selector'
 import { useLazyActivateEmailQuery } from 'store/myStore/myStoreUser.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
+import { useBreadcrumb } from 'context/BreadcrumbContext'
 
 interface ILinkParams {
   [link: string]: string
@@ -18,6 +19,10 @@ const ActivateEmail: FC<ActivateEmailProps> = ({ name }) => {
   const { link } = useParams<ILinkParams>()
   const navigate = useNavigate()
   const { addToAlertStack } = useAppActions()
+  const { setBreadcrumb } = useBreadcrumb()
+  useEffect(() => {
+    setBreadcrumb({})
+  }, [])
   const userIsActivated = useAppSelector(selectUser.userIsActivated)
   const [activateEmail,
     { isLoading, isSuccess, isError, data, error }] =

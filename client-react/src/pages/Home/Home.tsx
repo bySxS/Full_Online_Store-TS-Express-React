@@ -1,8 +1,9 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { useNavigate } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
-import { useAppActions } from '../../hooks/useStore'
+import { useBreadcrumb } from 'context/BreadcrumbContext'
+import { useAppActions } from 'hooks/useStore'
 import style from './Home.module.scss'
 
 interface HomeProps {
@@ -10,6 +11,10 @@ interface HomeProps {
 }
 
 const Home: FC<HomeProps> = ({ name }) => {
+  const { setBreadcrumb } = useBreadcrumb()
+  useEffect(() => {
+    setBreadcrumb({})
+  }, [])
   const navigate = useNavigate()
   const { changeFilterState } = useAppActions()
   return (

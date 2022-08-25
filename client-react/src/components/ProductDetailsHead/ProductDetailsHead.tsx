@@ -1,6 +1,11 @@
 import React, { FC } from 'react'
 import { IProduct } from 'store/myStore/myStoreProduct.interface'
+import { useAppSelector } from '../../hooks/useStore'
+import selectBasket from '../../store/basket/basket.selector'
+import selectProduct from '../../store/product/product.selector'
+import ProductGeneralCharacteristics from '../ProductGeneralCharacteristics/ProductGeneralCharacteristics'
 import ProductImagesCarousel from '../ProductImagesCarusel/ProductImagesCarusel'
+import ProductPrice from '../ProductPrice/ProductPrice'
 import style from './ProductDetailsHead.module.scss'
 
 interface IProductDetailsHead {
@@ -8,6 +13,20 @@ interface IProductDetailsHead {
 }
 
 const ProductDetailsHead: FC<IProductDetailsHead> = ({ product }) => {
+  // const {
+  //   addToBasket, delFromBasket
+  // } = useAppActions()
+  const isInFav = useAppSelector(selectProduct.productIsInFavorite(product.id))
+  const isInBasket = useAppSelector(selectBasket.productIsInBasket(product.id))
+  // const clickAddToBasket = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   event.preventDefault()
+  //   addToBasket(id)
+  // }
+  //
+  // const removeFromBasket = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   event.preventDefault()
+  //   delFromBasket(id)
+  // }
   return (
     <div className={style.firstContainer}>
     <div className={style.block}>
@@ -15,6 +34,7 @@ const ProductDetailsHead: FC<IProductDetailsHead> = ({ product }) => {
         <ProductImagesCarousel product={product} />
       </div>
       <div className={style.blockInfo}>
+
         <div className={style.blockStat}>
           <div className={style.sectionViews}>
             <i className="bi bi-eye"/> {product.view}
@@ -32,20 +52,15 @@ const ProductDetailsHead: FC<IProductDetailsHead> = ({ product }) => {
         <div className={style.blockTitle}>
           {product.title}
         </div>
+
         <div className={style.blockGeneralCharacteristics}>
-          {product.characteristics && product.characteristics[0] &&
-            product.characteristics[0].characteristics.map(char => (
-              <div className={style.characteristics}
-                   key={char.characteristicNameId}>
-          <span className={style.nameCharacteristics}>
-            {char.characteristicName}:
-          </span> {char.values &&
-                char.values
-                  .map(val => val.characteristicValue)
-                  .join(', ')}
-              </div>
-            ))}
+          <ProductGeneralCharacteristics product={product} />
         </div>
+
+        <div className={style.blockPrice}>
+          <ProductPrice product={product} />
+        </div>
+
       </div>
     </div>
     </div>

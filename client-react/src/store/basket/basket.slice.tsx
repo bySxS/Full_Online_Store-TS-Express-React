@@ -2,8 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 const LS_BASKET_KEY = 'rbk'
 
+interface IBasket {
+  productId: number
+  productCount: number
+}
+
 interface IBasketState {
-  product: number[]
+  product: IBasket[]
 }
 
 const initialState: IBasketState = {
@@ -14,15 +19,15 @@ export const BasketSlice = createSlice({
   name: 'basketGuest',
   initialState,
   reducers: {
-    addToBasket (state, action: PayloadAction<number>) {
-      const ids = new Set(state.product.map(id => id))
-      if (!ids.has(action.payload)) {
+    addToBasket (state, action: PayloadAction<IBasket>) {
+      const ids = new Set(state.product.map(product => product.productId))
+      if (!ids.has(action.payload.productId)) {
         state.product = [...state.product, action.payload]
         localStorage.setItem(LS_BASKET_KEY, JSON.stringify(state.product))
       }
     },
     delFromBasket (state, action: PayloadAction<number>) {
-      state.product = state.product.filter(f => f !== action.payload)
+      state.product = state.product.filter(f => f.productId !== action.payload)
       localStorage.setItem(LS_BASKET_KEY, JSON.stringify(state.product))
     }
   }

@@ -1,6 +1,6 @@
 import React, { FC, memo, useState } from 'react'
 import useBreadcrumbs from 'use-react-router-breadcrumbs'
-import { useCategory } from 'context/CategoryProductContext'
+import { useBreadcrumb } from 'context/BreadcrumbContext'
 import { useAppActions } from 'hooks/useStore'
 import style from './Breadcrumb.module.scss'
 import { IRoute, routes } from 'AppRouter'
@@ -12,28 +12,54 @@ interface IBreadcrumbsProps {
 
 const BreadcrumbsComponent: FC<IBreadcrumbsProps> = ({ className }) => {
   const [rout] = useState<IRoute[]>(routes)
-  const {
-    categoryName, sectionName, sectionId,
-    sectionLink, categoryLink, categoryId
-  } = useCategory()
+  const { breadcrumbLinks } = useBreadcrumb()
   // const navigate = useNavigate()
   const { changeFilterState } = useAppActions()
   const breadcrumbs = useBreadcrumbs(rout, {
     excludePaths: ['/products/category', '/products/:id']
   })
 
+  const clickChangeCategory = (id?: number) => {
+    if (id) {
+      changeFilterState({ categoryId: id })
+    }
+  }
+
   return (
     <div className={breadcrumbs.length !== 1
       ? (className !== undefined ? className : style.head)
       : undefined}>
       <nav className={style.body}>
-        {breadcrumbs.length !== 1 && breadcrumbs.map(({
-          match,
-          breadcrumb,
-          key
-        }, i) => (
-          (i !== 0)
-            ? <span key={key}>
+        {breadcrumbLinks && breadcrumbLinks.length > 1
+          ? breadcrumbLinks.map(({ name, link, id }, i) => (
+            (i === 0)
+              ? <span key={i}>
+                <NavLink to={link}>{name}</NavLink>
+              </span>
+              : <span key={i}>
+                <span className={'px-2'}>
+                   <i className="bi bi-arrow-right-short"/>
+                </span>
+                <span>
+                  <NavLink
+                    onClick={() => clickChangeCategory(id)}
+                    to={link}
+                  >
+                    {name}
+                  </NavLink>
+                </span>
+              </span>
+          ))
+          : breadcrumbs.length !== 1 && breadcrumbs.map(({
+            match,
+            breadcrumb,
+            key
+          }, i) => (
+            (i === 0)
+              ? <span key={match.pathname}>
+                <NavLink to={match.pathname}>{breadcrumb}</NavLink>
+              </span>
+              : <span key={key}>
                 <span className={'px-2'}>
                    <i className="bi bi-arrow-right-short"/>
                 </span>
@@ -43,42 +69,7 @@ const BreadcrumbsComponent: FC<IBreadcrumbsProps> = ({ className }) => {
                   </NavLink>
                 </span>
               </span>
-            : <span key={match.pathname}>
-                <NavLink to={match.pathname}>{breadcrumb}</NavLink>
-              </span>
-        ))}
-        {sectionName &&
-          <span>
-                <span className={'px-2'}>
-                   <i className="bi bi-arrow-right-short"/>
-                </span>
-                <span>
-                  <NavLink
-                    onClick={() => changeFilterState({
-                      categoryId: sectionId
-                    })}
-                    to={sectionLink}>
-                    {sectionName}
-                  </NavLink>
-                </span>
-        </span>
-        }
-        {categoryName &&
-          <span>
-                <span className={'px-2'}>
-                   <i className="bi bi-arrow-right-short"/>
-                </span>
-                <span>
-                  <NavLink
-                    onClick={() => changeFilterState({
-                      categoryId
-                    })}
-                    to={categoryLink}
-                  >
-                    {categoryName}
-                  </NavLink>
-                </span>
-        </span>
+          ))
         }
       </nav>
     </div>

@@ -3,11 +3,11 @@ import { Helmet } from 'react-helmet'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useObserver } from 'hooks/useObserver'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
-// import { useLocation } from 'react-router-dom'
 import { useLazyGetFavProductsQuery } from 'store/myStore/myStoreFavProduct.api'
 import selectProduct from 'store/product/product.selector'
 import ProductItems from 'components/ProductItems/ProductItems'
 import ProductsPanelSetting from 'components/ProductsPanelSetting/ProductsPanelSetting'
+import { useBreadcrumb } from 'context/BreadcrumbContext'
 import style from '../Products/Products.module.scss'
 
 interface FavoritesProps {
@@ -16,6 +16,10 @@ interface FavoritesProps {
 
 const Favorites: FC<FavoritesProps> = ({ name }) => {
   // const location = useLocation()
+  const { setBreadcrumb } = useBreadcrumb()
+  useEffect(() => {
+    setBreadcrumb({})
+  }, [])
   const pagination = useRef<HTMLHeadingElement>(null)
   const products = useAppSelector(selectProduct.allFavProducts)
   const filterState = useAppSelector(selectProduct.filterState)

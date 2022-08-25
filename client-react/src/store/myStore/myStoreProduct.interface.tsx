@@ -39,8 +39,10 @@ export interface IProduct {
   priceFirst: number
   priceFirstCurrency: string
   categoryName: string
+  categoryNameEng: string
   sectionId: number
   sectionName: string
+  sectionNameEng: string
   characteristics?: ICharacteristicSection[]
   parentProduct?: IProduct
 }

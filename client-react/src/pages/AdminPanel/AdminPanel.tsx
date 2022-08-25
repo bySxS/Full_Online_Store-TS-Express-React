@@ -1,14 +1,19 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { NavLink } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
 import st from 'components/SideBar/SideBar.module.scss'
+import { useBreadcrumb } from 'context/BreadcrumbContext'
 
 interface AdminPanelProps {
   name: string
 }
 
 const AdminPanel: FC<AdminPanelProps> = ({ name }) => {
+  const { setBreadcrumb } = useBreadcrumb()
+  useEffect(() => {
+    setBreadcrumb({})
+  }, [])
   return (
     <div>
       <Helmet>

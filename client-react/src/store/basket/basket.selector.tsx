@@ -5,7 +5,9 @@ const basketProduct = (state: RootState) => state.basket.product
 const countProductInBasket = (state: RootState) => state.basket.product.length
 
 const productIsInBasket = (id: number) => (state: RootState): boolean => {
-  return state.basket.product.includes(id)
+  return state.basket.product
+    .map(i => i.productId)
+    .includes(id)
 }
 
 const selectBasket = {

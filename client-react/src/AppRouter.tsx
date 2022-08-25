@@ -8,7 +8,6 @@ import Favorites from 'pages/Favorites/Favorites'
 import Users from 'pages/Users/Users'
 import Basket from 'pages/Basket/Basket'
 import ProductDetails from 'pages/ProductDetails/ProductDetails'
-import UserDetails from 'pages/UserDetails/UserDetails'
 import AccessMiddleware, { IRequireUser } from 'components/AccessMiddleware/AccessMiddleware'
 import Loader from 'components/UI/Loader/Loader'
 import ActivateEmail from 'pages/ActivateEmail/ActivateEmail'
@@ -48,7 +47,6 @@ export enum RoutePath {
   PRODUCTS_ID = '/products/:id',
   FAVORITES_PRODUCT = '/favorites_products',
   USERS = '/admin_panel/users',
-  USERS_ID = '/users/:id',
   BASKET = '/basket',
   ALL_ORDERS = '/all_orders',
   ERROR_404 = '/404'
@@ -85,12 +83,12 @@ const ProductIDBreadcrumb: FC<IBreadcrumbParams> = ({ match }) => {
 }
 
 // мини компонент получения данных о пользователе для breadcrumbs
-const UserIDBreadcrumb: FC<IBreadcrumbParams> = ({ match }) => {
-  const { id } = match.params
-  return (
-    <span>Пользователь {id}</span>
-  )
-}
+// const UserIDBreadcrumb: FC<IBreadcrumbParams> = ({ match }) => {
+//   const { id } = match.params
+//   return (
+//     <span>Пользователь {id}</span>
+//   )
+// }
 
 // мини компонент получения данных о category для breadcrumbs
 const ProductsCategoryIDBreadcrumb: FC<IBreadcrumbParams> = ({ match }) => {
@@ -147,11 +145,6 @@ export const routes: IRoute[] = [
     allowRoles: RolesName.admin,
     element: <Users name={RouteName.USERS} />,
     breadcrumb: () => (<>{RouteName.USERS}</>)
-  },
-  {
-    path: RoutePath.USERS_ID,
-    element: <UserDetails />,
-    breadcrumb: UserIDBreadcrumb
   },
   {
     path: RoutePath.BASKET,
