@@ -1,0 +1,33 @@
+.blockComment {
+  @apply flex min-h-[200px] border border-gray-400 p-2 mb-2;
+  border-radius: 6px;
+}
+
+.sectionInfo {
+  @apply flex flex-col w-[150px];
+  flex: 1 0 150px;
+}
+
+.avatar {
+  @apply h-[70px];
+}
+
+.info {
+  @apply flex flex-col h-[50px];
+}
+
+.sectionComment {
+ @apply flex flex-col w-full;
+}
+
+.message {
+  @apply flex flex-col;
+}
+
+.buttonReply {
+  @apply flex pt-2;
+}
+
+.link {
+  @apply px-2 text-indigo-700 hover:underline;
+}

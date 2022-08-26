@@ -12,6 +12,7 @@ export const useAuth = () => {
   const isUser = useSelector(selectUser.isUser)
   const isModer = useSelector(selectUser.isModer)
   const isAdmin = useSelector(selectUser.isAdmin)
+  const myId = useSelector(selectUser.myId)
 
   return useMemo(() => ({
     user,
@@ -22,9 +23,10 @@ export const useAuth = () => {
     isAuth,
     isUser,
     isModer,
-    isAdmin
+    isAdmin,
+    myId
   }), [
     user, roles, isActivated, nickname, avatarUrl,
-    isAuth, isUser, isModer, isAdmin
+    isAuth, isUser, isModer, isAdmin, myId
   ])
 }

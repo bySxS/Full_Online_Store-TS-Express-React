@@ -46,12 +46,13 @@ const myStoreReviewApi = createApi({
       }),
 
     getAllReviewByProductId: build.query<IMessage<IResultList<IReviewOut>>,
-      { productId: number, limit?: number, page: number }>({
-        query: ({ productId, limit, page }) => ({
+      { productId: number, limit?: number, page: number, sort?: 'asc' | 'desc' }>({
+        query: ({ productId, limit, page, sort }) => ({
           url: 'review/product/' + productId,
           params: {
-            limit: limit || 20,
-            page
+            limit: limit || 0,
+            page,
+            sort
           }
         })
       }),

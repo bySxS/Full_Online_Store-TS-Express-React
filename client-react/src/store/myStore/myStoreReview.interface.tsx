@@ -33,6 +33,9 @@ export interface IReviewOut {
   rating: number
   parentId?: number
   child?: IReviewOut[]
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
+  userNickname: string
+  userAvatar: string
+  userFullName: string
 }
