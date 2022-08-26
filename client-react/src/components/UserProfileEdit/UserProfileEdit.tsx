@@ -40,8 +40,7 @@ const UserProfileEdit: FC<UserProfileProps> = ({
   }
 
   const clickDeleteProfile = () => {
-    let result = false
-    result = confirm('Вы уверены что хотите удалить пользователя ' + user.nickname + '?')
+    const result = confirm('Вы уверены что хотите удалить пользователя ' + user.nickname + '?')
     if (result) {
       deleteUser(user.id)
     }

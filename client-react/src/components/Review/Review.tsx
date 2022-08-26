@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
-import { useLazyGetAllReviewByProductIdQuery } from 'store/myStore/myStoreReview.api'
+import { useGetAllReviewByProductIdQuery } from 'store/myStore/myStoreReview.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { IResultList } from 'store/myStore/myStore.interface'
 import { IReviewOut } from 'store/myStore/myStoreReview.interface'
@@ -13,28 +13,24 @@ interface IReview {
 }
 
 const Review: FC<IReview> = ({ productId }) => {
-  const [getReview, {
+  const {
     isLoading, isSuccess, isError, data, error
-  }] = useLazyGetAllReviewByProductIdQuery()
+  } = useGetAllReviewByProductIdQuery({
+    productId,
+    limit: 0,
+    page: 1
+    // sort: sort ? 'asc' : 'desc'
+  })
   // const [sort, setSort] = useState<boolean>(true)
   useInfoLoading({ isLoading, isSuccess, isError, data, error })
   const [review, setReview] = useState<IResultList<IReviewOut>>()
   const { isAuth } = useAuth()
 
   useEffect(() => {
-    getReview({
-      productId,
-      limit: 0,
-      page: 1
-      // sort: sort ? 'asc' : 'desc'
-    })
-  }, [])
-
-  useEffect(() => {
     if (isSuccess && data) {
       setReview(data.result)
     }
-  }, [isSuccess])
+  }, [isSuccess, data])
 
   return (
     <div>
@@ -45,7 +41,7 @@ const Review: FC<IReview> = ({ productId }) => {
           {/* >Sort</Button> */}
         </div>
         <div>
-          Комментарии ({review?.total})
+          Комментарии / Отзыва ({review?.total})
         </div>
       </div>
       <div className={style.comments}>

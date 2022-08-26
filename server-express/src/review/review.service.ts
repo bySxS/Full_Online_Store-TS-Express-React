@@ -31,11 +31,8 @@ class ReviewService implements IReviewService {
         .first()
       if (findReview) {
         throw ApiError.badRequest(
-          'Ошибка при добавлении ' +
-          (parentId ? 'комментария' : 'отзыва'
-          ) + ' к продукту ' +
-          `с id${productId}, вы уже голосовали, ` +
-          `измените свой отзыв с id${findReview.id}`,
+          'Ошибка, вы уже голосовали, ' +
+          'измените свой отзыв',
           'ReviewService addReview')
       }
     }
@@ -83,9 +80,8 @@ class ReviewService implements IReviewService {
       .first()
     if (!findReview) {
       throw ApiError.badRequest(
-        'Ошибка при изменении ' +
-        `рейтинга продукта с id${productId}, ` +
-        'вы ещё не голосовали',
+        'Ошибка, ' +
+        'вы ещё не оставляли отзыв',
         'ReviewService updRating')
     }
     const bought =

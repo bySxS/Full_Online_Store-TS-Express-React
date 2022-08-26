@@ -19,7 +19,7 @@ const Rating: FC<IRating> = ({ rating, className }) => {
 
   useEffect(() => {
     setCurrRating(changeRating !== undefined ? changeRating : rating)
-  }, [changeRating])
+  }, [changeRating, rating])
 
   return (
     <span className={style.rating}>

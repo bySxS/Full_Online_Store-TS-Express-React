@@ -18,12 +18,17 @@ const Profile = () => {
   useInfoLoading({ isLoading, isSuccess, isError, error, data })
 
   const [showProfile, setShowProfile] = useState(false)
-  const handleCloseProfile = () => setShowProfile(false)
-  const handleShowProfile = () => setShowProfile(true)
+  const toggleShowProfile = () => setShowProfile(!showProfile)
 
   const [showProfileEdit, setShowProfileEdit] = useState(false)
-  const handleCloseProfileEdit = () => setShowProfileEdit(false)
-  const handleShowProfileEdit = () => setShowProfileEdit(true)
+  const toggleShowProfileEdit = () => setShowProfileEdit(!showProfileEdit)
+
+  const clickLogout = () => {
+    const result = confirm('Вы уверены что хотите разлогинится?')
+    if (result) {
+      logout('')
+    }
+  }
 
   return (
     <div>
@@ -48,7 +53,7 @@ const Profile = () => {
           <>
             <Dropdown.Item
               className="dropdown-item flex items-center"
-              onClick={handleShowProfile}>
+              onClick={toggleShowProfile}>
               <i className="bi bi-person pr-1.5"></i>
               <span>Мой профиль</span>
             </Dropdown.Item>
@@ -56,7 +61,7 @@ const Profile = () => {
               <ModalComponent
                 show={showProfile}
                 title={'Ваш профиль'}
-                onClose={handleCloseProfile}
+                onClose={toggleShowProfile}
                 className={'w-[750px]'}
               >
                 <UserProfile user={user}/>
@@ -65,7 +70,7 @@ const Profile = () => {
             <Dropdown.Divider />
             <Dropdown.Item
               className="dropdown-item flex items-center"
-              onClick={handleShowProfileEdit}
+              onClick={toggleShowProfileEdit}
             >
               <i className="bi bi-gear pr-1.5"></i>
               <span>Редакт. профиль</span>
@@ -74,7 +79,7 @@ const Profile = () => {
              <ModalComponent
                show={showProfileEdit}
                title={'Редактировать ваш профиль'}
-               onClose={handleCloseProfileEdit}
+               onClose={toggleShowProfileEdit}
                className={'w-[750px]'}
              >
                <UserProfileEdit user={user}/>
@@ -112,7 +117,7 @@ const Profile = () => {
             : <>
             <Dropdown.Item
               className="dropdown-item flex items-center"
-              onClick={() => logout('')}
+              onClick={clickLogout}
             >
             <i className="bi bi-box-arrow-in-left pr-1.5"></i>
             <span>Выйти</span>

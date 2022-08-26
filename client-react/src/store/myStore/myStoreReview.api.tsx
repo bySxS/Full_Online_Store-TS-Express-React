@@ -6,6 +6,7 @@ import { IReview, IReviewOut, IUpdRating } from 'store/myStore/myStoreReview.int
 const myStoreReviewApi = createApi({
   reducerPath: 'storeReview/api',
   baseQuery: baseQueryWithRefreshToken,
+  tagTypes: ['Review'],
   refetchOnFocus: true,
   endpoints: build => ({
     addReview: build.mutation<IMessage<IReview>,
@@ -14,7 +15,8 @@ const myStoreReviewApi = createApi({
           url: 'review',
           method: 'POST',
           body
-        })
+        }),
+        invalidatesTags: ['Review']
       }),
 
     updReview: build.mutation<IMessage<IUpdRating>,
@@ -23,7 +25,8 @@ const myStoreReviewApi = createApi({
           url: 'review',
           method: 'PUT',
           body
-        })
+        }),
+        invalidatesTags: ['Review']
       }),
 
     deleteReview: build.mutation<IMessage<null>,
@@ -31,7 +34,8 @@ const myStoreReviewApi = createApi({
         query: (reviewId: number) => ({
           url: 'review/' + reviewId,
           method: 'DELETE'
-        })
+        }),
+        invalidatesTags: ['Review']
       }),
 
     getAllMyReview: build.query<IMessage<IResultList<IReviewOut>>,
@@ -42,7 +46,8 @@ const myStoreReviewApi = createApi({
             limit: args.limit || 20,
             page: args.page
           }
-        })
+        }),
+        providesTags: ['Review']
       }),
 
     getAllReviewByProductId: build.query<IMessage<IResultList<IReviewOut>>,
@@ -54,7 +59,8 @@ const myStoreReviewApi = createApi({
             page,
             sort
           }
-        })
+        }),
+        providesTags: ['Review']
       }),
 
     getAllReviewByUserId: build.query<IMessage<IResultList<IReviewOut>>,
@@ -65,7 +71,8 @@ const myStoreReviewApi = createApi({
             limit: limit || 20,
             page
           }
-        })
+        }),
+        providesTags: ['Review']
       })
 
   })
@@ -78,7 +85,7 @@ export const {
   useUpdReviewMutation,
   useDeleteReviewMutation,
   useGetAllMyReviewQuery,
-  useLazyGetAllReviewByProductIdQuery,
+  useGetAllReviewByProductIdQuery,
   useGetAllReviewByUserIdQuery,
   endpoints: myStorePriceEndpoint
 } = myStoreReviewApi

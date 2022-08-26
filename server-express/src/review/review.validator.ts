@@ -10,7 +10,7 @@ export const validateReview = () => {
       .notEmpty(),
     body('rating', 'Рейтинг (rating) должен быть от 1 до 5')
       .if(body('rating').notEmpty())
-      .isIn([1, 2, 3, 4, 5])
+      .isIn([0, 1, 2, 3, 4, 5])
   ]
 }
 

@@ -1,5 +1,5 @@
 import RatingContext from 'context/RatingContext'
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { Button, Form, InputGroup } from 'react-bootstrap'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import {
@@ -25,11 +25,13 @@ interface IReviewDefault {
 interface IFormAddedReview {
   defaultValue: IReviewDefault
   changeReview?: boolean
+  onClose?: () => void
 }
 
 const FormAddedReview: FC<IFormAddedReview> = ({
   defaultValue,
-  changeReview = false
+  changeReview = false,
+  onClose
 }) => {
   const [addReview, {
     isLoading: isLoadingAdd,
@@ -69,6 +71,10 @@ const FormAddedReview: FC<IFormAddedReview> = ({
     parentId: (defaultValue && defaultValue.parentId ? defaultValue.parentId : undefined)
   })
 
+  useEffect(() => {
+    setFormState((prev) => ({ ...prev, rating }))
+  }, [rating])
+
   const handleChangeInput =
     ({ target: { name, value }, currentTarget }: React.ChangeEvent<HTMLInputElement>) => {
       setFormState((prev) => ({ ...prev, [name]: value }))
@@ -85,14 +91,18 @@ const FormAddedReview: FC<IFormAddedReview> = ({
     } else if (defaultValue && defaultValue.rating) {
       updReview(formState)
     }
+    if (onClose) {
+      onClose()
+    }
   }
   return (
     <div className={style.block}>
-      <div className={style.blockRating}>
+      {!formState.parentId &&
+        <div className={style.blockRating}>
         <RatingContext.Provider value={{ setRating, rating }}>
           <Rating rating={rating} />
         </RatingContext.Provider>
-      </div>
+      </div>}
       <div className={style.blockForm}>
         <Form
           noValidate
@@ -117,11 +127,62 @@ const FormAddedReview: FC<IFormAddedReview> = ({
                : ''}
              aria-label="comment"
              aria-describedby="basic-addon1"
+             style={{ height: '100px' }}
            />
            {/* <Form.Control.Feedback type="invalid"> */}
            {/*   {errors.nickname} */}
            {/* </Form.Control.Feedback> */}
          </InputGroup>
+          {formState.comment.length > 0 && !formState.parentId &&
+            <InputGroup hasValidation={false} className="mb-2">
+              <InputGroup.Text id="basic-addon1">
+                <i className="bi bi-plus-circle-fill"/>
+              </InputGroup.Text>
+              <Form.Control
+                required
+                as={'textarea'}
+                onChange={handleChangeInput}
+                name={'advantages'}
+                // isValid={!errors.nickname && !onlyShowInfo}
+                // isInvalid={!!errors.nickname}
+                placeholder={'Введите плюсы'}
+                defaultValue={defaultValue &&
+                defaultValue.advantages
+                  ? defaultValue.advantages
+                  : ''}
+                aria-label="advantages"
+                aria-describedby="basic-addon1"
+              />
+              {/* <Form.Control.Feedback type="invalid"> */}
+              {/*   {errors.nickname} */}
+              {/* </Form.Control.Feedback> */}
+            </InputGroup>
+          }
+          {formState.comment.length > 0 && !formState.parentId &&
+            <InputGroup hasValidation={false} className="mb-2">
+            <InputGroup.Text id="basic-addon1">
+            <i className="bi bi-dash-circle-fill"/>
+            </InputGroup.Text>
+            <Form.Control
+            required
+            as={'textarea'}
+            onChange={handleChangeInput}
+            name={'flaws'}
+            // isValid={!errors.nickname && !onlyShowInfo}
+            // isInvalid={!!errors.nickname}
+            placeholder={'Введите минусы'}
+            defaultValue={defaultValue &&
+            defaultValue.flaws
+              ? defaultValue.flaws
+              : ''}
+            aria-label="flaws"
+            aria-describedby="basic-addon1"
+            />
+          {/* <Form.Control.Feedback type="invalid"> */}
+          {/*   {errors.nickname} */}
+          {/* </Form.Control.Feedback> */}
+            </InputGroup>
+          }
         </Form>
       </div>
       <div className={style.blockButton}>
@@ -129,6 +190,7 @@ const FormAddedReview: FC<IFormAddedReview> = ({
                 className={'bg-emerald-600 w-full'}
                 onClick={btnLogin}
                 type={'submit'}
+                disabled={formState.comment.length < 10}
         >
           {changeReview
             ? 'Изменить отзыв'
