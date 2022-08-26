@@ -178,6 +178,7 @@ class ReviewService implements IReviewService {
         .joinRelated('user')
         .select('review.*',
           'user.nickname as userNickname',
+          'user.rolesId as userRolesId',
           'user.avatar as userAvatar',
           'user.fullName as userFullName')
         .orderBy('review.id', sort)

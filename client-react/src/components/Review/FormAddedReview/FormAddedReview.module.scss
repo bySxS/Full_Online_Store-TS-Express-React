@@ -1,0 +1,16 @@
+.block {
+  @apply flex flex-col w-[80%];
+}
+
+.blockRating {
+  @apply flex pb-2;
+}
+
+.blockForm {
+  @apply flex flex-col;
+}
+
+.blockButton {
+  @apply flex;
+}
+

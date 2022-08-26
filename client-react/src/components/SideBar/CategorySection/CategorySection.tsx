@@ -1,6 +1,5 @@
 import React, { FC, useRef } from 'react'
-import { NavLink } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { ICategorySection } from 'store/myStore/myStoreCategory.interface'
 import { RoutePath } from 'AppRouter'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
@@ -44,6 +43,7 @@ const CategorySection: FC<ICategoryProps> = ({ categorySection }) => {
       <li ref={ref}>
         <NavLink
           onClick={clickGoToPage}
+          to={RoutePath.PRODUCTS + '/category/' + categorySection.sectionId}
           onMouseEnter={handleFocus}
           className="sideBarLink pl-[10px]"
         >

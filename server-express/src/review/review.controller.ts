@@ -19,7 +19,8 @@ class ReviewController implements IReviewController {
     try {
       const authUser = req.user as IJwt
       req.body.userId = authUser.id
-      const result = await ReviewService.addReview(req.body)
+      const result = await ReviewService
+        .addReview(req.body)
       return res.status(201).json(result)
     } catch (err) {
       next(err)
@@ -32,7 +33,8 @@ class ReviewController implements IReviewController {
     try {
       const authUser = req.user as IJwt
       req.body.userId = authUser.id
-      const result = await ReviewService.updRating(req.body)
+      const result = await ReviewService
+        .updRating(req.body)
       return res.status(201).json(result)
     } catch (err) {
       next(err)

@@ -1,0 +1,9 @@
+.rating {
+  @apply text-xl;
+  color: #ffcd39;
+  text-shadow: 0 0 0px #ffec07, 0 0 0px #f6cc00, 0 0 2px rgb(234 177 9 / 94%), 0 0 20px rgb(211 249 0);
+}
+
+.stars {
+  @apply px-1;
+}

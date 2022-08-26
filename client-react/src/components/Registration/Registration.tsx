@@ -28,14 +28,34 @@ const Registration: FC<IRegProps> = ({
   showEditAvatar = true
 }) => {
   // const navigate = useNavigate()
-  const [registration,
-    { isLoading: isLoadingReg, isSuccess: isSuccessReg, isError: isErrorReg, data: user, error: errorReg }] =
-    useRegistrationMutation()
-  const [updProfile,
-    { isLoading: isLoadingUpd, isSuccess: isSuccessUpd, isError: isErrorUpd, data: userUpd, error: errorUpd }] =
-    useUpdateUserByIdMutation()
-  useInfoLoading({ isLoading: isLoadingReg, isSuccess: isSuccessReg, isError: isErrorReg, data: user, error: errorReg })
-  useInfoLoading({ isLoading: isLoadingUpd, isSuccess: isSuccessUpd, isError: isErrorUpd, data: userUpd, error: errorUpd })
+  const [registration, {
+    isLoading: isLoadingReg,
+    isSuccess: isSuccessReg,
+    isError: isErrorReg,
+    data: user,
+    error: errorReg
+  }] = useRegistrationMutation()
+  const [updProfile, {
+    isLoading: isLoadingUpd,
+    isSuccess: isSuccessUpd,
+    isError: isErrorUpd,
+    data: userUpd,
+    error: errorUpd
+  }] = useUpdateUserByIdMutation()
+  useInfoLoading({
+    isLoading: isLoadingReg,
+    isSuccess: isSuccessReg,
+    isError: isErrorReg,
+    data: user,
+    error: errorReg
+  })
+  useInfoLoading({
+    isLoading: isLoadingUpd,
+    isSuccess: isSuccessUpd,
+    isError: isErrorUpd,
+    data: userUpd,
+    error: errorUpd
+  })
   const [formState, setFormState] = useState<IRegistrationIn>({
     nickname: (defaultInfoUser && defaultInfoUser.nickname ? defaultInfoUser.nickname : ''),
     email: (defaultInfoUser && defaultInfoUser.email ? defaultInfoUser.email : ''),

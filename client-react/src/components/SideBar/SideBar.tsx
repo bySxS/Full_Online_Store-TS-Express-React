@@ -1,10 +1,11 @@
 import React from 'react'
 import { Accordion } from 'react-bootstrap'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
 import selectUser from 'store/user/user.selector'
 import { useGetFavProductsListQuery } from 'store/myStore/myStoreFavProduct.api'
 import selectProduct from 'store/product/product.selector'
+import { useBreadcrumb } from 'context/BreadcrumbContext'
 import CategorySection from './CategorySection/CategorySection'
 import st from './SideBar.module.scss'
 import { useAuth } from 'hooks/useAuth'
@@ -18,6 +19,9 @@ const SideBar = () => {
   const { isAuth } = useAuth()
   const { pathname } = useLocation()
   // const params = useParams()
+  const navigate = useNavigate()
+  const { setBreadcrumb } = useBreadcrumb()
+  const { changeFilterState } = useAppActions()
   const menuShow = useAppSelector(selectUser.menuShow)
   const { isLoading, isSuccess, isError, data, error } =
     useGetAllCategoryQuery('')
@@ -49,6 +53,17 @@ const SideBar = () => {
     setShowCategory([])
   }
 
+  const clickGoToPage = () => {
+    navigate(RoutePath.PRODUCTS)
+    changeFilterState({
+      categoryId: undefined
+    })
+    setBreadcrumb({
+      moduleName: 'Товары',
+      moduleLink: '/products'
+    })
+  }
+
   return (
     menuShow
       ? <div className={st.sideMenuHead}>
@@ -68,6 +83,9 @@ const SideBar = () => {
           <li>
             <NavLink
               to={RoutePath.FAVORITES_PRODUCT}
+              onClick={() => changeFilterState({
+                categoryId: undefined
+              })}
               className="sideBarLink"
               onMouseEnter={handleFocus}
             >
@@ -80,6 +98,7 @@ const SideBar = () => {
           ? <li>
           <NavLink
             to={RoutePath.PRODUCTS}
+            onClick={clickGoToPage}
             className="sideBarLink"
             onMouseEnter={handleFocus}
           >
@@ -102,6 +121,7 @@ const SideBar = () => {
               <div className={'pl-3'}>
                 <li>
                   <NavLink
+                    onClick={clickGoToPage}
                     to={RoutePath.PRODUCTS}
                     className={({ isActive }) => (
                       isActive &&

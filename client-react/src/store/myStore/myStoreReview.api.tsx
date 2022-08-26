@@ -75,6 +75,7 @@ export default myStoreReviewApi
 
 export const {
   useAddReviewMutation,
+  useUpdReviewMutation,
   useDeleteReviewMutation,
   useGetAllMyReviewQuery,
   useLazyGetAllReviewByProductIdQuery,

@@ -7,7 +7,10 @@ export const validateReview = () => {
     body('comment', 'Комментарий (comment) должен быть минимум 10 символов')
       .isLength({ min: 10 }),
     body('productId', 'Продукт (productId) не указан')
-      .notEmpty()
+      .notEmpty(),
+    body('rating', 'Рейтинг (rating) должен быть от 1 до 5')
+      .if(body('rating').notEmpty())
+      .isIn([1, 2, 3, 4, 5])
   ]
 }
 

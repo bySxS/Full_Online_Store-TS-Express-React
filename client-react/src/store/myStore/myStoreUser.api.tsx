@@ -13,21 +13,22 @@ const myStoreUserApi = createApi({
   tagTypes: ['Users'],
   endpoints: build => ({ // query - get, mutation - post, put
     //
-    registration: build.mutation<IMessage<ILoginResult>, FormData>({
-      query: (payload) => ({
-        url: 'user/registration',
-        method: 'POST',
-        body: payload
-      }),
-      async onQueryStarted (args, api) {
-        try {
-          const reason = await api.queryFulfilled
-          api.dispatch(login(reason.data))
-        } catch (e) {
+    registration: build.mutation<IMessage<ILoginResult>,
+      FormData>({
+        query: (payload) => ({
+          url: 'user/registration',
+          method: 'POST',
+          body: payload
+        }),
+        async onQueryStarted (args, api) {
+          try {
+            const reason = await api.queryFulfilled
+            api.dispatch(login(reason.data))
+          } catch (e) {
           // console.log(e)
+          }
         }
-      }
-    }), // registration
+      }), // registration
 
     login: build.mutation<IMessage<ILoginResult>, ILoginIn>({
       query: (payload: ILoginIn) => ({

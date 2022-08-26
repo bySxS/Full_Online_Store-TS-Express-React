@@ -8,6 +8,7 @@ const currentRoles = (state: RootState) => state.user.user?.rolesName ?? 'Гос
 const isAdmin = (state: RootState) => state.user.user?.rolesId === 1
 const isModer = (state: RootState) => state.user.user?.rolesId === 2
 const isUser = (state: RootState) => state.user.user?.rolesId === 3
+const rolesId = (state: RootState) => state.user.user?.rolesId ?? 0
 const isAuth = (state: RootState) => state.user.isAuth
 const myId = (state: RootState) => state.user.user?.id || 0
 const menuShow = (state: RootState) => state.user.menuShow
@@ -18,6 +19,7 @@ const selectUser = {
   avatarUrl,
   userIsActivated,
   currentRoles,
+  rolesId,
   isAdmin,
   isModer,
   isUser,

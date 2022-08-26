@@ -1,11 +1,11 @@
 .navigate {
-  @apply flex flex-row w-full justify-end;
+  @apply flex flex-row w-[90%] m-auto justify-end pb-2;
 }
 
 .comments {
-  @apply flex flex-col;
+  @apply flex flex-col w-[90%] m-auto;
 }
 
 .addForm {
-  @apply flex;
+  @apply flex pt-2 w-[90%] m-auto justify-center;
 }

@@ -1,0 +1,11 @@
+.buttonReply {
+  @apply flex pt-2 justify-end;
+}
+
+.blockLink {
+  @apply px-0;
+}
+
+.link {
+  @apply px-2 text-indigo-700 hover:underline;
+}

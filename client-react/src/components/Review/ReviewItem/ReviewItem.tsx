@@ -1,48 +1,71 @@
 import React, { FC, useState } from 'react'
-import { NavLink } from 'react-bootstrap'
 import { IReviewOut } from 'store/myStore/myStoreReview.interface'
 import { addHostServerToFileLink } from 'utils'
+import dayjs from 'dayjs'
+import EditButton from './EditButton/EditButton'
+import Rating from './Rating/Rating'
 import style from './ReviewItem.module.scss'
 
 interface IReviewItem {
-  comment: IReviewOut
+  Review: IReviewOut
 }
 
 const ReviewItem: FC<IReviewItem> = ({
-  comment: {
+  Review
+}) => {
+  const {
     comment, userId, bought,
     createdAt, flaws, advantages, rating,
-    userAvatar, userNickname, userFullName
-  }
-}) => {
+    userAvatar, userNickname, userFullName, userRolesId
+  } = Review
   const [urlAvatar] = useState(addHostServerToFileLink(userAvatar, userId, 'user_avatar'))
   return (
     <div className={style.blockComment}>
       <div className={style.sectionInfo}>
         <div className={style.avatar}>
-          <img src={urlAvatar} className={'w-[70px]'} alt={userNickname} />
+          <img
+            src={urlAvatar}
+            className={style.img}
+            alt={userNickname}
+          />
         </div>
         <div className={style.info}>
-          <span>{userNickname}</span>
+          <span className={`${style.infoNick} ${userRolesId === 1
+            ? style.nickAdmin
+            : userRolesId === 2
+              ? style.nickModer
+              : style.nickUser
+          }`}>
+            {userNickname}
+          </span>
           <span>{userFullName}</span>
-          {bought === 1 && <span>Товар куплен!</span>}
-          <span>{new Date(createdAt).toUTCString()}</span>
+          {bought === 1 &&
+            <span className={style.productBuying}>
+              <i className="bi bi-cart-check-fill"/> Товар куплен!
+            </span>
+          }
+          <span>{dayjs(createdAt).format('YYYY.MM.DD')}</span>
+          <span>{dayjs(createdAt).format('HH:MM:ss')}</span>
         </div>
       </div>
       <div className={style.sectionComment}>
         <div className={style.message}>
-          <span>{rating}</span>
-          <span>{comment}</span>
-          <span>{advantages}</span>
-          <span>{flaws}</span>
+          <Rating rating={rating} />
+          <span className={style.messageComment}>
+            {comment}
+          </span>
+          {advantages &&
+            <span className={style.messageAdvantages}>
+              <b>Плюсы:</b> {advantages}
+            </span>
+          }
+          {flaws &&
+            <span className={style.messageFlaws}>
+              <b>Минусы:</b> {flaws}
+            </span>
+          }
         </div>
-        <div className={style.buttonReply}>
-          [<NavLink className={style.link}>
-          Ответить
-        </NavLink> | <NavLink className={style.link}>
-          Изменить
-        </NavLink> ]
-        </div>
+      <EditButton Review={Review} />
       </div>
     </div>
   )

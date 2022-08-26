@@ -1,6 +1,5 @@
 import React, { FC } from 'react'
-import { NavLink } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { ICategoryOut } from 'store/myStore/myStoreCategory.interface'
 import { RoutePath } from 'AppRouter'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
@@ -44,6 +43,7 @@ const SubCategory: FC<ISubCategoryProps> = ({
     <li key={category.categoryId}>
       <NavLink
         onClick={clickGoToPage}
+        to={RoutePath.PRODUCTS + '/category/' + category.categoryId}
         className="sideBarLink"
       >
         {category.categoryName} ({category.categoryCountProducts})

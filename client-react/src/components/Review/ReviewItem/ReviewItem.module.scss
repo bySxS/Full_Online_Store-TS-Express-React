@@ -1,33 +1,71 @@
 .blockComment {
-  @apply flex min-h-[200px] border border-gray-400 p-2 mb-2;
+  @apply flex flex-row flex-wrap min-h-[200px] border
+  border-gray-400 p-2 mb-2 bg-gray-100;
   border-radius: 6px;
 }
 
 .sectionInfo {
-  @apply flex flex-col w-[150px];
-  flex: 1 0 150px;
+  @apply flex flex-col w-[150px] mt-1
+  justify-center items-center text-center;
+  flex: 0 0 150px;
+}
+
+@media only screen and (max-width: 575px) {
+  .sectionInfo {
+    flex: 0 0 100%;
+  }
 }
 
 .avatar {
-  @apply h-[70px];
+  @apply border-4 border-white;
+  border-radius: 5px;
+  box-shadow: 0 0 0 black, 0 0 0 black, 0 0 0 #000000, 0 0 10px #000000;
+}
+
+.img {
+  @apply w-[80px];
+}
+
+.productBuying {
+  @apply text-green-700;
 }
 
 .info {
-  @apply flex flex-col h-[50px];
+  @apply flex flex-col text-sm pt-1;
+}
+
+.infoNick {
+  @apply font-serif;
+}
+
+.nickAdmin {
+  @apply text-red-700;
+}
+
+.nickModer {
+  @apply text-green-500;
+}
+
+.nickUser {
+  @apply text-black;
 }
 
 .sectionComment {
- @apply flex flex-col w-full;
+ @apply flex flex-col flex-auto;
 }
 
 .message {
   @apply flex flex-col;
 }
 
-.buttonReply {
-  @apply flex pt-2;
+.messageComment {
+  @apply font-sans;
 }
 
-.link {
-  @apply px-2 text-indigo-700 hover:underline;
+.messageAdvantages {
+  @apply font-thin;
+}
+
+.messageFlaws {
+  @apply font-thin;
 }
