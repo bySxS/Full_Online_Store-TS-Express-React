@@ -19,7 +19,9 @@ export interface IReviewService {
   addReview: (Dto: IReview) => Promise<IMessage>
   updRating: (Dto: IReview) => Promise<IMessage>
   delReview: (id: number) => Promise<IMessage>
-  getAllReviewByProductId: (productId: number, limit: number, page: number) => Promise<IMessage>
+  getAllReviewByProductId: ({
+    productId, limit, page, sort
+  }: { productId: number, limit: number, page: number, sort?: 'asc' | 'desc' }) => Promise<IMessage>
   getAllReviewByUserId: (userId: number, limit: number, page: number) => Promise<IMessage>
   recursFind: (reviews: IReview[], review: IReview) => IReview[]
   sortReviewTree: (reviews: ReviewModel[]) => IReview[]

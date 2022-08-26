@@ -59,8 +59,15 @@ class ReviewController implements IReviewController {
       const id = +req.params.id
       const limit = +(req.query.limit || 20)
       const page = +(req.query.page || 1)
+      const sort = (req.query.sort || 'asc')
       const result =
-        await ReviewService.getAllReviewByProductId(id, limit, page)
+        await ReviewService
+          .getAllReviewByProductId({
+            productId: id,
+            limit,
+            page,
+            sort: sort === 'asc' || sort === 'desc' ? sort : 'asc'
+          })
       return res.status(200).json(result)
     } catch (err) {
       next(err)
@@ -75,7 +82,8 @@ class ReviewController implements IReviewController {
       const limit = +(req.query.limit || 20)
       const page = +(req.query.page || 1)
       const result =
-        await ReviewService.getAllReviewByUserId(id, limit, page)
+        await ReviewService
+          .getAllReviewByUserId(id, limit, page)
       return res.status(200).json(result)
     } catch (err) {
       next(err)

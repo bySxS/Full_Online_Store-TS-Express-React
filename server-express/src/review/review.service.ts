@@ -170,17 +170,22 @@ class ReviewService implements IReviewService {
   }
 
   async getAllReviewByProductId (
-    productId: number, limit: number, page: number
+    { productId, limit = 0, page = 1, sort = 'asc' }: { productId: number, limit: number, page: number, sort?: 'asc' | 'desc' }
   ): Promise<IMessage> {
     const query = () => {
       return ReviewModel.query()
         .where({ productId })
-        .select('*')
-        .orderBy(['id'])
+        .joinRelated('user')
+        .select('review.*',
+          'user.nickname as userNickname',
+          'user.avatar as userAvatar',
+          'user.fullName as userFullName')
+        .orderBy('review.id', sort)
     }
     let result
     if (limit === 0) {
       result = await query()
+        .page(0, 15000)
     } else {
       result = await query()
         .page(page - 1, limit)
@@ -194,7 +199,7 @@ class ReviewService implements IReviewService {
     }
     let reviews
     if ('results' in result) {
-      reviews = result.results
+      reviews = this.sortReviewTree(result.results)
     } else {
       reviews = this.sortReviewTree(result)
     }
