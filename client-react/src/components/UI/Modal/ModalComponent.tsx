@@ -38,7 +38,6 @@ export function ModalComponent (
         {title &&
         <Modal.Header
           closeButton={true}
-          closeVariant={'white'}
         >
         <Modal.Title>{title}</Modal.Title>
         </Modal.Header>

@@ -1,5 +1,42 @@
 .secondContainer {
   @apply flex w-full m-auto p-2
-  border shadow-md my-3 bg-white;
+  border shadow-md my-3 bg-white flex-col;
   border-radius: 10px;
+}
+
+.blockButton {
+  @apply flex flex-row w-full py-4 justify-evenly;
+}
+
+.divButton {
+  @apply flex;
+}
+
+.activeButton {
+  color: #fff !important;
+  background: #766ED3 !important;
+}
+
+.button {
+  @apply bg-white text-black;
+}
+
+.blockContainer {
+
+}
+
+.description {
+  @apply flex flex-col p-4;
+}
+
+.characteristics {
+  @apply flex flex-col;
+}
+
+.review {
+  @apply flex flex-col;
+}
+
+.dynamicPrice {
+  @apply flex flex-col;
 }

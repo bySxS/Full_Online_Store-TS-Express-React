@@ -1,13 +1,16 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 
 interface IDescription {
   description: string
 }
 
 const Description: FC<IDescription> = ({ description }) => {
+  const [lines] = useState<string[]>(description.split('\\p\\n'))
   return (
     <>
-      {description}
+      {lines && lines.map((line, i) => (
+        <span key={i}>{line}<br/></span>
+      ))}
     </>
   )
 }

@@ -103,6 +103,6 @@ export const {
   useUpdateCharacteristicValueMutation,
   useGetAllCharacteristicsQuery,
   useLazyGetAllCharacteristicsNameByCategoryIdQuery,
-  useLazyGetCharacteristicProductByIdQuery,
+  useGetCharacteristicProductByIdQuery,
   endpoints: myStoreCharacteristicEndpoint
 } = myStoreCharacteristicsApi
