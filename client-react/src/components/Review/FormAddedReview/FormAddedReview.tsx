@@ -75,6 +75,20 @@ const FormAddedReview: FC<IFormAddedReview> = ({
     setFormState((prev) => ({ ...prev, rating }))
   }, [rating])
 
+  useEffect(() => {
+    if ((dataAdd && dataAdd.success && dataAdd.success === true) ||
+      (dataUpd && dataUpd.success && dataUpd.success === true)) {
+      setFormState({
+        ...formState,
+        comment: '',
+        advantages: '',
+        flaws: '',
+        rating: 0
+      })
+      setRating(0)
+    }
+  }, [dataUpd, dataAdd])
+
   const handleChangeInput =
     ({ target: { name, value }, currentTarget }: React.ChangeEvent<HTMLInputElement>) => {
       setFormState((prev) => ({ ...prev, [name]: value }))
@@ -121,10 +135,11 @@ const FormAddedReview: FC<IFormAddedReview> = ({
              placeholder={defaultValue.parentId
                ? 'Введите комментарий'
                : 'Введите отзыв'}
-             defaultValue={defaultValue &&
-             defaultValue.comment
-               ? defaultValue.comment
-               : ''}
+             value={formState.comment}
+             // defaultValue={defaultValue &&
+             // defaultValue.comment
+             //   ? defaultValue.comment
+             //   : ''}
              aria-label="comment"
              aria-describedby="basic-addon1"
              style={{ height: '100px' }}
@@ -146,10 +161,11 @@ const FormAddedReview: FC<IFormAddedReview> = ({
                 // isValid={!errors.nickname && !onlyShowInfo}
                 // isInvalid={!!errors.nickname}
                 placeholder={'Введите плюсы'}
-                defaultValue={defaultValue &&
-                defaultValue.advantages
-                  ? defaultValue.advantages
-                  : ''}
+                value={formState.advantages}
+                // defaultValue={defaultValue &&
+                // defaultValue.advantages
+                //   ? defaultValue.advantages
+                //   : ''}
                 aria-label="advantages"
                 aria-describedby="basic-addon1"
               />
@@ -171,10 +187,11 @@ const FormAddedReview: FC<IFormAddedReview> = ({
             // isValid={!errors.nickname && !onlyShowInfo}
             // isInvalid={!!errors.nickname}
             placeholder={'Введите минусы'}
-            defaultValue={defaultValue &&
-            defaultValue.flaws
-              ? defaultValue.flaws
-              : ''}
+            value={formState.flaws}
+            // defaultValue={defaultValue &&
+            // defaultValue.flaws
+            //   ? defaultValue.flaws
+            //   : ''}
             aria-label="flaws"
             aria-describedby="basic-addon1"
             />
