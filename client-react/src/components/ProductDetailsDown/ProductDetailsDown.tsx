@@ -76,7 +76,10 @@ const ProductDetailsDown: FC<IProductDetailsDown> = ({ product }) => {
         }
         {openTab === 4 &&
           <div className={style.dynamicPrice}>
-            <PriceDynamic/>
+            <PriceDynamic
+              productId={product.id}
+              currentPrice={product.price}
+            />
           </div>
         }
       </div>

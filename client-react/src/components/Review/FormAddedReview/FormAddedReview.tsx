@@ -1,4 +1,3 @@
-import RatingContext from 'context/RatingContext'
 import React, { FC, useEffect, useState } from 'react'
 import { Button, Form, InputGroup } from 'react-bootstrap'
 import { useInfoLoading } from 'hooks/useInfoLoading'
@@ -112,10 +111,8 @@ const FormAddedReview: FC<IFormAddedReview> = ({
   return (
     <div className={style.block}>
       {!formState.parentId &&
-        <div className={style.blockRating}>
-        <RatingContext.Provider value={{ setRating, rating }}>
-          <Rating rating={rating} />
-        </RatingContext.Provider>
+      <div className={style.blockRating}>
+        <Rating rating={rating} setRating={setRating} />
       </div>}
       <div className={style.blockForm}>
         <Form

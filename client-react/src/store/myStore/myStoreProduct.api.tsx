@@ -112,6 +112,6 @@ export const {
   useAddProductMutation,
   useDelProductMutation,
   useUpdateProductMutation,
-  useLazyGetDynamicPriceByProductIdQuery,
+  useGetDynamicPriceByProductIdQuery,
   endpoints: myStoreProductEndpoint
 } = myStoreProductApi

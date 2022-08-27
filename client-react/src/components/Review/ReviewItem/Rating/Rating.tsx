@@ -1,21 +1,22 @@
-import React, { FC } from 'react'
-import { useRating } from 'context/RatingContext'
+import React, { Dispatch, FC, SetStateAction } from 'react'
 import style from './Rating.module.scss'
 
 interface IRating {
   rating: number
   className?: string
+  setRating?: Dispatch<SetStateAction<number>>
 }
 
-const Rating: FC<IRating> = ({ rating: currRating, className }) => {
-  const { setRating } = useRating()
-
+const Rating: FC<IRating> = ({
+  rating: currRating,
+  className,
+  setRating
+}) => {
   const clickChangeRating = (idx: number) => {
     if (setRating) {
       setRating(idx)
     }
   }
-
   return (
     <span className={style.rating}>
       {(currRating || setRating) && <span className={className}>

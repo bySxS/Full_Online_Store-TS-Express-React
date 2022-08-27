@@ -30,10 +30,10 @@ class ReviewService implements IReviewService {
         .select('rating', 'id')
         .first()
       if (findReview) {
-        throw ApiError.badRequest(
-          'Ошибка, вы уже голосовали, ' +
-          'измените свой отзыв',
-          'ReviewService addReview')
+        return {
+          success: false,
+          message: 'Вы уже голосовали, измените свой отзыв'
+        }
       }
     }
     const bought =
@@ -79,10 +79,11 @@ class ReviewService implements IReviewService {
       .select('rating', 'id')
       .first()
     if (!findReview) {
-      throw ApiError.badRequest(
-        'Ошибка, ' +
-        'вы ещё не оставляли отзыв',
-        'ReviewService updRating')
+      return {
+        success: false,
+        message: 'Вы ещё не оставляли отзыв для продукта с ' +
+          `id${productId}`
+      }
     }
     const bought =
       await BasketService.isUserBoughtProduct(userId, productId)

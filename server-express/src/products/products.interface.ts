@@ -89,12 +89,6 @@ export interface IProductService {
 }) =>
     QueryBuilder<ProductsModel, ProductsModel | undefined> |
     QueryBuilder<ProductsModel, Page<ProductsModel>>
-  // getAllByCategoryId: (id: number,
-  //                      filter: string[],
-  //                      price: number[],
-  //                      sortBy: string,
-  //                      limit: number, page: number) =>
-  //   Promise<IMessage>
   getGeneralCharacteristicsForProducts: (
       productsIds: number[]
   ) => QueryBuilder<CharacteristicsSetValueModel, CharacteristicsSetValueModel[]>

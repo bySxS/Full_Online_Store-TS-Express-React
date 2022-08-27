@@ -1,5 +1,7 @@
 import React, { FC, useEffect, useState } from 'react'
-import { useGetAllReviewByProductIdQuery } from 'store/myStore/myStoreReview.api'
+import {
+  useGetAllReviewByProductIdQuery
+} from 'store/myStore/myStoreReview.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { IResultList } from 'store/myStore/myStore.interface'
 import { IReviewOut } from 'store/myStore/myStoreReview.interface'
@@ -19,12 +21,12 @@ const Review: FC<IReview> = ({ productId }) => {
     productId,
     limit: 0,
     page: 1
-    // sort: sort ? 'asc' : 'desc'
   })
-  // const [sort, setSort] = useState<boolean>(true)
-  useInfoLoading({ isLoading, isSuccess, isError, data, error })
+  useInfoLoading({
+    isLoading, isSuccess, isError, data, error
+  })
   const [review, setReview] = useState<IResultList<IReviewOut>>()
-  const { isAuth } = useAuth()
+  const { isAuth, myId } = useAuth()
 
   useEffect(() => {
     if (isSuccess && data) {
@@ -55,10 +57,19 @@ const Review: FC<IReview> = ({ productId }) => {
       </div>
       <div className={style.addForm}>
         {isAuth
-          ? <FormAddedReview defaultValue={{ productId }} />
-          : <div className={'text-center'}>
+          ? (review && !review.results
+              .filter(item => item.rating > 0)
+              .map(item => item.userId)
+              .includes(myId)
+              ? <FormAddedReview
+              defaultValue={{ productId }}
+              />
+              : <div className={'text-center'}>
+              Вы уже оставили отзыв!
+            </div>)
+          : (<div className={'text-center'}>
             Авторизируйтесь чтобы оставлять комментарии!
-        </div>
+        </div>)
         }
       </div>
     </div>

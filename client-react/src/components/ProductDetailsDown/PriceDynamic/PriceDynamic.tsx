@@ -1,4 +1,5 @@
-import React from 'react'
+import dayjs from 'dayjs'
+import React, { FC, useEffect, useState } from 'react'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,6 +11,9 @@ import {
   Legend
 } from 'chart.js'
 import { Line } from 'react-chartjs-2'
+import { useGetDynamicPriceByProductIdQuery } from 'store/myStore/myStoreProduct.api'
+import { useInfoLoading } from 'hooks/useInfoLoading'
+import { IDynamicPrice } from 'store/myStore/myStoreProduct.interface'
 
 ChartJS.register(
   CategoryScale,
@@ -28,30 +32,92 @@ export const options = {
       position: 'top' as const
     },
     title: {
-      display: true,
-      text: 'Цена'
+      display: false,
+      text: 'Динамика цены'
     }
   }
 }
 
-const labels = [
-  'January', 'February',
-  'March', 'April', 'May', 'June', 'July'
-]
+const currentDate = new Date()
+const currentMonth = currentDate.getMonth()
+const currentYear = currentDate.getFullYear()
+const currentDay = currentDate.getDay()
+const getMonthShift = (shift: number = 0) =>
+  dayjs(new Date(`${currentYear}-${currentMonth + shift}-${currentDay}`))
+    .format('MMMM YY')
 
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: labels.map(() => 1000),
-      borderColor: 'rgb(0,156,255)',
-      backgroundColor: 'rgba(0,158,255,0.5)'
-    }
-  ]
+const getMonth = (datetime: string): string => dayjs(new Date(datetime)).format('MMMM YY')
+
+interface IPriceDynamic {
+  productId: number
+  currentPrice: number
 }
 
-const PriceDynamic = () => {
+const PriceDynamic: FC<IPriceDynamic> = ({
+  productId,
+  currentPrice
+}) => {
+  const {
+    isLoading, isSuccess, isError, data: dataPrice, error
+  } = useGetDynamicPriceByProductIdQuery(productId)
+  useInfoLoading({
+    isLoading, isSuccess, isError, data: dataPrice, error
+  })
+  const [month, setMonth] = useState([
+    getMonthShift(-5),
+    getMonthShift(-4),
+    getMonthShift(-3),
+    getMonthShift(-2),
+    getMonthShift(-1),
+    getMonthShift(),
+    getMonthShift(+1)
+  ])
+  const [price, setPrice] = useState(month.map(() => currentPrice))
+  const [data, setData] = useState({
+    labels: month,
+    datasets: [
+      {
+        label: 'Цена',
+        data: price,
+        borderColor: 'rgb(0,156,255)',
+        backgroundColor: 'rgba(0,158,255,0.5)'
+      }
+    ]
+  })
+
+  const fixArrayReverseAndAddCurrentPrice = (x: IDynamicPrice[]): IDynamicPrice[] => {
+    const a: IDynamicPrice[] = []
+    for (let i = 0; i < x.length; i++) {
+      a.push(x[(x.length - 1) - i])
+    }
+    a.push({
+      updatedAt: getMonth(currentDate.toString()),
+      price: currentPrice
+    })
+    return a
+  }
+
+  useEffect(() => {
+    if (isSuccess && dataPrice && dataPrice.result) {
+      setMonth(fixArrayReverseAndAddCurrentPrice(dataPrice.result).map(item => getMonth(item.updatedAt)))
+      setPrice(fixArrayReverseAndAddCurrentPrice(dataPrice.result).map(item => item.price))
+    }
+  }, [isSuccess])
+
+  useEffect(() => {
+    setData({
+      labels: month,
+      datasets: [
+        {
+          label: 'Цена',
+          data: price,
+          borderColor: 'rgb(0,156,255)',
+          backgroundColor: 'rgba(0,158,255,0.5)'
+        }
+      ]
+    })
+  }, [price])
+
   return (
     <div>
       <Line options={options} data={data} />

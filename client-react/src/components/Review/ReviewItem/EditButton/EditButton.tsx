@@ -34,7 +34,6 @@ const EditButton: FC<IEditButton> = ({
   useInfoLoading({
     isLoading, isSuccess, isError, data, error
   })
-
   const clickToggleShowModalEdit = () => {
     setModalShowEdit(!showModalFormEdit)
   }

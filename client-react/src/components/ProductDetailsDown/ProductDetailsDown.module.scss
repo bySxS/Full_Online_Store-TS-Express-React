@@ -1,6 +1,6 @@
 .secondContainer {
   @apply flex w-full m-auto p-2
-  border shadow-md my-3 bg-white flex-col;
+  border shadow-md my-3 bg-white flex-col min-h-[350px];
   border-radius: 10px;
 }
 
