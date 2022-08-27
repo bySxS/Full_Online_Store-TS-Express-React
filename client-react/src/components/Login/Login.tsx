@@ -48,6 +48,7 @@ const Login: FC<ILoginProps> = ({ onCloseLogin, onShowReg }) => {
           <Form.Control
             onChange={handleChange}
             name={'nickname'}
+            value={formState.nickname}
             placeholder="nickname"
             aria-label="nickname"
             aria-describedby="basic-addon1"
@@ -62,10 +63,11 @@ const Login: FC<ILoginProps> = ({ onCloseLogin, onShowReg }) => {
             onChange={handleChange}
             className={'pr-[4.5rem] md'}
             type={show ? 'text' : 'password'}
+            value={formState.password}
             placeholder="Enter password"
             name={'password'} />
           <Button className={'bg-emerald-600'} onClick={handleClick}>
-            {show ? 'Hide' : 'Show'}
+            {show ? 'Скрыть' : 'Показать'}
           </Button>
         </InputGroup>
         </div>
