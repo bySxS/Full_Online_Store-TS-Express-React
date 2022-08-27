@@ -30,7 +30,12 @@ const ProductViewCol: FC<IProductViewColProps> = ({ product }) => {
         </div>
         <div className={style.sectionScreen}>
           <div className={style.screen}>
-            <img src={product.screen} className={'h-full m-auto'} />
+            <img
+              src={product.screen}
+              className={'h-full m-auto'}
+              alt={product.title}
+              loading={'lazy'}
+            />
           </div>
         </div>
         <div className={style.sectionViews}>

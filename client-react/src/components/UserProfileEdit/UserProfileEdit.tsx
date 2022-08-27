@@ -2,8 +2,8 @@ import React, { FC, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { IUser, IUsers } from 'store/myStore/myStoreUser.interface'
 import { useAuth } from 'hooks/useAuth'
-import { useInfoLoading } from '../../hooks/useInfoLoading'
-import { useDeleteUserMutation } from '../../store/myStore/myStoreUser.api'
+import { useInfoLoading } from 'hooks/useInfoLoading'
+import { useDeleteUserMutation } from 'store/myStore/myStoreUser.api'
 import Registration from '../Registration/Registration'
 import style from './UserProfileEdit.module.scss'
 
@@ -53,6 +53,7 @@ const UserProfileEdit: FC<UserProfileProps> = ({
           ? <img className={style.avatar}
                  alt={user.nickname}
                  src={user.avatar}
+                 loading={'lazy'}
           />
           : <i className="bi bi-person-circle text-9xl text-gray-700"/>
         }

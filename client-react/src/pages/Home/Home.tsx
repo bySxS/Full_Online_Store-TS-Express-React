@@ -31,6 +31,7 @@ const Home: FC<HomeProps> = ({ name }) => {
             className={style.imgFirst}
             src={process.env.PUBLIC_URL + '/1.jpg'}
             alt={'Акции'}
+            loading={'lazy'}
           />
         </div>
         <div className={style.containerSecond}>
@@ -45,6 +46,7 @@ const Home: FC<HomeProps> = ({ name }) => {
               className={style.imgSecond}
               src={process.env.PUBLIC_URL + '/2.jpg'}
               alt={'Ноутбуки'}
+              loading={'lazy'}
             />
           </div>
           <div
@@ -58,6 +60,7 @@ const Home: FC<HomeProps> = ({ name }) => {
               className={style.imgThird}
               src={process.env.PUBLIC_URL + '/3.jpg'}
               alt={'Смартфоны'}
+              loading={'lazy'}
             />
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC } from 'react'
 import { useRating } from 'context/RatingContext'
 import style from './Rating.module.scss'
 
@@ -7,19 +7,14 @@ interface IRating {
   className?: string
 }
 
-const Rating: FC<IRating> = ({ rating, className }) => {
-  const { setRating, rating: changeRating } = useRating()
-  const [currRating, setCurrRating] = useState(changeRating !== undefined ? changeRating : rating)
+const Rating: FC<IRating> = ({ rating: currRating, className }) => {
+  const { setRating } = useRating()
 
   const clickChangeRating = (idx: number) => {
     if (setRating) {
       setRating(idx)
     }
   }
-
-  useEffect(() => {
-    setCurrRating(changeRating !== undefined ? changeRating : rating)
-  }, [changeRating, rating])
 
   return (
     <span className={style.rating}>

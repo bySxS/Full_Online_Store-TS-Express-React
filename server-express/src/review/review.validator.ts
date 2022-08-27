@@ -9,8 +9,11 @@ export const validateReview = () => {
     body('productId', 'Продукт (productId) не указан')
       .notEmpty(),
     body('rating', 'Рейтинг (rating) должен быть от 1 до 5')
-      .if(body('rating').notEmpty())
-      .isIn([0, 1, 2, 3, 4, 5])
+      .if(body('parentId').notEmpty())
+      .isIn([0]),
+    body('rating', 'Рейтинг (rating) должен быть от 1 до 5')
+      .if(body('parentId').isEmpty())
+      .isIn([1, 2, 3, 4, 5])
   ]
 }
 

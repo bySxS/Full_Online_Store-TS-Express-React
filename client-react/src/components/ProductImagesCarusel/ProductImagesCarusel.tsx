@@ -78,6 +78,7 @@ const ProductImagesCarousel: FC<IProductImagesCarousel> = ({
             alt={product.title}
             src={currImage}
             className={style.generalScreen}
+            loading={'lazy'}
           />
         }
       </div>
@@ -103,6 +104,7 @@ const ProductImagesCarousel: FC<IProductImagesCarousel> = ({
               alt={product.title + ' изображение ' + (i + 1)}
               src={img}
               className={style.screenSmall}
+              loading={'lazy'}
             />
           </div>
           )}

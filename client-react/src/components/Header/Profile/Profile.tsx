@@ -37,7 +37,12 @@ const Profile = () => {
           className={`${st.btn} ${style.btnAvatar}`}
         style={{ backgroundColor: 'transparent' }}>
           {isAuth && avatarUrl
-            ? <img src={avatarUrl} alt={nickname} className={style.avatar} />
+            ? <img
+              src={avatarUrl}
+              alt={nickname}
+              className={style.avatar}
+              loading={'lazy'}
+            />
             : <i className="bi bi-person-circle text-5xl text-gray-700"/>
           }
         </Dropdown.Toggle>

@@ -27,6 +27,7 @@ const ReviewItem: FC<IReviewItem> = ({
             src={urlAvatar}
             className={style.img}
             alt={userNickname}
+            loading={'lazy'}
           />
         </div>
         <div className={style.info}>
