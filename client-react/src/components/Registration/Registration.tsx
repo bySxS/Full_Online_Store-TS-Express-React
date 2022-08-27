@@ -266,10 +266,11 @@ const Registration: FC<IRegProps> = ({
             isValid={!errors.nickname && !onlyShowInfo}
             isInvalid={!!errors.nickname}
             placeholder="Введите ник"
-            defaultValue={defaultInfoUser &&
-                          defaultInfoUser.nickname
-              ? defaultInfoUser.nickname
-              : ''}
+            value={formState.nickname}
+            // defaultValue={defaultInfoUser &&
+            //               defaultInfoUser.nickname
+            //   ? defaultInfoUser.nickname
+            //   : ''}
             aria-label="nickname"
             aria-describedby="basic-addon1"
           />
@@ -295,10 +296,11 @@ const Registration: FC<IRegProps> = ({
             isInvalid={!!errors.email}
             disabled={onlyShowInfo}
             placeholder="Введите E-mail"
-            defaultValue={defaultInfoUser &&
-                          defaultInfoUser.email
-              ? defaultInfoUser.email
-              : ''}
+            value={formState.email}
+            // defaultValue={defaultInfoUser &&
+            //               defaultInfoUser.email
+            //   ? defaultInfoUser.email
+            //   : ''}
             aria-label="email"
             aria-describedby="basic-addon1"
           />
@@ -322,7 +324,8 @@ const Registration: FC<IRegProps> = ({
             onChange={handleChangeInput}
             className={'pr-[4.5rem] md'}
             type={showPass ? 'text' : 'password'}
-            defaultValue={''}
+            value={formState.password}
+            // defaultValue={''}
             isValid={!errors.password}
             isInvalid={!!errors.password}
             disabled={onlyShowInfo}
@@ -331,7 +334,7 @@ const Registration: FC<IRegProps> = ({
           />
           <Button className={'bg-emerald-600'}
                   onClick={handleClick}>
-            {showPass ? 'Hide' : 'Show'}
+            {showPass ? 'Скрыть' : 'Показать'}
           </Button>
           {/* <Form.Control.Feedback>Отлично!</Form.Control.Feedback> */}
             <Form.Control.Feedback type="invalid">
@@ -353,7 +356,8 @@ const Registration: FC<IRegProps> = ({
                   onChange={handleChangeInput}
                   className={'pr-[4.5rem] md'}
                   type={showPass ? 'text' : 'password'}
-                  defaultValue={''}
+                  value={formState.rePassword}
+                  // defaultValue={''}
                   isValid={!errors.rePassword}
                   isInvalid={!!errors.rePassword}
                   disabled={onlyShowInfo}
@@ -362,7 +366,7 @@ const Registration: FC<IRegProps> = ({
                 />
                 <Button className={'bg-emerald-600'}
                         onClick={handleClick}>
-                  {showPass ? 'Hide' : 'Show'}
+                  {showPass ? 'Скрыть' : 'Показать'}
                 </Button>
                 {/* <Form.Control.Feedback>Отлично!</Form.Control.Feedback> */}
                 <Form.Control.Feedback type="invalid">
@@ -418,10 +422,11 @@ const Registration: FC<IRegProps> = ({
             placeholder="Введите ФИО"
             isValid={!errors.fullName && !onlyShowInfo}
             isInvalid={!!errors.fullName}
-            defaultValue={defaultInfoUser &&
-                          defaultInfoUser.fullName
-              ? defaultInfoUser.fullName
-              : ''}
+            value={formState.fullName}
+            // defaultValue={defaultInfoUser &&
+            //               defaultInfoUser.fullName
+            //   ? defaultInfoUser.fullName
+            //   : ''}
             aria-label="fullName"
             aria-describedby="basic-addon1"
           />
@@ -447,10 +452,11 @@ const Registration: FC<IRegProps> = ({
             placeholder="Введите Город"
             aria-label="city"
             disabled={onlyShowInfo}
-            defaultValue={defaultInfoUser &&
-                          defaultInfoUser.city
-              ? defaultInfoUser.city
-              : ''}
+            value={formState.city}
+            // defaultValue={defaultInfoUser &&
+            //               defaultInfoUser.city
+            //   ? defaultInfoUser.city
+            //   : ''}
             aria-describedby="basic-addon1"
           />
         </InputGroup>
@@ -472,10 +478,11 @@ const Registration: FC<IRegProps> = ({
             disabled={onlyShowInfo}
             placeholder="Введите Адрес"
             aria-label="address"
-            defaultValue={defaultInfoUser &&
-                          defaultInfoUser.address
-              ? defaultInfoUser.address
-              : ''}
+            value={formState.address}
+            // defaultValue={defaultInfoUser &&
+            //               defaultInfoUser.address
+            //   ? defaultInfoUser.address
+            //   : ''}
             aria-describedby="basic-addon1"
           />
         </InputGroup>
@@ -495,10 +502,11 @@ const Registration: FC<IRegProps> = ({
             name={'deliveryAddress'}
             disabled={onlyShowInfo}
             placeholder="Введите Адрес доставки"
-            defaultValue={defaultInfoUser &&
-                          defaultInfoUser.deliveryAddress
-              ? defaultInfoUser.deliveryAddress
-              : ''}
+            value={formState.deliveryAddress}
+            // defaultValue={defaultInfoUser &&
+            //               defaultInfoUser.deliveryAddress
+            //   ? defaultInfoUser.deliveryAddress
+            //   : ''}
             aria-label="deliveryAddress"
             aria-describedby="basic-addon1"
           />
@@ -519,10 +527,11 @@ const Registration: FC<IRegProps> = ({
             name={'phoneNumber'}
             disabled={onlyShowInfo}
             placeholder="Введите Номер телефона"
-            defaultValue={defaultInfoUser &&
-                          defaultInfoUser.phoneNumber
-              ? defaultInfoUser.phoneNumber
-              : ''}
+            value={formState.phoneNumber}
+            // defaultValue={defaultInfoUser &&
+            //               defaultInfoUser.phoneNumber
+            //   ? defaultInfoUser.phoneNumber
+            //   : ''}
             aria-label="phoneNumber"
             aria-describedby="basic-addon1"
           />
@@ -557,8 +566,9 @@ const Registration: FC<IRegProps> = ({
           <Form.Check
             onChange={handleChangeCheckbox}
             name={'isSubscribeToNews'}
-            defaultChecked={defaultInfoUser &&
-                            defaultInfoUser.isSubscribeToNews === 1}
+            checked={formState.isSubscribeToNews}
+            // defaultChecked={defaultInfoUser &&
+            //                 defaultInfoUser.isSubscribeToNews === 1}
             label="Получать новости магазина"
           />
          </Form.Group>
