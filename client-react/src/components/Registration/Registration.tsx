@@ -5,6 +5,7 @@ import { useInfoLoading } from 'hooks/useInfoLoading'
 import { IRegistrationIn, IUsers } from 'store/myStore/myStoreUser.interface'
 import { useAuth } from 'hooks/useAuth'
 import { useDebounce } from 'hooks/useDebounce'
+import MyInput from '../UI/MyInput/MyInput'
 
 interface IRegProps {
   onCloseReg?: () => void
@@ -252,64 +253,37 @@ const Registration: FC<IRegProps> = ({
         {(!onlyShowInfo ||
           (defaultInfoUser &&
            defaultInfoUser.nickname)) &&
-        <>
-        <Form.Label>Никнейм</Form.Label>
-        <InputGroup hasValidation className="mb-2">
-          <InputGroup.Text id="basic-addon1">
-            <i className="bi bi-person"/>
-          </InputGroup.Text>
-          <Form.Control
-            required
-            onChange={handleChangeInput}
-            name={'nickname'}
-            disabled={onlyShowInfo}
-            isValid={!errors.nickname && !onlyShowInfo}
-            isInvalid={!!errors.nickname}
-            placeholder="Введите ник"
+          <MyInput
+            nameInput={'nickname'}
             value={formState.nickname}
-            // defaultValue={defaultInfoUser &&
-            //               defaultInfoUser.nickname
-            //   ? defaultInfoUser.nickname
-            //   : ''}
-            aria-label="nickname"
-            aria-describedby="basic-addon1"
+            placeholder={'Введите ник'}
+            label={'Никнейм'}
+            icon={<i className="bi bi-person"/>}
+            onChange={handleChangeInput}
+            disable={onlyShowInfo}
+            textError={errors.nickname}
+            isValid={!errors.nickname && !onlyShowInfo}
           />
-          <Form.Control.Feedback type="invalid">
-            {errors.nickname}
-          </Form.Control.Feedback>
-        </InputGroup>
-        </>
         }
 
         {(!onlyShowInfo ||
          (defaultInfoUser &&
           defaultInfoUser.email)) &&
-        <>
-          <Form.Label>E-mail{onlyShowInfo && defaultInfoUser && !defaultInfoUser.isActivated ? <span className={'text-red-600'}> Не подтверждён!</span> : ''}</Form.Label>
-        <InputGroup hasValidation className="mb-2">
-          <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
-          <Form.Control
-            required
-            onChange={handleChangeInput}
-            name={'email'}
-            isValid={!errors.email && !onlyShowInfo}
-            isInvalid={!!errors.email}
-            disabled={onlyShowInfo}
-            placeholder="Введите E-mail"
+          <MyInput
+            nameInput={'email'}
             value={formState.email}
-            // defaultValue={defaultInfoUser &&
-            //               defaultInfoUser.email
-            //   ? defaultInfoUser.email
-            //   : ''}
-            aria-label="email"
-            aria-describedby="basic-addon1"
+            placeholder={'Введите E-mail'}
+            label={`E-mail${onlyShowInfo &&
+            defaultInfoUser &&
+            !defaultInfoUser.isActivated
+              ? <span className={'text-red-600'}> Не подтверждён!</span>
+              : ''}`}
+            icon={'@'}
+            onChange={handleChangeInput}
+            disable={onlyShowInfo}
+            textError={errors.email}
+            isValid={!errors.email && !onlyShowInfo}
           />
-           {/* <Form.Control.Feedback>Отлично!</Form.Control.Feedback> */}
-            <Form.Control.Feedback type="invalid">
-              {errors.email}
-            </Form.Control.Feedback>
-        </InputGroup>
-        </>
         }
 
         {showEditPass && !onlyShowInfo &&
