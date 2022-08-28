@@ -23,12 +23,15 @@ const ReviewItem: FC<IReviewItem> = ({
     <div className={style.blockComment}>
       <div className={style.sectionInfo}>
         <div className={style.avatar}>
-          <img
+          {urlAvatar
+            ? <img
             src={urlAvatar}
             className={style.img}
             alt={userNickname}
             loading={'lazy'}
           />
+            : <i className="bi bi-person-circle text-7xl text-gray-700"/>
+          }
         </div>
         <div className={style.info}>
           <span className={`${style.infoNick} ${userRolesId === 1

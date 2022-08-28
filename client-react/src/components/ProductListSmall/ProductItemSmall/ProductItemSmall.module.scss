@@ -1,0 +1,23 @@
+.block {
+  @apply flex w-[90%] m-auto;
+}
+
+.blockScreen {
+  @apply flex;
+}
+
+.image {
+  @apply w-[70px];
+}
+
+.blockTitle {
+  @apply flex;
+}
+
+.blockButton {
+  @apply flex;
+}
+
+.link {
+  @apply hover:opacity-80;
+}

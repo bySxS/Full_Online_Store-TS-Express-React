@@ -35,7 +35,9 @@ const Favorites: FC<FavoritesProps> = ({ name }) => {
   const [fetchProducts,
     { isLoading, isSuccess, isError, data, error }] =
     useLazyGetFavProductsQuery()
-  useInfoLoading({ isLoading, isSuccess, isError, data, error })
+  useInfoLoading({
+    isLoading, isSuccess, isError, data, error
+  })
   const getProducts = () => {
     fetchProducts({ page: pageProduct, limit, ...filterState })
     incPageFavProduct()

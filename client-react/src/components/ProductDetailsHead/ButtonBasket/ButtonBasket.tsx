@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { Button } from 'react-bootstrap'
 import { useModal } from 'context/ModalContext'
-import { useAuth } from 'hooks/useAuth'
+import { useAuth } from 'hooks/useSelectors'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
 import selectBasket from 'store/basket/basket.selector'

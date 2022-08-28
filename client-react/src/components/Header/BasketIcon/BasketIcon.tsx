@@ -8,7 +8,7 @@ import selectBasket from 'store/basket/basket.selector'
 import { useModal } from 'context/ModalContext'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useSyncBasketMutation } from 'store/myStore/myStoreBasket.api'
-import { useAuth } from 'hooks/useAuth'
+import { useAuth } from 'hooks/useSelectors'
 import style from './BasketIcon.module.scss'
 
 const BasketIcon = () => {

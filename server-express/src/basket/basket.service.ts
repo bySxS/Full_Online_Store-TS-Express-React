@@ -200,7 +200,11 @@ class BasketService implements IBasketService {
         if (needProduct &&
           needProduct.count < productCountArray[i] &&
           !deletedProductFromBasket.includes(id)) {
-          deletedProductFromBasket.push(id)
+          if (needProduct.count > 0) {
+            productCountArray[i] = needProduct.count
+          } else {
+            deletedProductFromBasket.push(id)
+          }
         }
         if (needProduct && !deletedProductFromBasket.includes(id)) {
           const result = await BasketProductsModel.query()

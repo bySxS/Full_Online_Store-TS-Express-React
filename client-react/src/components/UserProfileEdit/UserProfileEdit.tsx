@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { IUser, IUsers } from 'store/myStore/myStoreUser.interface'
-import { useAuth } from 'hooks/useAuth'
+import { useAuth } from 'hooks/useSelectors'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useDeleteUserMutation } from 'store/myStore/myStoreUser.api'
 import Registration from '../Registration/Registration'

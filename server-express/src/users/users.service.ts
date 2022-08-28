@@ -343,6 +343,7 @@ class UsersService implements IUserService {
     return {
       success: true,
       result: {
+        id,
         nickname,
         email,
         fullName,

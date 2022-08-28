@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Dropdown } from 'react-bootstrap'
 import st from 'components/Header/Header.module.scss'
-import { useAuth } from 'hooks/useAuth'
+import { useAuth } from 'hooks/useSelectors'
 import { RoutePath } from 'AppRouter'
 import { NavLink } from 'react-router-dom'
 import { useLazyLogoutQuery } from 'store/myStore/myStoreUser.api'
@@ -28,7 +28,7 @@ const Profile = () => {
   const toggleShowProfileEdit = () => setShowProfileEdit(!showProfileEdit)
 
   const clickLogout = () => {
-    const result = confirm('Вы уверены что хотите разлогинится?')
+    const result = confirm('Вы уверены что хотите выйти?')
     if (result) {
       logout('')
     }

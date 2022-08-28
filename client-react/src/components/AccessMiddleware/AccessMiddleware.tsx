@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react'
-import { useAuth } from 'hooks/useAuth'
+import { useAuth } from 'hooks/useSelectors'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
 import { useAppActions, useAppDispatch } from 'hooks/useStore'

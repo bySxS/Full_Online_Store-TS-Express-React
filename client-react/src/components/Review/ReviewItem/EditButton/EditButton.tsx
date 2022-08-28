@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react'
 import { NavLink } from 'react-bootstrap'
 import { IReviewOut } from 'store/myStore/myStoreReview.interface'
-import { useAuth } from 'hooks/useAuth'
+import { useAuth } from 'hooks/useSelectors'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useDeleteReviewMutation } from 'store/myStore/myStoreReview.api'
 import { ModalComponent } from 'components/UI/Modal/ModalComponent'

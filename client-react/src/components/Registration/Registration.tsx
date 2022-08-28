@@ -3,7 +3,7 @@ import { InputGroup, Form, Button } from 'react-bootstrap'
 import { useRegistrationMutation, useUpdateUserByIdMutation } from 'store/myStore/myStoreUser.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { IRegistrationIn, IUsers } from 'store/myStore/myStoreUser.interface'
-import { useAuth } from 'hooks/useAuth'
+import { useAuth } from 'hooks/useSelectors'
 import { useDebounce } from 'hooks/useDebounce'
 import MyInput from '../UI/MyInput/MyInput'
 

@@ -5,7 +5,7 @@ import {
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { IResultList } from 'store/myStore/myStore.interface'
 import { IReviewOut } from 'store/myStore/myStoreReview.interface'
-import { useAuth } from 'hooks/useAuth'
+import { useAuth } from 'hooks/useSelectors'
 import FormAddedReview from './FormAddedReview/FormAddedReview'
 import style from './Review.module.scss'
 import ReviewItemsRecurs from './ReviewItemsRecurs/ReviewItemsRecurs'
