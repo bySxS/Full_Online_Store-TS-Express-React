@@ -89,7 +89,7 @@ const PriceDynamic: FC<IPriceDynamic> = ({
       a.push(x[(x.length - 1) - i])
     }
     a.push({
-      updatedAt: getMonthShift(0),
+      updatedAt: new Date().toUTCString(),
       price: currentPrice
     })
     return a
