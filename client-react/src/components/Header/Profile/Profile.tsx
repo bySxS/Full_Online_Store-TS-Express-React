@@ -14,8 +14,12 @@ import style from './Profile.module.scss'
 
 const Profile = () => {
   const { isAuth, nickname, avatarUrl, roles, isAdmin, user } = useAuth()
-  const [logout, { isLoading, isSuccess, isError, error, data }] = useLazyLogoutQuery()
-  useInfoLoading({ isLoading, isSuccess, isError, error, data })
+  const [logout, {
+    isLoading, isSuccess, isError, error, data
+  }] = useLazyLogoutQuery()
+  useInfoLoading({
+    isLoading, isSuccess, isError, error, data
+  })
 
   const [showProfile, setShowProfile] = useState(false)
   const toggleShowProfile = () => setShowProfile(!showProfile)

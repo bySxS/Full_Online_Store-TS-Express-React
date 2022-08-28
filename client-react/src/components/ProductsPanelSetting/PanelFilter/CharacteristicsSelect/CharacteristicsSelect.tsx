@@ -35,12 +35,12 @@ const CharacteristicsSelect = () => {
   const [checkedValue, setCheckedValue] = useState<string[]>(filterState.filter?.split(',') || [])
   const checkedDelay = useDebounce(checkedValue, 1000)
   const { changeFilterState } = useAppActions()
-
+  const isApplyFilter = useAppSelector(selectProduct.isApplyFilter)
   useEffect(() => {
     if (isSuccess && data.result) {
       setShowSection(data.result.map(sect => ({
         sectionId: sect.sectionId,
-        show: false
+        show: isApplyFilter
       })))
     }
   }, [isSuccess])

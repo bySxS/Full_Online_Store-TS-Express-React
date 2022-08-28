@@ -1,24 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IMessage } from '../myStore/myStore.interface'
 import { myStoreBasketEndpoint } from '../myStore/myStoreBasket.api'
-import { IBasketProductIn } from '../myStore/myStoreBasket.interface'
+import {
+  IBasket, IBasketList,
+  IBasketProductIn, IBasketProductSyncOut
+} from '../myStore/myStoreBasket.interface'
 
 const LS_BASKET_KEY = 'rbk'
-
-interface IBasket {
-  productId: number
-  productCount: number
-}
+const LS_SYNC_BASKET_KEY = 'rSyncBk'
 
 interface IBasketState {
-  product: IBasket[]
+  product: IBasketList[]
+  syncBasketAfterAuth: boolean
 }
 
 const initialState: IBasketState = {
-  product: JSON.parse(localStorage.getItem(LS_BASKET_KEY) ?? '[]')
+  product: JSON.parse(localStorage.getItem(LS_BASKET_KEY) ?? '[]'),
+  syncBasketAfterAuth: localStorage.getItem(LS_SYNC_BASKET_KEY) === '1'
 }
 
-const addToBasket = (state: IBasketState, action: PayloadAction<IBasket>) => {
+const addToBasket = (state: IBasketState, action: PayloadAction<IBasketList>) => {
   const ids = new Set(state.product.map(product => product.productId))
   if (!ids.has(action.payload.productId)) {
     state.product = [...state.product, action.payload]
@@ -36,7 +37,11 @@ export const BasketSlice = createSlice({
   initialState,
   reducers: {
     addToBasket,
-    delFromBasket
+    delFromBasket,
+    syncBasketOff (state) {
+      state.syncBasketAfterAuth = false
+      localStorage.removeItem(LS_SYNC_BASKET_KEY)
+    }
   },
   extraReducers: (builder) => {
     builder.addMatcher(
@@ -52,6 +57,33 @@ export const BasketSlice = createSlice({
           }]
           localStorage.setItem(LS_BASKET_KEY, JSON.stringify(state.product))
         }
+      }
+    )
+    builder.addMatcher(
+      myStoreBasketEndpoint.getBasket.matchFulfilled,
+      (state: IBasketState,
+        action: PayloadAction<IMessage<IBasket>>) => {
+        const { payload: { result } } = action
+        const ids = new Set(state.product.map(product => product.productId))
+        const newProduct = result.BasketProducts
+          .filter(item => !ids.has(item.productId))
+          .map(item => ({
+            productId: item.productId,
+            productCount: item.productCount
+          }))
+        state.product = state.product.concat(newProduct)
+        localStorage.setItem(LS_BASKET_KEY, JSON.stringify(state.product))
+      }
+    )
+    builder.addMatcher(
+      myStoreBasketEndpoint.syncBasket.matchFulfilled,
+      (state: IBasketState,
+        action: PayloadAction<IMessage<IBasketProductSyncOut>>) => {
+        const { payload: { result } } = action
+        state.product = result.productsInBasket
+        localStorage.setItem(LS_BASKET_KEY, JSON.stringify(state.product))
+        state.syncBasketAfterAuth = true
+        localStorage.setItem(LS_SYNC_BASKET_KEY, '1')
       }
     )
   }

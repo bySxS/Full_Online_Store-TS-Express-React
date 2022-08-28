@@ -30,6 +30,7 @@ export function ModalComponent (
         onHide={onClose}
         keyboard={true}
         restoreFocus={true}
+        animation={true}
         fullscreen={fullscreen}
         centered={center}
         size={size}

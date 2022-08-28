@@ -6,7 +6,7 @@ import BasketController from './basket.controller'
 import { validateId, validateLimitPage } from '@/validator'
 import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
 import {
-  validateBasket, validateBasketProduct, validateUpdBasket
+  validateBasket, validateBasketProduct, validateSyncBasketProduct, validateUpdBasket
 } from '@/basket/basket.validator'
 
 const router = Router()
@@ -17,6 +17,11 @@ try {
     validateBasketProduct(), ValidatorResultMiddleware,
     AuthMiddleware,
     BasketController.addProductToBasket)
+  // success
+  router.post('/sync',
+    validateSyncBasketProduct(), ValidatorResultMiddleware,
+    AuthMiddleware,
+    BasketController.syncProductBasketAfterAuth)
   // success
   router.get('/',
     AuthMiddleware,

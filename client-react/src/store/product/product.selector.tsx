@@ -15,12 +15,15 @@ const pageProduct = (state: RootState) => state.product.pageProduct
 const pageFavProduct = (state: RootState) => state.product.pageFavProduct
 const totalProduct = (state: RootState) => state.product.totalProduct
 const totalFavProduct = (state: RootState) => state.product.totalFavProduct
-const getProduct = (id: number) => (state: RootState) => {
-  return state.product.products.filter(product => product.id === id)[0] || undefined
-}
-const getFavProduct = (id: number) => (state: RootState) => {
-  return state.product.favoriteProducts.filter(product => product.id === id)[0] || undefined
-}
+const getProduct = (id: number) => createSelector(allProducts, items => {
+  return items.filter(product => product.id === id)[0] || undefined
+})
+const getFavProduct = (id: number) => createSelector(allFavProducts, items => {
+  return items.filter(product => product.id === id)[0] || undefined
+})
+const isApplyFilter = createSelector(filterState, item => {
+  return (item.filter && item.filter.length > 2) || false
+})
 
 const selectProduct = {
   allProducts,
@@ -35,7 +38,8 @@ const selectProduct = {
   totalProduct,
   totalFavProduct,
   getProduct,
-  getFavProduct
+  getFavProduct,
+  isApplyFilter
 }
 
 export default selectProduct

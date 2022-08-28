@@ -5,7 +5,7 @@ import {
   IAllOrders,
   IBasket,
   IBasketProductIn,
-  IBasketProductOut,
+  IBasketProductOut, IBasketProductSyncIn, IBasketProductSyncOut,
   IBasketToOrderIn, IBasketToOrderOut, IOrderChange
 } from 'store/myStore/myStoreBasket.interface'
 
@@ -18,6 +18,15 @@ const myStoreBasketApi = createApi({
       IBasketProductIn>({
         query: (body: IBasketProductIn) => ({
           url: 'basket',
+          method: 'POST',
+          body
+        })
+      }),
+
+    syncBasket: build.mutation<IMessage<IBasketProductSyncOut>,
+      IBasketProductSyncIn>({
+        query: (body: IBasketProductSyncIn) => ({
+          url: 'basket/sync',
           method: 'POST',
           body
         })
@@ -42,7 +51,7 @@ const myStoreBasketApi = createApi({
         })
       }),
 
-    getBasket: build.query<IMessage<IBasket>, null>({
+    getBasket: build.query<IMessage<IBasket>, string>({
       query: () => ({
         url: 'basket/'
       })
@@ -86,8 +95,9 @@ export const {
   useBasketToOrderMutation,
   useChangeOrderMutation,
   useDelFromBasketMutation,
-  useLazyGetBasketQuery,
+  useGetBasketQuery,
   useGetOrdersNeedProcessQuery,
   useGetAllOrdersQuery,
+  useSyncBasketMutation,
   endpoints: myStoreBasketEndpoint
 } = myStoreBasketApi

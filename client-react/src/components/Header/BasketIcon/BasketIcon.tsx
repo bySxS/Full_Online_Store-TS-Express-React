@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { NavLink } from 'react-bootstrap'
 import { ModalComponent } from 'components/UI/Modal/ModalComponent'
 import { RouteName } from 'AppRouter'
@@ -6,11 +6,28 @@ import Basket from 'pages/Basket/Basket'
 import { useAppSelector } from 'hooks/useStore'
 import selectBasket from 'store/basket/basket.selector'
 import { useModal } from 'context/ModalContext'
+import { useInfoLoading } from 'hooks/useInfoLoading'
+import { useSyncBasketMutation } from 'store/myStore/myStoreBasket.api'
+import { useAuth } from 'hooks/useAuth'
 import style from './BasketIcon.module.scss'
 
 const BasketIcon = () => {
   const { modal, openModal, closeModal } = useModal()
+  const { isAuth } = useAuth()
+  const basketProduct = useAppSelector(selectBasket.basketProduct)
   const countProductInBasket = useAppSelector(selectBasket.countProductInBasket)
+  const needSyncBasket = useAppSelector(selectBasket.needSyncBasket)
+  const [syncBasket, {
+    isLoading, isSuccess, isError, error, data
+  }] = useSyncBasketMutation()
+  useInfoLoading({
+    isLoading, isSuccess, isError, error, data
+  })
+  useEffect(() => {
+    if (isAuth && !needSyncBasket) {
+      syncBasket({ productsInBasket: basketProduct })
+    }
+  }, [isAuth])
 
   const clickOpenBasketModal = () => {
     if (modal[0]) {

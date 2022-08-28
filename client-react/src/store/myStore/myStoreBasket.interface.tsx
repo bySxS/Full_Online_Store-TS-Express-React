@@ -16,6 +16,20 @@ export interface IBasketProductIn {
   id?: number
 }
 
+export interface IBasketList {
+  productId: number
+  productCount: number
+}
+
+export interface IBasketProductSyncIn {
+  productsInBasket: IBasketList[]
+}
+
+export interface IBasketProductSyncOut {
+  needDeleteProductFromBasket: number[]
+  productsInBasket: IBasketList[]
+}
+
 export interface IBasketProductOut {
   id: number
   basketId: number

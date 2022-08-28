@@ -4,8 +4,10 @@ import { ILoginIn, ILoginResult, IUser, IUsers } from 'store/myStore/myStoreUser
 import { userAction } from 'store/user/user.slice'
 import { baseQueryWithRefreshToken } from 'store/myStore/customFetch'
 import { productAction } from 'store/product/product.slice'
+import { basketAction } from 'store/basket/basket.slice'
 const { activatedUserEmail, login, logout, updUser } = userAction
 const { clearFavProducts } = productAction
+const { syncBasketOff } = basketAction
 
 const myStoreUserApi = createApi({
   reducerPath: 'storeUser/api',
@@ -53,6 +55,7 @@ const myStoreUserApi = createApi({
           await api.queryFulfilled
           api.dispatch(logout())
           api.dispatch(clearFavProducts())
+          api.dispatch(syncBasketOff())
         } catch (e) {}
       }
       // invalidatesTags: ['Users']

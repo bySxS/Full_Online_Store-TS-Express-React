@@ -28,6 +28,15 @@ export interface IBasketProduct {
   productCount: number
 }
 
+export interface IBasketList {
+  productId: number
+  productCount: number
+}
+
+export interface IBasketProductSync {
+  productsInBasket: IBasketList[]
+}
+
 export interface IBasketService {
   addProductToBasket: (userId: number, Dto: IBasketProduct) => Promise<IMessage>
   delProductFromBasket: (userId: number, productId: number) => Promise<IMessage>
@@ -38,6 +47,7 @@ export interface IBasketService {
   currentBasketToProcessing: (Dto: IBasket) => Promise<IMessage>
   updBasketById: (id: number, Dto: IBasket) => Promise<IMessage>
   getBasketProducts: (basketId: number) => QueryBuilder<BasketProductsModel, BasketProductsModel[]>
+  syncProductBasketAfterAuth: (userId: number, Dto: IBasketProductSync) => Promise<IMessage>
 }
 
 export interface IBasketController {
@@ -48,4 +58,5 @@ export interface IBasketController {
   getCurrentBasketByAuthUser: (req: Request, res: Response, next: NextFunction) => void
   getAllOrdersInProgressAllUsers: (req: Request, res: Response, next: NextFunction) => void
   updBasketById: (req: Request, res: Response, next: NextFunction) => void
+  syncProductBasketAfterAuth: (req: Request, res: Response, next: NextFunction) => void
 }

@@ -38,15 +38,13 @@ export const options = {
   }
 }
 
-const currentDate = new Date()
-const currentMonth = currentDate.getMonth()
-const currentYear = currentDate.getFullYear()
-const currentDay = currentDate.getDay()
-const getMonthShift = (shift: number = 0) =>
-  dayjs(new Date(`${currentYear}-${currentMonth + shift}-${currentDay}`))
-    .format('MMMM YY')
+const getMonthShift = (shift: number = 0) => {
+  return dayjs(new Date()).add(shift, 'month').format('MMMM YY')
+}
 
-const getMonth = (datetime: string): string => dayjs(new Date(datetime)).format('MMMM YY')
+const getMonth = (datetime: string): string => {
+  return dayjs(new Date(datetime)).format('MMMM YY')
+}
 
 interface IPriceDynamic {
   productId: number
@@ -64,13 +62,13 @@ const PriceDynamic: FC<IPriceDynamic> = ({
     isLoading, isSuccess, isError, data: dataPrice, error
   })
   const [month, setMonth] = useState([
+    getMonthShift(-6),
     getMonthShift(-5),
     getMonthShift(-4),
     getMonthShift(-3),
     getMonthShift(-2),
     getMonthShift(-1),
-    getMonthShift(),
-    getMonthShift(+1)
+    getMonthShift()
   ])
   const [price, setPrice] = useState(month.map(() => currentPrice))
   const [data, setData] = useState({
@@ -91,14 +89,14 @@ const PriceDynamic: FC<IPriceDynamic> = ({
       a.push(x[(x.length - 1) - i])
     }
     a.push({
-      updatedAt: getMonth(currentDate.toString()),
+      updatedAt: getMonthShift(0),
       price: currentPrice
     })
     return a
   }
 
   useEffect(() => {
-    if (isSuccess && dataPrice && dataPrice.result) {
+    if (isSuccess && dataPrice && dataPrice.success) {
       setMonth(fixArrayReverseAndAddCurrentPrice(dataPrice.result).map(item => getMonth(item.updatedAt)))
       setPrice(fixArrayReverseAndAddCurrentPrice(dataPrice.result).map(item => item.price))
     }

@@ -15,18 +15,18 @@ export const validateProductPrice = () => {
       .notEmpty(),
     body('priceTypeId',
       'ID тип цены (priceTypeId) должны быть только цифры')
-      .matches('^[a-zA-Z0-9]+$'),
+      .matches('^[0-9]+$'),
     body('productId',
       'ID продукта (productId) не указано')
       .notEmpty(),
     body('productId',
       'ID продукта (productId) должны быть только цифры')
-      .matches('^[a-zA-Z0-9]+$'),
+      .matches('^[0-9]+$'),
     body('price',
       'Новая цена продукта (price) не указана, также можно указать валюту (currency)')
       .notEmpty(),
     body('price',
       'Новая цена продукта (price) должны быть только цифры')
-      .matches('^[a-zA-Z0-9]+$')
+      .matches('^[0-9]+$')
   ]
 }

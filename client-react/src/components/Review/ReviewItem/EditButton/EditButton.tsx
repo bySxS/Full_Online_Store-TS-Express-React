@@ -84,7 +84,6 @@ const EditButton: FC<IEditButton> = ({
             </span>}]
         </div>
       }
-      {showModalFormEdit &&
         <ModalComponent
           show={showModalFormEdit}
           title={'Редактировать ваш ' +
@@ -105,8 +104,6 @@ const EditButton: FC<IEditButton> = ({
             onClose={clickToggleShowModalEdit}
           />
         </ModalComponent>
-      }
-      {showModalFormReply &&
         <ModalComponent
           show={showModalFormReply}
           title={'Ответить пользователю ' + userNickname}
@@ -121,7 +118,6 @@ const EditButton: FC<IEditButton> = ({
             onClose={clickToggleShowModalReply}
           />
         </ModalComponent>
-      }
     </>
   )
 }

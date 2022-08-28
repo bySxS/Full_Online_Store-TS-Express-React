@@ -49,6 +49,7 @@ export default class ProductsModel extends Model {
 
   // innerJoin as
   public priceId!: number
+  public price!: number
   characteristics!: ICharacteristicProduct[]
 
   static get tableName () {

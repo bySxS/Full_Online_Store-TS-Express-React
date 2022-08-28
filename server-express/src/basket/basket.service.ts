@@ -1,4 +1,4 @@
-import { IBasket, IBasketProduct, IBasketService } from '@/basket/basket.interface'
+import { IBasket, IBasketProduct, IBasketProductSync, IBasketService } from '@/basket/basket.interface'
 import { IMessage } from '@/interface'
 import ApiError from '@/apiError'
 import BasketModel from '@/basket/basket.model'
@@ -16,11 +16,6 @@ class BasketService implements IBasketService {
     return BasketService.instance
   }
 
-  /*
-  *  ToDo: реализовать функцию добавления товаров корзины
-  *     state store в бд после регистрации или авторизации в синхронном режиме
-  *     можно реализовать через очередь queue
-` */
   async currentBasketToProcessing (Dto: IBasket): Promise<IMessage> {
     const {
       userId, comment,
@@ -118,14 +113,13 @@ class BasketService implements IBasketService {
     } = Dto
     const findCurrentBasket =
       await this.getCurrentBasketByUserId(userId)
-    findCurrentBasket.result.BasketProducts
-      .forEach((product: { productId: number }) => {
-        if (product.productId === +productId) {
-          throw ApiError.badRequest(
+    if (findCurrentBasket.result.BasketProducts
+      .map((product: { productId: number }) => product.productId)
+      .includes(+productId) === true) {
+      throw ApiError.badRequest(
           `Продукт с id${productId} уже в корзине, вы можете изменить количество`,
           'BasketService addProductToBasket')
-        }
-      })
+    }
     const product = await ProductsService.getById(productId)
     if (product.result.availability === false) {
       throw ApiError.badRequest(
@@ -154,6 +148,88 @@ class BasketService implements IBasketService {
       success: true,
       result,
       message: `Продукт с id${productId} успешно добавлен в корзину`
+    }
+  }
+
+  async syncProductBasketAfterAuth (
+    userId: number, Dto: IBasketProductSync
+  ): Promise<IMessage> {
+    const {
+      productsInBasket: productsInBasketIn
+    } = Dto
+    const productIdArray = productsInBasketIn.map(i => +i.productId)
+    const productCountArray = productsInBasketIn.map(i => +i.productCount)
+    const findCurrentBasket =
+      await this.getCurrentBasketByUserId(userId)
+    const findCurrentProduct =
+      findCurrentBasket.result.BasketProducts
+        .map((product: { productId: number }) => product.productId)
+
+    const product = await ProductsService
+      .getAllProductsWithFilter({
+        limit: 1000,
+        page: 1
+      }).whereIn('products.id', productIdArray)
+    const findProducts = product &&
+      'results' in product &&
+      product.results.map(product => ({
+        id: product.id,
+        title: product.title,
+        availability: product.availability,
+        count: product.count,
+        priceId: product.priceId,
+        price: product.price
+      }))
+    const deletedProductFromBasket: number[] = []
+    const productsInBasket: { productId: number, productCount: number }[] =
+      findCurrentBasket.result.BasketProducts
+        .map((product: { productId: number, productCount: number }) => ({
+          productId: product.productId,
+          productCount: product.productCount
+        }))
+    for (const id of productIdArray) {
+      const i = productIdArray.indexOf(id)
+      if (!findCurrentProduct.includes(id)) {
+        const needProduct = findProducts && findProducts
+          .filter(product => product.id === id)[0]
+
+        if (needProduct &&
+          needProduct.availability === false) {
+          deletedProductFromBasket.push(id)
+        }
+        if (needProduct &&
+          needProduct.count < productCountArray[i] &&
+          !deletedProductFromBasket.includes(id)) {
+          deletedProductFromBasket.push(id)
+        }
+        if (needProduct && !deletedProductFromBasket.includes(id)) {
+          const result = await BasketProductsModel.query()
+            .insert({
+              basketId: findCurrentBasket.result.id,
+              productId: id,
+              productPriceId: needProduct.priceId,
+              currentPrice: needProduct.price,
+              productCount: productCountArray[i]
+            })
+          if (result) {
+            productsInBasket.push({
+              productId: id,
+              productCount: productCountArray[i]
+            })
+          } else {
+            deletedProductFromBasket.push(id)
+          }
+        }
+      }
+    }
+
+    return {
+      success: true,
+      result: {
+        productsInBasket,
+        deletedProductFromBasket
+      },
+      message: 'Продукты в корзине сонхронизированы с сервером'
     }
   }
 
