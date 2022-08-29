@@ -5,10 +5,14 @@ import ProductsModel from './products.model'
 import { Page, QueryBuilder } from 'objection'
 import CharacteristicsSetValueModel from '@/characteristics/characteristicsSetValue.model'
 
+export type TSort = 'price_asc' | 'price_desc' |
+  'id_desc' | 'views_desc' | 'rating_desc' | 'favorites_desc' | ''
+
+
 export interface IGetProducts {
   filter?: string[],
   price?: number[],
-  sort?: string,
+  sort?: TSort,
   limit?: number,
   page?: number
   categoryId?: number
@@ -85,7 +89,7 @@ export interface IProductService {
     page?: number,
     filter?: string[],
     price?: number[],
-    sort?: string
+    sort?: TSort
 }) =>
     QueryBuilder<ProductsModel, ProductsModel | undefined> |
     QueryBuilder<ProductsModel, Page<ProductsModel>>

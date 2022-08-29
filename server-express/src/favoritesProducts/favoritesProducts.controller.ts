@@ -1,3 +1,4 @@
+import { TSort } from '@/products/products.interface'
 import { IFavoritesProductController } from './favoritesProducts.interface'
 import { NextFunction, Request, Response } from 'express'
 import FavoritesProductsService from './favoritesProducts.service'
@@ -48,7 +49,7 @@ class FavoritesProductController implements IFavoritesProductController {
       const filter = filterText.split(',')
       const priceText = String(req.query.price || '0')
       const price = priceText.split('_').map(price => +price)
-      const sort = String(req.query.sort || '')
+      const sort = String(req.query.sort || '') as TSort
       const authUser = req.user as IJwt
       const limit = +(req.query.limit || 10)
       const page = +(req.query.page || 1)

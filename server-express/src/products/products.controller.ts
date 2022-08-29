@@ -1,4 +1,4 @@
-import { IProductController, IProductFilesArray } from './products.interface'
+import { IProductController, IProductFilesArray, TSort } from './products.interface'
 import { Request, Response, NextFunction } from 'express'
 import ProductsService from './products.service'
 import ApiError from '@/apiError'
@@ -111,7 +111,7 @@ class ProductsController implements IProductController {
       const priceText = String(req.query.price || '0')
       const filter = filterText.split(',')
       const price = priceText.split('_').map(price => +price)
-      const sort = String(req.query.sort || '')
+      const sort = String(req.query.sort || '') as TSort
       const products = await ProductsService
         .getAll({
           filter, price, sort, limit, page, categoryId

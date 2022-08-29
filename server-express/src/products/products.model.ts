@@ -50,6 +50,10 @@ export default class ProductsModel extends Model {
   // innerJoin as
   public priceId!: number
   public price!: number
+  public categoryName!: string
+  public sectionId!: number
+  public sectionName!: string
+  public priceType!: string
   characteristics!: ICharacteristicProduct[]
 
   static get tableName () {

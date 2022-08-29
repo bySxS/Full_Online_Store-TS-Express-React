@@ -357,7 +357,8 @@ class ProductsService implements IProductService {
     page?: number,
     filter?: string[],
     price?: number[],
-    sort?: string
+    sort?: 'price_asc' | 'price_desc' |
+      'id_desc' | 'views_desc' | 'rating_desc' | 'favorites_desc' | ''
   }): QueryBuilder<ProductsModel, ProductsModel | undefined> |
     QueryBuilder<ProductsModel, Page<ProductsModel>
       > {
