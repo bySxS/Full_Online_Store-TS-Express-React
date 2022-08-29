@@ -6,7 +6,7 @@ import { Knex } from 'knex'
 
 exports.seed = async function (knex: Knex) {
   await knex('productsViews').insert([
-    { id: 1, views: 100, productId: 1 },
+    { id: 1, views: 1000000, productId: 1 },
     { id: 2, views: 200, productId: 2 },
     { id: 3, views: 1000, productId: 3 },
     { id: 4, views: 1200, productId: 4 },
