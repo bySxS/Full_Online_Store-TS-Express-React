@@ -552,8 +552,17 @@ class ProductsService implements IProductService {
       .groupBy('basketProducts.currentPrice',
         'basketProducts.updatedAt')
       .orderBy('basketProducts.updatedAt', 'DESC')
-      .limit(10)
-    if (price.length === 0) {
+      .limit(100)
+    let prevPrice = 0
+    const dynamic = price.filter(p => {
+      if (prevPrice !== p.price) {
+        prevPrice = p.price
+        return true
+      } else {
+        return false
+      }
+    })
+    if (dynamic.length === 0) {
       return {
         success: false,
         message: `Динамики цены для продукта с id${productId} нет, товар не был куплен`
@@ -561,7 +570,7 @@ class ProductsService implements IProductService {
     }
     return {
       success: true,
-      result: price,
+      result: dynamic,
       message: `Динамика цены для продукта с id${productId} успешно получена`
     }
   }
