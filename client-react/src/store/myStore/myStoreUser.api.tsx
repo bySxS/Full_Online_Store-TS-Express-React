@@ -99,7 +99,7 @@ const myStoreUserApi = createApi({
           if (response.result.results) {
             const users = response.result?.results?.map(user => ({
               ...user,
-              avatar: user.avatar + `?${new Date().getTime().toString()}`
+              avatar: user.avatar ? user.avatar + `?${new Date().getTime().toString()}` : ''
             }))
             return {
               ...response,
