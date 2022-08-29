@@ -100,14 +100,13 @@ const Basket: FC<BasketProps> = ({ name }) => {
         <meta name="description" content="{name}" />
       </Helmet>
       <div>
-      {basketProductFullInfo && basketProductFullInfo.length > 0
-        ? (<ProductListSmall
+      {basketProductFullInfo && basketProductFullInfo.length > 0 &&
+        (<ProductListSmall
           InBasket={true}
           productSmall={basketProductFullInfo}
           onDelete={clickDelete}
           onChangeCount={changeCountPrice}
         />)
-        : (<div className={'text-center'}>Нет продуктов в корзине</div>)
       }
       {basketPrice > 0 && (
        <div className={style.block}>
@@ -130,7 +129,7 @@ const Basket: FC<BasketProps> = ({ name }) => {
          }
        </div>
       )}
-        {showBuying && basketPrice > 0 &&
+        {showBuying &&
           (isAuth
             ? (<BasketForm />)
             : (<div className={'text-center'}>
