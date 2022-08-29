@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { addHostServerToFileLink } from '../../utils'
 import { IMessage } from '../myStore/myStore.interface'
 import { myStoreBasketEndpoint } from '../myStore/myStoreBasket.api'
 import {
-  IBasket, IBasketList,
-  IBasketProductIn, IBasketProductSyncOut
+  IBasket, IBasketList, IBasketProductIn, IBasketProductOut, IBasketProductSyncOut
 } from '../myStore/myStoreBasket.interface'
 
 const LS_BASKET_KEY = 'rbk'
@@ -11,12 +11,14 @@ const LS_SYNC_BASKET_KEY = 'rSyncBk'
 
 interface IBasketState {
   product: IBasketList[]
+  productFullInfo: IBasketProductOut[]
   syncBasketAfterAuth: boolean
 }
 
 const initialState: IBasketState = {
   product: JSON.parse(localStorage.getItem(LS_BASKET_KEY) ?? '[]'),
-  syncBasketAfterAuth: localStorage.getItem(LS_SYNC_BASKET_KEY) === '1'
+  syncBasketAfterAuth: localStorage.getItem(LS_SYNC_BASKET_KEY) === '1',
+  productFullInfo: []
 }
 
 const addToBasket = (state: IBasketState, action: PayloadAction<IBasketList>) => {
@@ -60,6 +62,15 @@ export const BasketSlice = createSlice({
       }
     )
     builder.addMatcher(
+      myStoreBasketEndpoint.delFromBasket.matchFulfilled,
+      (state: IBasketState,
+        action: PayloadAction<IMessage<{ productId: number }>>) => {
+        const { payload: { result } } = action
+        state.product = state.product.filter(f => f.productId !== result.productId)
+        localStorage.setItem(LS_BASKET_KEY, JSON.stringify(state.product))
+      }
+    )
+    builder.addMatcher(
       myStoreBasketEndpoint.getBasket.matchFulfilled,
       (state: IBasketState,
         action: PayloadAction<IMessage<IBasket>>) => {
@@ -72,6 +83,10 @@ export const BasketSlice = createSlice({
             productCount: item.productCount
           }))
         state.product = state.product.concat(newProduct)
+        state.productFullInfo = result.BasketProducts.map(i => ({
+          ...i,
+          productScreen: addHostServerToFileLink(i.productScreen, i.productId, 'products_pic')
+        }))
         localStorage.setItem(LS_BASKET_KEY, JSON.stringify(state.product))
       }
     )

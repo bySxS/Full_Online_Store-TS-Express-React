@@ -5,11 +5,3 @@
   position: relative;
   display: flex;
 }
-
-.productsViewRow {
-  @apply flex flex-col items-center;
-}
-
-.productsViewCol {
-  @apply flex flex-wrap justify-center;
-}

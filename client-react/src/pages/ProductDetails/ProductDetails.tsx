@@ -47,9 +47,11 @@ const ProductDetails = () => {
         subCategoryName: data.result.categoryName,
         subCategoryId: data.result.categoryId
       })
-      changeFilterState({})
+      changeFilterState({
+        categoryId: undefined
+      })
     }
-  }, [isSuccess])
+  }, [isSuccess, data])
 
   return (
     <>

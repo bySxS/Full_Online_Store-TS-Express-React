@@ -6,6 +6,7 @@ import baseQueryWithRefreshToken from 'store/myStore/customFetch'
 const myStoreProductApi = createApi({
   reducerPath: 'storeProduct/api',
   baseQuery: baseQueryWithRefreshToken,
+  tagTypes: ['Products'],
   refetchOnFocus: true,
   endpoints: build => ({
     addProduct: build.mutation<IMessage<IProductIn>,
@@ -14,7 +15,8 @@ const myStoreProductApi = createApi({
           url: 'product',
           method: 'POST',
           body
-        })
+        }),
+        invalidatesTags: ['Products']
       }),
 
     updateProduct: build.mutation<IMessage<IProductIn>,
@@ -23,7 +25,8 @@ const myStoreProductApi = createApi({
           url: 'product/' + productId,
           method: 'PUT',
           body
-        })
+        }),
+        invalidatesTags: ['Products']
       }),
 
     delProduct: build.mutation<IMessage<null>,
@@ -31,7 +34,8 @@ const myStoreProductApi = createApi({
         query: (productId: number) => ({
           url: 'product/' + productId,
           method: 'DELETE'
-        })
+        }),
+        invalidatesTags: ['Products']
       }),
 
     searchProducts: build.query<IMessage<IResultList<IProduct>>,
@@ -43,7 +47,8 @@ const myStoreProductApi = createApi({
             limit: args.limit || 50,
             page: args.page
           }
-        })
+        }),
+        providesTags: ['Products']
       }),
 
     getAllProducts: build.query<IMessage<IResultList<IProduct>>,
@@ -58,39 +63,16 @@ const myStoreProductApi = createApi({
             limit: args.limit || 10,
             page: args.page
           }
-        })
+        }),
+        providesTags: ['Products']
       }),
-
-    // getAllProductsByCategoryId: build.query<IMessage<IResultList<IProduct>>,
-    // IGetProductsWithFilter>({
-    //   query: (args) => ({
-    //     url: 'product/category/' + args.categoryId,
-    //     params: {
-    //       filter: args.filter,
-    //       price: args.price,
-    //       sort: args.sort,
-    //       limit: args.limit || 10,
-    //       page: args.page
-    //     }
-    //   })// ,
-    // onQueryStarted (args: IGetProductsWithFilter, api) {
-    //   try {
-    //     const state = (api.getState() as RootState)
-    //     if (state.product.prevCategory !== String(args.categoryId)) {
-    //       api.dispatch(clearProducts())
-    //     }
-    //     api.dispatch(setPrevCategory(String(args.categoryId)))
-    //   } catch (e) {
-    //     console.log(e)
-    //   }
-    // }
-    // }),
 
     getProductById: build.query<IMessage<IProduct>,
       number>({
         query: (id: number) => ({
           url: 'product/' + id
-        })
+        }),
+        providesTags: (result, error, id) => [{ type: 'Products', id }]
       }),
 
     getDynamicPriceByProductId: build.query<IMessage<IDynamicPrice[]>,

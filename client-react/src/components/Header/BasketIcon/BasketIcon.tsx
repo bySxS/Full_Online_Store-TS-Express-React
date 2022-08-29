@@ -59,6 +59,7 @@ const BasketIcon = () => {
        <ModalComponent show={modal[0]}
                        title={'Корзина'}
                        onClose={() => closeModal(0)}
+                       className={'w-[1000px]'}
        >
          <Basket name={RouteName.BASKET} />
        </ModalComponent>

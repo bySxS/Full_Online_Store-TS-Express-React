@@ -1,11 +1,13 @@
-import React from 'react'
-import { useAppSelector } from 'hooks/useStore'
+import React, { FC } from 'react'
+import { IProduct } from 'store/myStore/myStoreProduct.interface'
 import ProductsPanelSetting from '../ProductsPanelSetting/ProductsPanelSetting'
-import selectProduct from 'store/product/product.selector'
 import ProductItems from '../ProductItems/ProductItems'
 
-const ProductList = () => {
-  const products = useAppSelector(selectProduct.allProducts)
+interface IProductList {
+  products: IProduct[]
+}
+
+const ProductList: FC<IProductList> = ({ products }) => {
   return (
     <>
       <ProductsPanelSetting />

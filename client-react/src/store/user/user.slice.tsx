@@ -56,26 +56,22 @@ export const UserSlice = createSlice({
     },
     updUser (state, action: PayloadAction<IMessage<IUser>>) {
       const { payload } = action
-      try {
-        const user = payload.result
-        if (user.id === state.user?.id) {
-          const rolesName = (user.rolesId === 1)
-            ? 'admin'
-            : (user.rolesId === 2)
-                ? 'moder'
-                : (user.rolesId === 3)
-                    ? 'user'
-                    : 'Гость'
-          let avatar =
+      const user = payload.result
+      if (user.id === state.user?.id) {
+        const rolesName = (user.rolesId === 1)
+          ? 'admin'
+          : (user.rolesId === 2)
+              ? 'moder'
+              : (user.rolesId === 3)
+                  ? 'user'
+                  : 'Гость'
+        let avatar =
             addHostServerToFileLink(user.avatar, user.id || state.user?.id, 'user_avatar')
-          if (avatar) {
-            avatar = avatar + `?${new Date().getTime().toString()}`
-          }
-          state.user = { ...state.user, ...user, avatar, rolesName }
-          localStorage.setItem(LS_USER_KEY, JSON.stringify(state.user))
+        if (avatar) {
+          avatar = avatar + `?${new Date().getTime().toString()}`
         }
-      } catch (e) {
-        console.log(e)
+        state.user = { ...state.user, ...user, avatar, rolesName }
+        localStorage.setItem(LS_USER_KEY, JSON.stringify(state.user))
       }
     },
     logout (state) {

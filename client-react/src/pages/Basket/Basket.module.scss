@@ -1,0 +1,16 @@
+.block {
+  @apply flex w-[90%] m-auto;
+}
+
+.blockPrice {
+  @apply flex w-full text-2xl;
+}
+
+.blockButton {
+  @apply flex;
+  flex: 1 0 170px;
+}
+
+.button {
+  @apply bg-amber-400 text-black hover:bg-amber-300;
+}

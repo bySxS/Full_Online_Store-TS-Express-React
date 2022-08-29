@@ -2,12 +2,11 @@ import React, { FC, useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useObserver } from 'hooks/useObserver'
-import { useAppActions, useAppSelector } from 'hooks/useStore'
+import { useAppActions } from 'hooks/useStore'
 import { useLazyGetFavProductsQuery } from 'store/myStore/myStoreFavProduct.api'
-import selectProduct from 'store/product/product.selector'
-import ProductItems from 'components/ProductItems/ProductItems'
-import ProductsPanelSetting from 'components/ProductsPanelSetting/ProductsPanelSetting'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
+import ProductList from 'components/ProductList/ProductList'
+import { useProducts } from 'hooks/useSelectors'
 import style from '../Products/Products.module.scss'
 
 interface FavoritesProps {
@@ -23,14 +22,9 @@ const Favorites: FC<FavoritesProps> = ({ name }) => {
     changeFilterState({})
   }, [])
   const pagination = useRef<HTMLHeadingElement>(null)
-  const products = useAppSelector(selectProduct.allFavProducts)
-  const filterState = useAppSelector(selectProduct.filterState)
-  const pageProduct = useAppSelector(selectProduct.pageFavProduct)
-  const totalProduct = useAppSelector(selectProduct.totalFavProduct)
-  const viewProducts = useAppSelector(selectProduct.viewProducts)
+  const { allFavProducts, filterState, pageFavProduct, totalFavProduct } = useProducts()
   const { incPageFavProduct } = useAppActions()
   const [limit] = useState(10)
-  // const [prevPageLoad] = useState(location.pathname)
   const [totalPage, setTotalPage] = useState(Math.round(10 / limit) + 1)
   const [fetchProducts,
     { isLoading, isSuccess, isError, data, error }] =
@@ -39,14 +33,14 @@ const Favorites: FC<FavoritesProps> = ({ name }) => {
     isLoading, isSuccess, isError, data, error
   })
   const getProducts = () => {
-    fetchProducts({ page: pageProduct, limit, ...filterState })
+    fetchProducts({ page: pageFavProduct, limit, ...filterState })
     incPageFavProduct()
   }
-  useObserver(pagination, pageProduct, totalPage, isLoading, filterState, getProducts)
+  useObserver(pagination, pageFavProduct, totalPage, isLoading, filterState, getProducts)
 
   useEffect(() => {
-    setTotalPage(Math.round((totalProduct || limit) / limit) + 1)
-  }, [totalProduct])
+    setTotalPage(Math.round((totalFavProduct || limit) / limit) + 1)
+  }, [totalFavProduct])
 
   return (
     <>
@@ -54,21 +48,10 @@ const Favorites: FC<FavoritesProps> = ({ name }) => {
         <title>{name}</title>
         <meta name="description" content="{name}" />
       </Helmet>
-      <ProductsPanelSetting />
-      {isSuccess && products &&
-       <div className={
-         viewProducts === 'Row'
-           ? style.productsViewRow
-           : style.productsViewCol
-       }>
-         {products.map(product =>
-           <ProductItems key={product.id} product={product} />
-         )}
-       </div>
-      }
+      <ProductList products={allFavProducts} />
       <div ref={pagination}
            className={style.autoPagination}/>
-      {!products && <div>Нет продуктов :(</div>}
+      {!allFavProducts && <div>Нет продуктов :(</div>}
     </>
   )
 }

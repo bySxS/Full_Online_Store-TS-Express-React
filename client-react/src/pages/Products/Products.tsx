@@ -25,6 +25,7 @@ const Products: FC<ProductProps> = ({ name }) => {
   const filterState = useAppSelector(selectProduct.filterState)
   const pageProduct = useAppSelector(selectProduct.pageProduct)
   const totalProduct = useAppSelector(selectProduct.totalProduct)
+  const products = useAppSelector(selectProduct.allProducts)
   const { changeFilterState } = useAppActions()
   const { setBreadcrumb } = useBreadcrumb()
   const [limit] = useState(10)
@@ -73,7 +74,7 @@ const Products: FC<ProductProps> = ({ name }) => {
         <title>{name}</title>
         <meta name="description" content={name}/>
       </Helmet>
-      <ProductList />
+      <ProductList products={products} />
       <div ref={pagination}
            className={style.autoPagination}/>
   </>

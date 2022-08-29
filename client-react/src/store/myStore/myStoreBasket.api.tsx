@@ -12,6 +12,7 @@ import {
 const myStoreBasketApi = createApi({
   reducerPath: 'storeBasket/api',
   baseQuery: baseQueryWithRefreshToken,
+  tagTypes: ['Basket'],
   refetchOnFocus: true,
   endpoints: build => ({
     addToBasket: build.mutation<IMessage<IBasketProductIn>,
@@ -20,7 +21,18 @@ const myStoreBasketApi = createApi({
           url: 'basket',
           method: 'POST',
           body
-        })
+        }),
+        invalidatesTags: ['Basket']
+      }),
+
+    changeCountProductInBasket: build.mutation<IMessage<IBasketProductIn>,
+      IBasketProductIn>({
+        query: (body: IBasketProductIn) => ({
+          url: 'basket',
+          method: 'PUT',
+          body
+        }),
+        invalidatesTags: ['Basket']
       }),
 
     syncBasket: build.mutation<IMessage<IBasketProductSyncOut>,
@@ -33,11 +45,12 @@ const myStoreBasketApi = createApi({
       }),
 
     delFromBasket: build.mutation<IMessage<{ productId: number }>,
-      { productId: number }>({
-        query: ({ productId }) => ({
+      number>({
+        query: (productId: number) => ({
           url: 'basket/' + productId,
           method: 'DELETE'
-        })
+        }),
+        invalidatesTags: ['Basket']
       }),
 
     getAllOrders: build.query<IMessage<IResultList<IAllOrders>>,
@@ -53,8 +66,9 @@ const myStoreBasketApi = createApi({
 
     getBasket: build.query<IMessage<IBasket>, string>({
       query: () => ({
-        url: 'basket/'
-      })
+        url: 'basket'
+      }),
+      providesTags: ['Basket']
     }),
 
     getOrdersNeedProcess: build.query<IMessage<IResultList<IBasketProductOut>>,
@@ -92,6 +106,7 @@ export default myStoreBasketApi
 
 export const {
   useAddToBasketMutation,
+  useChangeCountProductInBasketMutation,
   useBasketToOrderMutation,
   useChangeOrderMutation,
   useDelFromBasketMutation,

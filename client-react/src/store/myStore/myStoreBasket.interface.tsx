@@ -12,7 +12,7 @@ export interface IBasketProductIn {
   productPriceId?: number
   currentPrice?: number
   basketId?: number
-  createdAt?: Date | string
+  createdAt?: string
   id?: number
 }
 
@@ -59,8 +59,8 @@ export interface IBasket {
   phoneNumber: string
   dateProcessing?: string
   deliveryDate?: string
-  createdAt: Date | string
-  updatedAt: Date | string
+  createdAt: string
+  updatedAt: string
   BasketProducts: IBasketProductOut[]
 }
 
@@ -80,10 +80,10 @@ export interface IAllOrders {
   comment?: string
   deliveryAddress: string
   phoneNumber: string
-  dateProcessing: Date
-  deliveryDate: Date
-  createdAt: Date
-  updatedAt: Date
+  dateProcessing: string
+  deliveryDate: string
+  createdAt: string
+  updatedAt: string
   currentPrice: number
   productCount: number
   title: string
@@ -93,9 +93,9 @@ export type TBasketStatus = 'SelectsTheProduct' |
   'InProcessing' | 'InDelivery' | 'Completed' | 'Cancelled'
 
 export interface IOrderChange {
-  deliveryDate: string | Date
+  deliveryDate: string
   comment: string
   status: TBasketStatus
-  dateProcessing: string | Date
+  dateProcessing: string
   forciblyUpd: boolean // обновить принудительно
 }
