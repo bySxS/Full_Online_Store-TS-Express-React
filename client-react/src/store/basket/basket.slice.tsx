@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { addHostServerToFileLink } from '../../utils'
+import { addHostServerToFileLink } from 'utils'
 import { IMessage } from '../myStore/myStore.interface'
 import { myStoreBasketEndpoint } from '../myStore/myStoreBasket.api'
 import {
-  IBasket, IBasketList, IBasketProductIn, IBasketProductOut, IBasketProductSyncOut
+  IBasket, IBasketList, IBasketProductIn,
+  IBasketProductOut, IBasketProductSyncOut
 } from '../myStore/myStoreBasket.interface'
 
 const LS_BASKET_KEY = 'rbk'
@@ -30,7 +31,10 @@ const addToBasket = (state: IBasketState, action: PayloadAction<IBasketList>) =>
 }
 
 const delFromBasket = (state: IBasketState, action: PayloadAction<number>) => {
-  state.product = state.product.filter(f => f.productId !== action.payload)
+  state.product = state.product
+    .filter(f => f.productId !== action.payload)
+  state.productFullInfo = state.productFullInfo
+    .filter(f => f.productId !== action.payload)
   localStorage.setItem(LS_BASKET_KEY, JSON.stringify(state.product))
 }
 
@@ -40,6 +44,26 @@ export const BasketSlice = createSlice({
   reducers: {
     addToBasket,
     delFromBasket,
+    changeCountProduct (state, action: PayloadAction<IBasketProductIn>) {
+      const { payload: { productId, productCount } } = action
+      state.product = state.product.map(i => {
+        if (i.productId === productId) {
+          return {
+            ...i,
+            productCount
+          }
+        } else { return i }
+      })
+      state.productFullInfo = state.productFullInfo.map(i => {
+        if (i.productId === productId) {
+          return {
+            ...i,
+            productCount
+          }
+        } else { return i }
+      })
+      localStorage.setItem(LS_BASKET_KEY, JSON.stringify(state.product))
+    },
     syncBasketOff (state) {
       state.syncBasketAfterAuth = false
       localStorage.removeItem(LS_SYNC_BASKET_KEY)
@@ -91,6 +115,26 @@ export const BasketSlice = createSlice({
       }
     )
     builder.addMatcher(
+      myStoreBasketEndpoint.getProductBasketNoneAuthUser.matchFulfilled,
+      (state: IBasketState,
+        action: PayloadAction<IMessage<IBasketProductOut[]>>) => {
+        const { payload: { result } } = action
+        const ids = new Set(state.product.map(product => product.productId))
+        const newProduct = result
+          .filter(item => !ids.has(item.productId))
+          .map(item => ({
+            productId: item.productId,
+            productCount: item.productCount
+          }))
+        state.product = state.product.concat(newProduct)
+        state.productFullInfo = result.map(i => ({
+          ...i,
+          productScreen: addHostServerToFileLink(i.productScreen, i.productId, 'products_pic')
+        }))
+        localStorage.setItem(LS_BASKET_KEY, JSON.stringify(state.product))
+      }
+    )
+    builder.addMatcher(
       myStoreBasketEndpoint.syncBasket.matchFulfilled,
       (state: IBasketState,
         action: PayloadAction<IMessage<IBasketProductSyncOut>>) => {
@@ -99,6 +143,14 @@ export const BasketSlice = createSlice({
         localStorage.setItem(LS_BASKET_KEY, JSON.stringify(state.product))
         state.syncBasketAfterAuth = true
         localStorage.setItem(LS_SYNC_BASKET_KEY, '1')
+      }
+    )
+    builder.addMatcher(
+      myStoreBasketEndpoint.basketToOrder.matchFulfilled,
+      (state: IBasketState) => {
+        state.product = []
+        state.productFullInfo = []
+        localStorage.setItem(LS_BASKET_KEY, JSON.stringify(state.product))
       }
     )
   }

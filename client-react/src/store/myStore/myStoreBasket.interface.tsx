@@ -31,13 +31,13 @@ export interface IBasketProductSyncOut {
 }
 
 export interface IBasketProductOut {
-  id: number
-  basketId: number
-  productPriceId: number
+  id?: number
+  basketId?: number
+  createdAt?: string
+  updatedAt?: string
   currentPrice: number
   productCount: number
-  createdAt: string
-  updatedAt: string
+  productPriceId: number
   productId: number
   productTitle: string
   productCategory: string
@@ -65,7 +65,7 @@ export interface IBasket {
 }
 
 export interface IBasketToOrderOut {
-  BasketProducts: IBasketProductOut
+  BasketProducts: IBasketProductOut[]
   comment: string
   deliveryAddress: string
   phoneNumber: string

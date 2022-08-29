@@ -1,12 +1,18 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
 import ProductListSmall from 'components/ProductListSmall/ProductListSmall'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import {
-  useChangeCountProductInBasketMutation, useDelFromBasketMutation, useGetBasketQuery
+  useChangeCountProductInBasketMutation,
+  useDelFromBasketMutation,
+  useLazyGetBasketQuery,
+  useGetProductBasketNoneAuthUserMutation
 } from 'store/myStore/myStoreBasket.api'
-import { useBasket } from 'hooks/useSelectors'
+import { useAuth, useBasket } from 'hooks/useSelectors'
+import BasketForm from '../../components/BasketForm/BasketForm'
+import { useAppActions, useAppSelector } from '../../hooks/useStore'
+import selectBasket from '../../store/basket/basket.selector'
 import style from './Basket.module.scss'
 
 interface BasketProps {
@@ -14,11 +20,24 @@ interface BasketProps {
 }
 
 const Basket: FC<BasketProps> = ({ name }) => {
-  const {
+  const { isAuth } = useAuth()
+  const [showBuying, setShowBuying] = useState(false)
+  const [getProductAuth, {
     isLoading, isSuccess, isError, data, error
-  } = useGetBasketQuery('')
+  }] = useLazyGetBasketQuery()
   useInfoLoading({
     isLoading, isSuccess, isError, data, error
+  })
+  const [getProductNoneAuth, {
+    isLoading: isLoadingGet, isSuccess: isSuccessGet,
+    isError: isErrorGet, data: dataGet, error: errorGet
+  }] = useGetProductBasketNoneAuthUserMutation()
+  useInfoLoading({
+    isLoading: isLoadingGet,
+    isSuccess: isSuccessGet,
+    isError: isErrorGet,
+    data: dataGet,
+    error: errorGet
   })
   const [delProductFromBasket, {
     isLoading: isLoadingDel, isSuccess: isSuccessDel,
@@ -42,50 +61,84 @@ const Basket: FC<BasketProps> = ({ name }) => {
     data: dataUpdCount,
     error: errorUpdCount
   })
+  const { changeCountProduct, delFromBasket } = useAppActions()
+  const basketProduct = useAppSelector(selectBasket.basketProduct)
   const { basketProductFullInfo, basketPrice } = useBasket()
-  const clickDelete = (id: number, title: string) => {
+
+  const clickDelete = (productId: number, title: string) => {
     const result = confirm('Вы уверены что хотите удалить из корзины ' +
                            title + '?')
     if (result) {
-      delProductFromBasket(id)
+      if (isAuth) {
+        delProductFromBasket(productId)
+      } else {
+        delFromBasket(productId)
+      }
     }
   }
 
   const changeCountPrice = (productId: number, productCount: number) => {
-    updCountProductFromBasket({ productId, productCount })
+    if (isAuth) {
+      updCountProductFromBasket({ productId, productCount })
+    } else {
+      changeCountProduct({ productId, productCount })
+    }
   }
 
+  useEffect(() => {
+    if (isAuth) {
+      getProductAuth('')
+    } else {
+      getProductNoneAuth({ productsInBasket: basketProduct })
+    }
+  }, [])
+
   return (
-    <div>
+    <>
       <Helmet>
         <title>{name}</title>
         <meta name="description" content="{name}" />
       </Helmet>
-      {basketProductFullInfo
+      <div>
+      {basketProductFullInfo && basketProductFullInfo.length > 0
         ? (<ProductListSmall
           InBasket={true}
           productSmall={basketProductFullInfo}
           onDelete={clickDelete}
           onChangeCount={changeCountPrice}
         />)
-        : (<div>Нет продуктов в корзине</div>)
+        : (<div className={'text-center'}>Нет продуктов в корзине</div>)
       }
       {basketPrice > 0 && (
        <div className={style.block}>
        <div className={style.blockPrice}>
          Сумма товаров с учетом количества: {basketPrice}₴
        </div>
-       <div className={style.blockButton}>
+         {!showBuying &&
+           <div className={style.blockButton}>
          <Button
            variant={'outline-warning'}
            className={style.button}
+           onClick={() => setShowBuying(!showBuying)}
          >
-           Оформить покупку
+           {!showBuying
+             ? 'Оформить покупку'
+             : 'Отменить'
+           }
          </Button>
        </div>
+         }
        </div>
       )}
+        {showBuying && basketPrice > 0 &&
+          (isAuth
+            ? (<BasketForm />)
+            : (<div className={'text-center'}>
+              Чтобы оформить покупку нужно авторизироваться!
+            </div>))
+        }
     </div>
+    </>
   )
 }
 

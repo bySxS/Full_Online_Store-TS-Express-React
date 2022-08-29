@@ -1,11 +1,12 @@
 import React, { FC, useEffect, useState } from 'react'
-import { Button, Form, InputGroup } from 'react-bootstrap'
+import { Button, Form } from 'react-bootstrap'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import {
   useAddReviewMutation,
   useUpdReviewMutation
 } from 'store/myStore/myStoreReview.api'
 import { IReview } from 'store/myStore/myStoreReview.interface'
+import MyInput from 'components/UI/MyInput/MyInput'
 import Rating from '../ReviewItem/Rating/Rating'
 import style from './FormAddedReview.module.scss'
 
@@ -88,12 +89,6 @@ const FormAddedReview: FC<IFormAddedReview> = ({
     }
   }, [dataUpd, dataAdd])
 
-  const handleChangeInput =
-    ({ target: { name, value }, currentTarget }: React.ChangeEvent<HTMLInputElement>) => {
-      setFormState((prev) => ({ ...prev, [name]: value }))
-      currentTarget.checkValidity()
-    }
-
   const btnLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     // if (!validated) {
@@ -118,84 +113,33 @@ const FormAddedReview: FC<IFormAddedReview> = ({
         <Form
           noValidate
         >
-         <InputGroup hasValidation={false} className="mb-2">
-           <InputGroup.Text id="basic-addon1">
-             <i className="bi bi-chat-left-dots"/>
-           </InputGroup.Text>
-           <Form.Control
-             required
-             as={'textarea'}
-             onChange={handleChangeInput}
-             name={'comment'}
-             // isValid={!errors.nickname && !onlyShowInfo}
-             // isInvalid={!!errors.nickname}
-             placeholder={defaultValue.parentId
-               ? 'Введите комментарий'
-               : 'Введите отзыв'}
-             value={formState.comment}
-             // defaultValue={defaultValue &&
-             // defaultValue.comment
-             //   ? defaultValue.comment
-             //   : ''}
-             aria-label="comment"
-             aria-describedby="basic-addon1"
-             style={{ height: '100px' }}
-           />
-           {/* <Form.Control.Feedback type="invalid"> */}
-           {/*   {errors.nickname} */}
-           {/* </Form.Control.Feedback> */}
-         </InputGroup>
+          <MyInput
+            placeholder={defaultValue.parentId
+              ? 'Введите комментарий'
+              : 'Введите отзыв'}
+            value={formState.comment}
+            nameInput={'comment'}
+            setValue={setFormState}
+            icon={<i className="bi bi-chat-left-dots"/>}
+            type={'textarea'}
+          />
           {formState.comment.length > 0 && !formState.parentId &&
-            <InputGroup hasValidation={false} className="mb-2">
-              <InputGroup.Text id="basic-addon1">
-                <i className="bi bi-plus-circle-fill"/>
-              </InputGroup.Text>
-              <Form.Control
-                required
-                as={'textarea'}
-                onChange={handleChangeInput}
-                name={'advantages'}
-                // isValid={!errors.nickname && !onlyShowInfo}
-                // isInvalid={!!errors.nickname}
-                placeholder={'Введите плюсы'}
-                value={formState.advantages}
-                // defaultValue={defaultValue &&
-                // defaultValue.advantages
-                //   ? defaultValue.advantages
-                //   : ''}
-                aria-label="advantages"
-                aria-describedby="basic-addon1"
-              />
-              {/* <Form.Control.Feedback type="invalid"> */}
-              {/*   {errors.nickname} */}
-              {/* </Form.Control.Feedback> */}
-            </InputGroup>
+            <MyInput
+              placeholder={'Введите плюсы'}
+              value={formState.advantages}
+              nameInput={'advantages'}
+              setValue={setFormState}
+              icon={<i className="bi bi-plus-circle-fill"/>}
+            />
           }
           {formState.comment.length > 0 && !formState.parentId &&
-            <InputGroup hasValidation={false} className="mb-2">
-            <InputGroup.Text id="basic-addon1">
-            <i className="bi bi-dash-circle-fill"/>
-            </InputGroup.Text>
-            <Form.Control
-            required
-            as={'textarea'}
-            onChange={handleChangeInput}
-            name={'flaws'}
-            // isValid={!errors.nickname && !onlyShowInfo}
-            // isInvalid={!!errors.nickname}
-            placeholder={'Введите минусы'}
-            value={formState.flaws}
-            // defaultValue={defaultValue &&
-            // defaultValue.flaws
-            //   ? defaultValue.flaws
-            //   : ''}
-            aria-label="flaws"
-            aria-describedby="basic-addon1"
+            <MyInput
+              placeholder={'Введите минусы'}
+              value={formState.flaws}
+              nameInput={'flaws'}
+              setValue={setFormState}
+              icon={<i className="bi bi-dash-circle-fill"/>}
             />
-          {/* <Form.Control.Feedback type="invalid"> */}
-          {/*   {errors.nickname} */}
-          {/* </Form.Control.Feedback> */}
-            </InputGroup>
           }
         </Form>
       </div>

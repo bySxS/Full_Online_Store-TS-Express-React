@@ -7,10 +7,23 @@
 }
 
 .blockButton {
-  @apply flex;
+  @apply flex justify-end;
   flex: 1 0 170px;
 }
 
-.button {
+.blockButton .button {
   @apply bg-amber-400 text-black hover:bg-amber-300;
+}
+
+@media only screen and (max-width: 992px) {
+  .block {
+    @apply flex-col;
+  }
+  .blockButton {
+    @apply m-auto w-full pt-2;
+    flex: 1 1 auto;
+  }
+  .blockButton .button {
+    @apply w-full;
+  }
 }

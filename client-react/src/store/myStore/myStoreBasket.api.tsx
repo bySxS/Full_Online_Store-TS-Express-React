@@ -44,6 +44,15 @@ const myStoreBasketApi = createApi({
         })
       }),
 
+    getProductBasketNoneAuthUser: build.mutation<IMessage<IBasketProductOut[]>,
+      IBasketProductSyncIn>({
+        query: (body: IBasketProductSyncIn) => ({
+          url: 'basket/not_auth',
+          method: 'POST',
+          body
+        })
+      }),
+
     delFromBasket: build.mutation<IMessage<{ productId: number }>,
       number>({
         query: (productId: number) => ({
@@ -88,7 +97,8 @@ const myStoreBasketApi = createApi({
           url: 'basket/to_order',
           method: 'POST',
           body
-        })
+        }),
+        invalidatesTags: ['Basket']
       }),
 
     changeOrder: build.mutation<IMessage<IOrderChange>,
@@ -110,9 +120,10 @@ export const {
   useBasketToOrderMutation,
   useChangeOrderMutation,
   useDelFromBasketMutation,
-  useGetBasketQuery,
+  useLazyGetBasketQuery,
   useGetOrdersNeedProcessQuery,
   useGetAllOrdersQuery,
   useSyncBasketMutation,
+  useGetProductBasketNoneAuthUserMutation,
   endpoints: myStoreBasketEndpoint
 } = myStoreBasketApi
