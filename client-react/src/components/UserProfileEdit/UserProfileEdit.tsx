@@ -10,11 +10,13 @@ import style from './UserProfileEdit.module.scss'
 interface UserProfileProps {
   user: IUser | IUsers
   edit?: boolean
+  notShowInfo?: boolean
 }
 
 const UserProfileEdit: FC<UserProfileProps> = ({
   user,
-  edit = true
+  edit = true,
+  notShowInfo = false
 }) => {
   const { isAdmin, nickname } = useAuth()
   const [deleteUser, {
@@ -48,10 +50,11 @@ const UserProfileEdit: FC<UserProfileProps> = ({
 
   return (
     <div className={style.viewProfile}>
-      <div className={style.sectionAvatar}>
+      <div className={`${style.sectionAvatar} ${(!notShowInfo || editProfile) ? 'pt-20' : ''}`}>
         {user.avatar
           ? <img className={style.avatar}
                  alt={user.nickname}
+                 title={user.nickname}
                  src={user.avatar}
                  loading={'lazy'}
           />
@@ -100,7 +103,8 @@ const UserProfileEdit: FC<UserProfileProps> = ({
           </div>
         }
       </div>
-      <div className={style.sectionInfo}>
+      {(!notShowInfo || editProfile) &&
+        (<div className={style.sectionInfo}>
         <Registration
           onlyShowInfo={!editProfile}
           changeProfile={true}
@@ -109,7 +113,8 @@ const UserProfileEdit: FC<UserProfileProps> = ({
           showEditAvatar={showEditAvatar}
           showEditPass={showEditPass}
         />
-      </div>
+      </div>)
+      }
     </div>
   )
 }
