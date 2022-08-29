@@ -18,6 +18,11 @@ try {
     AuthMiddleware,
     BasketController.addProductToBasket)
   // success
+  router.put('/',
+    validateBasketProduct(), ValidatorResultMiddleware,
+    AuthMiddleware,
+    BasketController.changeCountProductInBasket)
+  // success
   router.post('/sync',
     validateSyncBasketProduct(), ValidatorResultMiddleware,
     AuthMiddleware,

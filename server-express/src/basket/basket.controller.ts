@@ -27,6 +27,20 @@ class BasketController implements IBasketController {
     }
   }
 
+  async changeCountProductInBasket (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const authUser = req.user as IJwt
+      const result =
+        await BasketService
+          .changeCountProductInBasket(authUser.id, req.body)
+      return res.status(201).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
+
   async syncProductBasketAfterAuth (
     req: Request, res: Response, next: NextFunction
   ) {

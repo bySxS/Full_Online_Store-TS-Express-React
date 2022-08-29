@@ -151,14 +151,61 @@ class BasketService implements IBasketService {
     }
   }
 
+  async changeCountProductInBasket (
+    userId: number, Dto: IBasketProduct
+  ): Promise<IMessage> {
+    const {
+      productId, productCount
+    } = Dto
+    const findCurrentBasket =
+      await this.getCurrentBasketByUserId(userId)
+    const findProductInBasket = findCurrentBasket.result.BasketProducts
+      .filter((product: { productId: number }) => product.productId === productId)[0]
+    if (!findProductInBasket.productId) {
+      return await this.addProductToBasket(userId, Dto)
+    }
+    const product = await ProductsService.getById(productId)
+    if (product.result.availability === false) {
+      throw ApiError.badRequest(
+        `Продукт ${product.result.title} к сожалению закончился(`,
+        'BasketService changeCountProductInBasket')
+    }
+    if (product.result.count < +productCount) {
+      throw ApiError.badRequest(
+        `Продукта в количестве ${productCount} у нас нет, максимум можете купить ${product.result.count}`,
+        'BasketService changeCountProductInBasket')
+    }
+    const result = await BasketProductsModel.query()
+      .findById(findProductInBasket.id)
+      .update({
+        productPriceId: product.result.priceId,
+        currentPrice: product.result.price,
+        productCount: +productCount
+      })
+    if (!result) {
+      throw ApiError.badRequest(
+        `Ошибка при добавлении продукта с id${productId} в корзину`,
+        'BasketService changeCountProductInBasket')
+    }
+    return {
+      success: true,
+      result: { productId, productCount },
+      message: `Кличество продукта с id${productId} успешно изменено в корзине`
+    }
+  }
+
   async syncProductBasketAfterAuth (
     userId: number, Dto: IBasketProductSync
   ): Promise<IMessage> {
     const {
       productsInBasket: productsInBasketIn
     } = Dto
-    const productIdArray = productsInBasketIn.map(i => +i.productId)
-    const productCountArray = productsInBasketIn.map(i => +i.productCount)
+    const productIdArray = productsInBasketIn
+      .map(i => +i.productId)
+      .filter(i => !isNaN(i))
+    const productCountArray = productsInBasketIn
+      .map(i => +i.productCount)
+      .filter(i => !isNaN(i))
     const findCurrentBasket =
       await this.getCurrentBasketByUserId(userId)
     const findCurrentProduct =
@@ -263,7 +310,7 @@ class BasketService implements IBasketService {
     }
     return {
       success: true,
-      result: { productId: id },
+      result: { productId },
       message: `Продукт с id${productId} успешно удалён из корзины`
     }
   }

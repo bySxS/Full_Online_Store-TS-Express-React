@@ -39,6 +39,7 @@ export interface IBasketProductSync {
 
 export interface IBasketService {
   addProductToBasket: (userId: number, Dto: IBasketProduct) => Promise<IMessage>
+  changeCountProductInBasket: (userId: number, Dto: IBasketProduct) => Promise<IMessage>
   delProductFromBasket: (userId: number, productId: number) => Promise<IMessage>
   getAllOrdersByUserId: (userId: number, limit: number, page: number) => Promise<IMessage>
   getCurrentBasketByUserId: (userId: number) => Promise<IMessage>
@@ -52,6 +53,7 @@ export interface IBasketService {
 
 export interface IBasketController {
   addProductToBasket: (req: Request, res: Response, next: NextFunction) => void
+  changeCountProductInBasket: (req: Request, res: Response, next: NextFunction) => void
   delProductFromBasket: (req: Request, res: Response, next: NextFunction) => void
   getAllOrdersByUserId: (req: Request, res: Response, next: NextFunction) => void
   currentBasketToProcessing: (req: Request, res: Response, next: NextFunction) => void
