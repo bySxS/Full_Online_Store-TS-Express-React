@@ -68,7 +68,6 @@ const Registration: FC<IRegProps> = ({
     isSubscribeToNews: (defaultInfoUser && defaultInfoUser.isSubscribeToNews ? (defaultInfoUser.isSubscribeToNews === 1) : false)
   })
   const formStateDebounce = useDebounce(formState)
-  const [showPass, setShowPass] = useState(false)
   const { isAdmin, nickname } = useAuth()
   const [validated, setValidated] = useState(false)
   const [errors, setErrors] = useState<{
@@ -116,6 +115,15 @@ const Registration: FC<IRegProps> = ({
     if (!formState.fullName || formState.fullName.trim() === '') {
       fullName = 'Пожалуйста, введите ФИО'
       isValid = false
+    }
+    if (formState.fullName) {
+      const countSpace = formState.fullName.split(' ') || ['']
+      if ((countSpace.length < 3) ||
+        (countSpace.length > 2 &&
+          countSpace[2].length < 4)) {
+        fullName = 'Пожалуйста, введите правильное ФИО'
+        isValid = false
+      }
     }
 
     setErrors({
@@ -197,8 +205,6 @@ const Registration: FC<IRegProps> = ({
     }
   }, [isSuccessReg, isSuccessUpd])
 
-  const handleClick = () => setShowPass(!showPass)
-
   const handleChangeFile =
     ({ target: { name, files } }: React.ChangeEvent<HTMLInputElement>) => {
       if (files) {
@@ -211,12 +217,6 @@ const Registration: FC<IRegProps> = ({
   const handleChangeCheckbox =
     ({ target: { name, checked } }: React.ChangeEvent<HTMLInputElement>) => {
       setFormState((prev) => ({ ...prev, [name]: checked }))
-    }
-
-  const handleChangeInput =
-    ({ target: { name, value }, currentTarget }: React.ChangeEvent<HTMLInputElement>) => {
-      setFormState((prev) => ({ ...prev, [name]: value }))
-      currentTarget.checkValidity()
     }
 
   const confirmRoles = (event: React.ChangeEvent<HTMLSelectElement>, prevValue: number) => {
@@ -259,7 +259,7 @@ const Registration: FC<IRegProps> = ({
             placeholder={'Введите ник'}
             label={'Никнейм'}
             icon={<i className="bi bi-person"/>}
-            onChange={handleChangeInput}
+            setValue={setFormState}
             disable={onlyShowInfo}
             textError={errors.nickname}
             isValid={!errors.nickname && !onlyShowInfo}
@@ -279,7 +279,7 @@ const Registration: FC<IRegProps> = ({
               ? <span className={'text-red-600'}> Не подтверждён!</span>
               : ''}`}
             icon={'@'}
-            onChange={handleChangeInput}
+            setValue={setFormState}
             disable={onlyShowInfo}
             textError={errors.email}
             isValid={!errors.email && !onlyShowInfo}
@@ -287,67 +287,33 @@ const Registration: FC<IRegProps> = ({
         }
 
         {showEditPass && !onlyShowInfo &&
-         <>
-        <Form.Label>Пароль</Form.Label>
-        <InputGroup hasValidation className="mb-3">
-          <InputGroup.Text id="basic-addon1">
-            <i className="bi bi-pass"/>
-          </InputGroup.Text>
-          <Form.Control
-            required
-            onChange={handleChangeInput}
-            className={'pr-[4.5rem] md'}
-            type={showPass ? 'text' : 'password'}
-            value={formState.password}
-            // defaultValue={''}
-            isValid={!errors.password}
-            isInvalid={!!errors.password}
-            disabled={onlyShowInfo}
-            placeholder={changeProfile ? 'Введите новый пароль' : 'Введите пароль'}
-            name={'password'}
-          />
-          <Button className={'bg-emerald-600'}
-                  onClick={handleClick}>
-            {showPass ? 'Скрыть' : 'Показать'}
-          </Button>
-          {/* <Form.Control.Feedback>Отлично!</Form.Control.Feedback> */}
-            <Form.Control.Feedback type="invalid">
-              {errors.password}
-            </Form.Control.Feedback>
-        </InputGroup>
-         </>
+        <MyInput
+          label={'Пароль'}
+          value={formState.password}
+          nameInput={'password'}
+          placeholder={changeProfile
+            ? 'Введите новый пароль'
+            : 'Введите пароль'}
+          setValue={setFormState}
+          icon={<i className="bi bi-pass"/>}
+          isValid={!errors.password}
+          textError={errors.password}
+          addButtonHide={true}
+        />
         }
 
         {showEditPass && !onlyShowInfo && formState.password &&
-            <>
-              <Form.Label>Подтвердите пароль</Form.Label>
-              <InputGroup hasValidation className="mb-3">
-                <InputGroup.Text id="basic-addon1">
-                  <i className="bi bi-pass"/>
-                </InputGroup.Text>
-                <Form.Control
-                  required
-                  onChange={handleChangeInput}
-                  className={'pr-[4.5rem] md'}
-                  type={showPass ? 'text' : 'password'}
-                  value={formState.rePassword}
-                  // defaultValue={''}
-                  isValid={!errors.rePassword}
-                  isInvalid={!!errors.rePassword}
-                  disabled={onlyShowInfo}
-                  placeholder={'Введите пароль ещё раз'}
-                  name={'rePassword'}
-                />
-                <Button className={'bg-emerald-600'}
-                        onClick={handleClick}>
-                  {showPass ? 'Скрыть' : 'Показать'}
-                </Button>
-                {/* <Form.Control.Feedback>Отлично!</Form.Control.Feedback> */}
-                <Form.Control.Feedback type="invalid">
-                  {errors.rePassword}
-                </Form.Control.Feedback>
-              </InputGroup>
-            </>
+              <MyInput
+                label={'Подтвердите пароль'}
+                value={formState.rePassword}
+                nameInput={'rePassword'}
+                placeholder={'Введите пароль ещё раз'}
+                setValue={setFormState}
+                icon={<i className="bi bi-pass"/>}
+                isValid={!errors.rePassword}
+                textError={errors.rePassword}
+                addButtonHide={true}
+              />
         }
 
         {(onlyShowInfo ||
@@ -383,134 +349,66 @@ const Registration: FC<IRegProps> = ({
         {(!onlyShowInfo ||
          (defaultInfoUser &&
           defaultInfoUser.fullName)) &&
-         <>
-        <Form.Label>ФИО</Form.Label>
-        <InputGroup hasValidation className="mb-2">
-          <InputGroup.Text id="basic-addon1">
-            <i className="bi bi-file-person"/>
-          </InputGroup.Text>
-          <Form.Control
-            onChange={handleChangeInput}
-            name={'fullName'}
-            disabled={onlyShowInfo}
-            placeholder="Введите ФИО"
-            isValid={!errors.fullName && !onlyShowInfo}
-            isInvalid={!!errors.fullName}
-            value={formState.fullName}
-            // defaultValue={defaultInfoUser &&
-            //               defaultInfoUser.fullName
-            //   ? defaultInfoUser.fullName
-            //   : ''}
-            aria-label="fullName"
-            aria-describedby="basic-addon1"
-          />
-          <Form.Control.Feedback type="invalid">
-            {errors.fullName}
-          </Form.Control.Feedback>
-        </InputGroup>
-        </>
+           <MyInput
+             label={'ФИО'}
+             value={formState.fullName}
+             nameInput={'fullName'}
+             placeholder={'Введите ФИО'}
+             setValue={setFormState}
+             icon={<i className="bi bi-file-person"/>}
+             isValid={!errors.fullName && !onlyShowInfo}
+             textError={errors.fullName}
+           />
         }
 
         {(!onlyShowInfo ||
           (defaultInfoUser &&
            defaultInfoUser.city)) &&
-         <>
-        <Form.Label>Город</Form.Label>
-        <InputGroup className="mb-2">
-          <InputGroup.Text id="basic-addon1">
-            <i className="bi bi-bank"/>
-          </InputGroup.Text>
-          <Form.Control
-            onChange={handleChangeInput}
-            name={'city'}
-            placeholder="Введите Город"
-            aria-label="city"
-            disabled={onlyShowInfo}
-            value={formState.city}
-            // defaultValue={defaultInfoUser &&
-            //               defaultInfoUser.city
-            //   ? defaultInfoUser.city
-            //   : ''}
-            aria-describedby="basic-addon1"
-          />
-        </InputGroup>
-         </>
+           <MyInput
+             label={'Город'}
+             value={formState.city}
+             nameInput={'city'}
+             placeholder={'Введите Город'}
+             setValue={setFormState}
+             icon={<i className="bi bi-bank"/>}
+           />
         }
 
         {(!onlyShowInfo ||
           (defaultInfoUser &&
            defaultInfoUser.address)) &&
-        <>
-        <Form.Label>Адрес</Form.Label>
-        <InputGroup className="mb-2">
-          <InputGroup.Text id="basic-addon1">
-            <i className="bi bi-house" />
-          </InputGroup.Text>
-          <Form.Control
-            onChange={handleChangeInput}
-            name={'address'}
-            disabled={onlyShowInfo}
-            placeholder="Введите Адрес"
-            aria-label="address"
+          <MyInput
+            label={'Адрес'}
             value={formState.address}
-            // defaultValue={defaultInfoUser &&
-            //               defaultInfoUser.address
-            //   ? defaultInfoUser.address
-            //   : ''}
-            aria-describedby="basic-addon1"
+            nameInput={'address'}
+            placeholder={'Введите Адрес'}
+            setValue={setFormState}
+            icon={<i className="bi bi-house" />}
           />
-        </InputGroup>
-        </>
         }
 
         {(!onlyShowInfo || (defaultInfoUser &&
          defaultInfoUser.deliveryAddress)) &&
-         <>
-        <Form.Label>Адрес доставки</Form.Label>
-        <InputGroup className="mb-2">
-          <InputGroup.Text id="basic-addon1">
-            <i className="bi bi-truck"/>
-          </InputGroup.Text>
-          <Form.Control
-            onChange={handleChangeInput}
-            name={'deliveryAddress'}
-            disabled={onlyShowInfo}
-            placeholder="Введите Адрес доставки"
-            value={formState.deliveryAddress}
-            // defaultValue={defaultInfoUser &&
-            //               defaultInfoUser.deliveryAddress
-            //   ? defaultInfoUser.deliveryAddress
-            //   : ''}
-            aria-label="deliveryAddress"
-            aria-describedby="basic-addon1"
-          />
-        </InputGroup>
-         </>
+           <MyInput
+             label={'Адрес доставки'}
+             value={formState.deliveryAddress}
+             nameInput={'deliveryAddress'}
+             placeholder={'Введите Адрес доставки'}
+             setValue={setFormState}
+             icon={<i className="bi bi-truck"/>}
+           />
         }
         {(!onlyShowInfo ||
           (defaultInfoUser &&
            defaultInfoUser.phoneNumber)) &&
-        <>
-        <Form.Label>Номер телефона</Form.Label>
-        <InputGroup className="mb-2">
-          <InputGroup.Text id="basic-addon1">
-            <i className="bi bi-telephone"/>
-          </InputGroup.Text>
-          <Form.Control
-            onChange={handleChangeInput}
-            name={'phoneNumber'}
-            disabled={onlyShowInfo}
-            placeholder="Введите Номер телефона"
+          <MyInput
+            label={'Номер телефона'}
             value={formState.phoneNumber}
-            // defaultValue={defaultInfoUser &&
-            //               defaultInfoUser.phoneNumber
-            //   ? defaultInfoUser.phoneNumber
-            //   : ''}
-            aria-label="phoneNumber"
-            aria-describedby="basic-addon1"
+            nameInput={'phoneNumber'}
+            placeholder={'Введите Номер телефона'}
+            setValue={setFormState}
+            icon={<i className="bi bi-telephone"/>}
           />
-        </InputGroup>
-        </>
         }
         {showEditAvatar && !onlyShowInfo &&
          <Form.Group controlId="formFileMultiple"
