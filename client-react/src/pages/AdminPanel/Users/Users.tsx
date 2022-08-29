@@ -20,26 +20,25 @@ const Users: FC<UsersProps> = ({ name }) => {
   }, [])
   const { isLoading, isSuccess, isError, data: users, error } =
     useAllUsersQuery({ limit: 10, page: 1 })
-  useInfoLoading({ isLoading, isSuccess, isError, data: users, error })
+  useInfoLoading({
+    isLoading, isSuccess, isError, data: users, error
+  })
 
   return (
-    <div>
+    <>
       <Helmet>
         <title>{name}</title>
         <meta name="description" content={name + ' все клиенты'} />
       </Helmet>
       {isSuccess && users &&
-        <>
-        {users.result?.results.map(user =>
+        users.result?.results.map(user =>
         <div
           className={style.containerUser}
           key={user.id}>
-          <UserProfile user={user} />
+          <UserProfile user={user} notShowInfo={true} />
         </div>
         )}
-        </>
-      }
-    </div>
+    </>
   )
 }
 

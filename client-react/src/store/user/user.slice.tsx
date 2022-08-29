@@ -57,7 +57,7 @@ export const UserSlice = createSlice({
     updUser (state, action: PayloadAction<IMessage<IUser>>) {
       const { payload } = action
       const user = payload.result
-      if (user.id === state.user?.id) {
+      if (user.id === state.user?.id) { // обновляем профиль только себе
         const rolesName = (user.rolesId === 1)
           ? 'admin'
           : (user.rolesId === 2)
