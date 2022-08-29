@@ -55,6 +55,19 @@ class BasketController implements IBasketController {
     }
   }
 
+  async getProductBasketNoneAuthUser (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const result =
+        await BasketService
+          .getProductBasketNoneAuthUser(req.body)
+      return res.status(200).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
+
   async delProductFromBasket (
     req: Request, res: Response, next: NextFunction
   ) {

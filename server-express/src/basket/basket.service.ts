@@ -105,6 +105,39 @@ class BasketService implements IBasketService {
     }
   }
 
+  async getProductBasketNoneAuthUser (
+    Dto: IBasketProductSync
+  ): Promise<IMessage> {
+    const { productsInBasket } = Dto
+    const productIdArray = productsInBasket
+      .map(i => +i.productId)
+      .filter(i => !isNaN(i))
+    const products = await ProductsService
+      .getAllProductsWithFilter({
+        sort: 'price_desc',
+        limit: 1000
+      }).whereIn('products.id', productIdArray)
+    const result = products && 'results' in products && products.results.map(i => ({
+      currentPrice: i.price,
+      productCount: productsInBasket.filter(p => p.productId === i.id).map(p => p.productCount)[0],
+      productPriceId: i.priceId,
+      productId: i.id,
+      productTitle: i.title,
+      productCategory: i.categoryName,
+      productCategoryId: i.categoryId,
+      productSection: i.sectionName,
+      productSectionId: i.sectionId,
+      productScreen: i.screen,
+      productPriceType: i.priceType,
+      productAvailability: i.availability
+    }))
+    return {
+      success: true,
+      result,
+      message: 'Продукты в корзине получены'
+    }
+  }
+
   async addProductToBasket (
     userId: number, Dto: IBasketProduct
   ): Promise<IMessage> {
@@ -228,7 +261,7 @@ class BasketService implements IBasketService {
         price: product.price
       }))
     const deletedProductFromBasket: number[] = []
-    const productsInBasket: { productId: number, productCount: number }[] =
+    let productsInBasket: { productId: number, productCount: number }[] =
       findCurrentBasket.result.BasketProducts
         .map((product: { productId: number, productCount: number }) => ({
           productId: product.productId,
@@ -270,6 +303,29 @@ class BasketService implements IBasketService {
           } else {
             deletedProductFromBasket.push(id)
           }
+        }
+      } else { // есть продукт, проверяем количество
+        const findCurrentProductCount =
+          findCurrentBasket.result.BasketProducts
+            .map((product: { productCount: number }) => product.productCount)[0]
+        const currentCount = productsInBasketIn
+          .filter(i => i.productId === id)
+          .map(i => i.productCount)[0]
+        if (findCurrentProductCount !== currentCount) {
+          await this.changeCountProductInBasket(userId, {
+            productId: id,
+            productCount: currentCount
+          } as IBasketProduct)
+          productsInBasket = productsInBasket.map(i => {
+            if (i.productId === id) {
+              return {
+                ...i,
+                productCount: currentCount
+              }
+            } else {
+              return i
+            }
+          })
         }
       }
     }

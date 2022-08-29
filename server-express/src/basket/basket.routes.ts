@@ -32,6 +32,9 @@ try {
     AuthMiddleware,
     BasketController.getCurrentBasketByAuthUser)
   // success
+  router.post('/not_auth',
+    BasketController.getProductBasketNoneAuthUser)
+  // success
   router.get('/all_orders',
     validateLimitPage(), ValidatorResultMiddleware,
     AuthMiddleware,
