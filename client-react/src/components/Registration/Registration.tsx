@@ -5,6 +5,7 @@ import { useInfoLoading } from 'hooks/useInfoLoading'
 import { IRegistrationIn, IUsers } from 'store/myStore/myStoreUser.interface'
 import { useAuth } from 'hooks/useSelectors'
 import { useDebounce } from 'hooks/useDebounce'
+import { validate } from 'utils/validator'
 import MyInput from '../UI/MyInput/MyInput'
 
 interface IRegProps {
@@ -59,13 +60,17 @@ const Registration: FC<IRegProps> = ({
   })
   const [formState, setFormState] = useState<IRegistrationIn>({
     nickname: (defaultInfoUser && defaultInfoUser.nickname ? defaultInfoUser.nickname : ''),
+    password: '',
+    rePassword: '',
+    rolesId: (defaultInfoUser && defaultInfoUser.rolesId ? defaultInfoUser.rolesId : 3),
     email: (defaultInfoUser && defaultInfoUser.email ? defaultInfoUser.email : ''),
     fullName: (defaultInfoUser && defaultInfoUser.fullName ? defaultInfoUser.fullName : ''),
     city: (defaultInfoUser && defaultInfoUser.city ? defaultInfoUser.city : ''),
     address: (defaultInfoUser && defaultInfoUser.address ? defaultInfoUser.address : ''),
     deliveryAddress: (defaultInfoUser && defaultInfoUser.deliveryAddress ? defaultInfoUser.deliveryAddress : ''),
     phoneNumber: (defaultInfoUser && defaultInfoUser.phoneNumber ? defaultInfoUser.phoneNumber : ''),
-    isSubscribeToNews: (defaultInfoUser && defaultInfoUser.isSubscribeToNews ? (defaultInfoUser.isSubscribeToNews === 1) : false)
+    isSubscribeToNews: (defaultInfoUser && defaultInfoUser.isSubscribeToNews ? (defaultInfoUser.isSubscribeToNews === 1) : false),
+    delAvatar: false
   })
   const formStateDebounce = useDebounce(formState)
   const { isAdmin, nickname } = useAuth()
@@ -78,68 +83,9 @@ const Registration: FC<IRegProps> = ({
     fullName?: string
   }>({})
 
-  const validate = (): boolean => {
-    let isValid = true
-    let nickname
-    if (!formState.nickname || formState.nickname.trim() === '') {
-      nickname = 'Пожалуйста, введите никнейм'
-      isValid = false
-    }
-    let email
-    if (!formState.email || formState.email.trim() === '') {
-      email = 'Пожалуйста, введите e-mail'
-      isValid = false
-    } else if (!formState.email.includes('@')) {
-      email = 'Пожалуйста, введите корректный e-mail'
-      isValid = false
-    }
-
-    let password
-    let rePassword
-    if (showEditPass) {
-      if (!formState.password || formState.password.trim() === '') {
-        password = 'Пожалуйста, введите пароль'
-        isValid = false
-      } else if (formState.password.length <= 6) {
-        password = 'Пароль должен быть больше 6 символов'
-        isValid = false
-      }
-
-      if ((formState.rePassword !== formState.password)) {
-        rePassword = 'Пароль не совпадает'
-        isValid = false
-      }
-    }
-
-    let fullName
-    if (!formState.fullName || formState.fullName.trim() === '') {
-      fullName = 'Пожалуйста, введите ФИО'
-      isValid = false
-    }
-    if (formState.fullName) {
-      const countSpace = formState.fullName.split(' ') || ['']
-      if ((countSpace.length < 3) ||
-        (countSpace.length > 2 &&
-          countSpace[2].length < 4)) {
-        fullName = 'Пожалуйста, введите правильное ФИО'
-        isValid = false
-      }
-    }
-
-    setErrors({
-      nickname,
-      email,
-      password,
-      rePassword,
-      fullName
-    })
-    setValidated(isValid)
-    return isValid
-  }
-
   const btnLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
-    if (!validated) {
+    if (!validated && !isAdmin) {
       return false
     }
     const formData = new FormData()
@@ -192,7 +138,15 @@ const Registration: FC<IRegProps> = ({
 
   useEffect(() => {
     if (!onlyShowInfo) {
-      validate()
+      const result = validate({
+        email: formState.email,
+        nickname: formState.nickname,
+        fullName: formState.fullName,
+        password: showEditPass ? formState.password : undefined,
+        rePassword: showEditPass ? formState.rePassword : undefined
+      })
+      setValidated(result.success)
+      setErrors(result.errors)
     }
   }, [formStateDebounce, showEditPass])
 
@@ -452,6 +406,7 @@ const Registration: FC<IRegProps> = ({
               className={'bg-emerald-600 w-full'}
               onClick={btnLogin}
               type={'submit'}
+              disabled={!validated && !isAdmin}
       >
         {changeProfile
           ? 'Сохранить изменения'
