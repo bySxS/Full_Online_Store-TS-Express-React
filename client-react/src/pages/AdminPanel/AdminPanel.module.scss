@@ -1,0 +1,29 @@
+.block {
+  @apply flex flex-col w-[90%] m-auto;
+}
+
+.blockContent {
+    @apply flex w-[90%] m-auto items-center border border-4 border-white p-2 mb-3;
+    border-radius: 10px;
+    box-shadow: 0 0 0 black, 0 0 0 black, 0 0 0 #000000, 0 0 4px #000000;
+}
+
+.blockCategory {
+  @apply flex;
+}
+
+.blockCharacteristicsName {
+  @apply flex;
+}
+
+.blockPriceType {
+  @apply flex;
+}
+
+.blockProducts {
+  @apply flex;
+}
+
+.blockNeedProcessingBasket {
+  @apply flex;
+}
