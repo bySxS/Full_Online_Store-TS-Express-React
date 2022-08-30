@@ -206,15 +206,15 @@ class CategoryService implements ICategoryService {
 
   async getAll ({ sectionId }: { sectionId?: number }): Promise<IMessage> {
     if (!sectionId) {
-      // const cache = await cacheRedisDB.get('categoryAll')
-      // if (cache) {
-      //   // await cacheRedisDB.expire('categoryAll', 360000)
-      //   return {
-      //     success: true,
-      //     result: JSON.parse(cache),
-      //     message: 'Все категории загружены'
-      //   }
-      // }
+      const cache = await cacheRedisDB.get('categoryAll')
+      if (cache) {
+        // await cacheRedisDB.expire('categoryAll', 360000)
+        return {
+          success: true,
+          result: JSON.parse(cache),
+          message: 'Все категории загружены'
+        }
+      }
     }
     const query = () => {
       return CategoryModel.query()
