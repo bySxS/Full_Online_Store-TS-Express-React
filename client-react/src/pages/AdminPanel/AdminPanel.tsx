@@ -25,19 +25,22 @@ const AdminPanel: FC<AdminPanelProps> = ({ name }) => {
       </Helmet>
       <div className={style.block}>
         <div className={style.blockContent}>
-          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Список пользователей</NavLink>
+          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Редактировать категории</NavLink>
         </div>
         <div className={style.blockContent}>
-          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Список пользователей</NavLink>
+          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Редактировать пользователей</NavLink>
         </div>
         <div className={style.blockContent}>
-          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Список пользователей</NavLink>
+          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Редактировать типы цен</NavLink>
         </div>
         <div className={style.blockContent}>
-          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Список пользователей</NavLink>
+          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Редактировать названия характеристик категорий</NavLink>
         </div>
         <div className={style.blockContent}>
-          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Список пользователей</NavLink>
+          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Редактировать продукты и характеристики к ним</NavLink>
+        </div>
+        <div className={style.blockContent}>
+          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Обработка заказов</NavLink>
         </div>
       </div>
     </>
