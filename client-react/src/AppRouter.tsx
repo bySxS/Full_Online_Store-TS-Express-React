@@ -5,19 +5,24 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import Home from 'pages/Home/Home'
 import Products from 'pages/Products/Products'
 import Favorites from 'pages/Favorites/Favorites'
-import Users from 'pages/AdminPanel/Users/Users'
 // import Basket from 'pages/Basket/Basket'
 import ProductDetails from 'pages/ProductDetails/ProductDetails'
 import AccessMiddleware, { IRequireUser } from 'components/AccessMiddleware/AccessMiddleware'
 import Loader from 'components/UI/Loader/Loader'
 import ActivateEmail from 'pages/ActivateEmail/ActivateEmail'
-import Error404 from 'pages/Error404/Error404'
 import { useAppSelector } from 'hooks/useStore'
 import selectCategory from 'store/category/category.selector'
 
 // test динамической подгрузки
+const Error404 = lazy(() => import('pages/Error404/Error404'))
 const AdminPanel = lazy(() => import('pages/AdminPanel/AdminPanel'))
 const AllOrders = lazy(() => import('pages/AllOrders/AllOrders'))
+const EditUsers = lazy(() => import('pages/AdminPanel/EditUsers/EditUsers'))
+const EditCategory = lazy(() => import('pages/AdminPanel/EditCategory/EditCategory'))
+const EditCharacteristics = lazy(() => import('pages/AdminPanel/EditCharacteristics/EditCharacteristics'))
+const EditOrders = lazy(() => import('pages/AdminPanel/EditOrders/EditOrders'))
+const EditProducts = lazy(() => import('pages/AdminPanel/EditProducts/EditProducts'))
+const EditTypePrice = lazy(() => import('pages/AdminPanel/EditTypePrice/EditTypePrice'))
 
 export type TRoles = 'admin' | 'moder' | 'user'
 
@@ -41,29 +46,39 @@ export enum RoutePath {
   HOME = '/',
   // LOGIN = '/login',
   ACTIVATE_EMAIL = '/activate/:link',
-  ADMIN_PANEL = '/admin_panel',
   PRODUCTS = '/products',
   PRODUCTS_CATEGORY = '/products/category/:id',
   PRODUCTS_ID = '/products/:id',
   FAVORITES_PRODUCT = '/favorites_products',
-  USERS = '/admin_panel/users',
   // BASKET = '/basket',
   ALL_ORDERS = '/all_orders',
-  ERROR_404 = '/404'
+  ERROR_404 = '/404',
+  ADMIN_PANEL = '/admin_panel',
+  EDIT_CATEGORY = '/admin_panel/category',
+  EDIT_USERS = '/admin_panel/users',
+  EDIT_TYPE_PRICE = '/admin_panel/type_price',
+  EDIT_CHARACTERISTICS = '/admin_panel/characteristics',
+  EDIT_PRODUCTS = '/admin_panel/products',
+  EDIT_ORDERS = '/admin_panel/orders'
 }
 
 export enum RouteName {
   HOME = 'Главная',
   // LOGIN = 'Вход',
   ACTIVATE_EMAIL = 'Активация e-mail',
-  ADMIN_PANEL = 'Админ панель',
   PRODUCTS = 'Товары',
   PRODUCTS_CATEGORY = 'Товары категории',
   FAVORITES_PRODUCT = 'Избранные товары',
-  USERS = 'Пользователи',
   BASKET = 'Корзина',
   ALL_ORDERS = 'Все заказы',
-  ERROR_404 = 'Ошибка 404'
+  ERROR_404 = 'Ошибка 404',
+  ADMIN_PANEL = 'Админ панель',
+  EDIT_CATEGORY = 'Редактирование категорий',
+  EDIT_USERS = 'Редактирование пользователей',
+  EDIT_TYPE_PRICE = 'Редактирование тип цен',
+  EDIT_CHARACTERISTICS = 'Редактирование названий характеристик для категорий',
+  EDIT_PRODUCTS = 'Редактирование продуктов и характеристик к ним',
+  EDIT_ORDERS = 'Обработка заказаов'
 }
 
 export interface IBreadcrumbParams {
@@ -140,12 +155,6 @@ export const routes: IRoute[] = [
     element: <Favorites name={RouteName.FAVORITES_PRODUCT} />,
     breadcrumb: RouteName.FAVORITES_PRODUCT
   },
-  {
-    path: RoutePath.USERS,
-    allowRoles: RolesName.admin,
-    element: <Users name={RouteName.USERS} />,
-    breadcrumb: () => (<>{RouteName.USERS}</>)
-  },
   // {
   //   path: RoutePath.BASKET,
   //   element: <Basket name={RouteName.BASKET} />,
@@ -164,6 +173,48 @@ export const routes: IRoute[] = [
     allowRoles: [RolesName.admin],
     element: <AdminPanel name={RouteName.ADMIN_PANEL} />,
     breadcrumb: RouteName.ADMIN_PANEL
+  },
+  {
+    path: RoutePath.EDIT_CATEGORY,
+    lazy: true,
+    allowRoles: RolesName.admin,
+    element: <EditCategory />,
+    breadcrumb: () => (<>{RouteName.EDIT_CATEGORY}</>)
+  },
+  {
+    path: RoutePath.EDIT_USERS,
+    lazy: true,
+    allowRoles: RolesName.admin,
+    element: <EditUsers />,
+    breadcrumb: () => (<>{RouteName.EDIT_USERS}</>)
+  },
+  {
+    path: RoutePath.EDIT_CHARACTERISTICS,
+    lazy: true,
+    allowRoles: RolesName.admin,
+    element: <EditCharacteristics />,
+    breadcrumb: () => (<>{RouteName.EDIT_CHARACTERISTICS}</>)
+  },
+  {
+    path: RoutePath.EDIT_TYPE_PRICE,
+    lazy: true,
+    allowRoles: RolesName.admin,
+    element: <EditTypePrice />,
+    breadcrumb: () => (<>{RouteName.EDIT_TYPE_PRICE}</>)
+  },
+  {
+    path: RoutePath.EDIT_PRODUCTS,
+    lazy: true,
+    allowRoles: RolesName.admin,
+    element: <EditProducts />,
+    breadcrumb: () => (<>{RouteName.EDIT_PRODUCTS}</>)
+  },
+  {
+    path: RoutePath.EDIT_ORDERS,
+    lazy: true,
+    allowRoles: RolesName.admin,
+    element: <EditOrders />,
+    breadcrumb: () => (<>{RouteName.EDIT_ORDERS}</>)
   },
   {
     path: RoutePath.ERROR_404,

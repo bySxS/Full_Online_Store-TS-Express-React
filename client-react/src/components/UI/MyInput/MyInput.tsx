@@ -4,11 +4,11 @@ import { Button, Form, InputGroup } from 'react-bootstrap'
 interface MyInputProps {
   label?: string | ReactNode
   placeholder: string
-  value: string | undefined
+  value: string | number | undefined
   setValue?: Dispatch<SetStateAction<any>>
   nameInput: string
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
-  icon: ReactNode
+  icon?: ReactNode
   isValid?: boolean
   addButtonHide?: boolean
   disable?: boolean
@@ -50,9 +50,11 @@ const MyInput: FC<MyInputProps> = ({
         hasValidation={!!textError}
         className={'mb-2'}
       >
+        {icon &&
         <InputGroup.Text id="basic-addon1">
           {icon}
         </InputGroup.Text>
+        }
         <Form.Control
           required
           as={type}

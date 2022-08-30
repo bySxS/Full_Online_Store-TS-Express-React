@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { Helmet } from 'react-helmet'
-import ProductListSmall from 'components/ProductListSmall/ProductListSmall'
+import ProductListBasket from 'components/ProductListBasket/ProductListBasket'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import {
   useChangeCountProductInBasketMutation,
@@ -10,9 +10,9 @@ import {
   useGetProductBasketNoneAuthUserMutation
 } from 'store/myStore/myStoreBasket.api'
 import { useAuth, useBasket } from 'hooks/useSelectors'
-import BasketForm from '../../components/BasketForm/BasketForm'
-import { useAppActions, useAppSelector } from '../../hooks/useStore'
-import selectBasket from '../../store/basket/basket.selector'
+import BasketForm from 'components/BasketForm/BasketForm'
+import { useAppActions, useAppSelector } from 'hooks/useStore'
+import selectBasket from 'store/basket/basket.selector'
 import style from './Basket.module.scss'
 
 interface BasketProps {
@@ -101,7 +101,7 @@ const Basket: FC<BasketProps> = ({ name }) => {
       </Helmet>
       <div>
       {basketProductFullInfo && basketProductFullInfo.length > 0 &&
-        (<ProductListSmall
+        (<ProductListBasket
           InBasket={true}
           productSmall={basketProductFullInfo}
           onDelete={clickDelete}

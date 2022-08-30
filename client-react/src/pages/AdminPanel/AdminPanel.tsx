@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { NavLink } from 'react-router-dom'
-import { RoutePath } from 'AppRouter'
+import { RouteName, RoutePath } from 'AppRouter'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
 import { useAppActions } from 'hooks/useStore'
 import style from './AdminPanel.module.scss'
@@ -24,23 +24,43 @@ const AdminPanel: FC<AdminPanelProps> = ({ name }) => {
         <meta name="description" content="{name}" />
       </Helmet>
       <div className={style.block}>
+        <div className={style.blockCategory}>
         <div className={style.blockContent}>
-          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Редактировать категории</NavLink>
+          <NavLink className={style.link} to={RoutePath.EDIT_CATEGORY}>
+            <i className="bi bi-people-fill text-2xl pr-1.5"/>
+            {RouteName.EDIT_CATEGORY}
+          </NavLink>
         </div>
         <div className={style.blockContent}>
-          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Редактировать пользователей</NavLink>
+          <NavLink className={style.link} to={RoutePath.EDIT_USERS}>
+            <i className="bi bi-people-fill text-2xl pr-1.5"/>
+            {RouteName.EDIT_USERS}
+          </NavLink>
         </div>
         <div className={style.blockContent}>
-          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Редактировать типы цен</NavLink>
+          <NavLink className={style.link} to={RoutePath.EDIT_CHARACTERISTICS}>
+            <i className="bi bi-people-fill text-2xl pr-1.5"/>
+            {RouteName.EDIT_CHARACTERISTICS}
+          </NavLink>
         </div>
         <div className={style.blockContent}>
-          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Редактировать названия характеристик категорий</NavLink>
+          <NavLink className={style.link} to={RoutePath.EDIT_TYPE_PRICE}>
+            <i className="bi bi-people-fill text-2xl pr-1.5"/>
+            {RouteName.EDIT_TYPE_PRICE}
+          </NavLink>
         </div>
         <div className={style.blockContent}>
-          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Редактировать продукты и характеристики к ним</NavLink>
+          <NavLink className={style.link} to={RoutePath.EDIT_PRODUCTS}>
+            <i className="bi bi-people-fill text-2xl pr-1.5"/>
+            {RouteName.EDIT_PRODUCTS}
+          </NavLink>
         </div>
         <div className={style.blockContent}>
-          <NavLink to={RoutePath.USERS}><i className="bi bi-people-fill text-2xl pr-1.5"/> Обработка заказов</NavLink>
+          <NavLink className={style.link} to={RoutePath.EDIT_ORDERS}>
+            <i className="bi bi-people-fill text-2xl pr-1.5"/>
+            {RouteName.EDIT_ORDERS}
+          </NavLink>
+        </div>
         </div>
       </div>
     </>

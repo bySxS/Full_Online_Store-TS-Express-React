@@ -14,7 +14,10 @@ const Body = () => {
 
   return (
     <div
-      className={`body ${menuShow ? 'paddingLeftShowMenu' : 'paddingLeftHideMenu'}`}
+      className={`body ${menuShow
+        ? 'paddingLeftShowMenu'
+        : 'paddingLeftHideMenu'
+      }`}
       onClick={handleClick}
     >
       <div className={style.body_content}>

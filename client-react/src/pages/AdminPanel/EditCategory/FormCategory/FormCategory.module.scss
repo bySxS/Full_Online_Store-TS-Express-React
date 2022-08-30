@@ -1,0 +1,8 @@
+.formBlock {
+  @apply flex flex-col w-[90%] m-auto justify-center
+  mt-3 p-3 border items-center;
+}
+
+.divForm {
+  @apply text-left w-full;
+}

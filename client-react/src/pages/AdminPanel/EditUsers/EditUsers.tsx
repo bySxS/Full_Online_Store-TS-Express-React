@@ -1,17 +1,12 @@
 import React, { FC, useEffect } from 'react'
 import UserProfile from 'components/UserProfile/UserProfile'
 import { useAllUsersQuery } from 'store/myStore/myStoreUser.api'
-import { Helmet } from 'react-helmet'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
 import { useAppActions } from 'hooks/useStore'
-import style from './Users.module.scss'
+import style from './EditUsers.module.scss'
 
-interface UsersProps {
-  name: string
-}
-
-const Users: FC<UsersProps> = ({ name }) => {
+const EditUsers: FC = () => {
   const { setBreadcrumb } = useBreadcrumb()
   const { changeFilterState } = useAppActions()
   useEffect(() => {
@@ -26,10 +21,6 @@ const Users: FC<UsersProps> = ({ name }) => {
 
   return (
     <>
-      <Helmet>
-        <title>{name}</title>
-        <meta name="description" content={name + ' все клиенты'} />
-      </Helmet>
       {isSuccess && users &&
         users.result?.results.map(user =>
         <div
@@ -42,4 +33,4 @@ const Users: FC<UsersProps> = ({ name }) => {
   )
 }
 
-export default Users
+export default EditUsers

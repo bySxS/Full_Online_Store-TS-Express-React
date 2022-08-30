@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
 import { useModal } from 'context/ModalContext'
 import { useDebounce } from 'hooks/useDebounce'
-import style from './ProductItemSmall.module.scss'
+import style from './ProductItemBasket.module.scss'
 
 export interface IProductItemSmall {
   productId: number
@@ -22,7 +22,7 @@ export interface IProductItemSmallProps {
   onChangeCount?: (productId: number, productCount: number) => void
 }
 
-const ProductItemSmall: FC<IProductItemSmallProps> = ({
+const ProductItemBasket: FC<IProductItemSmallProps> = ({
   productScreen,
   productId,
   productTitle,
@@ -112,4 +112,4 @@ const ProductItemSmall: FC<IProductItemSmallProps> = ({
   )
 }
 
-export default ProductItemSmall
+export default ProductItemBasket

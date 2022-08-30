@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Accordion } from 'react-bootstrap'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
@@ -6,9 +6,9 @@ import selectUser from 'store/user/user.selector'
 import { useGetFavProductsListQuery } from 'store/myStore/myStoreFavProduct.api'
 import selectProduct from 'store/product/product.selector'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
-import CategorySection from './CategorySection/CategorySection'
+import CategorySection from '../CategorySection/CategorySection'
 import st from './SideBar.module.scss'
-import { useAuth } from 'hooks/useSelectors'
+import { useAuth, useProducts } from 'hooks/useSelectors'
 import { useAppActions, useAppSelector } from 'hooks/useStore'
 import selectCategory from 'store/category/category.selector'
 import { useGetAllCategoryQuery } from 'store/myStore/myStoreCategory.api'
@@ -18,14 +18,18 @@ import Toggle from '../UI/Toggle/Toggle'
 const SideBar = () => {
   const { isAuth } = useAuth()
   const { pathname } = useLocation()
+  const [show, setShow] = useState<number[]>([])
   // const params = useParams()
   const navigate = useNavigate()
   const { setBreadcrumb } = useBreadcrumb()
   const { changeFilterState } = useAppActions()
   const menuShow = useAppSelector(selectUser.menuShow)
-  const { isLoading, isSuccess, isError, data, error } =
-    useGetAllCategoryQuery('')
-  useInfoLoading({ isLoading, isSuccess, isError, data, error })
+  const {
+    isLoading, isSuccess, isError, data, error
+  } = useGetAllCategoryQuery('')
+  useInfoLoading({
+    isLoading, isSuccess, isError, data, error
+  })
   const {
     isLoading: isLoadingListFav,
     isSuccess: isSuccessListFav,
@@ -45,13 +49,16 @@ const SideBar = () => {
     data: listFav,
     error: errorListFav
   })
-
+  const { setShowCategory } = useAppActions()
   const countFavProduct = useAppSelector(selectProduct.countFavProducts)
   const allCategory = useAppSelector(selectCategory.allCategory)
-  const { setShowCategory } = useAppActions()
   const handleFocus = () => {
     setShowCategory([])
   }
+  const { showCategory } = useProducts()
+  useEffect(() => {
+    setShow([])
+  }, [showCategory])
 
   const clickGoToPage = () => {
     navigate(RoutePath.PRODUCTS)
@@ -66,7 +73,7 @@ const SideBar = () => {
 
   return (
     menuShow
-      ? <div className={st.sideMenuHead}>
+      ? <div onClick={handleFocus} className={st.sideMenuHead}>
       <div className={st.sideMenuBody}>
       <ul>
         <li>
@@ -138,7 +145,10 @@ const SideBar = () => {
               {allCategory?.map(category =>
                 <CategorySection
                   categorySection={category}
-                  key={category.sectionId}/>
+                  key={category.sectionId}
+                  show={show}
+                  setShow={setShow}
+                />
               )}
               </div>
             </Accordion.Collapse>

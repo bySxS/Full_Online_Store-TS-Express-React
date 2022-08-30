@@ -1,11 +1,19 @@
 .block {
-  @apply flex flex-col w-[90%] m-auto;
+  @apply flex flex-col w-[100%] m-auto;
+}
+
+.blockCategory {
+  @apply flex flex-col w-[50%] mr-auto;
 }
 
 .blockContent {
-    @apply flex w-full m-auto items-center border border-4 border-white p-2 mb-3;
+    @apply flex items-center border border-4 border-white p-2 mb-3;
     border-radius: 10px;
     box-shadow: 0 0 0 black, 0 0 0 black, 0 0 0 #000000, 0 0 4px #000000;
+}
+
+.link {
+  @apply flex items-center w-full;
 }
 
 .blockCategory {

@@ -1,31 +1,43 @@
-import React, { FC, useRef } from 'react'
+import React, {
+  Dispatch, FC, SetStateAction, useRef
+} from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { ICategorySection } from 'store/myStore/myStoreCategory.interface'
 import { RoutePath } from 'AppRouter'
-import { useAppActions, useAppSelector } from 'hooks/useStore'
-import selectCategory from 'store/category/category.selector'
+import { useAppActions } from 'hooks/useStore'
 import MyOverlay from 'components/UI/MyOverlay/MyOverlay'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
-import st from '../SideBar.module.scss'
+import { IFormCategoryState } from 'pages/AdminPanel/EditCategory/FormCategory/FormCategory'
+import st from '../SideBar/SideBar.module.scss'
+import ButtonEditCategory from './ButtonEditCategory/ButtonEditCategory'
 import Category from './Category/Category'
 
 interface ICategoryProps {
   categorySection: ICategorySection
+  setShow: Dispatch<SetStateAction<number[]>>
+  show: number[]
+  edit?: boolean
+  clickEdit?: (payload: IFormCategoryState) => void
 }
 
-const CategorySection: FC<ICategoryProps> = ({ categorySection }) => {
-  const showCategory = useAppSelector(selectCategory.showCategory)
-  const { setShowCategory } = useAppActions()
+const CategorySection: FC<ICategoryProps> = ({
+  categorySection,
+  edit = false,
+  setShow,
+  show,
+  clickEdit
+}) => {
   const navigate = useNavigate()
   const { setBreadcrumb } = useBreadcrumb()
   const { changeFilterState } = useAppActions()
   const ref = useRef<HTMLLIElement>(null)
 
   const handleFocus = () => {
-    setShowCategory([categorySection.sectionId])
+    setShow([categorySection.sectionId])
   }
 
-  const clickGoToPage = () => {
+  const clickGoToPage = (e: React.MouseEvent) => {
+    e.stopPropagation()
     navigate(RoutePath.PRODUCTS + '/category/' + categorySection.sectionId)
     changeFilterState({
       categoryId: categorySection.sectionId
@@ -51,10 +63,21 @@ const CategorySection: FC<ICategoryProps> = ({ categorySection }) => {
           <span className={st.name_page}>
           {categorySection.sectionName} ({categorySection.sectionCountProducts})
           </span>
+          {edit && clickEdit &&
+          <ButtonEditCategory
+              category={{
+                id: categorySection.sectionId,
+                iconClass: categorySection.sectionIconClass,
+                name: categorySection.sectionName,
+                nameEng: categorySection.sectionNameEng
+              }}
+              clickEdit={clickEdit}
+          />
+          }
         </NavLink>
       </li>
       <MyOverlay
-        show={showCategory.includes(categorySection.sectionId)}
+        show={show.includes(categorySection.sectionId)}
         target={ref.current}
         title={`Раздел ${categorySection.sectionName}`}
         tabIndex={categorySection.sectionId}
@@ -66,8 +89,34 @@ const CategorySection: FC<ICategoryProps> = ({ categorySection }) => {
               key={cat.categoryId}
               sectionId={categorySection.sectionId}
               sectionName={categorySection.sectionName}
+              setShow={setShow}
+              show={show}
+              edit={edit}
+              clickEdit={clickEdit}
             />
           )}
+          {edit &&
+            <li>
+              <a href=""
+                 className={'sideBarLink'}
+                 onClick={(e) => {
+                   e.stopPropagation()
+                   e.preventDefault()
+                   if (clickEdit) {
+                     clickEdit({
+                       type: 'add',
+                       category: {
+                         parentId: categorySection.sectionId
+                       }
+                     })
+                   }
+                 }}
+              >
+                <i className={`bi bi-plus-circle-fill ${st.icon}`}/>
+                Добавить
+              </a>
+            </li>
+          }
         </ul>
       </MyOverlay>
     </>

@@ -1,0 +1,11 @@
+.block {
+  @apply bg-white flex flex-col p-2;
+}
+
+.title {
+  @apply flex text-xl items-center;
+}
+
+.body {
+  @apply flex;
+}

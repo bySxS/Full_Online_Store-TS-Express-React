@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import selectUser from 'store/user/user.selector'
 import selectBasket from 'store/basket/basket.selector'
 import selectProduct from 'store/product/product.selector'
+import selectCategory from '../store/category/category.selector'
 import { useAppSelector } from './useStore'
 
 export const useAuth = () => {
@@ -62,6 +63,10 @@ export const useProducts = () => {
   const totalProduct = useAppSelector(selectProduct.totalProduct)
   const totalFavProduct = useAppSelector(selectProduct.totalFavProduct)
   const filterState = useAppSelector(selectProduct.filterState)
+
+  const allCategory = useAppSelector(selectCategory.allCategory)
+  const categoryList = useAppSelector(selectCategory.categoryList)
+  const showCategory = useAppSelector(selectCategory.showCategory)
   return useMemo(() => ({
     viewProducts,
     allProducts,
@@ -73,10 +78,14 @@ export const useProducts = () => {
     pageProduct,
     totalProduct,
     totalFavProduct,
-    filterState
+    filterState,
+    allCategory,
+    categoryList,
+    showCategory
   }), [
     viewProducts, allProducts, allFavProducts, isApplyFilter,
     countProducts, countFavProducts, pageFavProduct, pageProduct,
-    totalProduct, totalFavProduct, filterState
+    totalProduct, totalFavProduct, filterState,
+    allCategory, categoryList, showCategory
   ])
 }

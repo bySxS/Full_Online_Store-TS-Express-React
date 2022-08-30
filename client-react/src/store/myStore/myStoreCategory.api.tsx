@@ -6,6 +6,7 @@ import { ICategory, ICategorySearch, ICategorySection } from 'store/myStore/mySt
 const myStoreCategoryApi = createApi({
   reducerPath: 'storeCategory/api',
   baseQuery: baseQueryWithRefreshToken,
+  tagTypes: ['Category'],
   refetchOnFocus: true,
   endpoints: build => ({
     addCategory: build.mutation<IMessage<ICategory>,
@@ -14,31 +15,35 @@ const myStoreCategoryApi = createApi({
           url: 'category',
           method: 'POST',
           body
-        })
+        }),
+        invalidatesTags: ['Category']
       }),
 
     updateCategory: build.mutation<IMessage<ICategory>,
-  { categoryId: number, body: ICategory }>({
-    query: ({ categoryId, body }) => ({
-      url: 'category/' + categoryId,
-      method: 'PUT',
-      body
-    })
-  }),
+      { categoryId: number, body: ICategory }>({
+        query: ({ categoryId, body }) => ({
+          url: 'category/' + categoryId,
+          method: 'PUT',
+          body
+        }),
+        invalidatesTags: ['Category']
+      }),
 
     deleteCategory: build.mutation<IMessage<null>,
       number>({
         query: (categoryId: number) => ({
           url: 'category/' + categoryId,
           method: 'DELETE'
-        })
+        }),
+        invalidatesTags: ['Category']
       }),
 
     getAllCategory: build.query<IMessage<ICategorySection[]>,
       string>({
         query: () => ({
           url: 'category'
-        })
+        }),
+        providesTags: ['Category']
       }),
 
     searchCategory: build.query<IMessage<IResultList<ICategorySearch>>,
@@ -50,7 +55,8 @@ const myStoreCategoryApi = createApi({
             limit: args.limit || 10,
             page: args.page
           }
-        })
+        }),
+        providesTags: ['Category']
       })
 
   })
