@@ -8,7 +8,6 @@ import CharacteristicsSetValueModel from '@/characteristics/characteristicsSetVa
 export type TSort = 'price_asc' | 'price_desc' |
   'id_desc' | 'views_desc' | 'rating_desc' | 'favorites_desc' | ''
 
-
 export interface IGetProducts {
   filter?: string[],
   price?: number[],

@@ -1,5 +1,8 @@
 import CategoryService from '@/category/category.service'
-import { IGetProducts, IProduct, IProductFilesArray, IProductService } from './products.interface'
+import {
+  IGetProducts, IProduct, IProductFilesArray,
+  IProductService, TSort
+} from './products.interface'
 import { IMessage } from '@/interface'
 import path from 'path'
 import ProductsModel from './products.model'
@@ -357,8 +360,7 @@ class ProductsService implements IProductService {
     page?: number,
     filter?: string[],
     price?: number[],
-    sort?: 'price_asc' | 'price_desc' |
-      'id_desc' | 'views_desc' | 'rating_desc' | 'favorites_desc' | ''
+    sort?: TSort
   }): QueryBuilder<ProductsModel, ProductsModel | undefined> |
     QueryBuilder<ProductsModel, Page<ProductsModel>
       > {

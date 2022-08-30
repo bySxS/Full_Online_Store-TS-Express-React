@@ -47,8 +47,8 @@ export interface IProduct {
   parentProduct?: IProduct
 }
 
-export type TSortProduct = 'price_asc' | 'price_desc' |
-  'id_desc' | 'views_desc' | 'rating_desc' | 'favorites_desc' | ''
+export type TSortProduct = 'price_asc' | 'price_desc' | 'id_desc' |
+  'views_desc' | 'rating_desc' | 'favorites_desc' | ''
 
 export interface IGetProductsWithFilter {
   categoryId?: number
