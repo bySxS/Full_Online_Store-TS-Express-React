@@ -99,7 +99,7 @@ const FormCategory: FC<IFormCategory> = ({
         nameEng: formState.nameEng || ''
       })
     }
-    let result = false
+    let result = form?.type !== 'del'
     if (form?.type === 'del' && formState.id) {
       result = confirm('Вы уверены что хотите удалить категорию и все подкатегории?')
       if (result) {

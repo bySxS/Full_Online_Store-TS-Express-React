@@ -115,83 +115,110 @@ class CategoryService implements ICategoryService {
     const section: ISectionOut[] = []
     const categoryNotSort = category as unknown as {
       id: number
-      parentId: number
-      categoryName: string
-      categoryNameEng: string
-      categoryIconClass: string
-      sectionName: string
-      sectionNameEng: string
-      sectionIconClass: string
+      parentId: number | null
+      categoryName: string | null
+      categoryNameEng: string | null
+      categoryIconClass: string | null
+      sectionName: string | null
+      sectionNameEng: string | null
+      sectionIconClass: string | null
       categoryCountProducts: number
     }[]
-    categoryNotSort.forEach((all) => {
+    for (const all of categoryNotSort) {
       const ids = new Set(section.map(section => section.sectionId)) // добавленные
-      if (!ids.has(all.parentId)) {
-        const filterCharacteristics =
-          categoryNotSort.filter(category => category.parentId === all.parentId)
-        let sectionCountProducts = 0
-        const cat: ICategoryOut[] = []
-        filterCharacteristics.forEach(category => {
-          cat.push({
-            categoryId: category.id,
-            categoryName: category.categoryName,
-            categoryNameEng: category.categoryNameEng,
-            categoryIconClass: category.categoryIconClass,
-            categoryCountProducts: category.categoryCountProducts
-          })
-          sectionCountProducts += category.categoryCountProducts
-        })
-        section.push({
-          sectionId: all.parentId,
-          sectionName: all.sectionName,
-          sectionNameEng: all.sectionNameEng,
-          sectionIconClass: all.sectionIconClass,
-          sectionCountProducts,
-          category: cat
-        })
+      if (all.parentId === null) { // категории без отца делаем разделами
+        all.sectionName = all.categoryName
+        all.sectionNameEng = all.categoryNameEng
+        all.sectionIconClass = all.categoryIconClass
+        all.parentId = all.id
+        all.categoryName = null
+        all.categoryNameEng = null
+        all.categoryIconClass = null
+      } else if (ids.has(all.parentId)) { // если есть пропускаем
+        continue
       }
-    })
-    section.forEach((sect) => {
-      section
-        .filter((sect2) => sect2.sectionId !== sect.sectionId)
-        .forEach((sect2) => {
-          const { category } = sect2
-          category.forEach((cat) => {
-            if (sect.sectionId === cat.categoryId) {
-              cat.subcategory = sect.category
-              sect.sectionName = 'delete'
-              cat.categoryCountProducts = sect.sectionCountProducts
-            }
-          })
+      // ищем категорий с текущим отцом (разделом)
+      const filterCharacteristics =
+          categoryNotSort.filter(category => category.parentId === all.parentId)
+      // считаем количество продуктов
+      let sectionCountProducts = 0
+      const cat: ICategoryOut[] = []
+      for (const category1 of filterCharacteristics) {
+        // если нет категории то пропускаем
+        if (category1.categoryName === null ||
+          category1.categoryNameEng === null ||
+          category1.categoryIconClass === null) {
+          continue
+        }
+        // иначе добавляем в массив категорий текущего раздела
+        cat.push({
+          categoryId: category1.id,
+          categoryName: category1.categoryName,
+          categoryNameEng: category1.categoryNameEng,
+          categoryIconClass: category1.categoryIconClass,
+          categoryCountProducts: category1.categoryCountProducts
         })
-      section
-        .forEach((sect3) => {
-          let sectionCountProducts = 0
-          sect3.category.forEach((cat) => {
-            sectionCountProducts += cat.categoryCountProducts
-          })
-          sect3.sectionCountProducts = sectionCountProducts
-        })
-    })
+        sectionCountProducts += category1.categoryCountProducts
+      }
+      if (all.sectionName === null ||
+        all.sectionNameEng === null ||
+        all.sectionIconClass === null) {
+        continue
+      }
+      // добавляем раздел с категориями и
+      // количеством продуктов в новый отсортированный объект
+      section.push({
+        sectionId: all.parentId,
+        sectionName: all.sectionName,
+        sectionNameEng: all.sectionNameEng,
+        sectionIconClass: all.sectionIconClass,
+        sectionCountProducts,
+        category: cat
+      })
+    }
+
+    for (const sect of section) {
+      for (const sect1 of section
+        .filter((sect2) => sect2.sectionId !== sect.sectionId)) {
+        const { category } = sect1
+        // переносим внуков отца в subcategory и fix count
+        for (const cat of category) {
+          if (sect.sectionId === cat.categoryId) {
+            cat.subcategory = sect.category
+            sect.sectionName = 'delete'
+            cat.categoryCountProducts = sect.sectionCountProducts
+          }
+        }
+      }
+      // считаем количество продуктов из за удаленный внуков
+      for (const sect3 of section) {
+        let sectionCountProducts = 0
+        for (const cat of sect3.category) {
+          sectionCountProducts += cat.categoryCountProducts
+        }
+        sect3.sectionCountProducts = sectionCountProducts
+      }
+    }
+    // выводим и убираем внуки в корне
     return section
       .filter((sect) => sect.sectionName !== 'delete')
   }
 
   async getAll ({ sectionId }: { sectionId?: number }): Promise<IMessage> {
     if (!sectionId) {
-      const cache = await cacheRedisDB.get('categoryAll')
-      if (cache) {
-        // await cacheRedisDB.expire('categoryAll', 360000)
-        return {
-          success: true,
-          result: JSON.parse(cache),
-          message: 'Все категории загружены'
-        }
-      }
+      // const cache = await cacheRedisDB.get('categoryAll')
+      // if (cache) {
+      //   // await cacheRedisDB.expire('categoryAll', 360000)
+      //   return {
+      //     success: true,
+      //     result: JSON.parse(cache),
+      //     message: 'Все категории загружены'
+      //   }
+      // }
     }
     const query = () => {
       return CategoryModel.query()
-        .joinRelated('parent')
+        .leftOuterJoinRelated('parent')
         .leftOuterJoinRelated('products')
         .select('category.id',
           'category.parentId',
