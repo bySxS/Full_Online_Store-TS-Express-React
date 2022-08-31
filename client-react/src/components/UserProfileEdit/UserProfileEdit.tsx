@@ -10,13 +10,13 @@ import style from './UserProfileEdit.module.scss'
 interface UserProfileProps {
   user: IUser | IUsers
   edit?: boolean
-  notShowInfo?: boolean
+  showInfo?: boolean
 }
 
 const UserProfileEdit: FC<UserProfileProps> = ({
   user,
   edit = true,
-  notShowInfo = false
+  showInfo = true
 }) => {
   const { isAdmin, nickname } = useAuth()
   const [deleteUser, {
@@ -49,8 +49,8 @@ const UserProfileEdit: FC<UserProfileProps> = ({
   }
 
   return (
-    <div className={style.viewProfile}>
-      <div className={`${style.sectionAvatar} ${(!notShowInfo || editProfile) ? 'pt-20' : ''}`}>
+    <div className={`${style.viewProfile} ${!showInfo ? style.viewProfileNotShowProfile : ''}`}>
+      <div className={`${style.sectionAvatar} ${!showInfo ? 'py-10' : ''} ${(showInfo || editProfile) ? 'pt-20' : ''}`}>
         {user.avatar
           ? <img className={style.avatar}
                  alt={user.nickname}
@@ -59,6 +59,11 @@ const UserProfileEdit: FC<UserProfileProps> = ({
                  loading={'lazy'}
           />
           : <i className="bi bi-person-circle text-9xl text-gray-700"/>
+        }
+        {!showInfo &&
+          <div className={`${style.button} text-xl text-center`}>
+            {user.nickname}
+          </div>
         }
         {!edit &&
          <div className={style.button}>
@@ -103,8 +108,8 @@ const UserProfileEdit: FC<UserProfileProps> = ({
           </div>
         }
       </div>
-      {(!notShowInfo || editProfile) &&
-        (<div className={style.sectionInfo}>
+      {(showInfo || editProfile) &&
+        (<div className={`${style.sectionInfo} ${!showInfo ? 'p-10' : ''}`}>
         <Registration
           onlyShowInfo={!editProfile}
           changeProfile={true}

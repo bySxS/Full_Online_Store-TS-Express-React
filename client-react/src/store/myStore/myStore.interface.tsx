@@ -1,6 +1,7 @@
 export interface IResultList<T> {
   results: T[]
   total: number
+  totalPage: number
   page: number
   limit: number
 }

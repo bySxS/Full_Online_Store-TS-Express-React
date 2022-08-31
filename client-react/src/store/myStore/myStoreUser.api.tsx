@@ -158,7 +158,7 @@ const myStoreUserApi = createApi({
 export default myStoreUserApi
 
 export const {
-  useAllUsersQuery,
+  useLazyAllUsersQuery,
   useLoginMutation,
   useRegistrationMutation,
   useDeleteUserMutation,

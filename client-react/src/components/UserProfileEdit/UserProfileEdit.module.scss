@@ -2,6 +2,12 @@
   @apply flex;
 }
 
+.viewProfileNotShowProfile {
+  @apply p-14 m-3 border border-4 border-white p-2 mb-3;
+  border-radius: 10px;
+  box-shadow: 0 0 0 black, 0 0 0 black, 0 0 0 #000000, 0 0 4px #000000;
+}
+
 .sectionAvatar {
   @apply px-10 justify-start flex flex-col items-center;
 }

@@ -84,7 +84,7 @@ const Category: FC<ICategoryProps> = ({
       <MyOverlay
         show={show.includes(category.categoryId)}
         target={ref.current}
-        title={`Категория ${category.categoryName}`}
+        title={`Подкатегория ${category.categoryName}`}
         tabIndex={category.categoryId}
         marginLeft={25}
       >

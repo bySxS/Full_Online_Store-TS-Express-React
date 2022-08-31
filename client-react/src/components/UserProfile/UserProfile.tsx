@@ -5,12 +5,12 @@ import UserProfileEdit from '../UserProfileEdit/UserProfileEdit'
 
 interface UserProfileProps {
   user: IUsers
-  notShowInfo?: boolean
+  showInfo?: boolean
 }
 
 const UserProfile: FC<UserProfileProps> = ({
   user,
-  notShowInfo = false
+  showInfo = true
 }) => {
   const [currentUser, setCurrentUser] = useState<IUsers>({
     ...user,
@@ -33,7 +33,7 @@ const UserProfile: FC<UserProfileProps> = ({
       <UserProfileEdit
         user={currentUser}
         edit={false}
-        notShowInfo={notShowInfo}
+        showInfo={showInfo}
       />
     </>
   )

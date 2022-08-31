@@ -1,0 +1,11 @@
+.blockPages {
+  @apply flex flex-row;
+}
+
+.blockPages .button {
+  @apply bg-amber-400 text-black hover:bg-amber-300 mx-1;
+}
+
+.blockPages .buttonActive {
+  @apply bg-gray-900 text-white;
+}
