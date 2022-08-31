@@ -34,5 +34,5 @@ export function useInfoLoading ({
       }
     }
     setLoading(isLoading)
-  }, [isSuccess, isError, isLoading])
+  }, [isSuccess, isError, isLoading, data])
 }
