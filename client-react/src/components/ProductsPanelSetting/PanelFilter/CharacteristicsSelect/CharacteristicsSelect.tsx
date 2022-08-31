@@ -29,7 +29,9 @@ const CharacteristicsSelect = () => {
         }
       })[0] || undefined)
   })
-  useInfoLoading({ isLoading, isSuccess, isError, data, error })
+  useInfoLoading({
+    isLoading, isSuccess, isError, data, error
+  })
   const [showSection, setShowSection] =
     useState<IShowCharacteristic[]>([{}])
   const [checkedValue, setCheckedValue] = useState<string[]>(filterState.filter?.split(',') || [])

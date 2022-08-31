@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
-import { useAppActions, useAppSelector } from 'hooks/useStore'
-import selectCategory from 'store/category/category.selector'
-import selectProduct from 'store/product/product.selector'
+import { useAppActions } from 'hooks/useStore'
 import { IFilterState } from 'store/myStore/myStoreProduct.interface'
 import { useDebounce } from 'hooks/useDebounce'
+import { useProducts } from 'hooks/useSelectors'
 import style from './CategoryList.module.scss'
 
 const CategoryList = () => {
-  const filterState = useAppSelector(selectProduct.filterState)
+  const { changeFilterState } = useAppActions()
+  const { categoryList, filterState } = useProducts()
   const [filter, setFilter] = useState<IFilterState>(filterState)
   const filterDaley = useDebounce(filter, 500)
   const [openCategories, setOpenCategories] = useState(true)
-  const categoryList = useAppSelector(selectCategory.categoryList)
-  const { changeFilterState } = useAppActions()
 
   useEffect(() => {
     changeFilterState(filterDaley as IFilterState)

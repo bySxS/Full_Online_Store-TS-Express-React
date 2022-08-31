@@ -28,6 +28,8 @@ exports.up = function (knex: Knex) {
         .references('id')
         .inTable('characteristicsValues')
         .unsigned()
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE')
         .notNullable()
     })
 }

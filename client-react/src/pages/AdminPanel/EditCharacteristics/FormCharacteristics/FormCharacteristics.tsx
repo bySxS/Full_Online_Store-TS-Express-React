@@ -3,49 +3,47 @@ import { Button, Form } from 'react-bootstrap'
 import MyInput from 'components/UI/MyInput/MyInput'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import {
-  useAddCategoryMutation,
-  useDeleteCategoryMutation,
-  useUpdateCategoryMutation
-} from 'store/myStore/myStoreCategory.api'
-import style from './FormCategory.module.scss'
+  useAddCharacteristicNameMutation,
+  useDeleteCharacteristicNameMutation,
+  useUpdateCharacteristicNameMutation
+} from 'store/myStore/myStoreCharacteristics.api'
+import {
+  ICharacteristicFieldType,
+  ICharacteristicName
+} from 'store/myStore/myStoreCharacteristics.interface'
+import style from './FormCharacteristics.module.scss'
 
-export interface IFormCategoryState {
-  category?: {
-    id?: number
-    name?: string
-    nameEng?: string
-    parentId?: number
-    iconClass?: string
-  }
-  type: 'add' | 'del' | 'upd'
+export interface ICharacteristicNameForm {
+  id?: number
+  name?: string
+  categoryId?: number
+  fieldType?: ICharacteristicFieldType
+  parentId?: number
 }
 
-interface IFormCategory {
-  form?: IFormCategoryState
+export interface IFormCharacteristicsState {
+  body: ICharacteristicNameForm
+  type: 'add' | 'del' | 'upd'
+  section: boolean
+}
+
+interface IFormCharacteristics {
+  form: IFormCharacteristicsState
   onCloseForm?: () => void
 }
 
-const FormCategory: FC<IFormCategory> = ({
+const FormCharacteristics: FC<IFormCharacteristics> = ({
   form,
   onCloseForm
 }) => {
-  const [formState, setFormState] = useState<{
-    id?: number
-    name?: string
-    nameEng?: string
-    parentId?: number
-    iconClass?: string
-  }>(form?.category || {
-    name: '',
-    nameEng: ''
-  })
-  const [addCat, {
+  const [formState, setFormState] = useState<ICharacteristicName>(form.body as ICharacteristicName)
+  const [add, {
     error: errorAdd,
     data: dataAdd,
     isError: isErrorAdd,
     isLoading: isLoadingAdd,
     isSuccess: isSuccessAdd
-  }] = useAddCategoryMutation()
+  }] = useAddCharacteristicNameMutation()
   useInfoLoading({
     error: errorAdd,
     data: dataAdd,
@@ -53,13 +51,13 @@ const FormCategory: FC<IFormCategory> = ({
     isLoading: isLoadingAdd,
     isSuccess: isSuccessAdd
   })
-  const [delCat, {
+  const [del, {
     error: errorDel,
     data: dataDel,
     isError: isErrorDel,
     isLoading: isLoadingDel,
     isSuccess: isSuccessDel
-  }] = useDeleteCategoryMutation()
+  }] = useDeleteCharacteristicNameMutation()
   useInfoLoading({
     error: errorDel,
     data: dataDel,
@@ -67,13 +65,13 @@ const FormCategory: FC<IFormCategory> = ({
     isLoading: isLoadingDel,
     isSuccess: isSuccessDel
   })
-  const [updCat, {
+  const [upd, {
     error: errorUpd,
     data: dataUpd,
     isError: isErrorUpd,
     isLoading: isLoadingUpd,
     isSuccess: isSuccessUpd
-  }] = useUpdateCategoryMutation()
+  }] = useUpdateCharacteristicNameMutation()
   useInfoLoading({
     error: errorUpd,
     data: dataUpd,
@@ -83,27 +81,19 @@ const FormCategory: FC<IFormCategory> = ({
   })
   const clickHandle = () => {
     if (form?.type === 'upd' && formState.id) {
-      updCat({
-        categoryId: formState.id,
-        body: {
-          ...formState,
-          name: formState.name || '',
-          nameEng: formState.nameEng || ''
-        }
+      upd({
+        characteristicNameId: formState.id,
+        body: formState
       })
     }
     if (form?.type === 'add') {
-      addCat({
-        ...formState,
-        name: formState.name || '',
-        nameEng: formState.nameEng || ''
-      })
+      add(formState)
     }
     let result = form?.type !== 'del'
     if (form?.type === 'del' && formState.id) {
-      result = confirm('Вы уверены что хотите удалить категорию и все подкатегории?')
+      result = confirm(`Вы уверены что хотите удалить ${form.section ? 'раздел' : 'название'} характеристики?`)
       if (result) {
-        delCat(formState.id)
+        del(formState.id)
       }
     }
   }
@@ -132,25 +122,26 @@ const FormCategory: FC<IFormCategory> = ({
             placeholder={'Введите название'}
           />
           <MyInput
-            nameInput={'nameEng'}
-            value={formState.nameEng}
-            label={'Название на английском'}
+            nameInput={'fieldType'}
+            value={formState.fieldType}
+            label={'Тип поля, необязательно (select | checkbox | text)'}
             setValue={setFormState}
-            isValid={(formState.nameEng && formState.nameEng !== '') || false}
-            placeholder={'Введите название на английском'}
-          />
-          <MyInput
-            nameInput={'iconClass'}
-            value={formState.iconClass}
-            label={'Класс icon (не обязательно)'}
-            setValue={setFormState}
-            isValid={(formState.iconClass && formState.iconClass !== '') || false}
-            placeholder={'Введите Класс icon'}
+            disable={form.section}
+            isValid={!!formState.fieldType}
+            placeholder={'Введите Тип поля'}
           />
           <MyInput
             nameInput={'parentId'}
             value={formState.parentId}
-            label={'Родительская категория'}
+            label={'Раздел характеристики'}
+            setValue={setFormState}
+            disable={form?.type !== 'upd'}
+            placeholder={''}
+          />
+          <MyInput
+            nameInput={'categoryId'}
+            value={formState.categoryId}
+            label={'ID Категории характеристики'}
             setValue={setFormState}
             disable={form?.type !== 'upd'}
             placeholder={''}
@@ -161,18 +152,18 @@ const FormCategory: FC<IFormCategory> = ({
               className={'bg-emerald-600 w-full'}
               onClick={clickHandle}
               type={'submit'}
-              disabled={(!formState.name || formState.name === '' || !formState.nameEng || formState.nameEng === '')}
+              disabled={(!formState.name || formState.name === '' || !formState.categoryId)}
       >
         {form?.type === 'add'
-          ? 'Добавить категорию'
+          ? `Добавить ${form.section ? 'раздел' : 'название'} характеристики`
           : form?.type === 'upd'
-            ? 'Изменить категорию'
+            ? `Изменить ${form.section ? 'раздел' : 'название'} характеристики`
             : form?.type === 'del'
-              ? 'Удалить категорию'
+              ? `Удалить ${form.section ? 'раздел' : 'название'} характеристики`
               : ''}
       </Button>
     </div>
   )
 }
 
-export default FormCategory
+export default FormCharacteristics

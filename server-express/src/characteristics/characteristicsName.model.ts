@@ -13,6 +13,12 @@ export default class CharacteristicsNameModel extends Model {
   public fieldType!: string
   public parentId!: number
 
+  // join
+  public sectionId!: number | null
+  public sectionName!: string | null
+  public propertyName!: string | null
+  public propertyNameId!: number | null
+
   static get tableName () {
     return 'characteristicsName'
   }

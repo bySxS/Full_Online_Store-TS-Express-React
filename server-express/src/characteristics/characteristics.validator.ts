@@ -54,7 +54,10 @@ export const validateCharacteristicAddName = () => {
       .notEmpty(),
     body('categoryId', 'ID категории (categoryId) должны быть только цифры')
       .matches('^[0-9]+$'),
+    body('categoryId', 'ID категории (categoryId) не должна быть 0')
+      .if(body('categoryId').isIn(['0'])),
     body('fieldType', 'Поле типа (fieldType) не указано, например: select, checkbox, text')
+      .if(body('parentId').notEmpty())
       .notEmpty()
   ]
 }

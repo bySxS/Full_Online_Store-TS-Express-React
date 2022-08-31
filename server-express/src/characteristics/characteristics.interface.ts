@@ -39,6 +39,7 @@ export interface ICharacteristicValue {
 export interface ICharacteristic {
   characteristicNameId: number
   characteristicName: string
+  characteristicsFieldType: string
   values?: ICharacteristicValue[]
 }
 

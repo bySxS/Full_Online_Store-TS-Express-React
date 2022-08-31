@@ -1,7 +1,8 @@
 export type ICharacteristicFieldType =
-  'select' | 'checkbox' | 'text'
+  'select' | 'checkbox' | 'text' | '' | undefined
 
 export interface ICharacteristicName {
+  id?: number
   name: string
   categoryId: number
   fieldType?: ICharacteristicFieldType
@@ -34,7 +35,8 @@ export interface ICharValue {
 export interface ICharName {
   characteristicNameId: number
   characteristicName: string
-  values: ICharValue[]
+  characteristicsFieldType: ICharacteristicFieldType
+  values?: ICharValue[]
 }
 
 export interface ICharacteristicSection {
@@ -43,10 +45,10 @@ export interface ICharacteristicSection {
   characteristics: ICharName[]
 }
 
-export interface ICharNameList {
-  parentId: number
-  propertyNameId: number
-  propertyName: string
-  sectionName: string
-  sectionId: number
-}
+// export interface ICharNameList {
+//   parentId: number
+//   propertyNameId: number
+//   propertyName: string
+//   sectionName: string
+//   sectionId: number
+// }

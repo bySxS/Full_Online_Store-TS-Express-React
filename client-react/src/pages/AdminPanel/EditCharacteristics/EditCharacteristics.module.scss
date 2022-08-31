@@ -1,0 +1,42 @@
+.block {
+  @apply flex flex-col w-[90%] mt-3 m-3 border border-4 border-white p-2 mb-3;
+  border-radius: 10px;
+  box-shadow: 0 0 0 black, 0 0 0 black, 0 0 0 #000000, 0 0 4px #000000;
+}
+
+.blockSelectCategory {
+  @apply flex flex-col w-[280px];
+}
+
+.blockCharacteristics {
+  @apply flex;
+}
+
+.ulSection {
+  @apply flex flex-col;
+}
+
+.sectionName {
+  @apply text-xl font-sans flex items-center;
+}
+
+.liSection {
+  @apply flex flex-col pb-1.5;
+}
+
+.ulChar {
+  @apply flex flex-col pl-4;
+}
+
+.charName {
+  @apply font-sans flex items-center;
+}
+
+.liChar {
+  @apply flex pb-1;
+
+  &:before {
+    content: '- ';
+    @apply pr-1;
+  }
+}

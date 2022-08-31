@@ -155,25 +155,40 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
-  async getAllCharacteristicsNameByCategoryId ({ categoryId, sort = false }: { categoryId: number, sort?: boolean }) {
-    const allCategory = await CategoryService
-      .getAllCategoryBySectionWithCache(categoryId)
-    allCategory.push(categoryId)
+  async getAllCharacteristicsNameByCategoryId ({ categoryId, sort = true }: { categoryId: number, sort?: boolean }) {
+    if (categoryId === 0) {
+      return {
+        success: true,
+        message: 'Характеристик ' +
+          `для категории с id${categoryId} нет`
+      }
+    }
+    // const allCategory = await CategoryService
+    //   .getAllCategoryBySectionWithCache(categoryId)
+    // allCategory.push(categoryId)
     const characteristics = await CharacteristicsNameModel.query()
-      .whereIn('characteristicsName.categoryId', allCategory)
-      .leftOuterJoinRelated('parent')
-      .select('characteristicsName.parentId',
-        'characteristicsName.id as propertyNameId',
+      .whereIn('characteristicsName.categoryId', [categoryId])
+      // .leftOuterJoinRelated('parent')
+      .select('characteristicsName.id as propertyNameId',
         'characteristicsName.name as propertyName',
-        'parent.name as sectionName',
-        'parent.id as sectionId')
-      .groupBy('characteristicsName.parentId',
-        'characteristicsName.id')
+        'characteristicsName.parentId as sectionId',
+        // 'parent.name as sectionName',
+        'characteristicsName.fieldType as propertyFieldType')
+      // .groupBy(// 'characteristicsName.parentId',
+      //   'characteristicsName.id')
     if (characteristics.length === 0) {
       return {
         success: true,
         message: 'Характеристик ' +
           `для категории с id${categoryId} нет`
+      }
+    }
+    for (const char of characteristics) {
+      if (char.sectionId === null) {
+        char.sectionId = char.propertyNameId
+        char.propertyNameId = null
+        char.sectionName = char.propertyName
+        char.propertyName = null
       }
     }
     let result
@@ -227,14 +242,14 @@ class CharacteristicsService implements ICharacteristicService {
       .leftOuterJoinRelated('characteristicsName.parent')
       .leftOuterJoinRelated('products')
       .leftJoinRelated('characteristicsValues')
-      .select('characteristicsName.parentId',
-        'characteristicsName.id as propertyNameId',
+      .select('characteristicsName.id as propertyNameId',
         'characteristicsName.name as propertyName',
         raw('count(DISTINCT products.id) as propertyCountProducts'),
         'characteristicsValues.id as propertyValueId',
         'characteristicsValues.value as propertyValue',
-        'characteristicsName:parent.name as sectionName',
-        'characteristicsName:parent.id as sectionId')
+        'characteristicsName.fieldType as propertyFieldType',
+        'characteristicsName.parentId as sectionId',
+        'characteristicsName:parent.name as sectionName')
       .groupBy('characteristicsName.parentId',
         'characteristicsName.id',
         'characteristicsValues.id')
@@ -243,36 +258,45 @@ class CharacteristicsService implements ICharacteristicService {
   sortCharacteristicsTree (character: CharacteristicsSetValueModel[] | CharacteristicsNameModel[]): ICharacteristicProduct[] {
     const section: ICharacteristicProduct[] = []
     const characteristics = character as unknown as {
-      parentId: number
       propertyNameId: number
       propertyName: string
       propertyCountProducts: number
       propertyValueId: number
       propertyValue: string
+      propertyFieldType: string
       sectionName: string
       sectionId: number
     }[]
-    characteristics.forEach((all) => {
+    for (const all of characteristics) {
       const ids = new Set(section.map(section => section.sectionId))
       const charListNameId: number[] = []
       if (!ids.has(all.sectionId)) {
         section.push({
           sectionName: all.sectionName,
           sectionId: all.sectionId,
-          characteristics: characteristics
-            .filter((charName: { sectionId: number }) =>
-              charName.sectionId === all.sectionId)
+          characteristics: characteristics // characteristics
+            .filter((charName: { sectionId: number, propertyNameId: number }) =>
+              charName.sectionId === all.sectionId && charName.propertyNameId !== null)
             .map((
-              charName: { propertyNameId: number, propertyName: string }
+              charName: {
+                propertyNameId: number,
+                propertyName: string,
+                propertyFieldType: string
+              }
             ) => ({
               characteristicNameId: charName.propertyNameId,
               characteristicName: charName.propertyName,
-              values: characteristics
+              characteristicsFieldType: charName.propertyFieldType,
+              values: characteristics // values
                 .filter((
                   charValue: { propertyNameId: number }) =>
                   charValue.propertyNameId === charName.propertyNameId)
                 .map(
-                  (charValue: { propertyValueId: number, propertyValue: string, propertyCountProducts: number }
+                  (charValue: {
+                    propertyValueId: number,
+                    propertyValue: string,
+                    propertyCountProducts: number
+                  }
                   ) => ({
                     characteristicValueId: charValue.propertyValueId,
                     characteristicValue: charValue.propertyValue,
@@ -295,13 +319,14 @@ class CharacteristicsService implements ICharacteristicService {
               } else {
                 return {
                   characteristicNameId: value.characteristicNameId,
-                  characteristicName: value.characteristicName
+                  characteristicName: value.characteristicName,
+                  characteristicsFieldType: value.characteristicsFieldType
                 }
               }
             })
         })
       }
-    })
+    }
     return section
   }
 
@@ -330,7 +355,7 @@ class CharacteristicsService implements ICharacteristicService {
       const parent = await CharacteristicsNameModel.query()
         .findOne({ id: parentId })
         .select('name')
-      if (parent) {
+      if (!parent) {
         throw ApiError.badRequest(
           `Родительской характеристики с id${parentId} не существует`,
           'CharacteristicsService addCharacteristicName')
@@ -362,7 +387,7 @@ class CharacteristicsService implements ICharacteristicService {
       const parent = await CharacteristicsNameModel.query()
         .findOne({ id: parentId })
         .select('name')
-      if (parent) {
+      if (!parent) {
         throw ApiError.badRequest(
           `Родительской характеристики с id${parentId} не существует`,
           'CharacteristicsService updCharacteristicName')
