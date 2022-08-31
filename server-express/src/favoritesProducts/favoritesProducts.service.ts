@@ -125,9 +125,11 @@ class FavoritesProductsService implements IFavoritesProductService {
       result = await ProductsService
         .sortAndAddCharacteristicsToProducts(result)
     }
+    const total = 'total' in result ? result.total : undefined
+    const totalPage = Math.ceil((total || limit) / limit)
     return {
       success: true,
-      result: { ...result, page, limit },
+      result: { ...result, page, limit, totalPage },
       message: `Страница ${page} с избранными продуктами, ` +
         `у пользователя с ID${userId}, ` +
         filterMessage({

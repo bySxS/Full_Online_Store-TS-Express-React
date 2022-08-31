@@ -616,9 +616,11 @@ class ProductsService implements IProductService {
     }
     result =
         await this.sortAndAddCharacteristicsToProducts(result)
+    const total = 'total' in result ? result.total : undefined
+    const totalPage = Math.ceil((total || limit) / limit)
     return {
       success: true,
-      result: { ...result, page, limit },
+      result: { ...result, page, limit, totalPage },
       message: `Страница ${page} продуктов, ` +
         filterMessage({
           filter, price, sort, categoryId
@@ -642,9 +644,11 @@ class ProductsService implements IProductService {
         message: `Поиск ничего не нашёл по запросу ${title}`
       }
     }
+    const total = 'total' in result ? result.total : undefined
+    const totalPage = Math.ceil((total || limit) / limit)
     return {
       success: true,
-      result: { ...result, page, limit },
+      result: { ...result, page, limit, totalPage },
       message: 'Поиск прошёл успешно'
     }
   }

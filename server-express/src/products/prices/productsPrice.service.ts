@@ -99,9 +99,11 @@ class ProductsPriceService implements IProductPriceService {
         `Тип цен на странице ${page} не найдено`,
         'ProductsPriceService getTypesPrices')
     }
+    const total = result.total
+    const totalPage = Math.ceil((total || limit) / limit)
     return {
       success: true,
-      result: { ...result, page, limit },
+      result: { ...result, page, limit, totalPage },
       message: `Страница ${page} тип цен успешно загружена`
     }
   }

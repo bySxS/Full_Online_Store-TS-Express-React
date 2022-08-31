@@ -228,9 +228,11 @@ class ReviewService implements IReviewService {
           'отзывов и комментариев'
       }
     }
+    const total = result.total
+    const totalPage = Math.ceil((total || limit) / limit)
     return {
       success: true,
-      result: { ...result, page, limit },
+      result: { ...result, page, limit, totalPage },
       message: `Страница ${page} отзывов пользователя ` +
         `с id${userId} успешно загружена`
     }

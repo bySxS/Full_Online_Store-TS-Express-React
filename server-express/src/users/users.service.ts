@@ -393,14 +393,17 @@ class UsersService implements IUserService {
   ): Promise<IMessage> {
     const result = await UsersModel.query()
       .page(page - 1, limit)
+      .orderBy('id', 'desc')
     if (!result) {
       throw ApiError.badRequest(
         `Пользователей на странице ${page} не найдено`,
         'UsersService getUsers')
     }
+    const total = result.total
+    const totalPage = Math.ceil((total || limit) / limit)
     return {
       success: true,
-      result: { ...result, page, limit },
+      result: { ...result, page, limit, totalPage },
       message: `Страница ${page} пользователей успешно загружена`
     }
   }
@@ -417,9 +420,11 @@ class UsersService implements IUserService {
         message: `Поиск ничего не нашёл по никнейму ${nickname}`
       }
     }
+    const total = users.total
+    const totalPage = Math.ceil((total || limit) / limit)
     return {
       success: true,
-      result: { ...users, page, limit },
+      result: { ...users, page, limit, totalPage },
       message: 'Поиск прошёл успешно'
     }
   }

@@ -321,10 +321,11 @@ class CategoryService implements ICategoryService {
         message: `Поиск ничего не нашёл по запросу ${name}`
       }
     }
-
+    const total = result.total
+    const totalPage = Math.ceil((total || limit) / limit)
     return {
       success: true,
-      result: { ...result, page, limit },
+      result: { ...result, page, limit, totalPage },
       message: 'Поиск прошёл успешно'
     }
   }
