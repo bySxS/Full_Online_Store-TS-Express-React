@@ -70,7 +70,11 @@ const myStorePriceApi = createApi({
     getAllTypePrice: build.query<IMessage<IResultList<ITypePrice>>,
       string>({
         query: () => ({
-          url: 'product/prices/types'
+          url: 'product/prices/types',
+          params: {
+            limit: 500,
+            page: 1
+          }
         })
       })
 

@@ -1,0 +1,11 @@
+.blockButton {
+  @apply flex;
+  flex: 1 0 100px;
+}
+
+.link {
+  @apply hover:opacity-80 px-2;
+  &:hover {
+    text-shadow: 0 0 0 black, 0 0 0 black, 0 0 10px #0bafee, 0 0 13px #000000;
+  }
+}

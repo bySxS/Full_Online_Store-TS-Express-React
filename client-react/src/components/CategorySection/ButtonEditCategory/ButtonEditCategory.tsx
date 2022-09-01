@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import style from 'components/ProductListBasket/ProductItemBasket/ProductItemBasket.module.scss'
+import style from './ButtonEditCategory.module.scss'
 import { IFormCategoryState } from 'pages/AdminPanel/EditCategory/FormCategory/FormCategory'
 import { ICategory } from 'store/myStore/myStoreCategory.interface'
 

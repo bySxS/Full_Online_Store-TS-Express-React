@@ -60,7 +60,6 @@ export interface IGetProductsWithFilter {
 }
 
 export interface IProductIn {
-  id: number,
   title: string,
   categoryId: number,
   userId: number,
@@ -69,7 +68,7 @@ export interface IProductIn {
   price: number
   priceTypeId: number
   availability: boolean
-  screen: File | null
+  screen?: File | null
   image1?: File | null
   image2?: File | null
   image3?: File | null

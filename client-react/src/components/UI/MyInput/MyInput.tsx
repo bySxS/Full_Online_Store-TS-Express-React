@@ -14,6 +14,7 @@ interface MyInputProps {
   disable?: boolean
   textError?: string
   type?: 'input' | 'textarea'
+  sizeTextareaPx?: number
   // validate?: boolean
 }
 
@@ -29,7 +30,8 @@ const MyInput: FC<MyInputProps> = ({
   disable = false,
   textError,
   isValid,
-  type = 'input'
+  type = 'input',
+  sizeTextareaPx = 130
   // validate = false
 }) => {
   const [showText, setShowText] = useState(true)
@@ -69,7 +71,7 @@ const MyInput: FC<MyInputProps> = ({
           name={nameInput}
           aria-label={nameInput}
           aria-describedby="basic-addon1"
-          style={type === 'textarea' ? { height: '130px' } : {}}
+          style={type === 'textarea' ? { height: `${sizeTextareaPx}px` } : {}}
         />
         {addButtonHide &&
           <Button className={'bg-emerald-600'}

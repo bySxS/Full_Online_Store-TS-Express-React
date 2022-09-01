@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
 import { useModal } from 'context/ModalContext'
 import { useDebounce } from 'hooks/useDebounce'
-import style from './ProductItemBasket.module.scss'
+import style from './ProductItemSmall.module.scss'
 
 export interface IProductItemSmall {
   productId: number
@@ -16,20 +16,24 @@ export interface IProductItemSmallProps {
   productId: number
   productTitle: string
   productScreen: string
-  productCount: number
+  productCount?: number
   InBasket?: boolean
-  onDelete: (id: number, title: string) => void
+  onDelete?: (id: number, title: string) => void
+  onChange?: (id: number) => void
+  onEditChar?: (id: number, title: string) => void
   onChangeCount?: (productId: number, productCount: number) => void
 }
 
-const ProductItemBasket: FC<IProductItemSmallProps> = ({
+const ProductItemSmall: FC<IProductItemSmallProps> = ({
   productScreen,
   productId,
   productTitle,
   onDelete,
+  onChange,
+  onEditChar,
   onChangeCount,
   InBasket = false,
-  productCount
+  productCount = 0
 }) => {
   const [count, setCount] = useState(productCount)
   const countDelay = useDebounce(count, 1000)
@@ -68,7 +72,7 @@ const ProductItemBasket: FC<IProductItemSmallProps> = ({
     <div title={'Количество товара'} className={style.blockCount}>
       <span>
         <a
-          href=""
+          href="components/ProductItemSmall/ProductItemSmall.tsx"
           className={style.button}
           onClick={(e) => {
             e.preventDefault()
@@ -79,7 +83,7 @@ const ProductItemBasket: FC<IProductItemSmallProps> = ({
       <span>{count}</span>
       <span>
         <a
-          href=""
+          href="components/ProductItemSmall/ProductItemSmall.tsx"
           className={style.button}
           onClick={(e) => {
             e.preventDefault()
@@ -96,20 +100,38 @@ const ProductItemBasket: FC<IProductItemSmallProps> = ({
         >
           <i className="bi bi-arrow-right-square-fill text-2xl text-gray-600"/>
         </span>
-        {!InBasket &&
-        <span className={style.link}>
+        {!InBasket && onChange &&
+          <>
+        <span
+          onClick={() => onChange(productId)}
+          className={style.link}
+          title={'Редактировать'}
+        >
           <i className="bi bi-pencil-fill text-2xl text-indigo-700"/>
         </span>
+        {onEditChar &&
+        <span
+          onClick={() => onEditChar(productId, productTitle)}
+          className={style.link}
+          title={'Изменить / добавить характеристики'}
+        >
+          <i className="bi bi-plus-square text-2xl text-green-800"/>
+        </span>
         }
+          </>
+        }
+        {onDelete &&
         <span
           onClick={() => onDelete(productId, productTitle)}
           className={style.link}
+          title={'Удалить'}
         >
           <i className="bi bi-trash3-fill text-2xl text-red-600"/>
         </span>
+        }
       </div>
     </div>
   )
 }
 
-export default ProductItemBasket
+export default ProductItemSmall

@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import ProductItemBasket, { IProductItemSmall } from './ProductItemBasket/ProductItemBasket'
+import ProductItemSmall, { IProductItemSmall } from 'components/ProductItemSmall/ProductItemSmall'
 
 interface IProductListSmall {
   productSmall: IProductItemSmall[]
@@ -18,7 +18,7 @@ const ProductListBasket: FC<IProductListSmall> = ({
     <div>
       {productSmall &&
         productSmall.map(item => (
-          <ProductItemBasket
+          <ProductItemSmall
             {...item}
             InBasket={InBasket}
             onDelete={onDelete}

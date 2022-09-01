@@ -94,24 +94,24 @@ const myStoreUserApi = createApi({
             page: args.page
           }
         }),
-        providesTags: ['Users'],
-        transformResponse: (response: IMessage<IResultList<IUsers>>) => {
-          if (response.result.results) {
-            const users = response.result?.results?.map(user => ({
-              ...user,
-              avatar: user.avatar ? user.avatar + `?${new Date().getTime().toString()}` : ''
-            }))
-            return {
-              ...response,
-              result: {
-                ...response.result,
-                results: users
-              }
-            }
-          } else {
-            return response
-          }
-        }
+        providesTags: ['Users']
+        // transformResponse: (response: IMessage<IResultList<IUsers>>) => {
+        //   if (response.result.results) {
+        //     const users = response.result?.results?.map(user => ({
+        //       ...user,
+        //       avatar: user.avatar ? user.avatar + `?${new Date().getTime().toString()}` : ''
+        //     }))
+        //     return {
+        //       ...response,
+        //       result: {
+        //         ...response.result,
+        //         results: users
+        //       }
+        //     }
+        //   } else {
+        //     return response
+        //   }
+        // }
       }), // /fetchAllUsers
 
     getUserById: build.query<IMessage<IUsers>,

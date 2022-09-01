@@ -81,9 +81,12 @@ const myStoreCharacteristicsApi = createApi({
       }),
 
     getAllCharacteristicsNameByCategoryId: build.query<IMessage<ICharacteristicSection[]>,
-      number>({
-        query: (categoryId: number) => ({
-          url: 'characteristics/category/' + categoryId
+      {categoryId: number, alsoParents?: boolean}>({
+        query: ({ categoryId, alsoParents = false }) => ({
+          url: 'characteristics/category/' + categoryId,
+          params: {
+            alsoParents
+          }
         }),
         providesTags: ['Characteristics']
       }),
@@ -114,5 +117,6 @@ export const {
   useGetAllCharacteristicsQuery,
   useLazyGetAllCharacteristicsNameByCategoryIdQuery,
   useGetCharacteristicProductByIdQuery,
+  useLazyGetCharacteristicProductByIdQuery,
   endpoints: myStoreCharacteristicEndpoint
 } = myStoreCharacteristicsApi

@@ -1,5 +1,5 @@
 
-export const validate = ({
+export const validateUser = ({
   deliveryAddress,
   phoneNumber,
   fullName,
@@ -15,18 +15,7 @@ export const validate = ({
   email?: string
   password?: string
   rePassword?: string
-}): {
-  errors: {
-    deliveryAddress?: string
-    phoneNumber?: string
-    fullName?: string
-    nickname?: string
-    email?: string
-    password?: string
-    rePassword?: string
-  }
-  success: boolean
-} => {
+}) => {
   let isValid = true
   let deliveryAddressErr
   if ((typeof deliveryAddress !== 'undefined') &&
@@ -113,6 +102,26 @@ export const validate = ({
       nickname: nicknameErr,
       password: passwordErr,
       rePassword: rePasswordErr
+    }
+  }
+}
+
+export const validateProduct = ({
+  title
+}: {
+  title?: string
+}) => {
+  let isValid = true
+  let titleErr
+  if ((typeof title !== 'undefined') &&
+    title.trim() === '') {
+    titleErr = 'Пожалуйста, введите название товара'
+    isValid = false
+  }
+  return {
+    success: isValid,
+    errors: {
+      title: titleErr
     }
   }
 }

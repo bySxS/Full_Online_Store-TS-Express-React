@@ -1,0 +1,23 @@
+.block {
+  @apply flex flex-col w-full;
+}
+
+.blockProducts {
+  @apply flex flex-col;
+}
+
+.blockNavigate {
+  @apply flex w-[90%] m-auto;
+}
+
+.blockPagination {
+  @apply flex justify-start items-center w-full m-auto pb-3;
+}
+
+.blockAddProduct {
+  @apply flex flex-col;
+}
+
+.blockAddProduct .button {
+  @apply bg-amber-400 text-black hover:bg-amber-300 mx-1 w-[160px];
+}

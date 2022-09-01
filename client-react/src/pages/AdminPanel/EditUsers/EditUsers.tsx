@@ -2,20 +2,18 @@ import React, { FC, useEffect, useState } from 'react'
 import UserProfile from 'components/UserProfile/UserProfile'
 import { useLazyAllUsersQuery } from 'store/myStore/myStoreUser.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
-import { useBreadcrumb } from 'context/BreadcrumbContext'
-import { useAppActions } from 'hooks/useStore'
 import Pagination from 'components/Pagination/Pagination'
 import style from './EditUsers.module.scss'
 
 const EditUsers: FC = () => {
-  const { setBreadcrumb } = useBreadcrumb()
-  const { changeFilterState } = useAppActions()
+  // const { setBreadcrumb } = useBreadcrumb()
+  // const { changeFilterState } = useAppActions()
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState(0)
-  useEffect(() => {
-    setBreadcrumb({})
-    changeFilterState({})
-  }, [])
+  // useEffect(() => {
+  //   setBreadcrumb({})
+  //   changeFilterState({})
+  // }, [])
   const [getUsers, {
     isLoading, isSuccess, isError, data: users, error
   }] =
@@ -52,7 +50,11 @@ const EditUsers: FC = () => {
     >
       {isSuccess && users &&
         users.result?.results.map(user =>
-          <UserProfile key={user.id} user={user} showInfo={false} />
+          <UserProfile
+            key={user.id}
+            user={user}
+            showInfo={false}
+          />
         )}
     </div>
     </>

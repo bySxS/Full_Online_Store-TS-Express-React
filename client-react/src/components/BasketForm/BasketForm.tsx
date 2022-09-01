@@ -5,7 +5,7 @@ import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useAuth } from 'hooks/useSelectors'
 import { IBasketToOrderIn } from 'store/myStore/myStoreBasket.interface'
 import { useDebounce } from 'hooks/useDebounce'
-import { validate } from '../../utils/validator'
+import { validateUser } from 'utils/validator'
 import MyInput from '../UI/MyInput/MyInput'
 import style from './BasketForm.module.scss'
 
@@ -41,7 +41,7 @@ const BasketForm = () => {
     fullName?: string
   }>({})
   useEffect(() => {
-    const result = validate(formState)
+    const result = validateUser(formState)
     setErrors(result.errors)
     setValidated(result.success)
   }, [formStateDebounce])

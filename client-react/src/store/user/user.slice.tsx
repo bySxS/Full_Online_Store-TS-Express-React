@@ -26,11 +26,11 @@ const setLogin = (state: IUserState, action: PayloadAction<IMessage<ILoginResult
   const { payload } = action
   state.token = payload.result.token.accessToken
   const user = payload.result.user
-  let avatar =
+  const avatar =
     addHostServerToFileLink(user.avatar, user.id || state.user?.id, 'user_avatar')
-  if (avatar) {
-    avatar = avatar + `?${new Date().getTime().toString()}`
-  }
+  // if (avatar) {
+  //   avatar = avatar + `?${new Date().getTime().toString()}`
+  // }
   state.user = { ...user, avatar }
   state.isAuth = true
   localStorage.setItem(LS_TOKEN_KEY, state.token)
@@ -65,11 +65,11 @@ export const UserSlice = createSlice({
               : (user.rolesId === 3)
                   ? 'user'
                   : 'Гость'
-        let avatar =
+        const avatar =
             addHostServerToFileLink(user.avatar, user.id || state.user?.id, 'user_avatar')
-        if (avatar) {
-          avatar = avatar + `?${new Date().getTime().toString()}`
-        }
+        // if (avatar) {
+        //   avatar = avatar + `?${new Date().getTime().toString()}`
+        // }
         state.user = { ...state.user, ...user, avatar, rolesName }
         localStorage.setItem(LS_USER_KEY, JSON.stringify(state.user))
       }

@@ -1,12 +1,18 @@
 import React, { FC, useEffect, useState } from 'react'
-import { InputGroup, Form, Button } from 'react-bootstrap'
-import { useRegistrationMutation, useUpdateUserByIdMutation } from 'store/myStore/myStoreUser.api'
+import { Form, Button } from 'react-bootstrap'
+import {
+  useRegistrationMutation,
+  useUpdateUserByIdMutation
+} from 'store/myStore/myStoreUser.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { IRegistrationIn, IUsers } from 'store/myStore/myStoreUser.interface'
 import { useAuth } from 'hooks/useSelectors'
 import { useDebounce } from 'hooks/useDebounce'
-import { validate } from 'utils/validator'
-import MyInput from '../UI/MyInput/MyInput'
+import { validateUser } from 'utils/validator'
+import MyCheckbox from 'components/UI/MyCheckbox/MyCheckbox'
+import MyInput from 'components/UI/MyInput/MyInput'
+import MySelect from 'components/UI/MySelect/MySelect'
+import MyFile from '../UI/MyFile/MyFile'
 
 interface IRegProps {
   onCloseReg?: () => void
@@ -138,7 +144,7 @@ const Registration: FC<IRegProps> = ({
 
   useEffect(() => {
     if (!onlyShowInfo) {
-      const result = validate({
+      const result = validateUser({
         email: formState.email,
         nickname: formState.nickname,
         fullName: formState.fullName,
@@ -158,20 +164,6 @@ const Registration: FC<IRegProps> = ({
       onCloseReg()
     }
   }, [isSuccessReg, isSuccessUpd])
-
-  const handleChangeFile =
-    ({ target: { name, files } }: React.ChangeEvent<HTMLInputElement>) => {
-      if (files) {
-        setFormState((prev) => ({ ...prev, [name]: files[0] }))
-      } else {
-        setFormState((prev) => ({ ...prev, [name]: null }))
-      }
-    }
-
-  const handleChangeCheckbox =
-    ({ target: { name, checked } }: React.ChangeEvent<HTMLInputElement>) => {
-      setFormState((prev) => ({ ...prev, [name]: checked }))
-    }
 
   const confirmRoles = (event: React.ChangeEvent<HTMLSelectElement>, prevValue: number) => {
     const { target: { name, value } } = event
@@ -215,7 +207,7 @@ const Registration: FC<IRegProps> = ({
             icon={<i className="bi bi-person"/>}
             setValue={setFormState}
             disable={onlyShowInfo}
-            textError={errors.nickname}
+            textError={!onlyShowInfo ? errors.nickname : ''}
             isValid={!errors.nickname && !onlyShowInfo}
           />
         }
@@ -235,7 +227,7 @@ const Registration: FC<IRegProps> = ({
             icon={'@'}
             setValue={setFormState}
             disable={onlyShowInfo}
-            textError={errors.email}
+            textError={!onlyShowInfo ? errors.email : ''}
             isValid={!errors.email && !onlyShowInfo}
           />
         }
@@ -244,6 +236,7 @@ const Registration: FC<IRegProps> = ({
         <MyInput
           label={'Пароль'}
           value={formState.password}
+          disable={onlyShowInfo}
           nameInput={'password'}
           placeholder={changeProfile
             ? 'Введите новый пароль'
@@ -251,7 +244,7 @@ const Registration: FC<IRegProps> = ({
           setValue={setFormState}
           icon={<i className="bi bi-pass"/>}
           isValid={!errors.password}
-          textError={errors.password}
+          textError={!onlyShowInfo ? errors.password : ''}
           addButtonHide={true}
         />
         }
@@ -262,10 +255,11 @@ const Registration: FC<IRegProps> = ({
                 value={formState.rePassword}
                 nameInput={'rePassword'}
                 placeholder={'Введите пароль ещё раз'}
+                disable={onlyShowInfo}
                 setValue={setFormState}
                 icon={<i className="bi bi-pass"/>}
                 isValid={!errors.rePassword}
-                textError={errors.rePassword}
+                textError={!onlyShowInfo ? errors.rePassword : ''}
                 addButtonHide={true}
               />
         }
@@ -274,29 +268,26 @@ const Registration: FC<IRegProps> = ({
             (defaultInfoUser && changeProfile &&
              defaultInfoUser.rolesId && isAdmin)) &&
         <>
-          <Form.Label>Группа</Form.Label>
-          <InputGroup className="mb-2">
-            <InputGroup.Text id="basic-addon1">
-              <i className="bi bi-people-fill"/>
-            </InputGroup.Text>
-          <Form.Select
-            disabled={onlyShowInfo}
+          <MySelect
             name={'rolesId'}
+            disable={onlyShowInfo}
+            icon={<i className="bi bi-people-fill"/>}
+            label={'Группа'}
             onChange={(event) => confirmRoles(event,
               defaultInfoUser &&
-                      defaultInfoUser.rolesId
+              defaultInfoUser.rolesId
                 ? defaultInfoUser.rolesId
                 : 3)}
+            valuesOption={[
+              { value: 3, name: 'Пользователь' },
+              { value: 2, name: 'Модератор' },
+              { value: 1, name: 'Админ' }
+            ]}
             defaultValue={defaultInfoUser &&
-                          defaultInfoUser.rolesId
+            defaultInfoUser.rolesId
               ? defaultInfoUser.rolesId
               : 3}
-          >
-            <option value={3}>Пользователь</option>
-            <option value={2}>Модератор</option>
-            <option value={1}>Админ</option>
-          </Form.Select>
-          </InputGroup>
+          />
         </>
         }
 
@@ -309,9 +300,10 @@ const Registration: FC<IRegProps> = ({
              nameInput={'fullName'}
              placeholder={'Введите ФИО'}
              setValue={setFormState}
+             disable={onlyShowInfo}
              icon={<i className="bi bi-file-person"/>}
              isValid={!errors.fullName && !onlyShowInfo}
-             textError={errors.fullName}
+             textError={!onlyShowInfo ? errors.fullName : ''}
            />
         }
 
@@ -322,6 +314,7 @@ const Registration: FC<IRegProps> = ({
              label={'Город'}
              value={formState.city}
              nameInput={'city'}
+             disable={onlyShowInfo}
              placeholder={'Введите Город'}
              setValue={setFormState}
              icon={<i className="bi bi-bank"/>}
@@ -335,6 +328,7 @@ const Registration: FC<IRegProps> = ({
             label={'Адрес'}
             value={formState.address}
             nameInput={'address'}
+            disable={onlyShowInfo}
             placeholder={'Введите Адрес'}
             setValue={setFormState}
             icon={<i className="bi bi-house" />}
@@ -347,6 +341,7 @@ const Registration: FC<IRegProps> = ({
              label={'Адрес доставки'}
              value={formState.deliveryAddress}
              nameInput={'deliveryAddress'}
+             disable={onlyShowInfo}
              placeholder={'Введите Адрес доставки'}
              setValue={setFormState}
              icon={<i className="bi bi-truck"/>}
@@ -359,45 +354,37 @@ const Registration: FC<IRegProps> = ({
             label={'Номер телефона'}
             value={formState.phoneNumber}
             nameInput={'phoneNumber'}
+            disable={onlyShowInfo}
             placeholder={'Введите Номер телефона'}
             setValue={setFormState}
             icon={<i className="bi bi-telephone"/>}
           />
         }
         {showEditAvatar && !onlyShowInfo &&
-         <Form.Group controlId="formFileMultiple"
-                     className="mb-3">
-          <Form.Label>Аватар</Form.Label>
-          <Form.Control
-            onChange={handleChangeFile}
+          <MyFile
             name={'avatar'}
-            type="file"
-            size="sm" />
-         </Form.Group>
+            label={'Аватар'}
+            setValue={setFormState}
+          />
          }
           {showDelAvatar &&
            !onlyShowInfo &&
            showEditAvatar &&
            changeProfile &&
-          <Form.Group className="mb-3">
-            <Form.Check
-              onChange={handleChangeCheckbox}
-              name={'delAvatar'}
-              label="Удалить аватар?"
+            <MyCheckbox
+            label={'Удалить аватар?'}
+            name={'delAvatar'}
+            value={formState.delAvatar}
+            setValue={setFormState}
             />
-          </Form.Group>
           }
           {!onlyShowInfo &&
-          <Form.Group className="mb-3">
-          <Form.Check
-            onChange={handleChangeCheckbox}
-            name={'isSubscribeToNews'}
-            checked={formState.isSubscribeToNews}
-            // defaultChecked={defaultInfoUser &&
-            //                 defaultInfoUser.isSubscribeToNews === 1}
-            label="Получать новости магазина"
-          />
-         </Form.Group>
+            <MyCheckbox
+              label={'Получать новости магазина'}
+              name={'isSubscribeToNews'}
+              value={formState.isSubscribeToNews}
+              setValue={setFormState}
+            />
           }
         </Form>
       </div>

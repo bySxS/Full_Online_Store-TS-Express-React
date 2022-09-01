@@ -25,7 +25,7 @@ const EditCharacteristics = () => {
   })
 
   useEffect(() => {
-    getCharacteristics(categoryId)
+    getCharacteristics({ categoryId })
   }, [categoryId])
 
   const handleChangeSelect =
@@ -37,6 +37,7 @@ const EditCharacteristics = () => {
     setShowModalEdit(!showModalEdit)
   }
   return (
+    <>
     <div className={style.block}>
       <div className={style.blockSelectCategory}>
           <Form.Label>Выберите категорию</Form.Label>
@@ -153,6 +154,7 @@ const EditCharacteristics = () => {
          </ul> {/* section end */}
       </div>
       }
+    </div>
       {showModalEdit &&
         <ModalComponent
           title={`${form?.type === 'add'
@@ -172,7 +174,7 @@ const EditCharacteristics = () => {
         />
         </ModalComponent>
       }
-    </div>
+    </>
   )
 }
 
