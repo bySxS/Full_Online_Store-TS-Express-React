@@ -138,7 +138,7 @@ const EditProducts = () => {
       }
       {showFormChar && formChar &&
         <ModalComponent
-          title={'Редактируем продукт ' + formChar.title}
+          title={'Редактируем характеристики ' + formChar.title}
           onClose={() => setShowFormChar(!showFormChar)}
           show={showFormChar}
           size={'xl'}
