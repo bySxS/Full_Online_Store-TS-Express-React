@@ -22,7 +22,7 @@ export const validateProduct = () => {
     body('availability', 'В наличии товар или нет (availability) не указано')
       .notEmpty(),
     body('availability', 'В наличии товар (availability) доступные значения true, false')
-      .isBoolean(),
+      .isIn('True', 'False', 'true', 'false'),
     body('url', 'URL (url) не указан, ПРИМЕР url: smartphone_xiaomi_poco_x4')
       .notEmpty()
   ]

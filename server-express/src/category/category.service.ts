@@ -47,7 +47,8 @@ class CategoryService implements ICategoryService {
         `Категория ${name} не добавлена`,
         'CategoryService add')
     }
-    await cacheRedisDB.del('categoryAll') // удаляем кеш
+    await cacheRedisDB.del('categoryAll:sort') // удаляем кеш
+    await cacheRedisDB.del('categoryAll:list') // удаляем кеш
     return {
       success: true,
       result,
@@ -87,7 +88,8 @@ class CategoryService implements ICategoryService {
         `Категория ${findCategory.name} не изменена, возможно`,
         'CategoryService upd')
     }
-    await cacheRedisDB.del('categoryAll') // удаляем кеш
+    await cacheRedisDB.del('categoryAll:sort') // удаляем кеш
+    await cacheRedisDB.del('categoryAll:list') // удаляем кеш
     return {
       success: true,
       result: { name, nameEng, parentId },
@@ -103,7 +105,8 @@ class CategoryService implements ICategoryService {
         `Категорию с id${id} не удалось удалить, возможно её не существует`,
         'CategoryService del')
     }
-    await cacheRedisDB.del('categoryAll') // удаляем кеш
+    await cacheRedisDB.del('categoryAll:sort') // удаляем кеш
+    await cacheRedisDB.del('categoryAll:list') // удаляем кеш
     return {
       success: true,
       result,
@@ -204,9 +207,9 @@ class CategoryService implements ICategoryService {
       .filter((sect) => sect.sectionName !== 'delete')
   }
 
-  async getAll ({ sectionId }: { sectionId?: number }): Promise<IMessage> {
+  async getAll ({ sectionId, sort = true }: { sectionId?: number, sort?: boolean }): Promise<IMessage> {
     if (!sectionId) {
-      const cache = await cacheRedisDB.get('categoryAll')
+      const cache = await cacheRedisDB.get('categoryAll:' + (sort ? 'sort' : 'list'))
       if (cache) {
         // await cacheRedisDB.expire('categoryAll', 360000)
         return {
@@ -245,16 +248,48 @@ class CategoryService implements ICategoryService {
         'Категорий не найдено',
         'CategoryService getAll')
     }
-    const result = this.sortCategoryTree(categoryNotSort)
+    const result = sort ? this.sortCategoryTree(categoryNotSort) : categoryNotSort
     if (!sectionId) {
-      await cacheRedisDB.set('categoryAll', JSON.stringify(result))
-      await cacheRedisDB.expire('categoryAll', 360000)
+      await cacheRedisDB.set('categoryAll:' + (sort ? 'sort' : 'list'), JSON.stringify(result))
+      await cacheRedisDB.expire('categoryAll:' + (sort ? 'sort' : 'list'), 360000)
     }
     return {
       success: true,
       result,
       message: 'Все категории загружены'
     }
+  }
+
+  async getAllParentByCategory (categoryId?: number): Promise<number[]> {
+    if (!categoryId ||
+      (categoryId && categoryId === 0)) return []
+    const section = await this.getAll({ sort: false })
+    const categoryList: number[] = [categoryId]
+    if (section.result.length > 0) {
+      const categoryAll = section.result as CategoryModel[]
+      for (const cat of categoryAll) {
+        if (cat.id === categoryId) {
+          if (cat.parentId === null) break
+          categoryList.push(cat.parentId)
+          for (const cat2 of categoryAll) {
+            if (cat2.id === cat.parentId) {
+              if (cat2.parentId === null) break
+              categoryList.push(cat2.parentId)
+              for (const cat3 of categoryAll) {
+                if (cat3.id === cat2.parentId) {
+                  if (cat3.parentId === null) break
+                  categoryList.push(cat3.parentId)
+                  break
+                }
+              }
+              break
+            }
+          }
+          break
+        }
+      }
+    }
+    return categoryList
   }
 
   async getAllCategoryBySectionWithCache (sectionId?: number): Promise<number[]> {

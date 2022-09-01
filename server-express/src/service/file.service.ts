@@ -12,10 +12,11 @@ export const delFile = async (
   let name = fileName || ''
   if (delPic) {
     if (name && name.length > 2) {
+      const correctName = name.includes('?') ? name.split('?')[0] : name
       if (showLog) {
-        logger.info('удаляем ' + name)
+        logger.info('удаляем ' + correctName)
       }
-      await fs.remove(pathDir + '/' + name)
+      await fs.remove(pathDir + '/' + correctName)
       name = ''
     }
   }
@@ -42,5 +43,5 @@ export const saveFile = async (
   } else if (fileName.split('.').length > 1) {
     name = fileName
   }
-  return name
+  return name === '' ? name : name + `?${new Date().getTime().toString()}`
 }

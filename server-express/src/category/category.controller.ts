@@ -1,3 +1,4 @@
+import { TSort } from '@/products/products.interface'
 import { NextFunction, Request, Response } from 'express'
 import { ICategoryController } from './category.interface'
 import CategoryService from './category.service'

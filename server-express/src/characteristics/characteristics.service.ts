@@ -155,7 +155,7 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
-  async getAllCharacteristicsNameByCategoryId ({ categoryId, sort = true }: { categoryId: number, sort?: boolean }) {
+  async getAllCharacteristicsNameByCategoryId ({ categoryId, sort = true, alsoParents = false }: { categoryId: number, sort?: boolean, alsoParents?: boolean }) {
     if (categoryId === 0) {
       return {
         success: true,
@@ -163,11 +163,12 @@ class CharacteristicsService implements ICharacteristicService {
           `для категории с id${categoryId} нет`
       }
     }
-    // const allCategory = await CategoryService
-    //   .getAllCategoryBySectionWithCache(categoryId)
+    const allCategory = alsoParents
+      ? await CategoryService.getAllParentByCategory(categoryId)
+      : [categoryId]
     // allCategory.push(categoryId)
     const characteristics = await CharacteristicsNameModel.query()
-      .whereIn('characteristicsName.categoryId', [categoryId])
+      .whereIn('characteristicsName.categoryId', allCategory)
       // .leftOuterJoinRelated('parent')
       .select('characteristicsName.id as propertyNameId',
         'characteristicsName.name as propertyName',

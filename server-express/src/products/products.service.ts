@@ -237,7 +237,7 @@ class ProductsService implements IProductService {
       .select('*')
     if (!findProduct) {
       throw ApiError.badRequest(
-        `Продукта с id ${id} не существует`,
+        `Продукта с id${id} не существует`,
         'ProductsService updateById')
     }
     if (parentId && parentId > 0) {
@@ -246,7 +246,7 @@ class ProductsService implements IProductService {
         .select('title')
       if (parentProduct) {
         throw ApiError.badRequest(
-          `Родительского продукта с id ${parentId} не существует`,
+          `Родительского продукта с id${parentId} не существует`,
           'ProductsService add')
       }
     }

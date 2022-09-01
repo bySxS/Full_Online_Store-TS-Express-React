@@ -30,7 +30,8 @@ class UsersController implements IUserController {
     try {
       const finger = fingerprint(req)
       const result =
-        await UsersService.registration(req.body, req.ip, finger, req.files as IUsersFilesArray)
+        await UsersService
+          .registration(req.body, req.ip, finger, req.files as IUsersFilesArray)
       res.cookie('refreshToken',
         result.result.token.refreshToken,
         { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
@@ -104,7 +105,8 @@ class UsersController implements IUserController {
           'UsersController updateUserById'))
       }
       const result =
-        await UsersService.updateUserById(id, req.body, authUser.rolesId, req.files as IUsersFilesArray)
+        await UsersService
+          .updateUserById(id, req.body, authUser.rolesId, req.files as IUsersFilesArray)
       return res.status(201).json(result)
     } catch (err) {
       next(err)

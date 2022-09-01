@@ -352,7 +352,7 @@ class UsersService implements IUserService {
         address,
         deliveryAddress,
         phoneNumber,
-        rolesId,
+        rolesId: rolesId ? +rolesId : undefined,
         updatedAt: new Date().toUTCString(),
         isSubscribeToNews: isSubscribeToNews ? 1 : 0,
         ...avatarInfo.result

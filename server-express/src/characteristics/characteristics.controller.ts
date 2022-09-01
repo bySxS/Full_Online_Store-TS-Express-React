@@ -86,10 +86,12 @@ class CharacteristicsController implements ICharacteristicController {
   ) {
     try {
       const id = +req.params.id
+      const alsoParents = Boolean(req.query.alsoParents) || false
       const result =
         await CharacteristicsService
           .getAllCharacteristicsNameByCategoryId({
-            categoryId: id
+            categoryId: id,
+            alsoParents
           })
       return res.status(200).json(result)
     } catch (err) {
