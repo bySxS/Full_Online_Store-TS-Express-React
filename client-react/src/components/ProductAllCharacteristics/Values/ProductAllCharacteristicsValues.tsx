@@ -22,7 +22,7 @@ const ProductAllCharacteristicsValues: FC<IProductAllCharacteristicsValues> = ({
       {characteristicsValues.map((charValue, i, arr) =>
       // (i === arr.length - 1) ?
           <span
-            key={charValue.characteristicValueId}
+            key={charValue.characteristicValueId + charValue.characteristicValue}
             className={style.valueCharSpan}
           >
             {onClickFindProduct

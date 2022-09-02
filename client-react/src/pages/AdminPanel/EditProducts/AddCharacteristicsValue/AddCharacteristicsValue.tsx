@@ -134,7 +134,7 @@ const AddCharacteristicsValue: FC<IAddCharacteristicsValue> = ({
   useEffect(() => {
     if (isSuccessName && dataName && dataName.result && isSuccessValue && dataValue) {
       if (dataValue.result) {
-        const merge = mergeByProperty([dataName.result, dataValue.result], 'sectionId')
+        const merge = mergeByProperty([dataName.result, dataValue.result])
         setCharacteristics(merge as ICharacteristicSection[])
       } else {
         setCharacteristics(dataName.result)

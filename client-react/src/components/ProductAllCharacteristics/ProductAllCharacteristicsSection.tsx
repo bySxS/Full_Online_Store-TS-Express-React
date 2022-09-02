@@ -26,7 +26,7 @@ const ProductAllCharacteristicsSection: FC<IProductAllCharacteristicsSection> = 
   return (
     <>
       {characteristics && characteristics.map(sect =>
-        <span key={sect.sectionId}>
+        <span key={sect.sectionName}>
         <div>
         <div className={style.sectionName}>
           {sect.sectionName}

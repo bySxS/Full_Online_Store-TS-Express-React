@@ -27,7 +27,7 @@ const ProductAllCharacteristicsName: FC<IProductAllCharacteristicsName> = ({
     <>
       {characteristicsNames.map((char) =>
         <div
-          key={char.characteristicNameId}
+          key={char.characteristicName + char.characteristicNameId}
           className={style.containerCategory}
         >
                 <span className={style.nameChar}>
