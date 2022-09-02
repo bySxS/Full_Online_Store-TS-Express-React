@@ -41,7 +41,7 @@ class MailService {
         <h2>
         Для активации аккаунта
         перейдите по
-        <a href="${this.urlSite}/api/user/activate/${link}" target="_blank">ссылке</a>
+        <a href="${this.urlSite}/activate/${link}" target="_blank">ссылке</a>
         </h2>
         </div>
         </div>

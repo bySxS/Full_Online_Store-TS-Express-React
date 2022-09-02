@@ -41,8 +41,8 @@ export const validateBasketProduct = () => {
 
 export const validateSyncBasketProduct = () => {
   return [
-    body('productsInBasket', 'Список продуктов с ценной (productsInBasket : [{productId, productCount}]) не указан')
-      .notEmpty(),
+    // body('productsInBasket', 'Список продуктов с ценной (productsInBasket : [{productId, productCount}]) не указан')
+    //   .notEmpty(),
     body('productsInBasket', 'Список продуктов с ценной (productsInBasket) должен быть массив')
       .isArray()
   ]

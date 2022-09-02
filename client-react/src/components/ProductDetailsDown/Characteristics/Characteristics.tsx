@@ -1,12 +1,11 @@
 import React, { FC, useEffect, useState } from 'react'
-import { NavLink } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { useGetCharacteristicProductByIdQuery } from 'store/myStore/myStoreCharacteristics.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { ICharacteristicSection } from 'store/myStore/myStoreCharacteristics.interface'
 import { useAppActions } from 'hooks/useStore'
 import { RoutePath } from 'AppRouter'
-import style from './Characteristics.module.scss'
+import ProductAllCharacteristicsSection from 'components/ProductAllCharacteristics/ProductAllCharacteristicsSection'
 
 interface ICharacteristics {
   productId: number
@@ -41,52 +40,12 @@ const Characteristics: FC<ICharacteristics> = ({ productId }) => {
         Характеристик для продукта не добавлено:(
       </div>
       }
-      {characteristics && characteristics.map(sect => (
-        <span key={sect.sectionId}>
-        <div>
-        <div className={style.sectionName}>
-          {sect.sectionName}
-        </div>
-            <div className={style.containerSection}>
-              {sect.characteristics?.map((char) =>
-                  <div
-                    key={char.characteristicNameId}
-                    className={style.containerCategory}
-                  >
-            <span className={style.nameChar}>
-              {char.characteristicName}
-            </span>{': '}
-                    {char.values?.map((charValue, i, arr) =>
-                      ((i === arr.length - 1)
-                        ? <span
-                          key={charValue.characteristicValueId}
-                          className={style.valueCharSpan}
-                        >
-                          <NavLink
-                            className={style.valueChar}
-                            onClick={() => clickFindProductByChar(charValue.characteristicValue)}
-                          >
-                            {charValue.characteristicValue}
-                          </NavLink>
-                        </span>
-                        : <span
-                          key={charValue.characteristicValueId}
-                          className={style.valueCharSpan}
-                        >
-                          <NavLink
-                            className={style.valueChar}
-                            onClick={() => clickFindProductByChar(charValue.characteristicValue)}
-                          >
-                          {charValue.characteristicValue}
-                        </NavLink>,
-                        </span>)
-                    )}
-                  </div>
-              )}
-            </div>
-      </div>
-      </span>
-      ))}
+      {characteristics &&
+      <ProductAllCharacteristicsSection
+        characteristics={characteristics}
+        onClickFindProduct={clickFindProductByChar}
+      />
+      }
     </>
   )
 }

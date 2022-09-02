@@ -4,13 +4,13 @@ import baseQueryWithRefreshToken from 'store/myStore/customFetch'
 import {
   ICharacteristicName, ICharacteristicSection,
   ICharacteristicValue, ICharacteristicValueDelete,
-  ICharacteristicValueUpdate
+  ICharacteristicValueUpdate, ICharNameList
 } from 'store/myStore/myStoreCharacteristics.interface'
 
 const myStoreCharacteristicsApi = createApi({
   reducerPath: 'storeCharacteristics/api',
   baseQuery: baseQueryWithRefreshToken,
-  tagTypes: ['Characteristics'],
+  tagTypes: ['CharacteristicsName', 'CharacteristicsValue'],
   refetchOnFocus: true,
   endpoints: build => ({
     addCharacteristicName: build.mutation<IMessage<ICharacteristicName>,
@@ -20,7 +20,7 @@ const myStoreCharacteristicsApi = createApi({
           method: 'POST',
           body
         }),
-        invalidatesTags: ['Characteristics']
+        invalidatesTags: ['CharacteristicsName', 'CharacteristicsValue']
       }),
 
     updateCharacteristicName: build.mutation<IMessage<ICharacteristicName>,
@@ -30,7 +30,7 @@ const myStoreCharacteristicsApi = createApi({
       method: 'PUT',
       body
     }),
-    invalidatesTags: ['Characteristics']
+    invalidatesTags: ['CharacteristicsName', 'CharacteristicsValue']
   }),
 
     deleteCharacteristicName: build.mutation<IMessage<null>,
@@ -39,7 +39,7 @@ const myStoreCharacteristicsApi = createApi({
           url: 'characteristics/name/' + characteristicNameId,
           method: 'DELETE'
         }),
-        invalidatesTags: ['Characteristics']
+        invalidatesTags: ['CharacteristicsName', 'CharacteristicsValue']
       }),
 
     addCharacteristicValue: build.mutation<IMessage<ICharacteristicValue>,
@@ -49,7 +49,7 @@ const myStoreCharacteristicsApi = createApi({
           method: 'POST',
           body
         }),
-        invalidatesTags: ['Characteristics']
+        invalidatesTags: ['CharacteristicsValue']
       }),
 
     updateCharacteristicValue: build.mutation<IMessage<ICharacteristicValue>,
@@ -59,7 +59,7 @@ const myStoreCharacteristicsApi = createApi({
           method: 'PUT',
           body
         }),
-        invalidatesTags: ['Characteristics']
+        invalidatesTags: ['CharacteristicsValue']
       }),
 
     deleteCharacteristicValue: build.mutation<IMessage<null>,
@@ -69,7 +69,7 @@ const myStoreCharacteristicsApi = createApi({
           method: 'DELETE',
           body
         }),
-        invalidatesTags: ['Characteristics']
+        invalidatesTags: ['CharacteristicsValue']
       }),
 
     getCharacteristicProductById: build.query<IMessage<ICharacteristicSection[]>,
@@ -77,7 +77,7 @@ const myStoreCharacteristicsApi = createApi({
         query: (productId: number) => ({
           url: 'characteristics/product/' + productId
         }),
-        providesTags: ['Characteristics']
+        providesTags: ['CharacteristicsValue']
       }),
 
     getAllCharacteristicsNameByCategoryId: build.query<IMessage<ICharacteristicSection[]>,
@@ -88,7 +88,7 @@ const myStoreCharacteristicsApi = createApi({
             alsoParents
           }
         }),
-        providesTags: ['Characteristics']
+        providesTags: ['CharacteristicsName']
       }),
 
     getAllCharacteristics: build.query<IMessage<ICharacteristicSection[]>,
@@ -99,7 +99,19 @@ const myStoreCharacteristicsApi = createApi({
             section_id: args.sectionId
           }
         }),
-        providesTags: ['Characteristics']
+        providesTags: ['CharacteristicsValue']
+      }),
+
+    getCharacteristicValueByNameId: build.query<IMessage<ICharNameList[]>,
+      number>({
+        query: (charNameId: number) => ({
+          url: 'characteristics/values',
+          method: 'get',
+          params: {
+            charNameId
+          }
+        }),
+        providesTags: ['CharacteristicsValue']
       })
 
   })
@@ -118,5 +130,6 @@ export const {
   useLazyGetAllCharacteristicsNameByCategoryIdQuery,
   useGetCharacteristicProductByIdQuery,
   useLazyGetCharacteristicProductByIdQuery,
+  useGetCharacteristicValueByNameIdQuery,
   endpoints: myStoreCharacteristicEndpoint
 } = myStoreCharacteristicsApi

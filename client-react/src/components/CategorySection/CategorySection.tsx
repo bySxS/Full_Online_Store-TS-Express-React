@@ -9,6 +9,7 @@ import MyOverlay from 'components/UI/MyOverlay/MyOverlay'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
 import { IFormCategoryState } from 'pages/AdminPanel/EditCategory/FormCategory/FormCategory'
 import st from '../SideBar/SideBar.module.scss'
+import MyLink from '../UI/MyLink/MyLink'
 import ButtonEditCategory from './ButtonEditCategory/ButtonEditCategory'
 import Category from './Category/Category'
 
@@ -95,28 +96,22 @@ const CategorySection: FC<ICategoryProps> = ({
               clickEdit={clickEdit}
             />
           )}
-          {edit &&
+          {edit && clickEdit &&
             <li>
-              <a href=""
-                 className={'sideBarLink'}
-                 onClick={(e) => {
-                   e.stopPropagation()
-                   e.preventDefault()
-                   if (clickEdit) {
-                     clickEdit({
-                       type: 'add',
-                       category: {
-                         parentId: categorySection.sectionId
-                       }
-                     })
-                   }
-                 }}
+              <MyLink
+                className={'sideBarLink'}
+                onClick={() => clickEdit({
+                  type: 'add',
+                  category: {
+                    parentId: categorySection.sectionId
+                  }
+                })}
               >
                 <i className={`bi bi-plus-circle-fill ${st.icon}`}/>
                 Добавить
-              </a>
+              </MyLink>
             </li>
-          }
+            }
         </ul>
       </MyOverlay>
     </>

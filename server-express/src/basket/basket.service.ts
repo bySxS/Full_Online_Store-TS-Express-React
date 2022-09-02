@@ -231,13 +231,12 @@ class BasketService implements IBasketService {
     userId: number, Dto: IBasketProductSync
   ): Promise<IMessage> {
     const {
-      productsInBasket: productsInBasketIn
+      productsInBasket: products
     } = Dto
-    const productIdArray = productsInBasketIn
-      .map(i => +i.productId)
+    const productsInBasketIn = products || []
+    const productIdArray = productsInBasketIn?.map(i => +i.productId)
       .filter(i => !isNaN(i))
-    const productCountArray = productsInBasketIn
-      .map(i => +i.productCount)
+    const productCountArray = productsInBasketIn?.map(i => +i.productCount)
       .filter(i => !isNaN(i))
     const findCurrentBasket =
       await this.getCurrentBasketByUserId(userId)

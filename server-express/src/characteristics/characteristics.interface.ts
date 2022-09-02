@@ -70,6 +70,9 @@ export interface ICharacteristicService {
   sortCharacteristicsTree: (
     characteristics: CharacteristicsSetValueModel[] | CharacteristicsNameModel[]
   ) => ICharacteristicProduct[]
+  getCharacteristicValueByNameId: ({
+    characteristicsNameId
+  }: { characteristicsNameId: number }) => Promise<IMessage>
 }
 
 export interface ICharacteristicController {
@@ -83,4 +86,5 @@ export interface ICharacteristicController {
   getCharacteristicValueProductById: (req: Request, res: Response, next: NextFunction) => void
   getAllCharacteristics: (req: Request, res: Response, next: NextFunction) => void
   getAllCharacteristicsNameByCategoryId: (req: Request, res: Response, next: NextFunction) => void
+  getCharacteristicValueByNameId: (req: Request, res: Response, next: NextFunction) => void
 }

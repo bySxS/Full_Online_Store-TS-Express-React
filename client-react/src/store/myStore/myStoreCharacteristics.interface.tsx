@@ -45,10 +45,13 @@ export interface ICharacteristicSection {
   characteristics: ICharName[]
 }
 
-// export interface ICharNameList {
-//   parentId: number
-//   propertyNameId: number
-//   propertyName: string
-//   sectionName: string
-//   sectionId: number
-// }
+export interface ICharNameList {
+  propertyNameId?: number
+  propertyName?: string
+  propertyCountProducts?: number
+  propertyValueId?: number
+  propertyValue: string
+  propertyFieldType?: string
+  sectionId?: number
+  sectionName?: string
+}

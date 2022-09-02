@@ -1,0 +1,7 @@
+.valueCharSpan {
+  @apply pl-2 flex text-indigo-700;
+}
+
+.valueChar {
+  @apply text-indigo-700 font-serif hover:underline;
+}

@@ -1,4 +1,4 @@
-import { body } from 'express-validator'
+import { body, query } from 'express-validator'
 
 export const validateCharacteristicSetValue = () => {
   return [
@@ -12,6 +12,15 @@ export const validateCharacteristicSetValue = () => {
     body('characteristicsNameId', 'ID названия характеристики (characteristicsNameId) не указано')
       .notEmpty(),
     body('characteristicsNameId', 'ID названия характеристики (characteristicsNameId) должны быть только цифры')
+      .matches('^[0-9]+$')
+  ]
+}
+
+export const validateCharacteristicValues = () => {
+  return [
+    query('charNameId', 'ID названия характеристики (charNameId) не указано')
+      .notEmpty(),
+    query('charNameId', 'ID названия характеристики (charNameId) должны быть только цифры')
       .matches('^[0-9]+$')
   ]
 }

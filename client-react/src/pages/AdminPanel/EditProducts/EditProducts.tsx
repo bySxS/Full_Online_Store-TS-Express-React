@@ -11,8 +11,9 @@ import { IProduct } from 'store/myStore/myStoreProduct.interface'
 import { addDomainToImgProducts } from 'utils'
 import { ModalComponent } from 'components/UI/Modal/ModalComponent'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
+import FormCharValueEdit, { IFormStateCharValue } from './AddCharacteristicsValue/FormCharValueEdit'
 import style from './EditProducts.module.scss'
-import FormAddCharacteristicsValue from './FormAddCharacteristicsValue/FormAddCharacteristicsValue'
+import AddCharacteristicsValue from './AddCharacteristicsValue/AddCharacteristicsValue'
 import FormProducts from './FormProducts/FormProducts'
 
 const EditProducts = () => {
@@ -21,9 +22,12 @@ const EditProducts = () => {
   const [products, setProducts] = useState<IProduct[]>([])
   const [totalPage, setTotalPage] = useState(0)
   const [formProduct, setFormProduct] = useState<IProduct>({} as IProduct)
-  const [showForm, setShowForm] = useState<boolean>(false)
+  const [showFormProduct, setShowFormProduct] = useState(false)
+  const [showChar, setShowChar] = useState(false)
+  const [showFormChar, setShowFormChar] = useState(false)
+  const [formStateChar, setFormStateChar] = useState<IFormStateCharValue>()
   const [formChar, setFormChar] = useState<{ id: number, title: string, categoryId: number }>()
-  const [showFormChar, setShowFormChar] = useState<boolean>(false)
+
   const [fetchProducts, {
     isLoading, isSuccess, isError, data, error
   }] = useLazyGetAllProductsQuery()
@@ -63,18 +67,18 @@ const EditProducts = () => {
 
   const onCreate = () => {
     setFormProduct({} as IProduct)
-    setShowForm(!showForm)
+    setShowFormProduct(!showFormProduct)
   }
 
   const onChange = (id: number) => {
     setFormProduct(products.filter(i => i.id === id)[0])
-    setShowForm(!showForm)
+    setShowFormProduct(!showFormProduct)
   }
 
   const onEditChar = (id: number, title: string) => {
     const categoryId = products.filter(i => i.id === id)[0].categoryId
     setFormChar({ id, title, categoryId })
-    setShowFormChar(!showFormChar)
+    setShowChar(!showChar)
   }
 
   const onDelete = (id: number, title: string) => {
@@ -120,34 +124,61 @@ const EditProducts = () => {
           )}
       </div>
     </div>
-      {showForm &&
+      {showFormProduct &&
         <ModalComponent
           title={formProduct.title !== undefined && formProduct.title !== ''
             ? 'Редактируем продукт ' + formProduct.title
             : 'Добавляем новый продукт'}
-          onClose={() => setShowForm(!showForm)}
-          show={showForm}
+          onClose={() => setShowFormProduct(!showFormProduct)}
+          show={showFormProduct}
           size={'xl'}
           className={'w-[1000px]'}
         >
           <FormProducts
             defaultValue={formProduct}
-            onCloseWindow={() => setShowForm(!showForm)}
+            onCloseWindow={() => setShowFormProduct(!showFormProduct)}
           />
         </ModalComponent>
       }
-      {showFormChar && formChar &&
+      {showChar && formChar &&
         <ModalComponent
           title={'Редактируем характеристики ' + formChar.title}
-          onClose={() => setShowFormChar(!showFormChar)}
-          show={showFormChar}
+          onClose={() => setShowChar(!showChar)}
+          show={showChar}
           size={'xl'}
           className={'w-[1000px]'}
         >
-        <FormAddCharacteristicsValue
+        <AddCharacteristicsValue
           productId={formChar.id}
           categoryId={formChar.categoryId}
+          setFormState={setFormStateChar}
+          showForm={() => {
+            setShowFormChar(!showFormChar)
+            setShowChar(!showChar)
+          }}
         />
+        </ModalComponent>
+      }
+      {showFormChar && formStateChar &&
+        <ModalComponent
+          title={formStateChar?.title}
+          onClose={() => {
+            setShowChar(!showChar)
+            setShowFormChar(!showFormChar)
+          }
+          }
+          show={showFormChar}
+          size={'xl'}
+          center={true}
+          className={'w-[1000px]'}
+        >
+          <FormCharValueEdit
+            payload={formStateChar}
+            onClose={() => {
+              setShowChar(!showChar)
+              setShowFormChar(!showFormChar)
+            }}
+          />
         </ModalComponent>
       }
     </>

@@ -7,7 +7,8 @@ import { validateId } from '@/validator'
 import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
 import {
   validateCharacteristicAddName, validateCharacteristicDelete,
-  validateCharacteristicSetValue, validateCharacteristicUpdate
+  validateCharacteristicSetValue, validateCharacteristicUpdate,
+  validateCharacteristicValues
 } from './characteristics.validator'
 
 const router = Router()
@@ -55,6 +56,11 @@ try {
     validateId(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     CharacteristicsController.getAllCharacteristicsNameByCategoryId)
+  // success
+  router.get('/values',
+    validateCharacteristicValues(), ValidatorResultMiddleware,
+    RoleMiddleware(['admin']),
+    CharacteristicsController.getCharacteristicValueByNameId)
 } catch (e) {
   throw ApiError.internalRequest(
     'Ошибка в Characteristics routers',

@@ -3,6 +3,7 @@ import { useProducts } from 'hooks/useSelectors'
 import CategorySection from 'components/CategorySection/CategorySection'
 import st from 'components/SideBar/SideBar.module.scss'
 import { ModalComponent } from 'components/UI/Modal/ModalComponent'
+import MyLink from '../../../components/UI/MyLink/MyLink'
 import style from './EditCategory.module.scss'
 import FormCategory, { IFormCategoryState } from './FormCategory/FormCategory'
 
@@ -36,19 +37,15 @@ const EditCategory = () => {
         />
       )}
        <li>
-            <a href=""
-               className={'sideBarLink'}
-               onClick={(e) => {
-                 e.stopPropagation()
-                 e.preventDefault()
-                 clickShowForm({
-                   type: 'add'
-                 })
-               }}
-            >
-              <i className={`bi bi-plus-circle-fill ${st.icon}`}/>
-              Добавить
-            </a>
+         <MyLink
+           className={'sideBarLink'}
+           onClick={() => clickShowForm({
+             type: 'add'
+           })}
+         >
+           <i className={`bi bi-plus-circle-fill ${st.icon}`}/>
+           Добавить
+         </MyLink>
        </li>
       </ul>
     </div>

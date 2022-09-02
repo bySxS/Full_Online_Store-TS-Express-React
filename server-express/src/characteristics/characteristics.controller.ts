@@ -99,6 +99,22 @@ class CharacteristicsController implements ICharacteristicController {
     }
   }
 
+  async getCharacteristicValueByNameId (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const characteristicsNameId = +(req.query.charNameId || 0)
+      const result =
+        await CharacteristicsService
+          .getCharacteristicValueByNameId({
+            characteristicsNameId
+          })
+      return res.status(200).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
+
   async addCharacteristicName (
     req: Request, res: Response, next: NextFunction
   ) {

@@ -1,5 +1,5 @@
 import { IProduct } from 'store/myStore/myStoreProduct.interface'
-import { ICategory, ICategorySection } from '../store/myStore/myStoreCategory.interface'
+import { ICategory, ICategorySection } from 'store/myStore/myStoreCategory.interface'
 
 function div (val: number, by: number): number {
   return (val - val % by) / by
@@ -78,4 +78,18 @@ export const CategoryTreeToList = (categoryTree: ICategorySection[]): ICategory[
   })
   listSec = listSec.concat(listCat, listSubCat)
   return listSec
+}
+
+export const mergeByProperty = (arrays: any[], property = 'id') => {
+  const arr = arrays.flatMap((item) => item) // делаем из всех массивов - один
+  console.log('arr', arr)
+  // ToDo исправить
+  const obj = arr.reduce((acc, item) => {
+    return { // делаем из массива - объект, чтобы повторения перезаписывались
+      ...acc,
+      [item[property]]: { ...acc[item[property]], ...item }
+    }
+  }, {})
+  console.log('obj', obj, Object.values(obj))
+  return Object.values(obj) // обратно преобразуем из объекта в массив
 }

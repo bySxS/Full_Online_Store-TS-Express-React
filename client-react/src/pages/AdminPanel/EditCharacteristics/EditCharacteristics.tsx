@@ -6,6 +6,7 @@ import {
 } from 'store/myStore/myStoreCharacteristics.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { ModalComponent } from 'components/UI/Modal/ModalComponent'
+import MyLink from '../../../components/UI/MyLink/MyLink'
 import ButtonEditCharacteristics from './ButtonEditCharacteristics/ButtonEditCharacteristics'
 import style from './EditCharacteristics.module.scss'
 import FormCharacteristics, {
@@ -105,23 +106,20 @@ const EditCharacteristics = () => {
                   className={style.liChar}
                 >
                 <span className={style.charName}>
-                <a href=""
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          e.preventDefault()
-                          clickShowForm({
-                            type: 'add',
-                            body: {
-                              parentId: section.sectionId,
-                              categoryId
-                            },
-                            section: false
-                          })
-                        }}
-                     >
+                <MyLink
+                  onClick={() => clickShowForm({
+                    type: 'add',
+                    body: {
+                      parentId: section.sectionId,
+                      categoryId
+                    },
+                    section: false
+                  })
+                  }
+               >
               <i className={'bi bi-plus-circle-fill pr-1'}/>
               Добавить название характеристики
-              </a>
+              </MyLink>
                 </span>
                 </li>  {/* char end */}
               </ul>
@@ -132,23 +130,20 @@ const EditCharacteristics = () => {
              className={style.liSection}
            >
              <span className={style.sectionName}>
-             <a href=""
-                onClick={(e) => {
-                  e.stopPropagation()
-                  e.preventDefault()
-                  clickShowForm({
-                    type: 'add',
-                    body: {
-                      parentId: undefined,
-                      categoryId
-                    },
-                    section: true
-                  })
-                }}
+             <MyLink
+               onClick={() => clickShowForm({
+                 type: 'add',
+                 body: {
+                   parentId: undefined,
+                   categoryId
+                 },
+                 section: true
+               })
+                }
              >
                <i className={'bi bi-plus-circle-fill pr-1'}/>
                Добавить раздел характеристики
-             </a>
+             </MyLink>
              </span>
            </li>
          </ul> {/* section end */}

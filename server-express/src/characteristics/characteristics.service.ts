@@ -16,7 +16,8 @@ class CharacteristicsService implements ICharacteristicService {
 
   static getInstance (): CharacteristicsService {
     if (!CharacteristicsService.instance) {
-      CharacteristicsService.instance = new CharacteristicsService()
+      CharacteristicsService.instance =
+        new CharacteristicsService()
     }
     return CharacteristicsService.instance
   }
@@ -155,7 +156,11 @@ class CharacteristicsService implements ICharacteristicService {
     }
   }
 
-  async getAllCharacteristicsNameByCategoryId ({ categoryId, sort = true, alsoParents = false }: { categoryId: number, sort?: boolean, alsoParents?: boolean }) {
+  async getAllCharacteristicsNameByCategoryId ({
+    categoryId, sort = true, alsoParents = false
+  }: {
+    categoryId: number, sort?: boolean, alsoParents?: boolean
+  }) {
     if (categoryId === 0) {
       return {
         success: true,
@@ -169,14 +174,10 @@ class CharacteristicsService implements ICharacteristicService {
     // allCategory.push(categoryId)
     const characteristics = await CharacteristicsNameModel.query()
       .whereIn('characteristicsName.categoryId', allCategory)
-      // .leftOuterJoinRelated('parent')
       .select('characteristicsName.id as propertyNameId',
         'characteristicsName.name as propertyName',
         'characteristicsName.parentId as sectionId',
-        // 'parent.name as sectionName',
         'characteristicsName.fieldType as propertyFieldType')
-      // .groupBy(// 'characteristicsName.parentId',
-      //   'characteristicsName.id')
     if (characteristics.length === 0) {
       return {
         success: true,
@@ -347,6 +348,25 @@ class CharacteristicsService implements ICharacteristicService {
       success: true,
       result: section,
       message: `Характеристики для продукта с id${id} загружены`
+    }
+  }
+
+  async getCharacteristicValueByNameId ({
+    characteristicsNameId
+  }: { characteristicsNameId: number }): Promise<IMessage> {
+    const characteristics = await this.getCharacteristicValue()
+      .where('characteristicsSetValue.characteristicsNameId', '=', characteristicsNameId)
+    if (characteristics.length === 0) {
+      return {
+        success: true,
+        message: `Доступных значений характеристик для названия c id${characteristicsNameId} нет`
+      }
+    }
+    // const section = this.sortCharacteristicsTree(characteristics)
+    return {
+      success: true,
+      result: characteristics,
+      message: `Доступные значения характеристик для названия c id${characteristicsNameId} загружены`
     }
   }
 

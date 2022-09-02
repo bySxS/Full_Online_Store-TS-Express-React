@@ -24,7 +24,7 @@ const BasketIcon = () => {
     isLoading, isSuccess, isError, error, data
   })
   useEffect(() => {
-    if (isAuth && !needSyncBasket && basketProduct.length > 0 && basketProduct[0].productId) {
+    if (isAuth && !needSyncBasket) {
       syncBasket({ productsInBasket: basketProduct })
     }
   }, [isAuth])
