@@ -80,16 +80,35 @@ export const CategoryTreeToList = (categoryTree: ICategorySection[]): ICategory[
   return listSec
 }
 
-export const mergeByProperty = (arrays: any[], property = 'id') => {
+export const mergeByProperty = (
+  arrays: any[],
+  property = 'sectionId',
+  property2 = 'characteristics',
+  property3 = 'characteristicNameId'
+) => {
   const arr = arrays.flatMap((item) => item) // делаем из всех массивов - один
-  console.log('arr', arr)
-  // ToDo исправить
   const obj = arr.reduce((acc, item) => {
+    const section = acc[item[property]]
+    const allChar = section
+      ? section[property2].concat(item[property2])
+      : [].concat(item[property2])
+    const obj2 = allChar
+      .reduce((
+        acc2: { [x: string]: any },
+        item2: { [x: string]: string | number }
+      ) => ({ // делаем из массива - объект, чтобы повторения перезаписывались
+        ...acc2,
+        [item2[property3]]: { ...acc2[item2[property3]], ...item2 }
+      }), {})
+    const arr2 = Object.values(obj2) // обратно преобразуем из объекта в массив
+    const fixItem = {
+      ...item,
+      [property2]: arr2
+    }
     return { // делаем из массива - объект, чтобы повторения перезаписывались
       ...acc,
-      [item[property]]: { ...acc[item[property]], ...item }
+      [item[property]]: fixItem
     }
   }, {})
-  console.log('obj', obj, Object.values(obj))
   return Object.values(obj) // обратно преобразуем из объекта в массив
 }
