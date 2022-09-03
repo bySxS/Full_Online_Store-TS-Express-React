@@ -3,7 +3,7 @@
 }
 
 .blockCategory {
-  @apply flex flex-col w-[50%] mr-auto;
+  @apply flex flex-col w-[90%] m-auto;
 }
 
 .blockContent {
@@ -14,10 +14,6 @@
 
 .link {
   @apply flex items-center w-full;
-}
-
-.blockCategory {
-  @apply flex;
 }
 
 .blockCharacteristicsName {
