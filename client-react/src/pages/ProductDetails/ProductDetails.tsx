@@ -23,9 +23,13 @@ const ProductDetails = () => {
   const { id: idParam } = useParams<IDParams>()
   const id = +(idParam || '')
   const navigate = useNavigate()
-  const [fetchProductById, { isLoading, isSuccess, isError, data, error }] =
+  const [fetchProductById, {
+    isLoading, isSuccess, isError, data, error, status
+  }] =
     useLazyGetProductByIdQuery()
-  useInfoLoading({ isLoading, isSuccess, isError, data, error })
+  useInfoLoading({
+    isLoading, isSuccess, isError, data, error
+  })
   useEffect(() => {
     if (!id || isNaN(+id)) {
       navigate(RoutePath.PRODUCTS)
@@ -50,8 +54,10 @@ const ProductDetails = () => {
       changeFilterState({
         categoryId: undefined
       })
+    } else if (isError && status === 'rejected') {
+      navigate(RoutePath.ERROR_404)
     }
-  }, [isSuccess, data])
+  }, [isSuccess, data, isError, status])
 
   return (
     <>
