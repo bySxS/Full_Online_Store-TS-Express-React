@@ -68,7 +68,8 @@ const EditCharacteristics = () => {
           >
             <span className={style.sectionName}>  {/* edit section button */}
               {section.sectionName}
-              <ButtonEditCharacteristics
+              {section.sectionName &&
+                <ButtonEditCharacteristics
                 characteristics={{
                   name: section.sectionName,
                   categoryId,
@@ -78,7 +79,8 @@ const EditCharacteristics = () => {
                 }}
                 section={true}
                 clickEdit={clickShowForm}
-              />
+                />
+              }
             </span>
               <ul className={style.ulChar}>
               {section.characteristics?.map(char =>

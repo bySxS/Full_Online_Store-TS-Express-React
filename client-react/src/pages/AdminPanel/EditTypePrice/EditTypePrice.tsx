@@ -101,7 +101,7 @@ const EditTypePrice = () => {
           onClick={clickAddPriceType}
           className={style.button}
         >
-          Добавить продукт
+          Добавить тип цены
         </Button>
       </div>
       <div className={style.blockPriceType}>

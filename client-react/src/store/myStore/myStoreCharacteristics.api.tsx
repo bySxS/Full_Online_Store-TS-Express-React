@@ -85,7 +85,7 @@ const myStoreCharacteristicsApi = createApi({
         query: ({ categoryId, alsoParents = false }) => ({
           url: 'characteristics/category/' + categoryId,
           params: {
-            alsoParents
+            alsoParents: alsoParents || undefined
           }
         }),
         providesTags: ['CharacteristicsName']
