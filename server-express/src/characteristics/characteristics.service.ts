@@ -171,7 +171,6 @@ class CharacteristicsService implements ICharacteristicService {
     const allCategory = alsoParents
       ? await CategoryService.getAllParentByCategory(categoryId)
       : [categoryId]
-    // allCategory.push(categoryId)
     const characteristics = await CharacteristicsNameModel.query()
       .whereIn('characteristicsName.categoryId', allCategory)
       .select('characteristicsName.id as propertyNameId',
