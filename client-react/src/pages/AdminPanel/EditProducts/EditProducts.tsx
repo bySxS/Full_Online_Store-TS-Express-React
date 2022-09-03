@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { Button } from 'react-bootstrap'
+import { useSearchParams } from 'react-router-dom'
 import {
   useDelProductMutation,
   useLazyGetAllProductsQuery
@@ -11,12 +12,15 @@ import { IProduct } from 'store/myStore/myStoreProduct.interface'
 import { addDomainToImgProducts } from 'utils'
 import { ModalComponent } from 'components/UI/Modal/ModalComponent'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
-import FormCharValueEdit, { IFormStateCharValue } from './AddCharacteristicsValue/FormCharValueEdit'
+import FormCharValueEdit, {
+  IFormStateCharValue
+} from './AddCharacteristicsValue/FormCharValueEdit'
 import style from './EditProducts.module.scss'
 import AddCharacteristicsValue from './AddCharacteristicsValue/AddCharacteristicsValue'
 import FormProducts from './FormProducts/FormProducts'
 
 const EditProducts = () => {
+  const [searchParams, setSearchParams] = useSearchParams()
   const { setBreadcrumb } = useBreadcrumb()
   const [page, setPage] = useState(1)
   const [products, setProducts] = useState<IProduct[]>([])
@@ -61,8 +65,18 @@ const EditProducts = () => {
     setBreadcrumb({})
   }, [isSuccess, data])
 
+  useEffect(() => {
+    const pageP = searchParams.get('page')
+    if (pageP && +pageP !== page) {
+      setPage(+pageP)
+    }
+  }, [searchParams])
+
   const changePage = (currPage: number) => {
     setPage(currPage)
+    setSearchParams({ page: String(currPage) }, {
+      replace: true
+    })
   }
 
   const onCreate = () => {
