@@ -1,0 +1,32 @@
+.block {
+  @apply flex flex-col w-[90%] m-auto;
+}
+
+.blockButton {
+  @apply flex justify-end pb-3;
+}
+
+.blockButton .button {
+  @apply bg-amber-400 text-black hover:bg-amber-300 mx-1 w-[160px];
+}
+
+.blockPriceType {
+  @apply flex flex-col text-2xl m-3 border border-4 border-white p-2 mb-3;
+  border-radius: 10px;
+  box-shadow: 0 0 0 black, 0 0 0 black, 0 0 0 #000000, 0 0 4px #000000;
+}
+
+.priceType {
+  @apply py-1;
+  &:before {
+    content: '- ';
+    @apply pr-1;
+  }
+}
+
+.link {
+  @apply hover:opacity-80 px-2;
+  &:hover {
+    text-shadow: 0 0 0 black, 0 0 0 black, 0 0 10px #0bafee, 0 0 13px #000000;
+  }
+}

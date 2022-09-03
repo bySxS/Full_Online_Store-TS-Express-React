@@ -80,25 +80,24 @@ const FormProducts: FC<IFormProducts> = ({
     isSuccess: isSuccessUpd
   })
   const {
-    error: errorPrice,
-    data: dataPrice,
-    isError: isErrorPrice,
-    isLoading: isLoadingPrice,
-    isSuccess: isSuccessPrice
+    error: errorPriceType,
+    data: dataPriceType,
+    isError: isErrorPriceType,
+    isLoading: isLoadingPriceType,
+    isSuccess: isSuccessPriceType
   } = useGetAllTypePriceQuery('')
   useInfoLoading({
-    error: errorPrice,
-    data: dataPrice,
-    isError: isErrorPrice,
-    isLoading: isLoadingPrice,
-    isSuccess: isSuccessPrice
+    error: errorPriceType,
+    data: dataPriceType,
+    isError: isErrorPriceType,
+    isLoading: isLoadingPriceType,
+    isSuccess: isSuccessPriceType
   })
   useEffect(() => {
-    if (isSuccessPrice && dataPrice) {
-      setPriceType(dataPrice?.result?.results)
+    if (isSuccessPriceType && dataPriceType) {
+      setPriceType(dataPriceType?.result?.results)
     }
-  }, [isSuccessPrice, dataPrice])
-
+  }, [isSuccessPriceType, dataPriceType])
   const btnAddEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     if (!validated) {
@@ -268,6 +267,7 @@ const FormProducts: FC<IFormProducts> = ({
             setValue={setFormState}
             isValid={!!formState.price}
           />
+          {priceType.length > 0 &&
           <MySelect
             name={'priceTypeId'}
             valuesOption={priceType.map(price => ({
@@ -278,6 +278,7 @@ const FormProducts: FC<IFormProducts> = ({
             setValue={setFormState}
             defaultValue={formState.priceTypeId}
           />
+          }
           <MyCheckbox
             label={'Товар доступный?'}
             name={'availability'}

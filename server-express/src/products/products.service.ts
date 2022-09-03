@@ -1,3 +1,4 @@
+import { cacheRedisDB } from '@/cache'
 import CategoryService from '@/category/category.service'
 import {
   IGetProducts, IProduct, IProductFilesArray,
@@ -179,7 +180,7 @@ class ProductsService implements IProductService {
         .select('title')
       if (parentProduct) {
         throw ApiError.badRequest(
-          `Родительского продукта с id ${parentId} не существует`,
+          `Родительского продукта с id${parentId} не существует`,
           'ProductsService add')
       }
     }
@@ -217,10 +218,11 @@ class ProductsService implements IProductService {
           productId: product.id,
           price: +price
         })
+    await cacheRedisDB.del('categoryAll:sort') // удаляем кеш
     return {
       success: true,
       result: { ...product, ...imgResult.result },
-      message: `Продукт с id ${product.id} успешно добавлен; ${imgResult.message}; ${views.message}; ${priceCommon.message}`
+      message: `Продукт '${product.title}' успешно добавлен; ${imgResult.message}; ${views.message}; ${priceCommon.message}`
     }
   }
 
@@ -308,7 +310,7 @@ class ProductsService implements IProductService {
       priceTypeId: +priceTypeId,
       ...imgResult.result
     }
-
+    await cacheRedisDB.del('categoryAll:sort') // удаляем кеш
     return {
       success: true,
       result,

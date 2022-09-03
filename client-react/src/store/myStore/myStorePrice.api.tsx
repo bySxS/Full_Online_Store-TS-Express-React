@@ -6,6 +6,7 @@ import { IPrice, IProductPrice, ITypePrice } from 'store/myStore/myStorePrice.in
 const myStorePriceApi = createApi({
   reducerPath: 'storePrice/api',
   baseQuery: baseQueryWithRefreshToken,
+  tagTypes: ['priceType', 'price'],
   refetchOnFocus: true,
   endpoints: build => ({
     addPriceForProduct: build.mutation<IMessage<IPrice>,
@@ -14,7 +15,8 @@ const myStorePriceApi = createApi({
           url: 'product/prices',
           method: 'POST',
           body
-        })
+        }),
+        invalidatesTags: ['price']
       }),
 
     updatePriceForProduct: build.mutation<IMessage<IPrice>,
@@ -23,7 +25,8 @@ const myStorePriceApi = createApi({
           url: 'product/prices/' + priceId,
           method: 'PUT',
           body
-        })
+        }),
+        invalidatesTags: ['price']
       }),
 
     deletePriceForProduct: build.mutation<IMessage<null>,
@@ -31,14 +34,16 @@ const myStorePriceApi = createApi({
         query: (priceId: number) => ({
           url: 'product/prices/' + priceId,
           method: 'DELETE'
-        })
+        }),
+        invalidatesTags: ['price']
       }),
 
     getAllPriceByProductId: build.query<IMessage<IProductPrice[]>,
       number>({
         query: (productId: number) => ({
           url: 'product/prices/' + productId
-        })
+        }),
+        providesTags: ['priceType', 'price']
       }),
 
     addTypePrice: build.mutation<IMessage<ITypePrice>,
@@ -47,24 +52,27 @@ const myStorePriceApi = createApi({
           url: 'product/prices/types',
           method: 'POST',
           body: { name }
-        })
+        }),
+        invalidatesTags: ['priceType']
       }),
 
     updateTypePrice: build.mutation<IMessage<ITypePrice>,
-      {typePriceId: number, name: string}>({
-        query: ({ typePriceId, name }) => ({
-          url: 'product/prices/types/' + typePriceId,
+      {priceTypeId: number, name: string}>({
+        query: ({ priceTypeId, name }) => ({
+          url: 'product/prices/types/' + priceTypeId,
           method: 'PUT',
           body: { name }
-        })
+        }),
+        invalidatesTags: ['priceType']
       }),
 
     deleteTypePrice: build.mutation<IMessage<null>,
       number>({
-        query: (typePriceId: number) => ({
-          url: 'product/prices/types/' + typePriceId,
+        query: (priceTypeId: number) => ({
+          url: 'product/prices/types/' + priceTypeId,
           method: 'DELETE'
-        })
+        }),
+        invalidatesTags: ['priceType']
       }),
 
     getAllTypePrice: build.query<IMessage<IResultList<ITypePrice>>,
@@ -75,7 +83,8 @@ const myStorePriceApi = createApi({
             limit: 500,
             page: 1
           }
-        })
+        }),
+        providesTags: ['priceType']
       })
 
   })
@@ -85,12 +94,12 @@ export default myStorePriceApi
 
 export const {
   useAddPriceForProductMutation,
-  useAddTypePriceMutation,
   useDeletePriceForProductMutation,
-  useDeleteTypePriceMutation,
   useUpdatePriceForProductMutation,
-  useUpdateTypePriceMutation,
   useGetAllPriceByProductIdQuery,
+  useAddTypePriceMutation,
+  useDeleteTypePriceMutation,
+  useUpdateTypePriceMutation,
   useGetAllTypePriceQuery,
   endpoints: myStorePriceEndpoint
 } = myStorePriceApi
