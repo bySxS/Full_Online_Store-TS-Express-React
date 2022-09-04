@@ -1,19 +1,17 @@
 import React, { FC, useEffect, useState } from 'react'
 import UserProfile from 'components/UserProfile/UserProfile'
+import { useSearchParams } from 'react-router-dom'
 import { useLazyAllUsersQuery } from 'store/myStore/myStoreUser.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import Pagination from 'components/Pagination/Pagination'
+import { useBreadcrumb } from 'context/BreadcrumbContext'
 import style from './EditUsers.module.scss'
 
 const EditUsers: FC = () => {
-  // const { setBreadcrumb } = useBreadcrumb()
-  // const { changeFilterState } = useAppActions()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const { setBreadcrumb } = useBreadcrumb()
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState(0)
-  // useEffect(() => {
-  //   setBreadcrumb({})
-  //   changeFilterState({})
-  // }, [])
   const [getUsers, {
     isLoading, isSuccess, isError, data: users, error
   }] =
@@ -30,10 +28,21 @@ const EditUsers: FC = () => {
     if (isSuccess && users) {
       setTotalPage(users.result.totalPage)
     }
+    setBreadcrumb({})
   }, [isSuccess, users])
+
+  useEffect(() => {
+    const pageP = searchParams.get('page')
+    if (pageP && +pageP !== page) {
+      setPage(+pageP)
+    }
+  }, [searchParams])
 
   const changePage = (currPage: number) => {
     setPage(currPage)
+    setSearchParams({ page: String(currPage) }, {
+      replace: true
+    })
   }
 
   return (

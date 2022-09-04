@@ -1,3 +1,6 @@
+export type TBasketStatus = 'SelectsTheProduct' |
+  'InProcessing' | 'InDelivery' | 'Completed' | 'Cancelled'
+
 export interface IBasketToOrderIn {
   userId: number
   comment: string
@@ -52,7 +55,7 @@ export interface IBasketProductOut {
 export interface IBasket {
   id: number
   userId: number
-  status: string
+  status: TBasketStatus
   fullName: string
   comment?: string
   deliveryAddress: string
@@ -71,26 +74,6 @@ export interface IBasketToOrderOut {
   phoneNumber: string
   fullName: string
 }
-
-export interface IAllOrders {
-  id: number
-  userId: number
-  status: string
-  fullName: string
-  comment?: string
-  deliveryAddress: string
-  phoneNumber: string
-  dateProcessing: string
-  deliveryDate: string
-  createdAt: string
-  updatedAt: string
-  currentPrice: number
-  productCount: number
-  title: string
-}
-
-export type TBasketStatus = 'SelectsTheProduct' |
-  'InProcessing' | 'InDelivery' | 'Completed' | 'Cancelled'
 
 export interface IOrderChange {
   deliveryDate: string

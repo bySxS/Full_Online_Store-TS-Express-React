@@ -75,7 +75,8 @@ class BasketController implements IBasketController {
       const productId = +req.params.id
       const authUser = req.user as IJwt
       const result =
-        await BasketService.delProductFromBasket(authUser.id, productId)
+        await BasketService
+          .delProductFromBasket(authUser.id, productId)
       return res.status(200).json(result)
     } catch (err) {
       next(err)
@@ -90,7 +91,8 @@ class BasketController implements IBasketController {
       const page = +(req.query.page || 1)
       const authUser = req.user as IJwt
       const result =
-        await BasketService.getAllOrdersByUserId(authUser.id, limit, page)
+        await BasketService
+          .getAllOrdersByUserId(authUser.id, limit, page)
       return res.status(200).json(result)
     } catch (err) {
       next(err)
@@ -103,7 +105,8 @@ class BasketController implements IBasketController {
     try {
       const authUser = req.user as IJwt
       const result =
-        await BasketService.getCurrentBasketByUserId(authUser.id)
+        await BasketService
+          .getCurrentBasketByUserId(authUser.id)
       return res.status(200).json(result)
     } catch (err) {
       next(err)
@@ -117,7 +120,8 @@ class BasketController implements IBasketController {
       const limit = +(req.query.limit || 20)
       const page = +(req.query.page || 1)
       const result =
-        await BasketService.getAllOrdersInProgressAllUsers(limit, page)
+        await BasketService
+          .getAllOrdersInProgressAllUsers(limit, page)
       return res.status(200).json(result)
     } catch (err) {
       next(err)
@@ -131,7 +135,8 @@ class BasketController implements IBasketController {
       const authUser = req.user as IJwt
       req.body.userId = authUser.id
       const result =
-        await BasketService.currentBasketToProcessing(req.body)
+        await BasketService
+          .currentBasketToProcessing(req.body)
       return res.status(200).json(result)
     } catch (err) {
       next(err)
@@ -144,7 +149,8 @@ class BasketController implements IBasketController {
     try {
       const id = +req.params.id
       const result =
-        await BasketService.updBasketById(id, req.body)
+        await BasketService
+          .updBasketById(id, req.body)
       return res.status(200).json(result)
     } catch (err) {
       next(err)

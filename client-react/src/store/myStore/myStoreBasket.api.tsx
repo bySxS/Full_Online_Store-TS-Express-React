@@ -2,9 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { IMessage, IResultList } from 'store/myStore/myStore.interface'
 import baseQueryWithRefreshToken from 'store/myStore/customFetch'
 import {
-  IAllOrders,
-  IBasket,
-  IBasketProductIn,
+  IBasket, IBasketProductIn,
   IBasketProductOut, IBasketProductSyncIn, IBasketProductSyncOut,
   IBasketToOrderIn, IBasketToOrderOut, IOrderChange
 } from 'store/myStore/myStoreBasket.interface'
@@ -41,7 +39,8 @@ const myStoreBasketApi = createApi({
           url: 'basket/sync',
           method: 'POST',
           body
-        })
+        }),
+        invalidatesTags: ['Basket']
       }),
 
     getProductBasketNoneAuthUser: build.mutation<IMessage<IBasketProductOut[]>,
@@ -62,7 +61,7 @@ const myStoreBasketApi = createApi({
         invalidatesTags: ['Basket']
       }),
 
-    getAllOrders: build.query<IMessage<IResultList<IAllOrders>>,
+    getAllOrders: build.query<IMessage<IResultList<IBasket>>,
       {limit?: number, page: number}>({
         query: (args) => ({
           url: 'basket/all_orders/',
@@ -80,7 +79,7 @@ const myStoreBasketApi = createApi({
       providesTags: ['Basket']
     }),
 
-    getOrdersNeedProcess: build.query<IMessage<IResultList<IBasketProductOut>>,
+    getOrdersNeedProcess: build.query<IMessage<IResultList<IBasket>>,
       {limit?: number, page: number}>({
         query: (args) => ({
           url: 'basket/need_process/',

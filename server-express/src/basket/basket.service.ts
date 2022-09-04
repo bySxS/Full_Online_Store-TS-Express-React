@@ -390,9 +390,12 @@ class BasketService implements IBasketService {
         BasketProducts: await this.getBasketProducts(basket.id)
       })
     }
+    const total = orders.total
+    const totalPage = Math.ceil((total || limit) / limit)
     const result = {
       results: products,
-      total: orders.total,
+      total,
+      totalPage,
       limit,
       page
     }
@@ -422,9 +425,12 @@ class BasketService implements IBasketService {
         BasketProducts: await this.getBasketProducts(basket.id)
       })
     }
+    const total = orders.total
+    const totalPage = Math.ceil((total || limit) / limit)
     const result = {
       results: products,
-      total: orders.total,
+      total,
+      totalPage,
       page,
       limit
     }
