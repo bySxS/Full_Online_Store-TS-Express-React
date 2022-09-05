@@ -75,9 +75,14 @@
   background: #EBECEE;
 }
 
+::-webkit-scrollbar{
+  width: 4px;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.31);
+}
 ::-webkit-scrollbar-button {
   width:6px;
-  height:0;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background-color: #6c757d38;
@@ -92,11 +97,7 @@
 }
 ::-webkit-resizer{
   width:7px;
-  height:0;
-}
-::-webkit-scrollbar{
-  width: 4px;
-  background-color: rgba(255, 255, 255, 0.31);
+  height: 7px;
 }
 
 $theme-colors: (

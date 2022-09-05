@@ -61,7 +61,12 @@ const ProductItemSmall: FC<IProductItemSmallProps> = ({
     <div className={style.block}>
     <div className={style.blockScreen}>
       {productScreen
-        ? <img alt={productTitle} className={style.image} src={productScreen} />
+        ? <img
+          alt={productTitle}
+          title={productTitle}
+          className={style.image}
+          src={productScreen}
+        />
         : <i className="bi bi-image text-4xl"></i>
       }
     </div>
@@ -69,7 +74,9 @@ const ProductItemSmall: FC<IProductItemSmallProps> = ({
       {productTitle}
     </div>
     {InBasket && InBasket && count &&
-    <div title={'Количество товара'} className={style.blockCount}>
+    <div title={'Количество товара'}
+         className={style.blockCount}
+    >
       <span>
         <a
           href="components/ProductItemSmall/ProductItemSmall.tsx"

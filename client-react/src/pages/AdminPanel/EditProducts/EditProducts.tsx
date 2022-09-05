@@ -72,13 +72,6 @@ const EditProducts = () => {
     }
   }, [searchParams])
 
-  const changePage = (currPage: number) => {
-    setPage(currPage)
-    setSearchParams({ page: String(currPage) }, {
-      replace: true
-    })
-  }
-
   const onCreate = () => {
     setFormProduct({} as IProduct)
     setShowFormProduct(!showFormProduct)
@@ -106,13 +99,12 @@ const EditProducts = () => {
     <>
     <div className={style.block}>
       <div className={style.blockNavigate}>
-        <div className={style.blockPagination}>
-          <Pagination
+      <Pagination
             totalPage={totalPage}
             page={page}
-            onChangePage={changePage}
-          />
-        </div>
+            setQueryPage={setSearchParams}
+            setPage={setPage}
+      />
       <div className={style.blockAddProduct}>
         <Button
           variant={'outline-warning'}

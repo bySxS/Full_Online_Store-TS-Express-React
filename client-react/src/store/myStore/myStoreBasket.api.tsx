@@ -120,8 +120,8 @@ export const {
   useChangeOrderMutation,
   useDelFromBasketMutation,
   useLazyGetBasketQuery,
-  useGetOrdersNeedProcessQuery,
-  useGetAllOrdersQuery,
+  useLazyGetOrdersNeedProcessQuery,
+  useLazyGetAllOrdersQuery,
   useSyncBasketMutation,
   useGetProductBasketNoneAuthUserMutation,
   endpoints: myStoreBasketEndpoint

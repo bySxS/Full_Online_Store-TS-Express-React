@@ -1,3 +1,7 @@
+.blockPagination {
+  @apply flex justify-start items-center m-auto pb-3;
+}
+
 .blockPages {
   @apply flex flex-row;
 }
