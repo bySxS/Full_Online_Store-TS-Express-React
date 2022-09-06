@@ -44,10 +44,12 @@ const FormCancelOrder: FC<IFormCancelOrder> = ({
         type={'textarea'}
         sizeTextareaPx={150}
       />
-      <Button variant="success"
-              className={'bg-emerald-600 w-full'}
-              onClick={clickHandle}
-              type={'submit'}
+      <Button
+        variant="success"
+        className={'bg-emerald-600 w-full'}
+        onClick={clickHandle}
+        type={'submit'}
+        disabled={formState.comment.length < 3}
       >
         Отменить заказ
       </Button>
