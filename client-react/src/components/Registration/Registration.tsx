@@ -222,7 +222,7 @@ const Registration: FC<IRegProps> = ({
             label={`E-mail${onlyShowInfo &&
             defaultInfoUser &&
             !defaultInfoUser.isActivated
-              ? <span className={'text-red-600'}> Не подтверждён!</span>
+              ? '  (не подтверждён)'
               : ''}`}
             icon={'@'}
             setValue={setFormState}

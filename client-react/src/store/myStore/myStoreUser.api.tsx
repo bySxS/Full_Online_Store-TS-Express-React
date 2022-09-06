@@ -63,7 +63,7 @@ const myStoreUserApi = createApi({
 
     activateEmail: build.query<IMessage<null>, string>({
       query: (link: string) => ({
-        url: 'activate/' + link
+        url: 'user/activate/' + link
       }),
       async onQueryStarted (args, api) {
         try {

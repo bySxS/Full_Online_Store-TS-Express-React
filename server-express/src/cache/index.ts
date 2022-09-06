@@ -8,7 +8,8 @@ const REDIS_PORT: number = Number(process.env.REDIS_CACHE_PORT) || 6379
 const REDIS_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT
 const client = createClient({
   url: REDIS_URL,
-  database: 1
+  database: 1,
+  disableOfflineQueue: false
 })// db1 redis
 client.connect()
   .then(() => {

@@ -21,7 +21,10 @@ const ActivateEmail: FC<ActivateEmailProps> = ({ name }) => {
   const { addToAlertStack, changeFilterState } = useAppActions()
   const { setBreadcrumb } = useBreadcrumb()
   useEffect(() => {
-    setBreadcrumb({})
+    setBreadcrumb({
+      moduleName: 'Активация e-mail',
+      moduleLink: '/'
+    })
     changeFilterState({})
   }, [])
   const userIsActivated = useAppSelector(selectUser.userIsActivated)
