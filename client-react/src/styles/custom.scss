@@ -5,7 +5,7 @@
 }
 
 .paddingLeftShowMenu {
-  @apply pl-[210px];
+  padding-left: 210px;
 }
 
 .paddingLeftHideMenu {
@@ -14,7 +14,7 @@
 
 @media only screen and (max-width: 775px) {
   .body {
-    @apply pl-[64px];
+    padding-left: 64px;
   }
 }
 
@@ -45,7 +45,7 @@
 
 @media only screen and (max-width: 775px) {
   .sideBarLink {
-    @apply pl-[15px];
+    padding-left: 15px;
   }
 }
 

@@ -17,24 +17,24 @@
     @apply flex-col w-[78%] h-[200px] flex-wrap;
   }
   .footerBg {
-    @apply h-[200px];
+    height: 200px;
   }
   .blockInfo {
-    @apply px-7 pb-4 h-[90px];
+    @apply px-7 h-[90px] pb-4;
   }
 }
 
 @media only screen and (max-width: 775px) {
   .footer {
-    @apply w-[100%];
+    @apply w-full;
   }
 }
 
 @media only screen and (max-width: 660px) {
   .footer {
-    @apply h-[400px];
+    height: 400px;
   }
   .footerBg {
-    @apply h-[400px];
+    height: 400px;
   }
 }

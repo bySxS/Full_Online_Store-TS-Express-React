@@ -1,11 +1,12 @@
 .block {
-  @apply flex flex-col w-[90%] mt-3 m-3 border border-4 border-white p-2 mb-3;
+  @apply flex flex-col w-[90%] mt-3 m-3 border
+  border-4 border-white p-2 mb-3;
   border-radius: 10px;
   box-shadow: 0 0 0 black, 0 0 0 black, 0 0 0 #000000, 0 0 4px #000000;
 }
 
 .blockSelectCategory {
-  @apply flex flex-col w-[280px];
+  @apply flex w-[280px] flex-col;
 }
 
 .blockCharacteristics {

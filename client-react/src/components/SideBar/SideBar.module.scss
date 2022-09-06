@@ -1,10 +1,10 @@
 .sideMenuHead {
   @apply fixed z-20 grid w-[210px] h-full content-center
-  justify-center bg-gray-50 text-gray-600 pb-[100px];
+  justify-center bg-gray-50 pb-[100px] text-gray-600;
 }
 
 .sideMenuBody {
-  @apply top-[30%] relative w-[210px];
+  @apply top-[30%] w-[210px] relative;
 }
 
 .icon {
@@ -23,13 +23,13 @@
   .icon {
     @apply m-auto pr-0;
   }
-  .name_page {
+  .namePage {
     display: none;
   }
   .sideMenuHead {
-    @apply w-[63px];
+    width: 63px;
   }
   .sideMenuBody {
-    @apply w-[63px];
+    width: 63px;
   }
 }

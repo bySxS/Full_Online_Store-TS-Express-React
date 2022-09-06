@@ -11,8 +11,8 @@
 }
 
 .ul {
-  @apply list-none absolute top-[5px]
-  left-0 right-0 pl-2 max-h-[178px] overflow-y-auto
+  @apply list-none absolute top-[5px] left-0
+  right-0 pl-2 max-h-[178px] overflow-y-auto
   bg-white;
 }
 

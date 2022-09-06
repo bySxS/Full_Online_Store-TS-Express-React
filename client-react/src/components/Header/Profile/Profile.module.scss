@@ -4,7 +4,7 @@
 }
 
 .btnAvatar {
-  @apply border-0 pt-0 -mt-1 h-[50px];
+  @apply border-0 -mt-1 h-[50px] pt-0;
 }
 
 .btnAvatar::after {

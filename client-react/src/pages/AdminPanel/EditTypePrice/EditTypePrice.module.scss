@@ -7,11 +7,13 @@
 }
 
 .blockButton .button {
-  @apply bg-amber-400 text-black hover:bg-amber-300 mx-1 w-[200px];
+  @apply bg-amber-400 text-black w-[200px]
+  hover:bg-amber-300 mx-1;
 }
 
 .blockPriceType {
-  @apply flex flex-col text-2xl m-3 border border-4 border-white p-2 mb-3;
+  @apply flex flex-col text-2xl m-3 border
+  border-4 border-white p-2 mb-3;
   border-radius: 10px;
   box-shadow: 0 0 0 black, 0 0 0 black, 0 0 0 #000000, 0 0 4px #000000;
 }

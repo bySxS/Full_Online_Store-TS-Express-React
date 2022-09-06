@@ -1,6 +1,6 @@
 .block {
-  @apply my-2 flex flex-col w-[90%]
-  m-auto overflow-y-auto;
+  @apply my-2 flex flex-col w-[90%] m-auto
+  overflow-y-auto;
   flex: 1 0 auto;
 }
 

@@ -83,7 +83,7 @@ const SideBar = () => {
             onMouseEnter={handleFocus}
           >
             <i className={`bi bi-house-fill ${st.icon}`}/>
-            <span className={st.name_page}>Главная</span>
+            <span className={st.namePage}>Главная</span>
           </NavLink>
         </li>
         {isAuth &&
@@ -97,7 +97,7 @@ const SideBar = () => {
               onMouseEnter={handleFocus}
             >
               <i className={`bi bi-bookmark-fill ${st.icon}`}/>
-              <span className={st.name_page}>Избранные товары ({countFavProduct})</span>
+              <span className={st.namePage}>Избранные товары ({countFavProduct})</span>
             </NavLink>
           </li>
         }
@@ -110,7 +110,7 @@ const SideBar = () => {
             onMouseEnter={handleFocus}
           >
             <i className={`bi bi-grid-fill ${st.icon}`}/>
-            <span className={st.name_page}>Товары</span>
+            <span className={st.namePage}>Товары</span>
           </NavLink>
           </li>
           : <Accordion>
@@ -121,7 +121,7 @@ const SideBar = () => {
               onMouseEnter={handleFocus}
             >
               <i className={`bi bi-grid-fill ${st.icon}`}/>
-              <span className={st.name_page}>Категории</span>
+              <span className={st.namePage}>Категории</span>
             </Toggle>
            </li>
             <Accordion.Collapse eventKey="0">
@@ -139,7 +139,7 @@ const SideBar = () => {
                     onMouseEnter={handleFocus}
                   >
                     <i className={`bi bi-grid-3x3-gap-fill ${st.icon}`}/>
-                    <span className={st.name_page}>Все товары</span>
+                    <span className={st.namePage}>Все товары</span>
                   </NavLink>
                 </li>
               {allCategory?.map(category =>

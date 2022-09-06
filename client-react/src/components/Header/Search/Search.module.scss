@@ -1,5 +1,5 @@
 .searchForm {
-  @apply flex w-[300px];
+  @apply w-[300px] flex;
 }
 
 .resultSearch {
@@ -7,8 +7,8 @@
 }
 
 .ul {
-  @apply list-none absolute top-[15px]
-  left-0 right-0 max-h-[200px] overflow-y-auto
+  @apply list-none absolute top-[15px] left-0
+  right-0 max-h-[200px] overflow-y-auto
   shadow-md bg-white;
 }
 
@@ -19,14 +19,14 @@
 }
 
 .screen {
-  @apply pr-2 w-[23px];
+  @apply w-[23px] pr-2;
 }
 
 @media only screen and (max-width: 775px) {
   .searchForm {
-    @apply w-[200px];
+    width: 200px;
   }
   .resultSearch {
-    @apply min-w-[260px];
+    min-width: 260px;
   }
 }

@@ -4,6 +4,7 @@
 }
 
 .count {
-  @apply absolute top-4 pl-[20px] cursor-pointer font-serif font-bold text-2xl text-white;
+  @apply absolute top-4 pl-[20px] cursor-pointer
+  font-serif font-bold text-2xl text-white;
   text-shadow: 0 0 10px red,0 0 20px red,0 0 30px red,0 0 40px red;
 }

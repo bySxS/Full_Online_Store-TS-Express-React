@@ -1,5 +1,6 @@
 .block {
-  @apply flex w-[90%] bg-white m-auto items-center border border-4 border-white p-2 mb-3;
+  @apply flex w-[90%] bg-white m-auto items-center
+  border border-4 border-white p-2 mb-3;
   border-radius: 10px;
   box-shadow: 0 0 0 black, 0 0 0 black, 0 0 0 #000000, 0 0 4px #000000;
 }
@@ -10,7 +11,7 @@
 }
 
 .image {
-  @apply h-[100px];
+  height: 100px;
 }
 
 .blockTitle {
@@ -18,8 +19,10 @@
 }
 
 .button {
-  @apply bg-emerald-800 hover:bg-emerald-500 hover:text-white
-  px-2 text-white h-[20px] w-[20px] flex items-end justify-center;
+  @apply bg-emerald-800 hover:bg-emerald-500
+  hover:text-white
+  px-2 text-white h-[20px] w-[20px] flex
+  items-end justify-center;
   border-radius: 6px;
 }
 

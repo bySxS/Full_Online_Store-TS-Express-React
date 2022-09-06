@@ -27,7 +27,7 @@ const AdminPanel: FC<AdminPanelProps> = ({ name }) => {
         <div className={style.blockCategory}>
         <div className={style.blockContent}>
           <NavLink className={style.link} to={RoutePath.EDIT_CATEGORY}>
-            <i className="bi bi-people-fill text-2xl pr-1.5"/>
+            <i className="bi bi-grid-fill text-2xl pr-1.5"/>
             {RouteName.EDIT_CATEGORY}
           </NavLink>
         </div>
@@ -39,25 +39,25 @@ const AdminPanel: FC<AdminPanelProps> = ({ name }) => {
         </div>
         <div className={style.blockContent}>
           <NavLink className={style.link} to={RoutePath.EDIT_CHARACTERISTICS}>
-            <i className="bi bi-people-fill text-2xl pr-1.5"/>
+            <i className="bi bi-bar-chart-steps text-2xl pr-1.5"/>
             {RouteName.EDIT_CHARACTERISTICS}
           </NavLink>
         </div>
         <div className={style.blockContent}>
           <NavLink className={style.link} to={RoutePath.EDIT_TYPE_PRICE}>
-            <i className="bi bi-people-fill text-2xl pr-1.5"/>
+            <i className="bi bi-tags-fill text-2xl pr-1.5"/>
             {RouteName.EDIT_TYPE_PRICE}
           </NavLink>
         </div>
         <div className={style.blockContent}>
           <NavLink className={style.link} to={RoutePath.EDIT_PRODUCTS}>
-            <i className="bi bi-people-fill text-2xl pr-1.5"/>
+            <i className="bi bi-grid-3x3-gap-fill text-2xl pr-1.5"/>
             {RouteName.EDIT_PRODUCTS}
           </NavLink>
         </div>
         <div className={style.blockContent}>
           <NavLink className={style.link} to={RoutePath.EDIT_ORDERS}>
-            <i className="bi bi-people-fill text-2xl pr-1.5"/>
+            <i className="bi bi-card-list text-2xl pr-1.5"/>
             {RouteName.EDIT_ORDERS}
           </NavLink>
         </div>

@@ -15,5 +15,6 @@
 }
 
 .blockAddProduct .button {
-  @apply bg-amber-400 text-black hover:bg-amber-300 mx-1 w-[160px];
+  @apply bg-amber-400 w-[160px] text-black hover:bg-amber-300
+  mx-1;
 }

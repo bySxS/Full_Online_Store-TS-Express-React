@@ -14,7 +14,7 @@
 }
 
 .blockGeneral {
-  @apply flex flex-col w-[97%];
+  @apply flex w-[97%] flex-col;
 }
 
 .blockAdmin {
@@ -57,7 +57,7 @@
 }
 
 .image {
-  @apply flex h-[100px];
+  @apply h-[100px] flex;
   max-width: inherit;
 }
 

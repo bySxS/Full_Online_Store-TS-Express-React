@@ -1,9 +1,10 @@
 .productItem {
   @apply flex flex-col items-center cursor-pointer
-  my-4 mx-4 bg-gray-50 w-[273px] h-[469px];
+  my-4 mx-4 w-[273px] h-[469px] bg-gray-50 ;
 
   .sectionFav {
-    @apply text-2xl w-full text-white flex justify-center items-center;
+    @apply text-2xl w-full text-white flex justify-center
+    items-center;
     background: #766ED3;
     flex: 0 0 auto;
   }
@@ -18,8 +19,8 @@
 
   .sectionInfo {
     @apply flex flex-col items-center
-    content-start justify-center pt-2
-    text-center h-[90px];
+    content-start justify-center h-[90px] pt-2
+    text-center;
 
     .title {
       @apply font-bold

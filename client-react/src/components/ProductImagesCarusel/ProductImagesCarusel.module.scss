@@ -3,7 +3,7 @@
 }
 
 .sectionTop {
-  @apply flex justify-center h-[75%];
+  @apply flex h-[75%] justify-center;
   flex: 1 0 75%;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .screenSmallDiv {
-  @apply h-full flex justify-center w-[80px];
+  @apply h-full flex w-[80px] justify-center;
 }
 
 .screenSmall {

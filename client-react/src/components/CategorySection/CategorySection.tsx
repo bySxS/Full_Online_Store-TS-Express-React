@@ -61,7 +61,7 @@ const CategorySection: FC<ICategoryProps> = ({
           className="sideBarLink pl-[10px]"
         >
           <i className={`${categorySection.sectionIconClass} ${st.icon}`}/>
-          <span className={st.name_page}>
+          <span className={!edit ? st.namePage : ''}>
           {categorySection.sectionName} ({categorySection.sectionCountProducts})
           </span>
           {edit && clickEdit &&
