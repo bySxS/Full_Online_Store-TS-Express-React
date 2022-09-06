@@ -18,7 +18,8 @@ client.connect()
     logger.error('Redis error ' + e.toString(), { db: 'Redis' })
     client.connect()
       .then(() => {
-        logger.info('Redis connected2')})
+        logger.info('Redis connected2')
+      })
       .catch(e => {
         logger.error('Redis error2 ' + e.toString(), { db: 'Redis' })
       })
