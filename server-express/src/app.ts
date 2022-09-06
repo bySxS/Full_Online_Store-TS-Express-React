@@ -19,16 +19,17 @@ import path from 'path'
 
 const app = express()
 const PORT = process.env.PORT
+const CLIENT_URL = process.env.CLIENT_URL_PRODUCTION
 
 const staticPath = path.resolve(__dirname, '..', 'static')
 const corsOptions = {
-  origin: process.env.CLIENT_URL,
+  origin: CLIENT_URL,
   crossOriginResourcePolicy: { policy: 'cross-origin' },
   credentials: true,
   optionsSuccessStatus: 200
 }
 const corsSetting = function (req: Request, res: Response, next: NextFunction) {
-  res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL)
+  res.header('Access-Control-Allow-Origin', CLIENT_URL)
   return next()
 }
 

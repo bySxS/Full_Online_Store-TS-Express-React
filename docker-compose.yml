@@ -26,8 +26,8 @@ services:
       - ./mysql/import:/docker-entrypoint-initdb.d
     restart: always
 
-  client:
-    container_name: react_client
+  client_store:
+    container_name: react_client_store
     build:
       context: ./client-react
     restart: always
@@ -42,14 +42,14 @@ services:
     command: sh -c 'npm run migrate && npm run seedAdd'
     working_dir: /usr/src/app
 
-  server:
+  server_store:
     build:
       context: ./server-express
     restart: always
     depends_on:
       - mysql
     deploy:
-      replicas: 3
+      replicas: 2
       #     resources:
       #       limits:
       #         cpus: "0.1"

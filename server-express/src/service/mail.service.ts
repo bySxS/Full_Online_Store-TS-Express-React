@@ -7,7 +7,7 @@ class MailService {
   private port = process.env.SMTP_PORT
   private user = process.env.SMTP_USER
   private pass = process.env.SMTP_PASS
-  private urlSite = process.env.CLIENT_URL
+  private urlSite = process.env.CLIENT_URL_PRODUCTION
 
   static getInstance (): MailService {
     if (!MailService.instance) {
