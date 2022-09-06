@@ -13,8 +13,9 @@ RUN apk add nano mc
 WORKDIR /usr/src/app
 COPY package* ./
 COPY src/ src/
+COPY static/ static/
 #COPY node_modules/ node_modules/
-COPY production.env ./src/
+#COPY production.env ./src/.env
 COPY production.env .env
 COPY tsconfig.json ./
 COPY .eslintrc.json ./

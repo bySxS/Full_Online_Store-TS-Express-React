@@ -47,7 +47,7 @@ const Profile = () => {
               className={style.avatar}
               loading={'lazy'}
             />
-            : <i className="bi bi-person-circle text-5xl text-gray-700"/>
+            : <i className="bi bi-person-circle text-5xl text-gray-700 hover:opacity-90"/>
           }
         </Dropdown.Toggle>
 

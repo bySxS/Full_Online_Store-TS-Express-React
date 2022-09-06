@@ -9,9 +9,14 @@ COPY package* ./
 COPY src/ src/
 COPY public/ public/
 #COPY node_modules/ node_modules/
-COPY .env .env
+#COPY .env .env
+COPY production.env .env
 COPY tsconfig.json ./
 COPY .eslintrc.json ./
+COPY .prettierrc ./
+COPY postcss.config.js ./
+COPY tailwind.config.js ./
+
 
 RUN ["npm", "install"]
 

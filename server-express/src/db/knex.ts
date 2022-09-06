@@ -1,39 +1,32 @@
+import { config } from 'dotenv'
+import path from 'path'
 import logger from '../logger'
 
 interface IKnexConfig {
     [key: string]: object;
 }
 
-// process.env при миграции не работает!
-const host: string = 'localhost'
-const port: string = '3306'
-const user: string = 'sxs'
-const password: string = '123456789s'
-const database: string = 'online_store'
-
-const defaultConf = {
-  client: 'mysql',
-  connection: { // migrations
-    host,
-    port,
-    user,
-    password,
-    database,
-    charset: 'utf8'
-  }
-}
-
 const knexConfig: IKnexConfig = {
-  test: {
-    ...defaultConf
-  },
   development: {
-    ...defaultConf
+    client: 'mysql',
+    connection: { // migrations
+      host: 'localhost',
+      port: 3306,
+      user: 'sxs',
+      password: '123456789s',
+      database: 'online_store',
+      charset: 'utf8'
+    }
   },
   production: {
-    ...defaultConf,
-    connection: {
-      host: 'mysql'
+    client: 'mysql',
+    connection: { // migrations
+      host: 'mysql',
+      port: 3306,
+      user: 'sxs',
+      password: '123456789s',
+      database: 'online_store',
+      charset: 'utf8'
     }
   },
   migrations: {
@@ -66,37 +59,34 @@ const knexConfig: IKnexConfig = {
 
 export default knexConfig
 
+config({
+  debug: false,
+  override: true,
+  path: path.resolve(__dirname, '../..', '.env')
+})
+
+console.log('MYSQL_HOST', process.env.MYSQL_HOST)
+
 module.exports = { // для migrate: make только с этим работает
-  test: {
-    client: 'mysql',
-    connection: { // migrations
-      host,
-      port,
-      user,
-      password,
-      database,
-      charset: 'utf8'
-    }
-  },
   development: {
     client: 'mysql',
     connection: { // migrations
-      host,
-      port,
-      user,
-      password,
-      database,
+      host: process.env.MYSQL_HOST || 'mysql',
+      port: process.env.MYSQL_PORT || 3306,
+      user: process.env.MYSQL_USER || 'sxs',
+      password: process.env.MYSQL_PASS || '123456789s',
+      database: process.env.MYSQL_DB_NAME || 'online_store',
       charset: 'utf8'
     }
   },
   production: {
     client: 'mysql',
     connection: {
-      host: 'mysql', // название контейнера докер
-      port,
-      user,
-      password,
-      database,
+      host: process.env.MYSQL_HOST || 'mysql', // название контейнера докер
+      port: process.env.MYSQL_PORT || 3306,
+      user: process.env.MYSQL_USER || 'sxs',
+      password: process.env.MYSQL_PASS || '123456789s',
+      database: process.env.MYSQL_DB_NAME || 'online_store',
       charset: 'utf8'
     }
   },

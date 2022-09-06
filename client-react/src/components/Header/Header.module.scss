@@ -1,13 +1,14 @@
-.header {
-  @apply flex items-center fixed top-0 left-0 right-0 z-50;
+//.header {
+//  @apply flex items-center fixed top-0 left-0 right-0 z-50;
+//}
 
-  .navbar {
-    @apply flex items-center justify-between pl-4;
-  }
+.navbar {
+  @apply z-50 fixed bg-gray-100 w-full h-[60px] flex
+  items-center justify-between pl-4;
 }
 
 .toggleMenu {
-  @apply hover:text-indigo-700;
+  @apply hover:text-indigo-700 hover:opacity-80;
 }
 
 .hideLogo {

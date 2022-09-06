@@ -32,16 +32,6 @@ services:
       context: ./client-react
     restart: always
 
-  migrate:
-    container_name: migrate_import_db
-    build:
-      context: ./server-express
-    depends_on:
-      - mysql
-    restart: on-failure
-    command: sh -c 'npm run migrate && npm run seedAdd'
-    working_dir: /usr/src/app
-
   server_store:
     build:
       context: ./server-express
@@ -49,7 +39,7 @@ services:
     depends_on:
       - mysql
     deploy:
-      replicas: 2
+      replicas: 1
       #     resources:
       #       limits:
       #         cpus: "0.1"
@@ -57,6 +47,17 @@ services:
       restart_policy:
         condition: on-failure
     command: sh -c 'npm run prod'
+    working_dir: /usr/src/app
+
+  migrate:
+    container_name: migrate_import_db
+    build:
+      context: ./server-express
+    depends_on:
+      - mysql
+      - server_store
+    restart: on-failure
+    command: sh -c 'npm run migrate && npm run seedAdd'
     working_dir: /usr/src/app
 
   nginx:

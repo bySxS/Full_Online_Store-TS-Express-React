@@ -1,5 +1,5 @@
 import React from 'react'
-import { Navbar, NavLink } from 'react-bootstrap'
+import { NavLink } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { useAppActions } from 'hooks/useStore'
 import BasketIcon from './BasketIcon/BasketIcon'
@@ -11,9 +11,8 @@ const Header = () => {
   const navigate = useNavigate()
   const { changeShowMenu } = useAppActions()
   return (
-    <header className={style.header}>
-      <Navbar fixed={'top'} bg="light" variant="light"
-              className={style.navbar}>
+  // <div className={style.header}>
+      <div className={style.navbar}>
         <div className={style.hideLogo}>
           <div className={'pr-4'}>
           <NavLink
@@ -36,8 +35,8 @@ const Header = () => {
             <BasketIcon />
             <Profile />
           </div>
-      </Navbar>
-    </header>
+      </div>
+  // </div>
   )
 }
 

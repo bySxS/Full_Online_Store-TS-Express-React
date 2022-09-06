@@ -39,7 +39,7 @@ const BasketIcon = () => {
 
   return (
     <>
-    <div className={'pr-3.5 w-[55px]'}>
+    <div className={'pr-3.5 w-[55px] hover:opacity-80'}>
       {countProductInBasket > 0 &&
       <div
         onClick={clickOpenBasketModal}

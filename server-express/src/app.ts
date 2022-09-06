@@ -1,9 +1,10 @@
 /* eslint-disable import/first */
 import { config } from 'dotenv'
+import path from 'path'
 config({
-  debug: true,
-  override: true
-  // path: path.join(__dirname, env + '.env')
+  debug: false,
+  override: true,
+  path: path.resolve(__dirname, '..', '.env')
 })
 import express, { Request, Response, NextFunction } from 'express'
 import helmet from 'helmet'
@@ -15,11 +16,11 @@ import os from 'os'
 import { errorApiMiddleware } from './middleware/error'
 import router from './routes'
 import ApiError from './apiError'
-import path from 'path'
 
 const app = express()
 const PORT = process.env.PORT
-const CLIENT_URL = process.env.CLIENT_URL_PRODUCTION
+const CLIENT_URL = process.env.CLIENT_URL
+console.log('CLIENT_URL', CLIENT_URL)
 
 const staticPath = path.resolve(__dirname, '..', 'static')
 const corsOptions = {
