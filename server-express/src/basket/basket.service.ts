@@ -339,6 +339,57 @@ class BasketService implements IBasketService {
     }
   }
 
+  async cancelOrderByAuthUser (
+    { userId, comment, basketId }:
+      { userId: number, basketId: number, comment: string }
+  ): Promise<IMessage> {
+    const order = await BasketModel.query()
+      .where('id', '=', basketId)
+      .andWhere('status', '=', 'InProcessing')
+      .andWhere('userId', '=', userId)
+      .select('*')
+      .first()
+    if (!order) {
+      return {
+        success: false,
+        message: `Заказ №${basketId} не может быть отменён`
+      }
+    }
+    const dateProcessing = new Date()
+      .toLocaleString('zh-Hans-CN', {
+        timeZone: 'Europe/Moscow',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hourCycle: 'h23'
+      })
+    const result = await BasketModel.query()
+      .where({ id: basketId })
+      .update({
+        status: 'Cancelled',
+        comment,
+        dateProcessing
+      })
+    if (!result) {
+      throw ApiError.badRequest(
+        `Не удалось отменить заказ с id${basketId}`,
+        'BasketService cancelOrderByAuthUser')
+    }
+    return {
+      success: true,
+      result: {
+        basketId,
+        status: 'Cancelled',
+        comment,
+        dateProcessing
+      },
+      message: `Заказ с id${basketId} успешно отменён`
+    }
+  }
+
   async delProductFromBasket (
     userId: number, productId: number
   ): Promise<IMessage> {

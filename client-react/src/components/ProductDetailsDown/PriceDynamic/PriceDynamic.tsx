@@ -39,7 +39,7 @@ export const options = {
 }
 
 const getMonthShift = (shift: number = 0) => {
-  return dayjs(new Date()).add(shift, 'month').format('MMMM YY')
+  return dayjs().add(shift, 'month').format('MMMM YY')
 }
 
 const getMonth = (datetime: string): string => {

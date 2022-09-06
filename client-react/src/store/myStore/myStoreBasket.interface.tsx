@@ -1,7 +1,7 @@
 export type TBasketStatus = 'SelectsTheProduct' |
   'InProcessing' | 'InDelivery' | 'Completed' | 'Cancelled'
 export type TBasketStatusRus = 'Выбор продуктов' |
-  'В обработке' | 'Товар в доставке' | 'Выполнен' | 'Отменён'
+  'В обработке' | 'В доставке' | 'Выполнен' | 'Отменён'
 
 export interface IBasketToOrderIn {
   userId: number

@@ -156,6 +156,22 @@ class BasketController implements IBasketController {
       next(err)
     }
   }
+
+  async cancelOrderByAuthUser (
+    req: Request, res: Response, next: NextFunction
+  ) {
+    try {
+      const authUser = req.user as IJwt
+      req.body.userId = authUser.id
+      const result =
+        await BasketService
+          .cancelOrderByAuthUser(req.body)
+      return res.status(200).json(result)
+    } catch (err) {
+      next(err)
+    }
+  }
+  
 }
 
 export default BasketController.getInstance()

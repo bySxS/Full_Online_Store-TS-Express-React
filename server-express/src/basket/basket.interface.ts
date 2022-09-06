@@ -50,6 +50,8 @@ export interface IBasketService {
   getBasketProducts: (basketId: number) => QueryBuilder<BasketProductsModel, BasketProductsModel[]>
   syncProductBasketAfterAuth: (userId: number, Dto: IBasketProductSync) => Promise<IMessage>
   getProductBasketNoneAuthUser: (Dto: IBasketProductSync) => Promise<IMessage>
+  cancelOrderByAuthUser: ({ userId, comment, basketId }:
+    { userId: number, basketId: number, comment: string }) => Promise<IMessage>
 }
 
 export interface IBasketController {
@@ -63,4 +65,5 @@ export interface IBasketController {
   updBasketById: (req: Request, res: Response, next: NextFunction) => void
   syncProductBasketAfterAuth: (req: Request, res: Response, next: NextFunction) => void
   getProductBasketNoneAuthUser: (req: Request, res: Response, next: NextFunction) => void
+  cancelOrderByAuthUser: (req: Request, res: Response, next: NextFunction) => void
 }

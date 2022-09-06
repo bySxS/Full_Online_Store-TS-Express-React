@@ -69,7 +69,8 @@ const myStoreBasketApi = createApi({
             limit: args.limit || 10,
             page: args.page
           }
-        })
+        }),
+        providesTags: ['Basket']
       }),
 
     getBasket: build.query<IMessage<IBasket>, string>({
@@ -87,7 +88,8 @@ const myStoreBasketApi = createApi({
             limit: args.limit || 10,
             page: args.page
           }
-        })
+        }),
+        providesTags: ['Basket']
       }),
 
     basketToOrder: build.mutation<IMessage<IBasketToOrderOut>,
@@ -101,13 +103,25 @@ const myStoreBasketApi = createApi({
       }),
 
     changeOrder: build.mutation<IMessage<IOrderChange>,
-      { productId: number, body: IOrderChange }>({
-        query: ({ productId, body }) => ({
-          url: 'basket' + productId,
+      { basketId: number, body: IOrderChange }>({
+        query: ({ basketId, body }) => ({
+          url: 'basket/' + basketId,
           method: 'PUT',
           body
-        })
+        }),
+        invalidatesTags: ['Basket']
+      }),
+
+    cancelOrder: build.mutation<IMessage<IOrderChange>,
+      { basketId: number, comment: string }>({
+        query: (body) => ({
+          url: 'basket/cancel',
+          method: 'POST',
+          body
+        }),
+        invalidatesTags: ['Basket']
       })
+
   })
 })
 
@@ -124,5 +138,6 @@ export const {
   useLazyGetAllOrdersQuery,
   useSyncBasketMutation,
   useGetProductBasketNoneAuthUserMutation,
+  useCancelOrderMutation,
   endpoints: myStoreBasketEndpoint
 } = myStoreBasketApi

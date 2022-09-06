@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import dayjs from 'dayjs'
 
 // const LS_ALERT_KEY = 'rak'
 
@@ -54,17 +55,18 @@ export const AlertSlice = createSlice({
           action.payload.delay = 3500
         }
         if (!action.payload.time) {
-          action.payload.time = new Date()
-            .toLocaleString('zh-Hans-CN', {
-              timeZone: 'Europe/Moscow',
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-              hour: '2-digit',
-              minute: '2-digit',
-              second: '2-digit',
-              hourCycle: 'h23'
-            })
+          action.payload.time = dayjs().format('HH:mm:ss')
+          // new Date()
+          //   .toLocaleString('zh-Hans-CN', {
+          //     timeZone: 'Europe/Moscow',
+          //     year: 'numeric',
+          //     month: '2-digit',
+          //     day: '2-digit',
+          //     hour: '2-digit',
+          //     minute: '2-digit',
+          //     second: '2-digit',
+          //     hourCycle: 'h23'
+          //   })
         }
         state.alertSt = [...state.alertSt, action.payload]
         // localStorage.setItem(LS_ALERT_KEY, JSON.stringify(state.alertSt))

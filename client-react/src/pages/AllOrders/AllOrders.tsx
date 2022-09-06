@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
-import { useBreadcrumb } from 'context/BreadcrumbContext'
 import { useAppActions } from 'hooks/useStore'
 import OrdersList from 'components/OrdersList/OrdersList'
 import { useInfoLoading } from 'hooks/useInfoLoading'
@@ -14,14 +13,12 @@ interface AllOrdersProps {
 }
 
 const AllOrders: FC<AllOrdersProps> = ({ name }) => {
-  const { setBreadcrumb } = useBreadcrumb()
   const [searchParams, setSearchParams] = useSearchParams()
   const { changeFilterState } = useAppActions()
   const [page, setPage] = useState(1)
   const [totalPage, setTotalPage] = useState(0)
   const [orders, setOrders] = useState<IBasket[]>([])
   useEffect(() => {
-    setBreadcrumb({})
     changeFilterState({})
   }, [])
   const [getOrders, {
@@ -58,7 +55,12 @@ const AllOrders: FC<AllOrdersProps> = ({ name }) => {
           setQueryPage={setSearchParams}
           widthClassName={'w-[90%]'}
       />
-      <OrdersList orders={orders} />
+      {orders.length > 0
+        ? <OrdersList orders={orders} />
+        : <div className={'text-center w-[90%] m-auto'}>
+          У вас не было заказов:(
+        </div>
+      }
     </div>
   )
 }

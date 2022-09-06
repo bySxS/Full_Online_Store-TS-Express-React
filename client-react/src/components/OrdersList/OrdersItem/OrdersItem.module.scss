@@ -5,12 +5,24 @@
 }
 
 .id {
-  @apply font-bold text-xl pr-3;
+  @apply font-bold text-xl w-[3%] mr-1;
 }
 
 .info {
   @apply flex flex-col;
   flex: 1 0 115px;
+}
+
+.blockGeneral {
+  @apply flex flex-col w-[97%];
+}
+
+.blockAdmin {
+  @apply flex flex-col mt-4;
+}
+
+.blockInfo {
+  @apply flex flex-row;
 }
 
 .status {
@@ -41,7 +53,7 @@
 }
 
 .blockImage {
-  @apply flex;
+  @apply flex hover:opacity-80;
 }
 
 .image {
@@ -50,7 +62,8 @@
 }
 
 .count {
-  @apply relative top-16 h-[30px] w-[15px] left-7 cursor-pointer font-serif font-bold text-2xl text-white;
+  @apply relative top-16 h-[30px] w-[15px] left-7
+  font-serif font-bold text-2xl text-white;
   text-shadow: 0 0 10px red,0 0 20px red,0 0 30px red,0 0 40px red;
 }
 
@@ -65,4 +78,9 @@
 
 .priceColor {
   @apply text-red-700;
+}
+
+.linkProcess {
+  @apply ml-auto cursor-pointer flex items-end
+  hover:text-red-700 hover:underline;
 }

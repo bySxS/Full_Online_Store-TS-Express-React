@@ -26,6 +26,17 @@ export const validateUpdBasket = () => {
   ]
 }
 
+export const validateCancelBasket = () => {
+  return [
+    body('basketId', 'ID заказа (basketId) не указан')
+      .notEmpty(),
+    body('basketId', 'ID заказа (basketId) должны быть только цифры')
+      .matches('^[0-9]+$'),
+    body('comment', 'Причина отмены заказа (comment) не указана')
+      .notEmpty()
+  ]
+}
+
 export const validateBasketProduct = () => {
   return [
     body('productId', 'ID продукта (productId) не указан')

@@ -6,7 +6,11 @@ import BasketController from './basket.controller'
 import { validateId, validateLimitPage } from '@/validator'
 import { ValidatorResultMiddleware } from '@/middleware/validatorResult'
 import {
-  validateBasket, validateBasketProduct, validateSyncBasketProduct, validateUpdBasket
+  validateBasket,
+  validateBasketProduct,
+  validateCancelBasket,
+  validateSyncBasketProduct,
+  validateUpdBasket
 } from '@/basket/basket.validator'
 
 const router = Router()
@@ -59,6 +63,11 @@ try {
     validateId(), validateUpdBasket(), ValidatorResultMiddleware,
     RoleMiddleware(['admin']),
     BasketController.updBasketById)
+  // success
+  router.post('/cancel',
+    validateCancelBasket(), ValidatorResultMiddleware,
+    AuthMiddleware,
+    BasketController.cancelOrderByAuthUser)
 } catch (e) {
   throw ApiError.internalRequest('Ошибка в Basket routers', 'BasketRouter')
 }

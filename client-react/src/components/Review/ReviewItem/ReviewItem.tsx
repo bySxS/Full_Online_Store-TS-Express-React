@@ -49,7 +49,7 @@ const ReviewItem: FC<IReviewItem> = ({
             </span>
           }
           <span>{dayjs(createdAt).format('YYYY.MM.DD')}</span>
-          <span>{dayjs(createdAt).format('HH:MM:ss')}</span>
+          <span>{dayjs(createdAt).format('HH:mm:ss')}</span>
         </div>
       </div>
       <div className={style.sectionComment}>
