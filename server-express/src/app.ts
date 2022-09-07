@@ -21,12 +21,12 @@ import ApiError from './apiError'
 
 const app = express()
 const PORT = process.env.PORT
-const CLIENT_URL = process.env.CLIENT_URL
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5000'
 console.log('CLIENT_URL', CLIENT_URL)
 
 const staticPath = path.resolve(__dirname, '..', 'static')
 const corsOptions = {
-  origin: CLIENT_URL,
+  origin: [CLIENT_URL, 'http://localhost:5000', 'http://localhost:4000'],
   crossOriginResourcePolicy: { policy: 'cross-origin' },
   credentials: true,
   optionsSuccessStatus: 200
@@ -36,6 +36,7 @@ const corsSetting = function (req: Request, res: Response, next: NextFunction) {
   return next()
 }
 
+app.set('trust proxy', 1)
 app.use(helmet(corsOptions))
 app.use(cors(corsOptions))
 app.use(corsSetting)
@@ -44,7 +45,6 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(express.static(staticPath))
 app.use(fileUpload({}))
-
 app.use('/api', router)
 
 app.get('/', (req: Request, res: Response) => {

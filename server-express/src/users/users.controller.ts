@@ -32,9 +32,15 @@ class UsersController implements IUserController {
       const result =
         await UsersService
           .registration(req.body, req.ip, finger, req.files as IUsersFilesArray)
+      // const CLIENT_URL = process.env.COOKIE_CLIENT_URL || 'localhost'
       res.cookie('refreshToken',
         result.result.token.refreshToken,
-        { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+        {
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none'
+        })
       return res.status(201).json(result)
     } catch (err) {
       next(err)
@@ -46,9 +52,15 @@ class UsersController implements IUserController {
       const finger = fingerprint(req)
       const result =
         await UsersService.login(req.body, req.ip, finger)
+      // const CLIENT_URL = process.env.COOKIE_CLIENT_URL || 'localhost'
       res.cookie('refreshToken',
         result.result.token.refreshToken,
-        { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+        {
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none'
+        })
       return res.status(200).json(result)
     } catch (err) {
       next(err)
@@ -60,7 +72,11 @@ class UsersController implements IUserController {
       const { refreshToken } = req.cookies
       const result =
         await UsersService.logout(refreshToken)
-      res.clearCookie('refreshToken')
+      // const CLIENT_URL = process.env.COOKIE_CLIENT_URL || 'localhost'
+      res.clearCookie('refreshToken', {
+        secure: true,
+        sameSite: 'none'
+      })
       return res.status(200).json(result)
     } catch (e) {
       next(e)
@@ -73,9 +89,15 @@ class UsersController implements IUserController {
       const finger = fingerprint(req)
       const result =
         await UsersService.refresh(refreshToken, req.ip, finger)
+      // const CLIENT_URL = process.env.COOKIE_CLIENT_URL || 'localhost'
       res.cookie('refreshToken',
         result.result.token.refreshToken,
-        { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+        {
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none'
+        })
       return res.status(200).json(result)
     } catch (e) {
       next(e)

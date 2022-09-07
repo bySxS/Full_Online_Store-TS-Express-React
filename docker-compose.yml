@@ -48,6 +48,8 @@ services:
         condition: on-failure
     command: sh -c 'npm run prod'
     working_dir: /usr/src/app
+    volumes:
+      - ./server-express/logs:/usr/src/app/logger/log
 
   migrate:
     container_name: migrate_import_db

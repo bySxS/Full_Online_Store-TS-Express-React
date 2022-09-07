@@ -20,7 +20,8 @@ const myStoreUserApi = createApi({
         query: (payload) => ({
           url: 'user/registration',
           method: 'POST',
-          body: payload
+          body: payload,
+          credentials: 'include'
         }),
         async onQueryStarted (args, api) {
           try {
@@ -36,7 +37,8 @@ const myStoreUserApi = createApi({
       query: (payload: ILoginIn) => ({
         url: 'user/login',
         method: 'POST',
-        body: payload
+        body: payload,
+        credentials: 'include'
       }),
       async onQueryStarted (args, api) {
         try {

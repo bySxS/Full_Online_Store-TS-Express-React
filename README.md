@@ -27,6 +27,7 @@
 #
 ##### second start
 #### `docker-compose up --build`
+#### `Ctrl+Z`
 #### `docker-compose stop migrate_import_db`
 
 #
