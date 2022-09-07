@@ -1,14 +1,28 @@
 # Store-typescript-Express-(redis, jwt-auth, mysql, Knex, Objection)-React-(redux-toolkit-query, Bootstrap, Tailwind CSS)
- 
+
+### Change nginx config
+##### nginx-reverse-proxy/conf.d/default.conf
+#### `server_name server_store.localhost;`
+##### to Domain Server
+#### `server_name store.localhost;`
+##### to Domain Client
+
+### Change production.env
+##### server-express
+#### `CLIENT_URL`
+##### to Domain Client
+##### client-react
+#### `REACT_APP_API_URL_SERVER`
+#### `REACT_APP_URL_SERVER`
+##### to Domain Server
+
 ### Run:
 
-
-#### `docker-compose up -d`
-
-####   or
-
+##### first start
 #### `docker-compose up --build`
-#### `docker-compose up start`
+##### second start
+#### `docker-compose up --build`
+#### `docker-compose stop migrate_import_db`
 
 #
 #### Docker Compose version > v2.6.1
