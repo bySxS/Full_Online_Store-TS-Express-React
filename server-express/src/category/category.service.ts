@@ -2,7 +2,10 @@ import { cacheRedisDB } from '@/cache'
 import { IMessage } from '@/interface'
 import CategoryModel from './category.model'
 import ApiError from '@/apiError'
-import { ICategory, ICategoryOut, ICategoryService, ISectionOut } from './category.interface'
+import {
+  ICategory, ICategoryOut,
+  ICategoryService, ISectionOut
+} from './category.interface'
 import { raw } from 'objection'
 
 class CategoryService implements ICategoryService {
@@ -209,7 +212,8 @@ class CategoryService implements ICategoryService {
 
   async getAll ({ sectionId, sort = true }: { sectionId?: number, sort?: boolean }): Promise<IMessage> {
     if (!sectionId) {
-      const cache = await cacheRedisDB.get('categoryAll:' + (sort ? 'sort' : 'list'))
+      const cache = await cacheRedisDB
+        .get('categoryAll:' + (sort ? 'sort' : 'list'))
       if (cache) {
         // await cacheRedisDB.expire('categoryAll', 360000)
         return {

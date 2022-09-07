@@ -43,12 +43,10 @@ userQueueDB.on('failed', function (job, err) {
 })
 
 userQueueDB.on('error', function (error) {
-  console.log(error)
-  // logger.error(error, { userQueueDB: 'error' })
+  // console.log(error)
+  logger.error(error.toString(), { userQueueDB: 'error' })
 })
 
 userQueueDB.on('resumed', function () {
   logger.info('userQueueDB started', { userQueueDB: 'resumed' })
 })
-
-userQueueDB.resume()

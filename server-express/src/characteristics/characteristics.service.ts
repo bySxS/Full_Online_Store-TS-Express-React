@@ -6,7 +6,8 @@ import ApiError from '@/apiError'
 import {
   ICharacteristic,
   ICharacteristicName, ICharacteristicProduct,
-  ICharacteristicService, ICharacteristicSetValue, ICharacteristicValueDelete, ICharacteristicValueUpdate
+  ICharacteristicService, ICharacteristicSetValue,
+  ICharacteristicValueDelete, ICharacteristicValueUpdate
 } from './characteristics.interface'
 import { QueryBuilder, raw } from 'objection'
 import CharacteristicsValuesModel from '@/characteristics/characteristicsValues.model'

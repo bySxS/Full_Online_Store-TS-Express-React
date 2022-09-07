@@ -10,20 +10,15 @@ const client = createClient({
   url: REDIS_URL,
   database: 1,
   disableOfflineQueue: false
+
 })// db1 redis
-client.connect()
-  .then(() => {
-    logger.info('Redis connected')
-  })
-  .catch(e => {
-    logger.error('Redis error ' + e.toString(), { db: 'Redis' })
-    client.connect()
-      .then(() => {
-        logger.info('Redis connected2')
-      })
-      .catch(e => {
-        logger.error('Redis error2 ' + e.toString(), { db: 'Redis' })
-      })
-  })
+
+client.on('connect', () =>
+  logger.info('Redis connected')
+)
+
+client.on('error', error =>
+  logger.error('Redis ' + error.toString(), { db: 'Redis' })
+)
 
 export const cacheRedisDB = promisifyAll(client)

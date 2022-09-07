@@ -7,6 +7,8 @@ config({
   path: path.resolve(__dirname, '..', '.env')
 })
 import express, { Request, Response, NextFunction } from 'express'
+import { cacheRedisDB } from '@/cache'
+import { userQueueDB } from '@/queue'
 import helmet from 'helmet'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -63,8 +65,10 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 
 app.use(errorApiMiddleware)
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   logger.info(
     'Server started at PORT ' + PORT + ' , host: ' + os.hostname()
   )
+  await cacheRedisDB.connect()
+  await userQueueDB.resume()
 })
