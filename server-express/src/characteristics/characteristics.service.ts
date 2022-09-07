@@ -210,8 +210,11 @@ class CharacteristicsService implements ICharacteristicService {
   async getAllCharacteristics ({ sectionId = 0 }: { sectionId?: number }): Promise<IMessage> {
     let characteristics
     if (sectionId > 0) {
+      const allCategory = sectionId > 0
+        ? await CategoryService.getAllCategoryBySectionWithCache(sectionId)
+        : [sectionId]
       characteristics = await this.getCharacteristicValue()
-        .where('characteristicsName.categoryId', '=', sectionId)
+        .whereIn('characteristicsName.categoryId', allCategory)
     } else {
       characteristics = await this.getCharacteristicValue()
     }
