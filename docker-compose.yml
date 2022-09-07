@@ -26,18 +26,13 @@ services:
       - ./mysql/import:/docker-entrypoint-initdb.d
     restart: always
 
-  client_store:
-    container_name: react_client_store
-    build:
-      context: ./client-react
-    restart: always
-
   server_store:
     build:
       context: ./server-express
     restart: always
     depends_on:
       - mysql
+      - redis
     deploy:
       replicas: 2
       #     resources:
@@ -50,6 +45,14 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./server-express/logs:/usr/src/app/logger/log
+
+  client_store:
+    container_name: react_client_store
+    build:
+      context: ./client-react
+    restart: always
+    depends_on:
+      - server_store
 
   migrate:
     container_name: migrate_import_db
