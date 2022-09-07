@@ -1,11 +1,11 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { IMessage, IResultList } from 'store/myStore/myStore.interface'
 import { ILoginIn, ILoginResult, IUser, IUsers } from 'store/myStore/myStoreUser.interface'
-import { userAction } from 'store/user/user.slice'
 import { baseQueryWithRefreshToken } from 'store/myStore/customFetch'
+import { userAction } from 'store/user/user.slice'
 import { productAction } from 'store/product/product.slice'
 import { basketAction } from 'store/basket/basket.slice'
-const { activatedUserEmail, login, logout, updUser } = userAction
+const { login, logout, updUser, activatedUserEmail } = userAction
 const { clearFavProducts } = productAction
 const { syncBasketOff } = basketAction
 
@@ -67,8 +67,10 @@ const myStoreUserApi = createApi({
       }),
       async onQueryStarted (args, api) {
         try {
-          await api.queryFulfilled
-          api.dispatch(activatedUserEmail())
+          const res: { data: IMessage<null> } = await api.queryFulfilled
+          if (res.data.success) {
+            api.dispatch(activatedUserEmail())
+          }
         } catch (e) {}
       }
     }),

@@ -88,7 +88,18 @@ export const UserSlice = createSlice({
     activatedUserEmail (state) {
       state.user = { ...state.user, isActivated: 1 } as IUser
     }
-  }
+  }// , нельзя здесь использовать extraReducers
+  // extraReducers: (builder) => {
+  //   builder.addMatcher(
+  //     myStoreUserEndpoint.activateEmail.matchFulfilled,
+  //     (state, action) => {
+  //       const { payload: { success } } = action
+  //       if (success) {
+  //         state.user = { ...state.user, isActivated: 1 } as IUser
+  //       }
+  //     }
+  //   )
+  // }
 })
 
 export const userAction = UserSlice.actions

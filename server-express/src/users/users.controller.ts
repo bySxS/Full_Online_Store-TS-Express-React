@@ -89,7 +89,7 @@ class UsersController implements IUserController {
         await UsersService.activate(activateLink)
       // const urlClient = process.env.CLIENT_URL || ''
       return res// .header('Location', urlClient)
-        .status(301).json(result)
+        .status(200).json(result)
     } catch (err) {
       next(err)
     }

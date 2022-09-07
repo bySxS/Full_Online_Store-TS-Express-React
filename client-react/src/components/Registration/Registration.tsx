@@ -219,11 +219,11 @@ const Registration: FC<IRegProps> = ({
             nameInput={'email'}
             value={formState.email}
             placeholder={'Введите E-mail'}
-            label={`E-mail${onlyShowInfo &&
+            label={<span>E-mail{onlyShowInfo &&
             defaultInfoUser &&
             !defaultInfoUser.isActivated
-              ? '  (не подтверждён)'
-              : ''}`}
+              ? <span className={'text-red-700'}> (не подтверждён)</span>
+              : <span className={'text-green-700'}> (подтверждён)</span>}</span>}
             icon={'@'}
             setValue={setFormState}
             disable={onlyShowInfo}
