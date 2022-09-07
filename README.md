@@ -6,24 +6,30 @@
 ##### to Domain Server
 #### `server_name store.localhost;`
 ##### to Domain Client
-
+#
+#
 ### Change production.env
 ##### server-express
 #### `CLIENT_URL`
 ##### to Domain Client
+#
 ##### client-react
 #### `REACT_APP_API_URL_SERVER`
 #### `REACT_APP_URL_SERVER`
 ##### to Domain Server
 
+#
+#
 ### Run:
 
 ##### first start
 #### `docker-compose up --build`
+#
 ##### second start
 #### `docker-compose up --build`
 #### `docker-compose stop migrate_import_db`
 
+#
 #
 #### Docker Compose version > v2.6.1
 
