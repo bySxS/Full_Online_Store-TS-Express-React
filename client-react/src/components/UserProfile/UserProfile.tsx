@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { IUsers } from 'store/myStore/myStoreUser.interface'
-import { addHostServerToFileLink } from '../../utils'
+import { addHostServerToFileLink } from 'utils'
 import UserProfileEdit from '../UserProfileEdit/UserProfileEdit'
 
 interface UserProfileProps {

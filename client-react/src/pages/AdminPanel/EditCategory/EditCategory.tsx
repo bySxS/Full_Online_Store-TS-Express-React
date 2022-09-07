@@ -3,7 +3,7 @@ import { useProducts } from 'hooks/useSelectors'
 import CategorySection from 'components/CategorySection/CategorySection'
 import st from 'components/SideBar/SideBar.module.scss'
 import { ModalComponent } from 'components/UI/Modal/ModalComponent'
-import MyLink from '../../../components/UI/MyLink/MyLink'
+import MyLink from 'components/UI/MyLink/MyLink'
 import style from './EditCategory.module.scss'
 import FormCategory, { IFormCategoryState } from './FormCategory/FormCategory'
 

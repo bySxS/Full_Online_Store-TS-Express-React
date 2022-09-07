@@ -7,7 +7,7 @@ import MyOverlay from 'components/UI/MyOverlay/MyOverlay'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
 import st from 'components/SideBar/SideBar.module.scss'
 import { IFormCategoryState } from 'pages/AdminPanel/EditCategory/FormCategory/FormCategory'
-import MyLink from '../../UI/MyLink/MyLink'
+import MyLink from 'components/UI/MyLink/MyLink'
 import ButtonEditCategory from '../ButtonEditCategory/ButtonEditCategory'
 import SubCategory from './SubCategory/SubCategory'
 

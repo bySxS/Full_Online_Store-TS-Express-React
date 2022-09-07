@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IMessage } from 'store/myStore/myStore.interface'
-import { CategoryTreeToList } from '../../utils'
+import { CategoryTreeToList } from 'utils'
 import { myStoreCategoryEndpoint } from '../myStore/myStoreCategory.api'
 import { ICategory, ICategorySection } from '../myStore/myStoreCategory.interface'
 

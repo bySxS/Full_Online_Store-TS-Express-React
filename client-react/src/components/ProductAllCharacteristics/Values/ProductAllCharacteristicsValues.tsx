@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { NavLink } from 'react-bootstrap'
 import { ICharValue } from 'store/myStore/myStoreCharacteristics.interface'
-import MyLink from '../../UI/MyLink/MyLink'
+import MyLink from 'components/UI/MyLink/MyLink'
 import style from './ProductAllCharacteristicsValues.module.scss'
 
 interface IProductAllCharacteristicsValues {

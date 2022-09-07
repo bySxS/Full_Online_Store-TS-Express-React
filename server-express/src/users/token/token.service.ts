@@ -4,7 +4,7 @@ import TokenModel from './token.model'
 import {
   IDtoToken, IJwt, IToken, ITokenService
 } from './token.interface'
-import ApiError from '../../apiError'
+import ApiError from '@/apiError'
 
 class TokenService implements ITokenService {
   private static instance = new TokenService()

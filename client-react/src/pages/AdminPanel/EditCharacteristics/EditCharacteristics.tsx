@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useProducts } from 'hooks/useSelectors'
-import { Form, InputGroup } from 'react-bootstrap'
 import {
   useLazyGetAllCharacteristicsNameByCategoryIdQuery
 } from 'store/myStore/myStoreCharacteristics.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { ModalComponent } from 'components/UI/Modal/ModalComponent'
-import MyLink from '../../../components/UI/MyLink/MyLink'
+import MyLink from 'components/UI/MyLink/MyLink'
+import MySelect from 'components/UI/MySelect/MySelect'
 import ButtonEditCharacteristics from './ButtonEditCharacteristics/ButtonEditCharacteristics'
 import style from './EditCharacteristics.module.scss'
 import FormCharacteristics, {
@@ -41,22 +41,18 @@ const EditCharacteristics = () => {
     <>
     <div className={style.block}>
       <div className={style.blockSelectCategory}>
-          <Form.Label>Выберите категорию</Form.Label>
-          <InputGroup className="mb-2">
-            <InputGroup.Text id="basic-addon1">
-              <i className={'bi bi-grid-fill'}/>
-            </InputGroup.Text>
-            <Form.Select
-              name={'categoryId'}
-              onChange={handleChangeSelect}
-              defaultValue={0}
-            >
-              <option value={0}>{''}</option>
-              {categoryList.map((item) =>
-                <option key={item.id} value={item.id}>{item.name}</option>
-              )}
-            </Form.Select>
-          </InputGroup>
+        <MySelect
+          name={'categoryId'}
+          valuesOption={[{ value: 0, name: '' }]
+            .concat(categoryList.map((item) => ({
+              value: item.id || 0,
+              name: item.name
+            })))
+          }
+          label={'Выберите категорию'}
+          onChange={handleChangeSelect}
+          icon={<i className={'bi bi-grid-fill'}/>}
+        />
       </div>
       {isSuccess && data &&
        <div className={style.blockCharacteristics}>

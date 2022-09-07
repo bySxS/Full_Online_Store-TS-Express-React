@@ -9,7 +9,7 @@ import ProductDetailsHead from 'components/ProductDetailsHead/ProductDetailsHead
 import { IProduct } from 'store/myStore/myStoreProduct.interface'
 import { addDomainToImgProducts } from 'utils'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
-import { useAppActions } from '../../hooks/useStore'
+import { useAppActions } from 'hooks/useStore'
 import style from './ProductDetails.module.scss'
 
 export interface IDParams {

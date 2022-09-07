@@ -6,7 +6,7 @@ import selectUser from 'store/user/user.selector'
 import { useLazyActivateEmailQuery } from 'store/myStore/myStoreUser.api'
 import { useInfoLoading } from 'hooks/useInfoLoading'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
-import { IMessage } from '../../store/myStore/myStore.interface'
+import { IMessage } from 'store/myStore/myStore.interface'
 
 interface ILinkParams {
   [link: string]: string

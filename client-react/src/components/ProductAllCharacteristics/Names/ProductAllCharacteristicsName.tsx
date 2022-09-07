@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { ICharName } from 'store/myStore/myStoreCharacteristics.interface'
-import MyLink from '../../UI/MyLink/MyLink'
+import MyLink from 'components/UI/MyLink/MyLink'
 import style from './ProductAllCharacteristicsName.module.scss'
 import ProductAllCharacteristicsValues from '../Values/ProductAllCharacteristicsValues'
 
