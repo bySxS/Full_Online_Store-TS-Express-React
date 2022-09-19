@@ -2,6 +2,7 @@ import React, { FC, memo, useState } from 'react'
 import useBreadcrumbs from 'use-react-router-breadcrumbs'
 import { useBreadcrumb } from 'context/BreadcrumbContext'
 import { useAppActions } from 'hooks/useStore'
+import { useProducts } from '../../hooks/useSelectors'
 import style from './Breadcrumb.module.scss'
 import { IRoute, routes } from 'AppRouter'
 import { NavLink } from 'react-router-dom'
@@ -12,16 +13,22 @@ interface IBreadcrumbsProps {
 
 const BreadcrumbsComponent: FC<IBreadcrumbsProps> = ({ className }) => {
   const [rout] = useState<IRoute[]>(routes)
-  const { breadcrumbLinks } = useBreadcrumb()
-  // const navigate = useNavigate()
+  const { breadcrumbLinks, setBreadcrumb } = useBreadcrumb()
+  const { filterState } = useProducts()
   const { changeFilterState } = useAppActions()
   const breadcrumbs = useBreadcrumbs(rout, {
     excludePaths: ['/products/category', '/products/:id']
   })
 
-  const clickChangeCategory = (id?: number) => {
-    if (id) {
+  const clickChangeCategory = (id?: number, name?: string) => {
+    if (id && name && filterState?.categoryId !== id) {
       changeFilterState({ categoryId: id })
+      setBreadcrumb({
+        moduleName: 'Товары',
+        moduleLink: '/products',
+        sectionName: name,
+        sectionId: id
+      })
     }
   }
 
@@ -42,7 +49,7 @@ const BreadcrumbsComponent: FC<IBreadcrumbsProps> = ({ className }) => {
                 </span>
                 <span>
                   <NavLink
-                    onClick={() => clickChangeCategory(id)}
+                    onClick={() => clickChangeCategory(id, String(name))}
                     to={link}
                   >
                     {name}
