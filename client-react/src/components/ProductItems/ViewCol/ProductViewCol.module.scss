@@ -36,10 +36,10 @@
   }
 
   .sectionViews {
-    @apply w-[110px] flex flex-col pb-2;
+    @apply w-full items-center flex flex-col pb-2;
 
     .sectionViewsBlock {
-      @apply flex flex-row justify-between;
+      @apply flex flex-row w-[55%] justify-between;
     }
   }
 }
