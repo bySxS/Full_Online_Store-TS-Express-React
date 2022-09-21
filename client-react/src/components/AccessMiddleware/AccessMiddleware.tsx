@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react'
 import { useAuth } from 'hooks/useSelectors'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { RoutePath } from 'AppRouter'
-import { useAppActions, useAppDispatch } from 'hooks/useStore'
+import { useAppActions } from 'hooks/useStore'
 
 export interface IRequireUser {
   allowedRoles?: string[] | string
@@ -17,7 +17,6 @@ const AccessMiddleware: FC<IRequireUserProps> = ({ allow }) => {
   const { allowedUsers, allowedAuth, allowedRoles } = allow
   const location = useLocation()
   const { addToAlertStack } = useAppActions()
-  const dispatch = useAppDispatch()
   const { nickname, isAuth, roles } = useAuth()
   let needRoles
   let needUsers
@@ -45,10 +44,10 @@ const AccessMiddleware: FC<IRequireUserProps> = ({ allow }) => {
     if (!(checkAuth() ||
         checkRoles() ||
         checkUser())) {
-      dispatch(addToAlertStack({
+      addToAlertStack({
         message: 'У вас нет доступа к этой странице!',
         status: 'warning'
-      }))
+      })
     }
   }, [location.pathname, allow])
 

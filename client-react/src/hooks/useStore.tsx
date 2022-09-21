@@ -11,7 +11,7 @@ import { categoryAction } from 'store/category/category.slice'
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 export const useAppActions = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const actions = {
     ...basketAction,
     ...alertAction,

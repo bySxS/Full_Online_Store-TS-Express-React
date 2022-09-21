@@ -7,12 +7,6 @@ import { getAlerts } from 'store/alert/alert.selector'
 
 const Alarm = () => {
   const stackAlert = useAppSelector(getAlerts)
-  // const dispatch = useAppDispatch()
-  // const { delFromAlertStack } = useAppActions()
-
-  // const delAlert = (id: number | undefined) => {
-  //   dispatch(delFromAlertStack(id || 0))
-  // }
 
   return (
       <div>
